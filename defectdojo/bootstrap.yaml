@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dns
+data:
+  hostname: ${DNS_HOSTNAME}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secret-db
+stringData:
+  user: ${DD_DATABASE_USER}
+  password: ${DD_DATABASE_PASSWORD}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secret-celery
+stringData:
+  DD_CELERY_BROKER_USER: ${DD_CELERY_BROKER_USER}
+  DD_CELERY_BROKER_PASSWORD: ${DD_CELERY_BROKER_PASSWORD}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secret-django
+stringData:
+  DD_SECRET_KEY: ${DD_SECRET_KEY}
+  DD_CREDENTIAL_AES_256_KEY: ${DD_CREDENTIAL_AES_256_KEY}
+  DD_DATABASE_URL: mysql://${DD_DATABASE_USER}:${DD_DATABASE_PASSWORD}@localhost:3306/${DD_DATABASE_NAME}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secret-admin
+stringData:
+  DD_ADMIN_FIRST_NAME: ${DD_ADMIN_FIRST_NAME}
+  DD_ADMIN_LAST_NAME: ${DD_ADMIN_LAST_NAME}
+  DD_ADMIN_MAIL: ${DD_ADMIN_MAIL}
+  DD_ADMIN_USER: ${DD_ADMIN_USER}
