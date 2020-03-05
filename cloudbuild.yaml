@@ -1,0 +1,19 @@
+options:
+  env:
+  - terraform_bucket=${PROJECT_ID}-terraform
+
+- name: gcr.io/cloud-builders/gsutil
+  entrypoint: sh
+  args:
+  - -c
+  - gsutil mb gs://${terraform_bucket} &&
+    gsutil versioning set on gs://${terraform_bucket} || true
+
+- name: hashicorp/terraform
+  entrypoint: sh
+  dir: cluster
+  args:
+  - -c
+  - terraform init --backend-config="bucket=${terraform_bucket}" &&
+    terraform plan --out=plan.out -var="project=${PROJECT_ID}" &&
+    terraform apply plan.out
