@@ -122,7 +122,9 @@ module "cnrm_sa" {
   source       = "./modules/service-account"
   account_id   = "cnrm-system-${var.cluster_name}"
   display_name = "GKE Config Connector identity for ${var.cluster_name} cluster"
-  roles        = []
+  roles        = [
+    "compute.orgSecurityPolicyAdmin",
+  ]
 }
 
 resource "google_service_account_iam_member" "cnrm_sa_ksa_role" {
