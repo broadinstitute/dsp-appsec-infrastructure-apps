@@ -1,29 +1,22 @@
 #!/usr/bin/env bash
 
-# Install Config Connector (CNRM)
+# Install Config Connector (Cloud Native Resource Management)
 
 set -euo pipefail
 
-CLUSTER_ZONE="$1"
-CLUSTER_NAME="$2"
-SA_EMAIL="$3"
+SA_EMAIL="$1"
 
-# get cluster credentials
-gcloud container clusters get-credentials --zone "${CLUSTER_ZONE}" "${CLUSTER_NAME}"
+# wait for CNRM initialization, or exit if already initialized
+kubectl wait pod cnrm-controller-manager-0 \
+  -n cnrm-system --for=condition=Initialized || exit 0
 
-# exit if already initialized
-kubectl wait -n cnrm-system --for=condition=Initialized \
-  pod cnrm-controller-manager-0 && exit 0
+# work in a temp directory
+cd "$(mktemp -d)"
 
-(
-  # work in a temp directory
-  cd "$(mktemp -d)"
+# download and patch Kubernetes config for CNRM
+gsutil cat "gs://cnrm/latest/release-bundle.tar.gz" | tar xzf -
+cd "install-bundle-workload-identity"
+sed -Ei.bak "s/(gcp-service-account: ).*/\1${SA_EMAIL}/" "0-cnrm-system.yaml"
 
-  # download and patch Kubernetes config for cnrm
-  gsutil cat "gs://cnrm/latest/release-bundle.tar.gz" | tar xzf -
-  cd "install-bundle-workload-identity"
-  sed -Ei.bak "s/(gcp-service-account: ).*/\1${SA_EMAIL}/" "0-cnrm-system.yaml"
-
-  # apply the config
-  kubectl apply -f .
-)
+# apply the config
+kubectl apply -f .

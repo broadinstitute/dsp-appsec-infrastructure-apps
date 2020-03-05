@@ -25,4 +25,11 @@ steps:
   dir: cluster
   args:
   - -c
-  - . ./output.sh && ./cnrm.sh "${zone}" "${cluster}" "${cnrm_sa}"
+  - |
+    set -eu
+
+    . ./output.sh
+    gcloud container clusters get-credentials --zone "${zone}" "${cluster}"
+
+    ./cnrm.sh "${cnrm_sa}"
+    kubectl apply -f deploy.yaml
