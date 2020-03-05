@@ -2,6 +2,7 @@ options:
   env:
   - terraform_bucket=${PROJECT_ID}-terraform
 
+steps:
 - name: gcr.io/cloud-builders/gsutil
   entrypoint: sh
   args:
