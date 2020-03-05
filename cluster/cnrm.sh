@@ -11,8 +11,9 @@ SA_EMAIL="$3"
 # get cluster credentials
 gcloud container clusters get-credentials --zone "${CLUSTER_ZONE}" "${CLUSTER_NAME}"
 
-# exit if already installed
-kubectl get namespace "cnrm-system" && exit 0
+# exit if already initialized
+kubectl wait -n cnrm-system --for=condition=Initialized \
+  pod cnrm-controller-manager-0 && exit 0
 
 (
   # work in a temp directory
