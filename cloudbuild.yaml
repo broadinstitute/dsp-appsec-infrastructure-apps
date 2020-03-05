@@ -32,4 +32,4 @@ steps:
     gcloud container clusters get-credentials --zone "${zone}" "${cluster}"
 
     ./cnrm.sh "${PROJECT_ID}" "${cnrm_sa}"
-    kubectl apply -f deploy.yaml
+    kubectl apply -f .
