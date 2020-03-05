@@ -34,9 +34,9 @@ module "node_sa" {
   account_id   = "gke-node-${var.cluster_name}"
   display_name = "GKE node identity for ${var.cluster_name} cluster"
   roles = [
-    "logging.logWriter",
-    "monitoring.metricWriter",
-    "monitoring.viewer",
+    "roles/logging.logWriter",
+    "roles/monitoring.metricWriter",
+    "roles/monitoring.viewer",
   ]
 }
 
@@ -122,12 +122,24 @@ module "cnrm_sa" {
   source       = "./modules/service-account"
   account_id   = "cnrm-system-${var.cluster_name}"
   display_name = "GKE Config Connector identity for ${var.cluster_name} cluster"
-  roles        = [
-    "compute.orgSecurityPolicyAdmin",
+  roles = [
+    google_project_iam_custom_role.cnrm_sa.id,
   ]
 }
 
-resource "google_service_account_iam_member" "cnrm_sa_ksa_role" {
+resource "google_project_iam_custom_role" "cnrm_sa" {
+  role_id     = replace("cnrm-system-${var.cluster_name}", "-", "_")
+  title       = "AppSec Apps Config Connector"
+  description = "Grants access to manage GCP resources via GKE Config Connector in ${var.cluster_name} cluster"
+  permissions = [
+    "compute.securityPolicies.get",
+    "compute.securityPolicies.create",
+    "compute.securityPolicies.update",
+    "compute.securityPolicies.delete",
+  ]
+}
+
+resource "google_service_account_iam_member" "cnrm_sa_ksa_binding" {
   service_account_id = module.cnrm_sa.name
   role               = "roles/iam.workloadIdentityUser"
   member             = "serviceAccount:${var.project}.svc.id.goog[cnrm-system/cnrm-controller-manager]"
