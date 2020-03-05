@@ -8,7 +8,7 @@ SA_EMAIL="$1"
 
 # wait for CNRM initialization, or exit if already initialized
 kubectl wait pod cnrm-controller-manager-0 \
-  -n cnrm-system --for=condition=Initialized || exit 0
+  -n cnrm-system --for=condition=Initialized && exit 0
 
 # work in a temp directory
 cd "$(mktemp -d)"
