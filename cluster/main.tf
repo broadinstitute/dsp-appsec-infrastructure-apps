@@ -79,20 +79,21 @@ resource "google_container_cluster" "cluster" {
   subnetwork = google_compute_subnetwork.gke.self_link
   ip_allocation_policy {}
 
-  remove_default_node_pool = true
-  initial_node_count       = 1
+  initial_node_count = 1
+
+  node_config {
+    service_account = google_service_account.cluster_sa.email
+  }
 
   cluster_autoscaling {
     enabled = true
     resource_limits {
       resource_type = "cpu"
-      minimum       = var.cluster_cpu.min
-      maximum       = var.cluster_cpu.max
+      maximum       = var.cluster_cpu_max
     }
     resource_limits {
       resource_type = "memory"
-      minimum       = var.cluster_mem_gb.min
-      maximum       = var.cluster_mem_gb.max
+      maximum       = var.cluster_mem_gb_max
     }
     auto_provisioning_defaults {
       service_account = google_service_account.cluster_sa.email
