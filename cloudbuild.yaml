@@ -3,14 +3,16 @@ options:
   - terraform_bucket=${PROJECT_ID}-terraform
 
 steps:
-- name: gcr.io/cloud-builders/gsutil
+- id: tf-bucket
+  name: gcr.io/cloud-builders/gsutil
   entrypoint: sh
   args:
   - -c
   - gsutil mb gs://${terraform_bucket} &&
     gsutil versioning set on gs://${terraform_bucket} || true
 
-- name: hashicorp/terraform
+- id: tf
+  name: hashicorp/terraform
   entrypoint: sh
   dir: cluster
   args:
@@ -20,7 +22,8 @@ steps:
     terraform apply plan.out &&
     terraform output | tr -d " " > output.sh
 
-- name: gcr.io/cloud-builders/gcloud
+- id: cluster
+  name: gcr.io/cloud-builders/gcloud
   entrypoint: sh
   dir: cluster
   args:
