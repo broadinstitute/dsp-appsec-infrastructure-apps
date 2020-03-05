@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    prefix = "gke-appsec"
+    prefix = "appsec-apps"
   }
 }
 
@@ -14,50 +14,30 @@ provider "google-beta" {
   region  = var.region
 }
 
-locals {
-  cluster_sa = "serviceAccount:${google_service_account.cluster_sa.email}"
-  oauth_scopes = [
-    "https://www.googleapis.com/auth/devstorage.read_only",
-    "https://www.googleapis.com/auth/logging.write",
-    "https://www.googleapis.com/auth/monitoring",
-  ]
-}
-
-data "google_client_config" "current" {}
-
 ### VPC
 
 resource "google_compute_network" "gke" {
-  name                    = "gke-appsec"
+  name                    = var.cluster_name
   auto_create_subnetworks = false
 }
 
 resource "google_compute_subnetwork" "gke" {
-  name          = "gke-appsec"
+  name          = var.cluster_name
   network       = google_compute_network.gke.self_link
   ip_cidr_range = "10.2.0.0/16"
 }
 
-### Cluster SA
+### Node SA
 
-resource "google_service_account" "cluster_sa" {
-  account_id   = "gke-appsec-cluster"
-  display_name = "AppSec GKE Cluster identity"
-}
-
-resource "google_project_iam_member" "cluster_sa_log_writer_role" {
-  role   = "roles/logging.logWriter"
-  member = local.cluster_sa
-}
-
-resource "google_project_iam_member" "cluster_sa_metric_writer_role" {
-  role   = "roles/monitoring.metricWriter"
-  member = local.cluster_sa
-}
-
-resource "google_project_iam_member" "cluster_sa_monitoring_viewer_role" {
-  role   = "roles/monitoring.viewer"
-  member = local.cluster_sa
+module "node_sa" {
+  source       = "./modules/service-account"
+  account_id   = "gke-node-${var.cluster_name}"
+  display_name = "GKE node identity for ${var.cluster_name} cluster"
+  roles = [
+    "logging.logWriter",
+    "monitoring.metricWriter",
+    "monitoring.viewer",
+  ]
 }
 
 ### GCR
@@ -66,10 +46,10 @@ resource "google_container_registry" "gcr" {
   location = "US"
 }
 
-resource "google_storage_bucket_iam_member" "cluster_sa_gcr_role" {
+resource "google_storage_bucket_iam_member" "node_sa_gcr_role" {
   bucket = google_container_registry.gcr.id
   role   = "roles/storage.objectViewer"
-  member = local.cluster_sa
+  member = "serviceAccount:${module.node_sa.email}"
 }
 
 ### Cluster
@@ -77,7 +57,7 @@ resource "google_storage_bucket_iam_member" "cluster_sa_gcr_role" {
 resource "google_container_cluster" "cluster" {
   provider = google-beta
 
-  name     = "appsec"
+  name     = var.cluster_name
   location = var.zone
 
   network    = google_compute_network.gke.self_link
@@ -98,7 +78,7 @@ resource "google_container_cluster" "cluster" {
       maximum       = var.cluster_mem_gb_max
     }
     auto_provisioning_defaults {
-      service_account = google_service_account.cluster_sa.email
+      service_account = module.node_sa.email
       oauth_scopes    = local.oauth_scopes
     }
   }
@@ -123,25 +103,30 @@ resource "google_container_node_pool" "node_pool" {
   node_count = 1
 
   node_config {
-    service_account = google_service_account.cluster_sa.email
+    service_account = module.node_sa.email
     oauth_scopes    = local.oauth_scopes
   }
 }
 
-### Config Connector
-
-resource "google_service_account" "cnrm_sa" {
-  account_id   = "cnrm-system"
-  display_name = "AppSec GKE Config Connector identity"
+locals {
+  oauth_scopes = [
+    "https://www.googleapis.com/auth/devstorage.read_only",
+    "https://www.googleapis.com/auth/logging.write",
+    "https://www.googleapis.com/auth/monitoring",
+  ]
 }
 
-resource "google_project_iam_member" "cnrm_sa_owner_role" {
-  role   = "roles/owner"
-  member = "serviceAccount:${google_service_account.cnrm_sa.email}"
+### Config Connector
+
+module "cnrm_sa" {
+  source       = "./modules/service-account"
+  account_id   = "cnrm-system-${var.cluster_name}"
+  display_name = "GKE Config Connector identity for ${var.cluster_name} cluster"
+  roles        = []
 }
 
 resource "google_service_account_iam_member" "cnrm_sa_ksa_role" {
-  service_account_id = google_service_account.cnrm_sa.name
+  service_account_id = module.cnrm_sa.name
   role               = "roles/iam.workloadIdentityUser"
   member             = "serviceAccount:${var.project}.svc.id.goog[cnrm-system/cnrm-controller-manager]"
 }
@@ -157,5 +142,5 @@ output "cluster" {
 }
 
 output "cnrm_sa" {
-  value = google_service_account.cnrm_sa.email
+  value = module.cnrm_sa.email
 }

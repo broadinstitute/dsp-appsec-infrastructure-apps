@@ -15,6 +15,11 @@ variable "zone" {
   description = "GCP zone for GKE cluster"
 }
 
+variable "cluster_name" {
+  type    = string
+  default = "appsec-apps"
+}
+
 variable "cluster_cpu_max" {
   type        = number
   default     = 8
