@@ -26,4 +26,4 @@ steps:
   dir: cluster
   args:
   - -c
-  - ./cnrm.sh $(<cluster.txt) $(<cnrm_sa.txt)
+  - ./cnrm.sh "$(<cluster.txt)" "$(<cnrm_sa.txt)"

@@ -4,8 +4,8 @@
 
 set -euo pipefail
 
-export CLUSTER_NAME=$1
-export SA_EMAIL=$2
+CLUSTER_NAME="$1"
+SA_EMAIL="$2"
 
 # get cluster credentials
 gcloud container clusters get-credentials "${CLUSTER_NAME}"
