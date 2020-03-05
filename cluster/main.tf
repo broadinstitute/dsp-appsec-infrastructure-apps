@@ -126,6 +126,10 @@ resource "google_service_account_iam_member" "cnrm_sa_ksa_role" {
 
 ### Outputs
 
+output "zone" {
+  value = var.zone
+}
+
 output "cluster" {
   value = google_container_cluster.cluster.name
 }

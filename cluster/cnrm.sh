@@ -4,11 +4,12 @@
 
 set -euo pipefail
 
-CLUSTER_NAME="$1"
-SA_EMAIL="$2"
+CLUSTER_ZONE="$1"
+CLUSTER_NAME="$2"
+SA_EMAIL="$3"
 
 # get cluster credentials
-gcloud container clusters get-credentials "${CLUSTER_NAME}"
+gcloud container clusters get-credentials --zone "${CLUSTER_ZONE}" "${CLUSTER_NAME}"
 
 # exit if already installed
 kubectl get namespace "cnrm-system" && exit 0

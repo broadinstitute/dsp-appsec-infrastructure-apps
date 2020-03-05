@@ -18,12 +18,11 @@ steps:
   - terraform init --backend-config="bucket=${terraform_bucket}" &&
     terraform plan --out=plan.out -var="project=${PROJECT_ID}" &&
     terraform apply plan.out &&
-    terraform output cluster > cluster.txt &&
-    terraform output cnrm_sa > cnrm_sa.txt
+    terraform output | tr -d " " > output.sh
 
 - name: gcr.io/cloud-builders/gcloud
   entrypoint: sh
   dir: cluster
   args:
   - -c
-  - ./cnrm.sh "$(<cluster.txt)" "$(<cnrm_sa.txt)"
+  - . output.sh && ./cnrm.sh "${zone}" "${cluster}" "${cnrm_sa}"
