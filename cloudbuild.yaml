@@ -25,4 +25,4 @@ steps:
   dir: cluster
   args:
   - -c
-  - . output.sh && ./cnrm.sh "${zone}" "${cluster}" "${cnrm_sa}"
+  - . ./output.sh && ./cnrm.sh "${zone}" "${cluster}" "${cnrm_sa}"
