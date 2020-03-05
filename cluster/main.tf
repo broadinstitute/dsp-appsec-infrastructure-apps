@@ -129,3 +129,7 @@ resource "google_service_account_iam_member" "cnrm_sa_ksa_role" {
 output "cluster" {
   value = google_container_cluster.cluster.name
 }
+
+output "cnrm_sa" {
+  value = google_service_account.cnrm_sa.email
+}

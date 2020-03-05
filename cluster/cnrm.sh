@@ -20,7 +20,7 @@ kubectl get namespace "cnrm-system" && exit 0
   # download and patch Kubernetes config for cnrm
   gsutil cat "gs://cnrm/latest/release-bundle.tar.gz" | tar xzf -
   cd "install-bundle-workload-identity"
-  sed -i.bak "s/(gcp-service-account: ).*/\1${SA_EMAIL}/" "0-cnrm-system.yaml"
+  sed -Ei.bak "s/(gcp-service-account: ).*/\1${SA_EMAIL}/" "0-cnrm-system.yaml"
 
   # apply the config
   kubectl apply -f .
