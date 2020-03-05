@@ -4,8 +4,7 @@
 
 set -euo pipefail
 
-PROJECT_ID="$1"
-SA_EMAIL="$2"
+SA_EMAIL="$1"
 
 # wait for CNRM initialization, or exit if already initialized
 kubectl wait pod cnrm-controller-manager-0 \
@@ -24,4 +23,4 @@ kubectl apply -f .
 
 # add project annotation to the default namespace
 kubectl annotate namespace default \
-  "cnrm.cloud.google.com/project-id=${PROJECT_ID}"
+  "cnrm.cloud.google.com/project-id=$(gcloud config get-value project)"

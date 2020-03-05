@@ -34,5 +34,5 @@ steps:
     . ./output.sh
     gcloud container clusters get-credentials --zone "${zone}" "${cluster}"
 
-    ./cnrm.sh "${PROJECT_ID}" "${cnrm_sa}"
+    ./cnrm.sh "${cnrm_sa}"
     kubectl apply -f .
