@@ -16,6 +16,11 @@ provider "google-beta" {
 
 locals {
   cluster_sa = "serviceAccount:${google_service_account.cluster_sa.email}"
+  oauth_scopes = [
+    "https://www.googleapis.com/auth/devstorage.read_only",
+    "https://www.googleapis.com/auth/logging.write",
+    "https://www.googleapis.com/auth/monitoring",
+  ]
 }
 
 data "google_client_config" "current" {}
@@ -79,11 +84,8 @@ resource "google_container_cluster" "cluster" {
   subnetwork = google_compute_subnetwork.gke.self_link
   ip_allocation_policy {}
 
-  initial_node_count = 1
-
-  node_config {
-    service_account = google_service_account.cluster_sa.email
-  }
+  remove_default_node_pool = true
+  initial_node_count       = 1
 
   cluster_autoscaling {
     enabled = true
@@ -97,6 +99,7 @@ resource "google_container_cluster" "cluster" {
     }
     auto_provisioning_defaults {
       service_account = google_service_account.cluster_sa.email
+      oauth_scopes    = local.oauth_scopes
     }
   }
 
@@ -110,6 +113,18 @@ resource "google_container_cluster" "cluster" {
 
   workload_identity_config {
     identity_namespace = "${var.project}.svc.id.goog"
+  }
+}
+
+resource "google_container_node_pool" "node_pool" {
+  name       = "primary-pool"
+  location   = var.zone
+  cluster    = google_container_cluster.cluster.name
+  node_count = 1
+
+  node_config {
+    service_account = google_service_account.cluster_sa.email
+    oauth_scopes    = local.oauth_scopes
   }
 }
 
