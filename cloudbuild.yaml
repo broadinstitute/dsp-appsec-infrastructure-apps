@@ -60,4 +60,4 @@ steps:
   args:
   - -c
   - docker build -t ${defectdojo_image} . &&
-    docker push -t ${defectdojo_image}
+    docker push ${defectdojo_image}
