@@ -9,4 +9,4 @@ gcloud container clusters get-credentials --zone "${zone}" "${cluster}"
 ./cnrm.sh "${cnrm_sa}"
 
 # deploy shared resources using Config Connector
-../kube-apply.py "gke.yaml"
+../kube-apply.py "shared.yaml"
