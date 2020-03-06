@@ -1,9 +1,10 @@
 options:
   env:
   - terraform_bucket=${PROJECT_ID}-terraform
+  - defectdojo_image=gcr.io/${PROJECT_ID}/defectdojo-django
 
 steps:
-- id: tf-bucket
+- id: terraform-bucket
   name: gcr.io/cloud-builders/gsutil
   entrypoint: sh
   args:
@@ -11,7 +12,7 @@ steps:
   - gsutil mb gs://${terraform_bucket} &&
     gsutil versioning set on gs://${terraform_bucket} || true
 
-- id: tf
+- id: terraform
   name: hashicorp/terraform
   entrypoint: sh
   dir: cluster
@@ -47,4 +48,16 @@ steps:
   - executor
       --destination=gcr.io/${PROJECT_ID}/kubectl-sdk
       --context=dir:///workspace/kubectl-sdk
+      --cache=true
+
+# build patched DefectDojo image
+- id: defectdojo-docker
+  name: *kaniko
+  waitFor: ['-']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --destination=${defectdojo_image}
+      --context=dir:///workspace/defectdojo
       --cache=true
