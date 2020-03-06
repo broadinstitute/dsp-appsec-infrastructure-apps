@@ -2,9 +2,13 @@
 
 set -euo pipefail
 
-# Generate secrets
+# Create namespace
 
 export NAMESPACE="defectdojo"
+
+kubectl create namespace "${NAMESPACE}" || true
+
+# Generate secrets
 
 export ADMIN_SECRET="admin"
 export CELERY_SECRET="celery"
