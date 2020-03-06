@@ -53,7 +53,7 @@ steps:
 # build patched DefectDojo image
 # (can't use Kaniko due to https://github.com/GoogleContainerTools/kaniko/issues/477)
 - id: defectdojo-docker
-  name: gcr.io/kaniko-project/docker
+  name: gcr.io/cloud-builders/docker
   waitFor: ['-']
   entrypoint: sh
   dir: defectdojo
