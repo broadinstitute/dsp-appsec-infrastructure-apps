@@ -4,6 +4,8 @@ set -euo pipefail
 
 # Generate secrets
 
+export NAMESPACE="defectdojo"
+
 export ADMIN_SECRET="admin"
 export CELERY_SECRET="celery"
 export DJANGO_SECRET="django"
@@ -40,7 +42,6 @@ create_secret "${DJANGO_SECRET}" \
 
 export PROJECT_ID="$(gcloud config get-value project)"
 
-export NAMESPACE="defectdojo"
 export MANAGED_CERT="defectdojo"
 export IP_NAME="defectdojo"
 export BACKEND_CONFIG="defectdojo"
