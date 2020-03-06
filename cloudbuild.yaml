@@ -53,7 +53,7 @@ steps:
 - id: defectdojo
   name: *kubectl
   waitFor: ['cluster', 'defectdojo-docker']
-  entrypoint: deploy.sh
+  entrypoint: ./deploy.sh
   dir: defectdojo
 
 timeout: 3600s
