@@ -19,13 +19,12 @@ pass_gen() {
 }
 
 create_secret() {
-  local name=$1 && shift
-  local cmd="kubectl create secret generic ${name} -n ${NAMESPACE}"
+  local cmd="kubectl create secret generic $1 -n ${NAMESPACE}" && shift
 
   while (( $# )) ; do
     local key=$1 && shift
-    local len=$1 && shift
-    cmd="${cmd} --from-literal=${key}=$(pass_gen "${len}")"
+    local pass=$(pass_gen "$1") && shift
+    cmd="${cmd} --from-literal ${key}=${pass}"
   done
 
   ${cmd} || true
