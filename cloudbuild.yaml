@@ -42,6 +42,7 @@ steps:
     kubectl apply -f .
 
 # build a common SDK image that provides kubectl and envsubst commands
+# (use Kaniko builder to speed it up with cache)
 - id: kubectl-sdk
   name: gcr.io/kaniko-project/executor:debug-a1af057f997316bfb1c4d2d82719d78481a02a79
   waitFor: ['-']
@@ -50,8 +51,8 @@ steps:
   - --context=dir:///workspace/kubectl-sdk
   - --cache=true
 
-# build patched DefectDojo image
-# (can't use Kaniko due to https://github.com/GoogleContainerTools/kaniko/issues/477)
+# build patched DefectDojo image to address
+# https://github.com/DefectDojo/django-DefectDojo/issues/1890
 - id: defectdojo-docker
   name: gcr.io/cloud-builders/docker
   waitFor: ['-']
