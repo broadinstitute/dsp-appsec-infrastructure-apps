@@ -1,7 +1,10 @@
 options:
   env:
-  - terraform_bucket=${PROJECT_ID}-terraform
-  - defectdojo_image=gcr.io/${PROJECT_ID}/defectdojo-django
+  - DD_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
+  - DNS_DOMAIN=dsp-appsec.broadinstitute.org
+  - DNS_ZONE=dsp-appsec
+  - TERRAFORM_BUCKET=${PROJECT_ID}-terraform
+  - BROAD_INGRESS_CSP=broad-ingress
 
 steps:
 # prepare GCS backend for Terraform
@@ -10,8 +13,8 @@ steps:
   entrypoint: sh
   args:
   - -c
-  - gsutil mb gs://${terraform_bucket} &&
-    gsutil versioning set on gs://${terraform_bucket} || true
+  - gsutil mb "gs://$${TERRAFORM_BUCKET}" &&
+    gsutil versioning set on "gs://$${TERRAFORM_BUCKET}" || true
 
 # deploy GKE cluster and associated GCP resources
 - id: terraform
@@ -20,36 +23,19 @@ steps:
   dir: cluster
   args:
   - -c
-  - terraform init --backend-config="bucket=${terraform_bucket}" &&
+  - terraform init --backend-config="bucket=$${TERRAFORM_BUCKET}" &&
     terraform plan --out=plan.out -var="project=${PROJECT_ID}" &&
     terraform apply plan.out &&
-    terraform output | tr -d " " > output.sh
+    terraform output | tr -d " " > env.sh
 
 # set up Config Connector and other shared GKE resources
 - id: cluster
-  name: gcr.io/cloud-builders/gcloud
+  name: &kubectl gcr.io/cloud-builders/kubectl
   entrypoint: sh
   dir: cluster
   args:
   - -c
-  - |
-    set -eu
-
-    . ./output.sh
-    gcloud container clusters get-credentials --zone "${zone}" "${cluster}"
-
-    ./cnrm.sh "${cnrm_sa}"
-    kubectl apply -f .
-
-# build a common SDK image that provides kubectl and envsubst commands
-# (use Kaniko builder to speed it up with cache)
-- id: kubectl-sdk
-  name: gcr.io/kaniko-project/executor:debug-a1af057f997316bfb1c4d2d82719d78481a02a79
-  waitFor: ['-']
-  args:
-  - --destination=gcr.io/${PROJECT_ID}/kubectl-sdk
-  - --context=dir:///workspace/kubectl-sdk
-  - --cache=true
+  - . ./env.sh && ./deploy.sh
 
 # build patched DefectDojo image to address
 # https://github.com/DefectDojo/django-DefectDojo/issues/1890
@@ -60,5 +46,14 @@ steps:
   dir: defectdojo
   args:
   - -c
-  - docker build -t ${defectdojo_image} . &&
-    docker push ${defectdojo_image}
+  - docker build -t $${DD_IMAGE} . &&
+    docker push $${DD_IMAGE}
+
+# deploy DefectDojo to GKE cluster
+- id: defectdojo
+  name: *kubectl
+  waitFor: ['cluster', 'defectdojo-docker']
+  entrypoint: deploy.sh
+  dir: defectdojo
+
+timeout: 3600s

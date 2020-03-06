@@ -1,7 +1,7 @@
 apiVersion: compute.cnrm.cloud.google.com/v1beta1
 kind: ComputeSecurityPolicy
 metadata:
-  name: broad-ingress
+  name: ${BROAD_INGRESS_CSP}
 spec:
   rule:
   - action: allow
@@ -43,3 +43,13 @@ spec:
       config:
         srcIpRanges:
         - '*'
+---
+apiVersion: dns.cnrm.cloud.google.com/v1beta1
+kind: DNSManagedZone
+metadata:
+  name: ${DNS_ZONE}
+spec:
+  dnsName: ${DNS_DOMAIN}.
+  description: AppSec team DNS zone
+  dnssecConfig:
+    state: 'on'

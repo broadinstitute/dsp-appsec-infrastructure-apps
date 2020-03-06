@@ -132,10 +132,28 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
   title       = "AppSec Apps Config Connector"
   description = "Grants access to manage GCP resources via GKE Config Connector in ${var.cluster_name} cluster"
   permissions = [
+    "cloudsql.instances.get",
+    "cloudsql.instances.create",
+    "cloudsql.users.list",
+    "cloudsql.users.update",
+    "compute.addresses.get",
+    "compute.addresses.create",
     "compute.securityPolicies.get",
     "compute.securityPolicies.create",
     "compute.securityPolicies.update",
-    "compute.securityPolicies.delete",
+    "dns.managedZones.get",
+    "dns.managedZones.create",
+    "dns.managedZones.update",
+    "dns.resourceRecordSets.list",
+    "dns.resourceRecordSets.create",
+    "dns.resourceRecordSets.update",
+    "iam.serviceAccounts.get",
+    "iam.serviceAccounts.create",
+    "iam.serviceAccounts.update",
+    "iam.serviceAccounts.getIamPolicy",
+    "iam.serviceAccounts.setIamPolicy",
+    "resourcemanager.projects.getIamPolicy",
+    "resourcemanager.projects.setIamPolicy",
   ]
 }
 

@@ -1,89 +1,30 @@
-apiVersion: networking.gke.io/v1beta1
-kind: ManagedCertificate
+kind: Namespace
+apiVersion: v1
 metadata:
-  name: defectdojo
-spec:
-  domains:
-  - ${DNS_HOSTNAME}
+  name: ${NAMESPACE}
 ---
 apiVersion: compute.cnrm.cloud.google.com/v1beta1
 kind: ComputeAddress
 metadata:
-  name: defectdojo
+  name: ${IP_NAME}
+  namespace: ${NAMESPACE}
 spec:
   location: global
----
-apiVersion: compute.cnrm.cloud.google.com/v1beta1
-kind: ComputeSecurityPolicy
-metadata:
-  name: defectdojo
-spec:
-  rule:
-  - action: allow
-    priority: 1
-    match:
-      versionedExpr: SRC_IPS_V1
-      config:
-        srcIpRanges:
-        - 69.173.112.0/21
-        - 69.173.127.232/29
-        - 69.173.127.128/26
-        - 69.173.127.0/25
-        - 69.173.127.240/28
-  - action: allow
-    priority: 2
-    match:
-      versionedExpr: SRC_IPS_V1
-      config:
-        srcIpRanges:
-        - 69.173.127.224/30
-        - 69.173.127.230/31
-        - 69.173.120.0/22
-        - 69.173.127.228/32
-        - 69.173.126.0/24
-  - action: allow
-    priority: 3
-    match:
-      versionedExpr: SRC_IPS_V1
-      config:
-        srcIpRanges:
-        - 69.173.96.0/20
-        - 69.173.64.0/19
-        - 69.173.127.192/27
-        - 69.173.124.0/23
-  - action: deny(403)
-    priority: 2147483647
-    match:
-      versionedExpr: SRC_IPS_V1
-      config:
-        srcIpRanges:
-        - '*'
 ---
 apiVersion: cloud.google.com/v1beta1
 kind: BackendConfig
 metadata:
-  name: defectdojo
+  name: ${BACKEND_CONFIG}
+  namespace: ${NAMESPACE}
 spec:
   securityPolicy:
-    name: defectdojo
----
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: defectdojo
-  annotations:
-    kubernetes.io/ingress.allow-http: 'false'
-    kubernetes.io/ingress.global-static-ip-name: defectdojo
-    networking.gke.io/managed-certificates: defectdojo
-spec:
-  backend:
-    serviceName: defectdojo
-    servicePort: 80
+    name: ${BROAD_INGRESS_CSP}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: defectdojo
+  name: ${SERVICE}
+  namespace: ${NAMESPACE}
   annotations:
     cloud.google.com/neg: |
       {
@@ -92,62 +33,64 @@ metadata:
     beta.cloud.google.com/backend-config: |
       {
         "ports": {
-          "80": "defectdojo"
+          "http": "${BACKEND_CONFIG}"
         }
       }
 spec:
   type: NodePort
   selector:
-    service: defectdojo
+    service: ${SERVICE}
   ports:
-  - protocol: TCP
+  - name: http
     port: 80
-    targetPort: 8080
+    targetPort: http
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: defectdojo
+  name: ${DEPLOYMENT}
+  namespace: ${NAMESPACE}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      service: defectdojo
+      service: ${SERVICE}
   template:
     metadata:
       labels:
-        service: defectdojo
+        service: ${SERVICE}
     spec:
-      serviceAccountName: defectdojo
+      serviceAccountName: ${SERVICE_ACCOUNT}
       containers:
       - name: nginx
         image: defectdojo/defectdojo-nginx
         env:
         - name: DD_UWSGI_HOST
-          value: 127.0.0.1
+          value: ${LOCALHOST}
         ports:
-        - containerPort: 8080
+        - name: http
+          containerPort: 8080
         readinessProbe:
           httpGet:
             path: /login
-            port: 8080
+            port: http
         resources:
           requests:
             cpu: 50m
 
       - name: uwsgi
-        image: ${DOJO_DOCKER}
+        image: ${DD_IMAGE}
         command:
         - /entrypoint-uwsgi.sh
         envFrom:
         - configMapRef:
-            name: django
+            name: ${DJANGO_CONFIG}
         - secretRef:
-            name: django
+            name: ${DJANGO_SECRET}
         - configMapRef:
-            name: celery
+            name: ${CELERY_CONFIG}
         - secretRef:
-            name: celery
+            name: ${CELERY_SECRET}
         env:
         - name: DD_ALLOWED_HOSTS
           value: '*'
@@ -158,51 +101,51 @@ spec:
             cpu: 50m
 
       - name: celerybeat
-        image: ${DOJO_DOCKER}
+        image: ${DD_IMAGE}
         command:
         - /entrypoint-celery-beat.sh
         envFrom:
         - configMapRef:
-            name: django
+            name: ${DJANGO_CONFIG}
         - secretRef:
-            name: django
+            name: ${DJANGO_SECRET}
         - configMapRef:
-            name: celery
+            name: ${CELERY_CONFIG}
         - secretRef:
-            name: celery
+            name: ${CELERY_SECRET}
         resources:
           requests:
             cpu: 50m
 
       - name: celeryworker
-        image: ${DOJO_DOCKER}
+        image: ${DD_IMAGE}
         command:
         - /entrypoint-celery-worker.sh
         envFrom:
         - configMapRef:
-            name: django
+            name: ${DJANGO_CONFIG}
         - secretRef:
-            name: django
+            name: ${DJANGO_SECRET}
         - configMapRef:
-            name: celery
+            name: ${CELERY_CONFIG}
         - secretRef:
-            name: celery
+            name: ${CELERY_SECRET}
         resources:
           requests:
             cpu: 50m
 
       - name: initializer
-        image: ${DOJO_DOCKER}
+        image: ${DD_IMAGE}
         command: ['sh', '-c', '/entrypoint-initializer.sh && sleep infinity']
         envFrom:
         - configMapRef:
-            name: django
+            name: ${DJANGO_CONFIG}
         - secretRef:
-            name: django
+            name: ${DJANGO_SECRET}
         - configMapRef:
-            name: admin
+            name: ${ADMIN_CONFIG}
         - secretRef:
-            name: admin
+            name: ${ADMIN_SECRET}
         env:
         - name: DD_INITIALIZE
           value: 'true'
@@ -219,12 +162,12 @@ spec:
         - name: RABBITMQ_DEFAULT_USER
           valueFrom:
             configMapKeyRef:
-              name: celery
+              name: ${CELERY_CONFIG}
               key: DD_CELERY_BROKER_USER
         - name: RABBITMQ_DEFAULT_PASS
           valueFrom:
             secretKeyRef:
-              name: celery
+              name: ${CELERY_SECRET}
               key: DD_CELERY_BROKER_PASSWORD
 
       - name: cloudsql-proxy
@@ -239,38 +182,55 @@ spec:
           requests:
             cpu: 50m
 ---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: defectdojo
+  namespace: ${NAMESPACE}
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind:       Deployment
+    name:       ${DEPLOYMENT}
+  updatePolicy:
+    updateMode: Auto
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: defectdojo
+  name: ${SERVICE_ACCOUNT}
+  namespace: ${NAMESPACE}
   annotations:
-    iam.gke.io/gcp-service-account: defectdojo@${PROJECT_ID}.iam.gserviceaccount.com
+    iam.gke.io/gcp-service-account: ${SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMServiceAccount
 metadata:
-  name: defectdojo
+  name: ${SERVICE_ACCOUNT}
+  namespace: ${NAMESPACE}
 spec:
   displayName: DefectDojo pod identity
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember
 metadata:
-  name: defectdojo-sa-ksa
+  name: ${SERVICE_ACCOUNT}-sa-ksa-binding
+  namespace: ${NAMESPACE}
 spec:
-  member: serviceAccount:${PROJECT_ID}.svc.id.goog[default/defectdojo]
+  member: serviceAccount:${PROJECT_ID}.svc.id.goog[${NAMESPACE}/${SERVICE_ACCOUNT}]
   role: roles/iam.workloadIdentityUser
   resourceRef:
     apiVersion: iam.cnrm.cloud.google.com/v1beta1
     kind: IAMServiceAccount
-    name: defectdojo
+    name: ${SERVICE_ACCOUNT}
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember
 metadata:
-  name: defectdojo-sql-policy
+  name: ${SERVICE_ACCOUNT}-sa-sql-policy
+  namespace: ${NAMESPACE}
 spec:
-  member: serviceAccount:defectdojo@${PROJECT_ID}.iam.gserviceaccount.com
+  member: serviceAccount:${SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
   role: roles/cloudsql.client
   resourceRef:
     kind: Project
@@ -279,19 +239,16 @@ apiVersion: sql.cnrm.cloud.google.com/v1beta1
 kind: SQLInstance
 metadata:
   name: ${SQL_INSTANCE}
+  namespace: ${NAMESPACE}
+  annotations:
+    cnrm.cloud.google.com/deletion-policy: abandon
 spec:
-  databaseVersion: ${SQL_VERSION}
+  databaseVersion: POSTGRES_11
   region: ${SQL_REGION}
   settings:
-    tier: ${SQL_TIER}
----
-apiVersion: sql.cnrm.cloud.google.com/v1beta1
-kind: SQLDatabase
-metadata:
-  name: ${DD_DATABASE_NAME}
-spec:
-  instanceRef:
-    name: ${SQL_INSTANCE}
+    tier: db-custom-1-3840
+    backupConfiguration:
+      enabled: true
 ---
 apiVersion: sql.cnrm.cloud.google.com/v1beta1
 kind: SQLUser
@@ -300,39 +257,41 @@ metadata:
 spec:
   instanceRef:
     name: ${SQL_INSTANCE}
-  host: '%'
   password:
     valueFrom:
       secretKeyRef:
-        name: django
+        name: ${DJANGO_SECRET}
         key: DD_DATABASE_PASSWORD
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: django
+  name: ${DJANGO_CONFIG}
+  namespace: ${NAMESPACE}
 data:
-  DD_DATABASE_TYPE: ${DD_DATABASE_TYPE}
-  DD_DATABASE_ENGINE: ${DD_DATABASE_ENGINE}
-  DD_DATABASE_HOST: 127.0.0.1
+  DD_DATABASE_TYPE: postgres
+  DD_DATABASE_ENGINE: django.db.backends.postgresql_psycopg2
+  DD_DATABASE_HOST: ${LOCALHOST}
   DD_DATABASE_PORT: '${DD_DATABASE_PORT}'
-  DD_DATABASE_NAME: ${DD_DATABASE_NAME}
+  DD_DATABASE_NAME: postgres
   DD_DATABASE_USER: ${DD_DATABASE_USER}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: celery
+  name: ${CELERY_CONFIG}
+  namespace: ${NAMESPACE}
 data:
-  DD_CELERY_BROKER_HOST: 127.0.0.1
-  DD_CELERY_BROKER_USER: ${DD_CELERY_BROKER_USER}
+  DD_CELERY_BROKER_HOST: ${LOCALHOST}
+  DD_CELERY_BROKER_USER: celery
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: admin
+  name: ${ADMIN_CONFIG}
+  namespace: ${NAMESPACE}
 data:
-  DD_ADMIN_FIRST_NAME: ${DD_ADMIN_FIRST_NAME}
-  DD_ADMIN_LAST_NAME: ${DD_ADMIN_LAST_NAME}
-  DD_ADMIN_MAIL: ${DD_ADMIN_MAIL}
-  DD_ADMIN_USER: ${DD_ADMIN_USER}
+  DD_ADMIN_FIRST_NAME: AppSec
+  DD_ADMIN_LAST_NAME: Admin
+  DD_ADMIN_MAIL: appsec@broadinstitute.org
+  DD_ADMIN_USER: admin
