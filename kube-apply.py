@@ -2,6 +2,7 @@
 
 import os, subprocess, sys
 
+print('kubectl apply -f ' + sys.argv[1])
 with open(sys.argv[1]) as f:
   subprocess.run(
     ['kubectl', 'apply', '-f', '-'],
