@@ -43,24 +43,21 @@ steps:
 
 # build a common SDK image that provides kubectl and envsubst commands
 - id: kubectl-sdk
-  name: &kaniko gcr.io/kaniko-project/executor:debug-a1af057f997316bfb1c4d2d82719d78481a02a79
+  name: gcr.io/kaniko-project/executor:debug-a1af057f997316bfb1c4d2d82719d78481a02a79
   waitFor: ['-']
-  entrypoint: sh
   args:
-  - -c
-  - executor
-      --destination=gcr.io/${PROJECT_ID}/kubectl-sdk
-      --context=dir:///workspace/kubectl-sdk
-      --cache=true
+  - --destination=gcr.io/${PROJECT_ID}/kubectl-sdk
+  - --context=dir:///workspace/kubectl-sdk
+  - --cache=true
 
 # build patched DefectDojo image
+# (can't use Kaniko due to https://github.com/GoogleContainerTools/kaniko/issues/477)
 - id: defectdojo-docker
-  name: *kaniko
+  name: gcr.io/kaniko-project/docker
   waitFor: ['-']
   entrypoint: sh
+  dir: defectdojo
   args:
   - -c
-  - executor
-      --destination=${defectdojo_image}
-      --context=dir:///workspace/defectdojo
-      --cache=true
+  - docker build -t ${defectdojo_image} . &&
+    docker push -t ${defectdojo_image}
