@@ -4,6 +4,7 @@ options:
   - defectdojo_image=gcr.io/${PROJECT_ID}/defectdojo-django
 
 steps:
+# prepare GCS backend for Terraform
 - id: terraform-bucket
   name: gcr.io/cloud-builders/gsutil
   entrypoint: sh
@@ -12,6 +13,7 @@ steps:
   - gsutil mb gs://${terraform_bucket} &&
     gsutil versioning set on gs://${terraform_bucket} || true
 
+# deploy GKE cluster and associated GCP resources
 - id: terraform
   name: hashicorp/terraform
   entrypoint: sh
@@ -23,6 +25,7 @@ steps:
     terraform apply plan.out &&
     terraform output | tr -d " " > output.sh
 
+# set up Config Connector and other shared GKE resources
 - id: cluster
   name: gcr.io/cloud-builders/gcloud
   entrypoint: sh
