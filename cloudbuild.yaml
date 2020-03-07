@@ -52,7 +52,7 @@ steps:
 # deploy DefectDojo to GKE cluster
 - id: defectdojo
   name: *kubectl
-  waitFor: ['gke-shared', 'defectdojo-docker']
+  waitFor: ['gke-global', 'defectdojo-docker']
   entrypoint: ./deploy.sh
   dir: defectdojo
 
