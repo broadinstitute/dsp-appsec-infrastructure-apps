@@ -20,7 +20,7 @@ steps:
 - id: terraform
   name: hashicorp/terraform
   entrypoint: sh
-  dir: shared
+  dir: terraform
   args:
   - -c
   - terraform init --backend-config="bucket=$${TERRAFORM_BUCKET}" &&
@@ -28,14 +28,14 @@ steps:
     terraform apply plan.out &&
     terraform output | tr -d " " > .env
 
-# set up Config Connector and other shared GKE resources
-- id: gke-shared
+# set up Config Connector and other global GKE resources
+- id: gke-global
   name: &kubectl gcr.io/cloud-builders/kubectl
   entrypoint: sh
   dir: shared
   args:
   - -c
-  - export $(xargs < .env) && ./shared.sh
+  - export $(xargs < .env) && ./global.sh
 
 # build patched DefectDojo image to address
 # https://github.com/DefectDojo/django-DefectDojo/issues/1890

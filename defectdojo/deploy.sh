@@ -32,12 +32,8 @@ export DJANGO_SECRET="django"
 
 export PROJECT_ID="$(gcloud config get-value project)"
 
-export SERVICE="${NAMESPACE}"
-
-export BACKEND_CONFIG="${SERVICE}"
-export DEPLOYMENT="${SERVICE}"
-
-export SERVICE_ACCOUNT="${SERVICE}"
+export DEPLOYMENT="${NAMESPACE}"
+export SERVICE_ACCOUNT="${NAMESPACE}"
 
 export ADMIN_CONFIG="admin"
 export CELERY_CONFIG="celery"
@@ -46,14 +42,19 @@ export DJANGO_CONFIG="django"
 export DD_DATABASE_USER="postgres"
 export DD_DATABASE_PORT="5432"
 
-export SQL_INSTANCE="${SERVICE}"
+export SQL_INSTANCE="${NAMESPACE}"
 export SQL_REGION="us-east1"
 
-export IP_NAME="${SERVICE}"
+export IP_NAME="${NAMESPACE}"
 export LOCALHOST="127.0.0.1"
+export TARGET_PORT="http"
 
-./kube-apply.py "${CWD}/service.yaml"
+./kube-apply.py "${CWD}/deployment.yaml"
 
-# Create Ingress with DNS hostname and Managed Certificate
+# Set up Service Account
+
+./kube-apply.py "service-account.yaml"
+
+# Set up Ingress and related resources
 
 ./dns-ingress.sh

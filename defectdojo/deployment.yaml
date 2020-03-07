@@ -6,40 +6,6 @@ metadata:
 spec:
   location: global
 ---
-apiVersion: cloud.google.com/v1beta1
-kind: BackendConfig
-metadata:
-  name: ${BACKEND_CONFIG}
-  namespace: ${NAMESPACE}
-spec:
-  securityPolicy:
-    name: ${BROAD_INGRESS_CSP}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: ${SERVICE}
-  namespace: ${NAMESPACE}
-  annotations:
-    cloud.google.com/neg: |
-      {
-        "ingress": true
-      }
-    beta.cloud.google.com/backend-config: |
-      {
-        "ports": {
-          "http": "${BACKEND_CONFIG}"
-        }
-      }
-spec:
-  type: NodePort
-  selector:
-    service: ${SERVICE}
-  ports:
-  - name: http
-    port: 80
-    targetPort: http
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -49,11 +15,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      service: ${SERVICE}
+      deployment: ${DEPLOYMENT}
   template:
     metadata:
       labels:
-        service: ${SERVICE}
+        deployment: ${DEPLOYMENT}
     spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
       containers:
@@ -63,12 +29,12 @@ spec:
         - name: DD_UWSGI_HOST
           value: ${LOCALHOST}
         ports:
-        - name: http
+        - name: ${TARGET_PORT}
           containerPort: 8080
         readinessProbe:
           httpGet:
             path: /login
-            port: http
+            port: ${TARGET_PORT}
         resources:
           requests:
             cpu: 50m
@@ -176,48 +142,6 @@ spec:
         resources:
           requests:
             cpu: 50m
----
-apiVersion: autoscaling.k8s.io/v1
-kind: VerticalPodAutoscaler
-metadata:
-  name: defectdojo
-  namespace: ${NAMESPACE}
-spec:
-  targetRef:
-    apiVersion: apps/v1
-    kind:       Deployment
-    name:       ${DEPLOYMENT}
-  updatePolicy:
-    updateMode: Auto
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: ${SERVICE_ACCOUNT}
-  namespace: ${NAMESPACE}
-  annotations:
-    iam.gke.io/gcp-service-account: ${SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
----
-apiVersion: iam.cnrm.cloud.google.com/v1beta1
-kind: IAMServiceAccount
-metadata:
-  name: ${SERVICE_ACCOUNT}
-  namespace: ${NAMESPACE}
-spec:
-  displayName: DefectDojo pod identity
----
-apiVersion: iam.cnrm.cloud.google.com/v1beta1
-kind: IAMPolicyMember
-metadata:
-  name: ${SERVICE_ACCOUNT}-sa-ksa-binding
-  namespace: ${NAMESPACE}
-spec:
-  member: serviceAccount:${PROJECT_ID}.svc.id.goog[${NAMESPACE}/${SERVICE_ACCOUNT}]
-  role: roles/iam.workloadIdentityUser
-  resourceRef:
-    apiVersion: iam.cnrm.cloud.google.com/v1beta1
-    kind: IAMServiceAccount
-    name: ${SERVICE_ACCOUNT}
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember
