@@ -34,6 +34,6 @@ export INGRESS="${DEPLOYMENT}"
 export MANAGED_CERT="${DEPLOYMENT}"
 export BACKEND_CONFIG="${DEPLOYMENT}"
 export SERVICE="${DEPLOYMENT}"
-export SERVICE_PORT="https"
+export SERVICE_PORT="http"
 
 ${CWD}/kube-apply.py "ingress.yaml"
