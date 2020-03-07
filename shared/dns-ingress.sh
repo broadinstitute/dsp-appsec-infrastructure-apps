@@ -7,7 +7,7 @@ set -euo pipefail
 # sets DNS record for it, waits for DNS propagation,
 # and finally deploys GKE Ingress and Managed Certificate for it.
 #
-# Inputs: NAMESPACE, DNS_ZONE, DNS_DOMAIN, SERVICE env variables.
+# Inputs: NAMESPACE, DNS_ZONE, DNS_DOMAIN, SERVICE, IP_NAME env variables.
 #
 
 # Set/update DNS hostname record
@@ -15,7 +15,6 @@ set -euo pipefail
 CWD=$(dirname "$0")
 
 export DNS_HOSTNAME="${SERVICE}.${DNS_DOMAIN}"
-export IP_NAME="${SERVICE}"
 export IP_ADDRESS=$(
   kubectl wait --for condition=Ready computeaddress \
     "${IP_NAME}" -n "${NAMESPACE}" -o jsonpath='{.spec.address}'

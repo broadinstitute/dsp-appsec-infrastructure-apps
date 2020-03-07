@@ -32,21 +32,24 @@ export DJANGO_SECRET="django"
 
 export PROJECT_ID="$(gcloud config get-value project)"
 
-export BACKEND_CONFIG="defectdojo"
-export DEPLOYMENT="defectdojo"
-export SERVICE="defectdojo"
-export SERVICE_ACCOUNT="defectdojo"
+export SERVICE="${NAMESPACE}"
+
+export BACKEND_CONFIG="${SERVICE}"
+export DEPLOYMENT="${SERVICE}"
+
+export SERVICE_ACCOUNT="${SERVICE}"
 
 export ADMIN_CONFIG="admin"
 export CELERY_CONFIG="celery"
 export DJANGO_CONFIG="django"
 
-export DD_DATABASE_USER="defectdojo"
+export DD_DATABASE_USER="postgres"
 export DD_DATABASE_PORT="5432"
 
-export SQL_INSTANCE="defectdojo"
+export SQL_INSTANCE="${SERVICE}"
 export SQL_REGION="us-east1"
 
+export IP_NAME="${SERVICE}"
 export LOCALHOST="127.0.0.1"
 
 ./kube-apply.py "${CWD}/service.yaml"
