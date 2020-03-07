@@ -1,7 +1,8 @@
 apiVersion: dns.cnrm.cloud.google.com/v1beta1
 kind: DNSRecordSet
 metadata:
-  name: defectdojo
+  name: ${SERVICE}
+  namespace: ${NAMESPACE}
 spec:
   name: ${DNS_HOSTNAME}.
   type: A
