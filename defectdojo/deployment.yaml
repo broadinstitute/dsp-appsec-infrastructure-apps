@@ -2,7 +2,6 @@ apiVersion: compute.cnrm.cloud.google.com/v1beta1
 kind: ComputeAddress
 metadata:
   name: ${IP_NAME}
-  namespace: ${NAMESPACE}
 spec:
   location: global
 ---
@@ -147,7 +146,6 @@ apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember
 metadata:
   name: ${SERVICE_ACCOUNT}-sa-sql-policy
-  namespace: ${NAMESPACE}
 spec:
   member: serviceAccount:${SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
   role: roles/cloudsql.client
@@ -158,7 +156,6 @@ apiVersion: sql.cnrm.cloud.google.com/v1beta1
 kind: SQLInstance
 metadata:
   name: ${SQL_INSTANCE}
-  namespace: ${NAMESPACE}
   annotations:
     cnrm.cloud.google.com/deletion-policy: abandon
 spec:
