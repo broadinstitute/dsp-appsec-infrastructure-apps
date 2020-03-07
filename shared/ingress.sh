@@ -6,7 +6,8 @@ set -euo pipefail
 # This script waits for a static IP address to be created,
 # sets DNS record for it, waits for DNS propagation,
 # and finally deploys GKE Ingress and Service with
-# Managed Certificate, Cloud Armor policy and Vertical Port Autoscaling.
+# Managed Certificate, Cloud Armor policy,
+# and Vertical Port Autoscaling.
 #
 # Inputs:
 #   DNS_ZONE, DNS_DOMAIN, BROAD_INGRESS_CSP,
@@ -29,7 +30,8 @@ ${CWD}/kube-apply.py "dns.yaml"
 # Wait for DNS propagation
 
 NAME_SERVER=$(
-  gcloud dns managed-zones describe "${DNS_ZONE}" --format 'value(nameServers[0])'
+  gcloud dns managed-zones describe "${DNS_ZONE}" \
+    --format 'value(nameServers[0])'
 )
 until host "${DNS_HOSTNAME}" "${NAME_SERVER}" ; do
   sleep 5
