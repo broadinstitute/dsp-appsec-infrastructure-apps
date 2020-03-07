@@ -10,7 +10,7 @@ set -euo pipefail
 #
 # Inputs:
 #   DNS_ZONE, DNS_DOMAIN, BROAD_INGRESS_CSP,
-#   DEPLOYMENT, TARGET_PORT, IP_NAME,
+#   NAMESPACE, DEPLOYMENT, TARGET_PORT, IP_NAME,
 #
 
 # Set/update DNS hostname record
@@ -22,7 +22,7 @@ IP_ADDRESS=$(
     "${IP_NAME}" -o jsonpath='{.spec.address}'
 )
 export IP_ADDRESS
-export DNS_HOSTNAME="${SERVICE}.${DNS_DOMAIN}"
+export DNS_HOSTNAME="${NAMESPACE}.${DNS_DOMAIN}"
 
 ${CWD}/kube-apply.py "dns.yaml"
 
