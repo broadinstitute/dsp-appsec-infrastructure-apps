@@ -26,16 +26,7 @@ export IP_ADDRESS
 export DNS_HOSTNAME="${NAMESPACE}.${DNS_DOMAIN}"
 
 ${CWD}/kube-apply.py "dns.yaml"
-
-# Wait for DNS propagation
-
-NAME_SERVER=$(
-  gcloud dns managed-zones describe "${DNS_ZONE}" \
-    --format 'value(nameServers[0])'
-)
-until host "${DNS_HOSTNAME}" "${NAME_SERVER}" ; do
-  sleep 5
-done
+${CWD}/wait-dns.py
 
 # Set up Ingress and related resources
 
