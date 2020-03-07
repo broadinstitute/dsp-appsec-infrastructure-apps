@@ -3,10 +3,9 @@
 set -eu
 
 # Generates GKE secret with variables
-# set to passphrases of given lengths,
-# in a given NAMESPACE.
+# set to passphrases of given lengths
 
-cmd="kubectl create secret generic $1 -n ${NAMESPACE}" && shift
+cmd="kubectl create secret generic $1" && shift
 
 gen_pass() {
   LC_CTYPE=C tr -dc "a-z0-9" < /dev/urandom | head -c "$1"

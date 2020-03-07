@@ -20,7 +20,3 @@ sed -Ei.bak "s/(gcp-service-account: ).*/\1${SA_EMAIL}/" "0-cnrm-system.yaml"
 
 # apply the config
 kubectl apply -f .
-
-# add project annotation to the default namespace
-kubectl annotate namespace default \
-  "cnrm.cloud.google.com/project-id=$(gcloud config get-value project)"

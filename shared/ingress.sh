@@ -10,7 +10,7 @@ set -euo pipefail
 #
 # Inputs:
 #   DNS_ZONE, DNS_DOMAIN, BROAD_INGRESS_CSP,
-#   NAMESPACE, DEPLOYMENT, TARGET_PORT, IP_NAME,
+#   DEPLOYMENT, TARGET_PORT, IP_NAME,
 #
 
 # Set/update DNS hostname record
@@ -19,7 +19,7 @@ CWD=$(dirname "$0")
 
 IP_ADDRESS=$(
   kubectl wait --for condition=Ready computeaddress \
-    "${IP_NAME}" -n "${NAMESPACE}" -o jsonpath='{.spec.address}'
+    "${IP_NAME}" -o jsonpath='{.spec.address}'
 )
 export IP_ADDRESS
 export DNS_HOSTNAME="${SERVICE}.${DNS_DOMAIN}"

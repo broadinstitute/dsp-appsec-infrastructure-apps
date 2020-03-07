@@ -3,7 +3,6 @@ apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: ${INGRESS}
-  namespace: ${NAMESPACE}
   annotations:
     kubernetes.io/ingress.allow-http: 'false'
     kubernetes.io/ingress.global-static-ip-name: ${IP_NAME}
@@ -17,7 +16,6 @@ apiVersion: networking.gke.io/v1beta1
 kind: ManagedCertificate
 metadata:
   name: ${MANAGED_CERT}
-  namespace: ${NAMESPACE}
 spec:
   domains:
   - ${DNS_HOSTNAME}
@@ -26,7 +24,6 @@ apiVersion: cloud.google.com/v1beta1
 kind: BackendConfig
 metadata:
   name: ${BACKEND_CONFIG}
-  namespace: ${NAMESPACE}
 spec:
   securityPolicy:
     name: ${BROAD_INGRESS_CSP}
@@ -35,7 +32,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ${SERVICE}
-  namespace: ${NAMESPACE}
   annotations:
     cloud.google.com/neg: |
       {
@@ -60,7 +56,6 @@ apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler
 metadata:
   name: ${SERVICE}
-  namespace: ${NAMESPACE}
 spec:
   targetRef:
     apiVersion: apps/v1

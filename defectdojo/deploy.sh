@@ -5,11 +5,13 @@ set -euo pipefail
 CWD="${PWD}"
 cd ../shared
 
-# Create namespace
+# Create and switch to the namespace
 
+export PROJECT_ID="$(gcloud config get-value project)"
 export NAMESPACE="defectdojo"
 
-kubectl create namespace "${NAMESPACE}" || true
+./kube-apply.py "namespace.yaml"
+kubectl config set-context --current --namespace "${NAMESPACE}"
 
 # Generate secrets
 
@@ -29,8 +31,6 @@ export DJANGO_SECRET="django"
   DD_SECRET_KEY 128
 
 # Deploy the service
-
-export PROJECT_ID="$(gcloud config get-value project)"
 
 export DEPLOYMENT="${NAMESPACE}"
 export SERVICE_ACCOUNT="${NAMESPACE}"
