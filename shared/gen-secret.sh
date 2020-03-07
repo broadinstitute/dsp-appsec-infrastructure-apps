@@ -1,21 +1,20 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -eu
 
 # Generates GKE secret with variables
 # set to passphrases of given lengths,
 # in a given NAMESPACE.
 
-pass_gen() {
+cmd="kubectl create secret generic $1 -n ${NAMESPACE}" && shift
+
+gen_pass() {
   LC_CTYPE=C tr -dc "a-z0-9" < /dev/urandom | head -c "$1"
 }
 
-cmd="kubectl create secret generic $1 -n ${NAMESPACE}" && shift
-
 while (( $# )) ; do
-  key=$1 && shift
-  pass=$(pass_gen "$1") && shift
-  cmd="${cmd} --from-literal ${key}=${pass}"
+  cmd="${cmd} --from-literal $1=$(gen_pass "$2")"
+  shift 2
 done
 
 ${cmd} || true
