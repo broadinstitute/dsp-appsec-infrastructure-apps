@@ -50,11 +50,5 @@ export LOCALHOST="127.0.0.1"
 export TARGET_PORT="http"
 
 ./kube-apply.py "${CWD}/deployment.yaml"
-
-# Set up Service Account
-
 ./kube-apply.py "service-account.yaml"
-
-# Set up Ingress and related resources
-
-./dns-ingress.sh
+./ingress.sh
