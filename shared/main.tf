@@ -134,6 +134,7 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
   permissions = [
     "cloudsql.instances.get",
     "cloudsql.instances.create",
+    "cloudsql.instances.update",
     "cloudsql.users.list",
     "cloudsql.users.update",
     "compute.addresses.get",
