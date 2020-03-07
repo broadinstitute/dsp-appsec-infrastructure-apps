@@ -8,9 +8,13 @@ metadata:
     kubernetes.io/ingress.global-static-ip-name: ${IP_NAME}
     networking.gke.io/managed-certificates: ${MANAGED_CERT}
 spec:
-  backend:
-    serviceName: ${SERVICE}
-    servicePort: http
+  rules:
+  - host: ${DNS_HOSTNAME}
+    http:
+      paths:
+      - backend:
+          serviceName: ${SERVICE}
+          servicePort: http
 ---
 apiVersion: networking.gke.io/v1beta1
 kind: ManagedCertificate
