@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+CWD="${PWD}"
+cd ../shared
+
 # Create namespace
 
 export NAMESPACE="defectdojo"
@@ -14,13 +17,13 @@ export ADMIN_SECRET="admin"
 export CELERY_SECRET="celery"
 export DJANGO_SECRET="django"
 
-../scripts/gen-secret.sh "${ADMIN_SECRET}" \
+./gen-secret.sh "${ADMIN_SECRET}" \
   DD_ADMIN_PASSWORD 32
 
-../scripts/gen-secret.sh "${CELERY_SECRET}" \
+./gen-secret.sh "${CELERY_SECRET}" \
   DD_CELERY_BROKER_PASSWORD 32
 
-../scripts/gen-secret.sh "${DJANGO_SECRET}" \
+./gen-secret.sh "${DJANGO_SECRET}" \
   DD_DATABASE_PASSWORD 32 \
   DD_CREDENTIAL_AES_256_KEY 128 \
   DD_SECRET_KEY 128
@@ -46,8 +49,8 @@ export SQL_REGION="us-east1"
 
 export LOCALHOST="127.0.0.1"
 
-../scripts/kube-apply.py "service.yaml"
+./kube-apply.py "${CWD}/service.yaml"
 
 # Create Ingress with DNS hostname and Managed Certificate
 
-../scripts/dns-ingress.sh
+./dns-ingress.sh
