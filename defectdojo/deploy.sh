@@ -49,6 +49,5 @@ export IP_NAME="${NAMESPACE}"
 export LOCALHOST="127.0.0.1"
 export TARGET_PORT="http"
 
-./kube-apply.py "${CWD}/deployment.yaml"
-./kube-apply.py "service-account.yaml"
+./kube-apply.py "service-account.yaml" "${CWD}/deployment.yaml"
 ./ingress.sh

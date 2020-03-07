@@ -9,4 +9,7 @@ gcloud container clusters get-credentials --zone "${zone}" "${cluster}"
 ./cnrm.sh "${cnrm_sa}"
 
 # deploy global resources using Config Connector
-./kube-apply.py "global.yaml"
+export PROJECT_ID="$(gcloud config get-value project)"
+export NAMESPACE="default"
+
+./kube-apply.py "namespace.yaml" "global.yaml"

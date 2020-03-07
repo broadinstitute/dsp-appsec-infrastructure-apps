@@ -2,10 +2,11 @@
 
 import os, subprocess, sys
 
-with open(sys.argv[1]) as f:
-  subprocess.run(
-    ['kubectl', 'apply', '-f', '-'],
-    input=os.path.expandvars(f.read()).encode(),
-    stdout=sys.stdout,
-    stderr=sys.stderr,
-  ).check_returncode()
+for name in sys.argv[1:]:
+  with open(name) as f:
+    subprocess.run(
+      ['kubectl', 'apply', '-f', '-'],
+      input=os.path.expandvars(f.read()).encode(),
+      stdout=sys.stdout,
+      stderr=sys.stderr,
+    ).check_returncode()
