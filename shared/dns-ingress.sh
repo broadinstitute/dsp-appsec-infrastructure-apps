@@ -14,11 +14,12 @@ set -euo pipefail
 
 CWD=$(dirname "$0")
 
-export DNS_HOSTNAME="${SERVICE}.${DNS_DOMAIN}"
-export IP_ADDRESS=$(
+IP_ADDRESS=$(
   kubectl wait --for condition=Ready computeaddress \
     "${IP_NAME}" -n "${NAMESPACE}" -o jsonpath='{.spec.address}'
 )
+export IP_ADDRESS
+export DNS_HOSTNAME="${SERVICE}.${DNS_DOMAIN}"
 
 ${CWD}/kube-apply.py "dns.yaml"
 
