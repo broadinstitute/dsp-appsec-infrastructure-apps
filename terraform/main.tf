@@ -154,6 +154,7 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
     "dns.resourceRecordSets.create",
     "dns.resourceRecordSets.update",
     "dns.resourceRecordSets.delete",
+    "iam.serviceAccounts.get",
     "iam.serviceAccounts.list",
     "iam.serviceAccounts.create",
     "iam.serviceAccounts.update",
