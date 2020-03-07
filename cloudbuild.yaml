@@ -26,7 +26,7 @@ steps:
   - terraform init --backend-config="bucket=$${TERRAFORM_BUCKET}" &&
     terraform plan --out=plan.out -var="project=${PROJECT_ID}" &&
     terraform apply plan.out &&
-    terraform output | tr -d " " > .env
+    terraform output | tr -d " " > ../.env
 
 # set up Config Connector and other global GKE resources
 - id: gke-global
@@ -35,7 +35,7 @@ steps:
   dir: shared
   args:
   - -c
-  - export $(xargs < .env) && ./global.sh
+  - export $(xargs < ../.env) && ./global.sh
 
 # build patched DefectDojo image to address
 # https://github.com/DefectDojo/django-DefectDojo/issues/1890
