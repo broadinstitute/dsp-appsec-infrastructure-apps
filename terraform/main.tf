@@ -133,6 +133,7 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
   description = "Grants access to manage GCP resources via GKE Config Connector in ${var.cluster_name} cluster"
   permissions = [
     "cloudsql.instances.get",
+    "cloudsql.instances.list",
     "cloudsql.instances.create",
     "cloudsql.instances.update",
     "cloudsql.users.list",
