@@ -139,6 +139,7 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
     "cloudsql.users.update",
     "compute.globalAddresses.get",
     "compute.globalAddresses.create",
+    "compute.globalAddresses.setLabels",
     "compute.securityPolicies.get",
     "compute.securityPolicies.create",
     "compute.securityPolicies.update",
