@@ -143,6 +143,8 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
     "compute.securityPolicies.get",
     "compute.securityPolicies.create",
     "compute.securityPolicies.update",
+    "dns.changes.get",
+    "dns.changes.create",
     "dns.managedZones.get",
     "dns.managedZones.create",
     "dns.managedZones.update",
