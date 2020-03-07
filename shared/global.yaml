@@ -48,6 +48,8 @@ apiVersion: dns.cnrm.cloud.google.com/v1beta1
 kind: DNSManagedZone
 metadata:
   name: ${DNS_ZONE}
+  annotations:
+    cnrm.cloud.google.com/deletion-policy: abandon
 spec:
   dnsName: ${DNS_DOMAIN}.
   description: AppSec team DNS zone
