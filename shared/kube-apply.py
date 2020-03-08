@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os, subprocess, sys
+import os, re, subprocess, sys
 
 for name in sys.argv[1:]:
   with open(name) as f:
