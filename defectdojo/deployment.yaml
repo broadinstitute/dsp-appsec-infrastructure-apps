@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: ${DEPLOYMENT}
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       deployment: ${DEPLOYMENT}
@@ -13,6 +13,8 @@ spec:
         deployment: ${DEPLOYMENT}
     spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
+      nodeSelector:
+        cloud.google.com/gke-preemptible: 'true'
       containers:
       - name: nginx
         image: ${DD_NGINX_IMAGE}

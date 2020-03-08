@@ -103,6 +103,7 @@ resource "google_container_node_pool" "node_pool" {
   node_count = 1
 
   node_config {
+    preemptible  = true
     service_account = module.node_sa.email
     oauth_scopes    = local.oauth_scopes
   }
