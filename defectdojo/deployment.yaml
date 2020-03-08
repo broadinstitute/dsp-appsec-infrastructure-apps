@@ -22,6 +22,11 @@ spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
       nodeSelector:
         cloud.google.com/gke-preemptible: 'true'
+      tolerations:
+      - key: cloud.google.com/gke-preemptible
+        operator: Equal
+        value: 'true'
+        effect: NoSchedule
       containers:
       - name: nginx
         image: ${DD_NGINX_IMAGE}
