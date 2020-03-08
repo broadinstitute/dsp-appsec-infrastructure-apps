@@ -10,8 +10,7 @@ cd ../shared
 export PROJECT_ID="$(gcloud config get-value project)"
 export NAMESPACE="defectdojo"
 
-./kube-apply.py "namespace.yaml"
-kubectl config set-context --current --namespace "${NAMESPACE}"
+./namespace.sh
 
 # Generate secrets
 
