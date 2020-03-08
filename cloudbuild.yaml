@@ -9,7 +9,8 @@ options:
 
 steps:
 # prepare GCS backend for Terraform
-- name: gcr.io/cloud-builders/gsutil
+- id: terraform-bucket
+  name: gcr.io/cloud-builders/gsutil
   entrypoint: sh
   args:
   - -c
@@ -17,7 +18,8 @@ steps:
     gsutil versioning set on "gs://$${TERRAFORM_BUCKET}" || true
 
 # deploy GKE cluster and associated GCP resources
-- name: hashicorp/terraform
+- id: terraform
+  name: hashicorp/terraform
   entrypoint: sh
   dir: terraform
   args:
@@ -28,7 +30,8 @@ steps:
     terraform output | tr -d " " > ../.env
 
 # set up Config Connector and other global GKE resources
-- name: &kubectl gcr.io/cloud-builders/kubectl
+- id: shared
+  name: &kubectl gcr.io/cloud-builders/kubectl
   entrypoint: sh
   dir: shared
   args:
@@ -36,13 +39,15 @@ steps:
   - export $(xargs < ../.env) && ./global.sh
 
 # deploy DefectDojo to GKE cluster
-- name: *kubectl
+- id: defectdojo
+  name: *kubectl
   entrypoint: ./deploy.sh
   dir: defectdojo
 
 # build patched DefectDojo Django image to address
 # https://github.com/DefectDojo/django-DefectDojo/issues/1890
-- name: gcr.io/cloud-builders/docker
+- id: defectdojo-django-docker
+  name: gcr.io/cloud-builders/docker
   waitFor: ['-']
   entrypoint: sh
   dir: defectdojo
@@ -52,7 +57,8 @@ steps:
     docker push $${DD_DJANGO_IMAGE}
 
 # build patched DefectDojo Nginx image to allow GKE healthchecks
-- name: gcr.io/cloud-builders/docker
+- id: defectdojo-nginx-docker
+  name: gcr.io/cloud-builders/docker
   waitFor: ['-']
   entrypoint: sh
   dir: defectdojo
