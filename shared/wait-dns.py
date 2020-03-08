@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
-import os, socket, time
+import os, socket, sys, time
 
-IP_ADDRESS = os.getenv('IP_ADDRESS')
-DNS_HOSTNAME = os.getenv('DNS_HOSTNAME')
+IP_ADDRESS = sys.argv[1]
+DNS_HOSTNAMES = sys.argv[2:]
 
-while True:
-  try:
-    if IP_ADDRESS == socket.gethostbyname(DNS_HOSTNAME):
-      break
-  except:
-    time.sleep(5)
+for hostname in DNS_HOSTNAMES:
+  while True:
+    try:
+      if IP_ADDRESS == socket.gethostbyname(hostname):
+        break
+    except:
+      time.sleep(5)

@@ -6,64 +6,20 @@ metadata:
   annotations:
     kubernetes.io/ingress.allow-http: 'false'
     kubernetes.io/ingress.global-static-ip-name: ${IP_NAME}
-    networking.gke.io/managed-certificates: ${MANAGED_CERT}
+    networking.gke.io/managed-certificates: defectdojo
 spec:
   rules:
-  - host: ${DNS_HOSTNAME}
+  - host: defectdojo.${DNS_DOMAIN}
     http:
       paths:
       - backend:
-          serviceName: ${SERVICE}
-          servicePort: ${SERVICE_PORT}
+          serviceName: defectdojo
+          servicePort: 80
 ---
 apiVersion: networking.gke.io/v1beta1
 kind: ManagedCertificate
 metadata:
-  name: ${MANAGED_CERT}
+  name: defectdojo
 spec:
   domains:
-  - ${DNS_HOSTNAME}
----
-apiVersion: cloud.google.com/v1beta1
-kind: BackendConfig
-metadata:
-  name: ${BACKEND_CONFIG}
-spec:
-  securityPolicy:
-    name: ${BROAD_INGRESS_CSP}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: ${SERVICE}
-  annotations:
-    cloud.google.com/neg: |
-      {
-        "ingress": true
-      }
-    beta.cloud.google.com/backend-config: |
-      {
-        "ports": {
-          "${SERVICE_PORT}": "${BACKEND_CONFIG}"
-        }
-      }
-spec:
-  type: NodePort
-  selector:
-    deployment: ${DEPLOYMENT}
-  ports:
-  - name: ${SERVICE_PORT}
-    port: 80
-    targetPort: ${TARGET_PORT}
----
-apiVersion: autoscaling.k8s.io/v1
-kind: VerticalPodAutoscaler
-metadata:
-  name: ${SERVICE}
-spec:
-  targetRef:
-    apiVersion: apps/v1
-    kind:       Deployment
-    name:       ${DEPLOYMENT}
-  updatePolicy:
-    updateMode: Auto
+  - defectdojo.${DNS_DOMAIN}
