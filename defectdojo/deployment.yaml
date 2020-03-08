@@ -52,7 +52,7 @@ spec:
             name: ${CELERY_SECRET}
         env:
         - name: DD_ALLOWED_HOSTS
-          value: '*'
+          value: ${DNS_HOSTNAME}
         - name: DD_DEBUG
           value: 'False'
         resources:
