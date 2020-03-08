@@ -13,3 +13,4 @@ export PROJECT_ID="$(gcloud config get-value project)"
 export NAMESPACE="${GLOBAL_NAMESPACE}"
 
 ./namespace.sh
+./kube-apply.py "global.yaml"
