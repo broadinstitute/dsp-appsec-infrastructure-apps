@@ -5,7 +5,7 @@ import os, subprocess, sys
 for name in sys.argv[1:]:
   with open(name) as f:
     template = os.path.expandvars(f.read()).encode()
-    undefined = re.findall(r'\${[^{]+}', template):
+    undefined = re.findall(r'\${[^{]+}', template)
     if undefined:
       raise 'Undefined variable(s) in ' + name + ': ' + undefined
     subprocess.run(
