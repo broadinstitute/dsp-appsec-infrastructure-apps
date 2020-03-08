@@ -6,6 +6,7 @@ options:
   - DNS_ZONE=dsp-appsec
   - TERRAFORM_BUCKET=${PROJECT_ID}-terraform
   - BROAD_INGRESS_CSP=broad-ingress
+  - GLOBAL_NAMESPACE=global
 
 steps:
 # prepare GCS backend for Terraform

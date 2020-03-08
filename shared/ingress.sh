@@ -16,7 +16,7 @@ set -euo pipefail
 
 # Set/update DNS hostname record
 
-CWD=$(dirname "$0")
+cd "$(dirname "$0")"
 
 IP_ADDRESS=$(
   kubectl wait --for condition=Ready computeaddress \
@@ -24,8 +24,8 @@ IP_ADDRESS=$(
 )
 export IP_ADDRESS
 
-${CWD}/kube-apply.py "dns.yaml"
-${CWD}/wait-dns.py
+./kube-apply.py "dns.yaml"
+./wait-dns.py
 
 # Set up Ingress and related resources
 
@@ -35,4 +35,4 @@ export BACKEND_CONFIG="${DEPLOYMENT}"
 export SERVICE="${DEPLOYMENT}"
 export SERVICE_PORT="http"
 
-${CWD}/kube-apply.py "ingress.yaml"
+./kube-apply.py "ingress.yaml"

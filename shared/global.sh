@@ -10,6 +10,6 @@ gcloud container clusters get-credentials --zone "${zone}" "${cluster}"
 
 # deploy global resources using Config Connector
 export PROJECT_ID="$(gcloud config get-value project)"
-export NAMESPACE="global"
+export NAMESPACE="${GLOBAL_NAMESPACE}"
 
 ./namespace.sh

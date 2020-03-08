@@ -8,6 +8,6 @@ spec:
   ttl: 300
   managedZoneRef:
     name: ${DNS_ZONE}
-    namespace: default
+    namespace: ${GLOBAL_NAMESPACE}
   rrdatas:
   - ${IP_ADDRESS}
