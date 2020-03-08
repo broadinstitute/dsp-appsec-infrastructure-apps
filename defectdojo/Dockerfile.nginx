@@ -1,0 +1,14 @@
+FROM defectdojo/defectdojo-nginx AS nginx
+
+
+FROM alpine AS patch
+
+COPY --from=nginx /etc/nginx/nginx.conf nginx/nginx.conf
+COPY nginx.patch .
+
+RUN patch -p1 < nginx.patch
+
+
+FROM nginx
+
+COPY --from=patch /nginx/nginx.conf /etc/nginx/

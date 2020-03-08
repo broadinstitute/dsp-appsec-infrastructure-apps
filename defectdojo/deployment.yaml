@@ -22,7 +22,7 @@ spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
       containers:
       - name: nginx
-        image: defectdojo/defectdojo-nginx
+        image: ${DD_NGINX_IMAGE}
         env:
         - name: DD_UWSGI_HOST
           value: ${LOCALHOST}
@@ -38,7 +38,7 @@ spec:
             cpu: 50m
 
       - name: uwsgi
-        image: ${DD_IMAGE}
+        image: ${DD_DJANGO_IMAGE}
         command:
         - /entrypoint-uwsgi.sh
         envFrom:
@@ -52,7 +52,7 @@ spec:
             name: ${CELERY_SECRET}
         env:
         - name: DD_ALLOWED_HOSTS
-          value: ${DNS_HOSTNAME}
+          value: ${DNS_HOSTNAME},healthcheck
         - name: DD_DEBUG
           value: 'False'
         resources:
@@ -60,7 +60,7 @@ spec:
             cpu: 50m
 
       - name: celerybeat
-        image: ${DD_IMAGE}
+        image: ${DD_DJANGO_IMAGE}
         command:
         - /entrypoint-celery-beat.sh
         envFrom:
@@ -77,7 +77,7 @@ spec:
             cpu: 50m
 
       - name: celeryworker
-        image: ${DD_IMAGE}
+        image: ${DD_DJANGO_IMAGE}
         command:
         - /entrypoint-celery-worker.sh
         envFrom:
@@ -94,7 +94,7 @@ spec:
             cpu: 50m
 
       - name: initializer
-        image: ${DD_IMAGE}
+        image: ${DD_DJANGO_IMAGE}
         command: ['sh', '-c', '/entrypoint-initializer.sh && sleep infinity']
         envFrom:
         - configMapRef:

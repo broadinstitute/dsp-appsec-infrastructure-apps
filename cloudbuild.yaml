@@ -1,6 +1,7 @@
 options:
   env:
-  - DD_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
+  - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
+  - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
   - DNS_DOMAIN=dsp-appsec.broadinstitute.org
   - DNS_ZONE=dsp-appsec
   - TERRAFORM_BUCKET=${PROJECT_ID}-terraform
@@ -8,8 +9,7 @@ options:
 
 steps:
 # prepare GCS backend for Terraform
-- id: terraform-bucket
-  name: gcr.io/cloud-builders/gsutil
+- name: gcr.io/cloud-builders/gsutil
   entrypoint: sh
   args:
   - -c
@@ -17,8 +17,7 @@ steps:
     gsutil versioning set on "gs://$${TERRAFORM_BUCKET}" || true
 
 # deploy GKE cluster and associated GCP resources
-- id: terraform
-  name: hashicorp/terraform
+- name: hashicorp/terraform
   entrypoint: sh
   dir: terraform
   args:
@@ -29,31 +28,37 @@ steps:
     terraform output | tr -d " " > ../.env
 
 # set up Config Connector and other global GKE resources
-- id: gke-global
-  name: &kubectl gcr.io/cloud-builders/kubectl
+- name: &kubectl gcr.io/cloud-builders/kubectl
   entrypoint: sh
   dir: shared
   args:
   - -c
   - export $(xargs < ../.env) && ./global.sh
 
-# build patched DefectDojo image to address
+# deploy DefectDojo to GKE cluster
+- name: *kubectl
+  entrypoint: ./deploy.sh
+  dir: defectdojo
+
+# build patched DefectDojo Django image to address
 # https://github.com/DefectDojo/django-DefectDojo/issues/1890
-- id: defectdojo-docker
-  name: gcr.io/cloud-builders/docker
+- name: gcr.io/cloud-builders/docker
   waitFor: ['-']
   entrypoint: sh
   dir: defectdojo
   args:
   - -c
-  - docker build -t $${DD_IMAGE} . &&
-    docker push $${DD_IMAGE}
+  - docker build -t $${DD_DJANGO_IMAGE} -f Dockerfile.django . &&
+    docker push $${DD_DJANGO_IMAGE}
 
-# deploy DefectDojo to GKE cluster
-- id: defectdojo
-  name: *kubectl
-  waitFor: ['gke-global', 'defectdojo-docker']
-  entrypoint: ./deploy.sh
+# build patched DefectDojo Nginx image to allow GKE healthchecks
+- name: gcr.io/cloud-builders/docker
+  waitFor: ['-']
+  entrypoint: sh
   dir: defectdojo
+  args:
+  - -c
+  - docker build -t $${DD_NGINX_IMAGE} -f Dockerfile.nginx . &&
+    docker push $${DD_NGINX_IMAGE}
 
 timeout: 3600s
