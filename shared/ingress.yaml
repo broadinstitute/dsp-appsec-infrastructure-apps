@@ -13,7 +13,7 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: defectdojo/defectdojo
+          serviceName: defectdojo
           servicePort: 80
 ---
 apiVersion: networking.gke.io/v1beta1
