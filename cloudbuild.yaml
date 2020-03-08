@@ -1,7 +1,7 @@
 options:
   env:
-  - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
-  - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
+  - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django:${SHORT_SHA}
+  - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx:${SHORT_SHA}
   - DNS_DOMAIN=dsp-appsec.broadinstitute.org
   - DNS_ZONE=dsp-appsec
   - TERRAFORM_BUCKET=${PROJECT_ID}-terraform
