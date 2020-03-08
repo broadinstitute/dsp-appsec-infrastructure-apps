@@ -10,7 +10,8 @@ cd ../shared
 export PROJECT_ID="$(gcloud config get-value project)"
 export NAMESPACE="defectdojo"
 
-./namespace.sh
+./kube-apply.py "namespace.yaml"
+kubectl config set-context --current --namespace "${NAMESPACE}"
 
 # Generate secrets
 
@@ -45,10 +46,9 @@ export SQL_INSTANCE="${NAMESPACE}-sql"
 export SQL_REGION="us-east1"
 
 export DNS_HOSTNAME="${NAMESPACE}.${DNS_DOMAIN}"
+export IP_NAME="${NAMESPACE}"
 export LOCALHOST="127.0.0.1"
 export TARGET_PORT="http"
 
-./kube-apply.py \
-  "${CWD}/deployment.yaml" \
-  "service.yaml" \
-  "service-account.yaml"
+./kube-apply.py "service-account.yaml" "${CWD}/deployment.yaml"
+./ingress.sh

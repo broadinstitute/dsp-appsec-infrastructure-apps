@@ -55,10 +55,3 @@ spec:
   description: AppSec team DNS zone
   dnssecConfig:
     state: 'on'
----
-apiVersion: compute.cnrm.cloud.google.com/v1beta1
-kind: ComputeAddress
-metadata:
-  name: ${IP_NAME}
-spec:
-  location: global
