@@ -49,9 +49,6 @@ spec:
           httpGet:
             path: /login
             port: ${TARGET_PORT}
-        resources:
-          requests:
-            cpu: 50m
 
       - name: uwsgi
         image: ${DD_DJANGO_IMAGE}
@@ -71,9 +68,6 @@ spec:
           value: '*' # validated by Ingress
         - name: DD_DEBUG
           value: 'False'
-        resources:
-          requests:
-            cpu: 50m
 
       - name: celerybeat
         image: ${DD_DJANGO_IMAGE}
@@ -88,9 +82,6 @@ spec:
             name: ${CELERY_CONFIG}
         - secretRef:
             name: ${CELERY_SECRET}
-        resources:
-          requests:
-            cpu: 50m
 
       - name: celeryworker
         image: ${DD_DJANGO_IMAGE}
@@ -105,10 +96,6 @@ spec:
             name: ${CELERY_CONFIG}
         - secretRef:
             name: ${CELERY_SECRET}
-        resources:
-          requests:
-            cpu: 50m
-
       - name: initializer
         image: ${DD_DJANGO_IMAGE}
         command: ['sh', '-c', '/entrypoint-initializer.sh && sleep infinity']
@@ -130,9 +117,6 @@ spec:
 
       - name: rabbitmq
         image: rabbitmq
-        resources:
-          requests:
-            cpu: 50m
         env:
         - name: RABBITMQ_DEFAULT_USER
           valueFrom:
