@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # get cluster credentials
-gcloud container clusters get-credentials --zone "${zone}" "${cluster}"
+gcloud container clusters get-credentials --region "${region}" "${cluster}"
 
 # deploy Config Connector
 ./cnrm.sh "${cnrm_sa}"

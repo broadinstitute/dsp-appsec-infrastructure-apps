@@ -9,10 +9,10 @@ variable "region" {
   description = "GCP region for deployment"
 }
 
-variable "zone" {
-  type        = string
-  default     = "us-east1-b"
-  description = "GCP zone for GKE cluster"
+variable "zones" {
+  type        = list(string)
+  default     = ["us-east1-b", "us-east1-c"]
+  description = "GCP zones for GKE cluster"
 }
 
 variable "cluster_name" {

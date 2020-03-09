@@ -58,7 +58,8 @@ resource "google_container_cluster" "cluster" {
   provider = google-beta
 
   name     = var.cluster_name
-  location = var.zone
+  location = var.region
+  node_locations = var.zones
 
   network    = google_compute_network.gke.self_link
   subnetwork = google_compute_subnetwork.gke.self_link
@@ -97,13 +98,14 @@ resource "google_container_cluster" "cluster" {
 }
 
 resource "google_container_node_pool" "node_pool" {
-  name       = "primary-pool"
-  location   = var.zone
+  provider = google-beta
+
+  name       = "cnrm-pool"
   cluster    = google_container_cluster.cluster.name
   node_count = 1
 
   node_config {
-    preemptible  = true
+    preemptible     = true
     service_account = module.node_sa.email
     oauth_scopes    = local.oauth_scopes
   }
@@ -176,8 +178,8 @@ resource "google_service_account_iam_member" "cnrm_sa_ksa_binding" {
 
 ### Outputs
 
-output "zone" {
-  value = var.zone
+output "region" {
+  value = var.region
 }
 
 output "cluster" {
