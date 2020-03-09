@@ -57,8 +57,8 @@ resource "google_storage_bucket_iam_member" "node_sa_gcr_role" {
 resource "google_container_cluster" "cluster" {
   provider = google-beta
 
-  name     = var.cluster_name
-  location = var.region
+  name           = var.cluster_name
+  location       = var.region
   node_locations = var.zones
 
   network    = google_compute_network.gke.self_link
@@ -108,6 +108,11 @@ resource "google_container_node_pool" "node_pool" {
     preemptible     = true
     service_account = module.node_sa.email
     oauth_scopes    = local.oauth_scopes
+
+    image_type = "COS_CONTAINERD"
+    sandbox_config {
+      sandbox_type = "gvisor"
+    }
   }
 }
 
