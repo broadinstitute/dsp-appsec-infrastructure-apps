@@ -120,16 +120,13 @@ resource "google_container_node_pool" "cnrm_pool" {
   node_count = 1
 
   node_config {
-    preemptible = true
+    machine_type = "e2-small"
+    preemptible  = true
 
     service_account = module.node_sa.email
     oauth_scopes    = local.oauth_scopes
 
     image_type = "COS_CONTAINERD"
-
-    sandbox_config {
-      sandbox_type = "gvisor"
-    }
 
     shielded_instance_config {
       enable_secure_boot = true
