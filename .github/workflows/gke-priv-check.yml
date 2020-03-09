@@ -1,9 +1,14 @@
 name: Check GKE Privileges
 
 on:
+  # Trigger the workflow on push or pull request,
+  # but only for the master branch
+  push:
+    branches:
+      - master
   pull_request:
     branches:
-    - master
+      - master
 
 jobs:
   check:
@@ -36,4 +41,3 @@ jobs:
           reportString=$(sed 's/"/\\"/g' /tmp/report)
           echo $reportString
       
-          /kube-psp-advisor compare --sourceDir master/yamls --targetDir candidate/yamls
