@@ -54,27 +54,6 @@ resource "google_storage_bucket_iam_member" "node_sa_gcr_role" {
 
 ### Cluster
 
-locals {
-  default_node_config = {
-    machine_type = "e2-small"
-    preemptible     = true
-
-    service_account = module.node_sa.email
-    oauth_scopes    = local.oauth_scopes
-
-    image_type = "COS_CONTAINERD"
-
-    shielded_instance_config {
-      enable_secure_boot = true
-    }
-  }
-  oauth_scopes = [
-    "https://www.googleapis.com/auth/devstorage.read_only",
-    "https://www.googleapis.com/auth/logging.write",
-    "https://www.googleapis.com/auth/monitoring",
-  ]
-}
-
 resource "google_container_cluster" "cluster" {
   provider = google-beta
 
@@ -86,9 +65,21 @@ resource "google_container_cluster" "cluster" {
   subnetwork = google_compute_subnetwork.gke.self_link
   ip_allocation_policy {}
 
-  initial_node_count       = 1
+  initial_node_count = 1
 
-  node_config = default_node_config
+  node_config {
+    machine_type = "e2-small"
+    preemptible  = true
+
+    service_account = module.node_sa.email
+    oauth_scopes    = local.oauth_scopes
+
+    image_type = "COS_CONTAINERD"
+
+    shielded_instance_config {
+      enable_secure_boot = true
+    }
+  }
 
   cluster_autoscaling {
     enabled = true
@@ -122,14 +113,27 @@ resource "google_container_cluster" "cluster" {
 resource "google_container_node_pool" "cnrm_pool" {
   provider = google-beta
 
-  name           = "cnrm-system"
-  location       = var.region
-  cluster        = google_container_cluster.cluster.name
-  node_count     = 1
+  name     = "cnrm-system"
+  location = var.region
+  cluster  = google_container_cluster.cluster.name
 
-  node_config = merge(default_node_config, {
+  node_count = 1
+
+  node_config {
+    machine_type = "e2-small"
+    preemptible  = true
+
+    service_account = module.node_sa.email
+    oauth_scopes    = local.oauth_scopes
+
+    image_type = "COS_CONTAINERD"
+
     sandbox_config {
       sandbox_type = "gvisor"
+    }
+
+    shielded_instance_config {
+      enable_secure_boot = true
     }
 
     labels = {
@@ -137,11 +141,19 @@ resource "google_container_node_pool" "cnrm_pool" {
     }
 
     taint = [{
-      key = "cnrm.cloud.google.com/system"
-      value = "true"
+      key    = "cnrm.cloud.google.com/system"
+      value  = "true"
       effect = "NO_SCHEDULE"
     }]
-  })
+  }
+}
+
+locals {
+  oauth_scopes = [
+    "https://www.googleapis.com/auth/devstorage.read_only",
+    "https://www.googleapis.com/auth/logging.write",
+    "https://www.googleapis.com/auth/monitoring",
+  ]
 }
 
 ### Config Connector
