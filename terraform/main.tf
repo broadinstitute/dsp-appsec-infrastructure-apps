@@ -121,8 +121,13 @@ resource "google_container_node_pool" "cnrm_pool" {
     }]
 
     image_type = "COS_CONTAINERD"
+
     sandbox_config {
       sandbox_type = "gvisor"
+    }
+
+    shielded_instance_config {
+      enable_secure_boot = true
     }
   }
 }
