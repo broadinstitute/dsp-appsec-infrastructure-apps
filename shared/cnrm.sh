@@ -6,9 +6,12 @@ set -euo pipefail
 
 SA_EMAIL="$1"
 
-# wait for CNRM initialization, or exit if already initialized
-kubectl wait --for condition=Initialized pod \
-  cnrm-controller-manager-0 -n cnrm-system && exit 0
+# exit early if already initialized
+wait_init() {
+  kubectl wait --for condition=Initialized pod \
+    cnrm-controller-manager-0 -n cnrm-system
+}
+wait_init && exit 0
 
 # work in a temp directory
 CWD="${PWD}"
@@ -19,8 +22,9 @@ gsutil cat "gs://cnrm/latest/release-bundle.tar.gz" | tar xzf -
 cd "install-bundle-workload-identity"
 git apply "${CWD}/0-cnrm-system.yaml.patch"
 
-# apply the config
+# apply the config and wait for initialization
 kubectl apply -f .
+wait_init
 
 # patch the service account
 kubectl annotate serviceaccount \
