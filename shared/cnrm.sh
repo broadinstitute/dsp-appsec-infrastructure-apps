@@ -11,7 +11,7 @@ kubectl wait --for condition=Initialized pod \
   cnrm-controller-manager-0 -n cnrm-system && exit 0
 
 # work in a temp directory
-CWD="$(dirname "$0")"
+CWD="${PWD}"
 cd "$(mktemp -d)"
 
 # download and patch Kubernetes config for CNRM
