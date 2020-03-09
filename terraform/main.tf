@@ -97,11 +97,11 @@ resource "google_container_cluster" "cluster" {
   }
 }
 
-resource "google_container_node_pool" "node_pool" {
+resource "google_container_node_pool" "cnrm_pool" {
   provider = google-beta
 
   name           = "cnrm-system"
-  node_locations = var.zones
+  location       = var.region
   cluster        = google_container_cluster.cluster.name
   node_count     = 1
 
