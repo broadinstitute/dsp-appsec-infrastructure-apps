@@ -96,24 +96,6 @@ spec:
             name: ${CELERY_CONFIG}
         - secretRef:
             name: ${CELERY_SECRET}
-      - name: initializer
-        image: ${DD_DJANGO_IMAGE}
-        command: ['sh', '-c', '/entrypoint-initializer.sh && sleep infinity']
-        envFrom:
-        - configMapRef:
-            name: ${DJANGO_CONFIG}
-        - secretRef:
-            name: ${DJANGO_SECRET}
-        - configMapRef:
-            name: ${ADMIN_CONFIG}
-        - secretRef:
-            name: ${ADMIN_SECRET}
-        env:
-        - name: DD_INITIALIZE
-          value: 'true'
-        resources:
-          requests:
-            cpu: 50m
 
       - name: rabbitmq
         image: rabbitmq
@@ -137,9 +119,32 @@ spec:
         securityContext:
           runAsUser: 2 # non-root user
           allowPrivilegeEscalation: false
-        resources:
-          requests:
-            cpu: 50m
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: initializer
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: initializer
+        image: ${DD_DJANGO_IMAGE}
+        command:
+        - /entrypoint-initializer.sh
+        envFrom:
+        - configMapRef:
+            name: ${DJANGO_CONFIG}
+        - secretRef:
+            name: ${DJANGO_SECRET}
+        - configMapRef:
+            name: ${ADMIN_CONFIG}
+        - secretRef:
+            name: ${ADMIN_SECRET}
+        env:
+        - name: DD_INITIALIZE
+          value: 'true'
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember

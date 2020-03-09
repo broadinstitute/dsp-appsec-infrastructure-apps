@@ -1,5 +1,5 @@
---- a/dojo/management/commands/import_surveys.py
-+++ b/dojo/management/commands/import_surveys.py
+--- a/app/dojo/management/commands/import_surveys.py
++++ b/app/dojo/management/commands/import_surveys.py
 @@ -22,7 +22,7 @@ class Command(BaseCommand):
          created_question = TextQuestion.objects.create(optional=False, order=1, text='What is love?')
          # Get the ID used in this system
@@ -9,3 +9,19 @@
              row = cursor.fetchone()
              ctype_id = row[0]
          # Find the current id in the surveys file
+
+--- a/entrypoint-initializer.sh
++++ b/entrypoint-initializer.sh
+@@ -60,4 +60,12 @@ EOD
+   python3 manage.py loaddata initial_surveys
+   python3 manage.py installwatson
+   exec python3 manage.py buildwatson
++else
++cat <<EOD | python manage.py shell
++import os
++from django.contrib.auth.models import User
++u = User.objects.get(username=os.getenv('DD_ADMIN_USER'))
++u.set_password(os.getenv('DD_ADMIN_PASSWORD'))
++u.save()
++EOD
+ fi
