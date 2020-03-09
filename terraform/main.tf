@@ -65,21 +65,8 @@ resource "google_container_cluster" "cluster" {
   subnetwork = google_compute_subnetwork.gke.self_link
   ip_allocation_policy {}
 
+  remove_default_node_pool = true
   initial_node_count = 1
-
-  node_config {
-    machine_type = "e2-small"
-    preemptible  = true
-
-    service_account = module.node_sa.email
-    oauth_scopes    = local.oauth_scopes
-
-    image_type = "COS_CONTAINERD"
-
-    shielded_instance_config {
-      enable_secure_boot = true
-    }
-  }
 
   enable_shielded_nodes = true
 
@@ -122,7 +109,31 @@ resource "google_container_cluster" "cluster" {
   }
 }
 
-resource "google_container_node_pool" "cnrm_pool" {
+resource "google_container_node_pool" "kube_system" {
+  provider = google-beta
+
+  name     = "kube-system"
+  location = var.region
+  cluster  = google_container_cluster.cluster.name
+
+  node_count = 1
+
+  node_config {
+    machine_type = "e2-small"
+    preemptible  = true
+
+    service_account = module.node_sa.email
+    oauth_scopes    = local.oauth_scopes
+
+    image_type = "COS_CONTAINERD"
+
+    shielded_instance_config {
+      enable_secure_boot = true
+    }
+  }
+}
+
+resource "google_container_node_pool" "cnrm_system" {
   provider = google-beta
 
   name     = "cnrm-system"
