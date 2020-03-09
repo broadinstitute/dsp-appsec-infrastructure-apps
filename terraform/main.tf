@@ -81,6 +81,8 @@ resource "google_container_cluster" "cluster" {
     }
   }
 
+  enable_shielded_nodes = true
+
   cluster_autoscaling {
     enabled = true
     resource_limits {
@@ -107,6 +109,16 @@ resource "google_container_cluster" "cluster" {
 
   workload_identity_config {
     identity_namespace = "${var.project}.svc.id.goog"
+  }
+
+  network_policy {
+    enabled = true
+  }
+
+  addons_config {
+    network_policy_config {
+      disabled = false
+    }
   }
 }
 
