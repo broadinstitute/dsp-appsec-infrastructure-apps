@@ -114,6 +114,12 @@ resource "google_container_node_pool" "node_pool" {
       "cnrm.cloud.google.com/system" = "true",
     }
 
+    taint = [{
+      key = "cnrm.cloud.google.com/system"
+      value = "true"
+      effect = "NO_SCHEDULE"
+    }]
+
     image_type = "COS_CONTAINERD"
     sandbox_config {
       sandbox_type = "gvisor"
