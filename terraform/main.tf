@@ -68,7 +68,9 @@ resource "google_container_cluster" "cluster" {
   initial_node_count       = 1
 
   node_config {
+    machine_type = "e2-small"
     preemptible     = true
+
     service_account = module.node_sa.email
     oauth_scopes    = local.oauth_scopes
 
@@ -117,7 +119,9 @@ resource "google_container_node_pool" "cnrm_pool" {
   node_count     = 1
 
   node_config {
+    machine_type = "e2-small"
     preemptible     = true
+
     service_account = module.node_sa.email
     oauth_scopes    = local.oauth_scopes
 
