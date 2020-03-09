@@ -16,7 +16,11 @@ cd "$(mktemp -d)"
 # download and patch Kubernetes config for CNRM
 gsutil cat "gs://cnrm/latest/release-bundle.tar.gz" | tar xzf -
 cd "install-bundle-workload-identity"
-sed -Ei.bak "s/(gcp-service-account: ).*/\1${SA_EMAIL}/" "0-cnrm-system.yaml"
+git apply "0-cnrm-system.yaml.patch"
 
 # apply the config
 kubectl apply -f .
+
+# patch the service account
+kubectl annotate serviceaccount -n cnrm-system cnrm-controller-manager \
+  "iam.gke.io/gcp-service-account=${SA_EMAIL}"

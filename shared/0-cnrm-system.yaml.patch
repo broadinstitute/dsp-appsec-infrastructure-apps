@@ -1,0 +1,32 @@
+--- 0-cnrm-system.yaml
++++ 0-cnrm-system.yaml
+@@ -374,6 +374,9 @@
+         cnrm.cloud.google.com/component: cnrm-resource-stats-recorder
+         cnrm.cloud.google.com/system: "true"
+     spec:
++      runtimeClassName: gvisor
++      nodeSelector:
++        cnrm.cloud.google.com/system: "true"
+       containers:
+       - args:
+         - --prometheus-scrape-endpoint=:8888
+@@ -420,6 +423,9 @@
+         cnrm.cloud.google.com/component: cnrm-webhook-manager
+         cnrm.cloud.google.com/system: "true"
+     spec:
++      runtimeClassName: gvisor
++      nodeSelector:
++        cnrm.cloud.google.com/system: "true"
+       containers:
+       - args:
+         - --stderrthreshold=INFO
+@@ -467,6 +473,9 @@
+         cnrm.cloud.google.com/component: cnrm-controller-manager
+         cnrm.cloud.google.com/system: "true"
+     spec:
++      runtimeClassName: gvisor
++      nodeSelector:
++        cnrm.cloud.google.com/system: "true"
+       containers:
+       - args:
+         - --stderrthreshold=INFO

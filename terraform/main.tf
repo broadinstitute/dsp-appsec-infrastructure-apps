@@ -100,7 +100,7 @@ resource "google_container_cluster" "cluster" {
 resource "google_container_node_pool" "node_pool" {
   provider = google-beta
 
-  name       = "cnrm-pool"
+  name       = "cnrm-system"
   cluster    = google_container_cluster.cluster.name
   node_count = 1
 
@@ -108,6 +108,10 @@ resource "google_container_node_pool" "node_pool" {
     preemptible     = true
     service_account = module.node_sa.email
     oauth_scopes    = local.oauth_scopes
+
+    labels = {
+      "cnrm.cloud.google.com/system" = "true",
+    }
 
     image_type = "COS_CONTAINERD"
     sandbox_config {
