@@ -65,8 +65,19 @@ resource "google_container_cluster" "cluster" {
   subnetwork = google_compute_subnetwork.gke.self_link
   ip_allocation_policy {}
 
-  remove_default_node_pool = true
   initial_node_count       = 1
+
+  node_config {
+    preemptible     = true
+    service_account = module.node_sa.email
+    oauth_scopes    = local.oauth_scopes
+
+    image_type = "COS_CONTAINERD"
+
+    shielded_instance_config {
+      enable_secure_boot = true
+    }
+  }
 
   cluster_autoscaling {
     enabled = true
@@ -110,16 +121,6 @@ resource "google_container_node_pool" "cnrm_pool" {
     service_account = module.node_sa.email
     oauth_scopes    = local.oauth_scopes
 
-    labels = {
-      "cnrm.cloud.google.com/system" = "true",
-    }
-
-    taint = [{
-      key = "cnrm.cloud.google.com/system"
-      value = "true"
-      effect = "NO_SCHEDULE"
-    }]
-
     image_type = "COS_CONTAINERD"
 
     sandbox_config {
@@ -129,6 +130,16 @@ resource "google_container_node_pool" "cnrm_pool" {
     shielded_instance_config {
       enable_secure_boot = true
     }
+
+    labels = {
+      "cnrm.cloud.google.com/system" = "true",
+    }
+
+    taint = [{
+      key = "cnrm.cloud.google.com/system"
+      value = "true"
+      effect = "NO_SCHEDULE"
+    }]
   }
 }
 
