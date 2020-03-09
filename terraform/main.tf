@@ -66,7 +66,7 @@ resource "google_container_cluster" "cluster" {
   ip_allocation_policy {}
 
   remove_default_node_pool = true
-  initial_node_count = 1
+  initial_node_count       = 1
 
   enable_shielded_nodes = true
 

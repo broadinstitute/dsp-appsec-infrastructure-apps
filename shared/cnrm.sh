@@ -23,5 +23,6 @@ git apply "${CWD}/0-cnrm-system.yaml.patch"
 kubectl apply -f .
 
 # patch the service account
-kubectl annotate serviceaccount -n cnrm-system cnrm-controller-manager \
-  "iam.gke.io/gcp-service-account=${SA_EMAIL}"
+kubectl annotate serviceaccount \
+  -n cnrm-system cnrm-controller-manager \
+  --overwrite "iam.gke.io/gcp-service-account=${SA_EMAIL}"
