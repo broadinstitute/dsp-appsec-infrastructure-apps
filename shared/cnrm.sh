@@ -11,12 +11,13 @@ kubectl wait --for condition=Initialized pod \
   cnrm-controller-manager-0 -n cnrm-system && exit 0
 
 # work in a temp directory
+CWD="$(dirname "$0")"
 cd "$(mktemp -d)"
 
 # download and patch Kubernetes config for CNRM
 gsutil cat "gs://cnrm/latest/release-bundle.tar.gz" | tar xzf -
 cd "install-bundle-workload-identity"
-git apply "0-cnrm-system.yaml.patch"
+git apply "${CWD}/0-cnrm-system.yaml.patch"
 
 # apply the config
 kubectl apply -f .
