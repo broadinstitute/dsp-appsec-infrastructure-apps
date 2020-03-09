@@ -23,6 +23,7 @@ IP_ADDRESS=$(
     "${IP_NAME}" -o jsonpath='{.spec.address}'
 )
 export IP_ADDRESS
+export DNS_HOSTNAME="${NAMESPACE}.${DNS_DOMAIN}"
 
 ./kube-apply.py "dns.yaml"
 ./wait-dns.py

@@ -44,7 +44,6 @@ export DD_DATABASE_PORT="5432"
 export SQL_INSTANCE="${NAMESPACE}-sql"
 export SQL_REGION="us-east1"
 
-export DNS_HOSTNAME="${NAMESPACE}.${DNS_DOMAIN}"
 export IP_NAME="${NAMESPACE}"
 export LOCALHOST="127.0.0.1"
 export TARGET_PORT="http"

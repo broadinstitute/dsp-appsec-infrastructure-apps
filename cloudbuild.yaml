@@ -1,7 +1,6 @@
 options:
   env:
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django:${SHORT_SHA}
-  - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx:${SHORT_SHA}
   - DNS_DOMAIN=dsp-appsec.broadinstitute.org
   - DNS_ZONE=dsp-appsec
   - TERRAFORM_BUCKET=${PROJECT_ID}-terraform
@@ -54,18 +53,7 @@ steps:
   dir: defectdojo
   args:
   - -c
-  - docker build -t $${DD_DJANGO_IMAGE} -f Dockerfile.django . &&
+  - docker build -t $${DD_DJANGO_IMAGE} . &&
     docker push $${DD_DJANGO_IMAGE}
-
-# build patched DefectDojo Nginx image to allow GKE healthchecks
-- id: defectdojo-nginx-docker
-  name: gcr.io/cloud-builders/docker
-  waitFor: ['-']
-  entrypoint: sh
-  dir: defectdojo
-  args:
-  - -c
-  - docker build -t $${DD_NGINX_IMAGE} -f Dockerfile.nginx . &&
-    docker push $${DD_NGINX_IMAGE}
 
 timeout: 3600s
