@@ -27,7 +27,7 @@ resource "google_compute_subnetwork" "gke" {
   ip_cidr_range = "10.2.0.0/16"
 }
 
-### Node SA
+### GKE cluster node Service Account
 
 module "node_sa" {
   source       = "./modules/service-account"
@@ -40,7 +40,7 @@ module "node_sa" {
   ]
 }
 
-### GCR
+### Google Container Registry
 
 resource "google_container_registry" "gcr" {
   location = "US"
@@ -52,7 +52,7 @@ resource "google_storage_bucket_iam_member" "node_sa_gcr_role" {
   member = "serviceAccount:${module.node_sa.email}"
 }
 
-### Cluster
+### GKE cluster
 
 resource "google_container_cluster" "cluster" {
   provider = google-beta
@@ -109,6 +109,9 @@ resource "google_container_cluster" "cluster" {
   }
 }
 
+# This node pool will be used by GKE "system" Pods,
+# in place of the default one
+
 resource "google_container_node_pool" "kube_system" {
   provider = google-beta
 
@@ -132,6 +135,9 @@ resource "google_container_node_pool" "kube_system" {
     }
   }
 }
+
+# This node pool will be used exclusively
+# by Config Connector (CNRM) system Pods
 
 resource "google_container_node_pool" "cnrm_system" {
   provider = google-beta
@@ -175,7 +181,7 @@ locals {
   ]
 }
 
-### Config Connector
+### Config Connector Service Account and Role
 
 module "cnrm_sa" {
   source       = "./modules/service-account"
