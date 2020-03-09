@@ -100,9 +100,10 @@ resource "google_container_cluster" "cluster" {
 resource "google_container_node_pool" "node_pool" {
   provider = google-beta
 
-  name       = "cnrm-system"
-  cluster    = google_container_cluster.cluster.name
-  node_count = 1
+  name           = "cnrm-system"
+  node_locations = var.zones
+  cluster        = google_container_cluster.cluster.name
+  node_count     = 1
 
   node_config {
     preemptible     = true
