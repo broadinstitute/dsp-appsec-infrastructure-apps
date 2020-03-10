@@ -22,10 +22,10 @@ spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
       runtimeClassName: gvisor
       tolerations:
-      - key: cloud.google.com/gke-preemptible
-        operator: Equal
-        value: 'true'
-        effect: NoSchedule
+      # - key: cloud.google.com/gke-preemptible
+      #   operator: Equal
+      #   value: 'true'
+      #   effect: NoSchedule
       - key: sandbox.gke.io/runtime
         operator: Equal
         value: gvisor
@@ -35,10 +35,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: cloud.google.com/gke-preemptible
-                operator: In
-                values:
-                - 'true'
+              # - key: cloud.google.com/gke-preemptible
+              #   operator: In
+              #   values:
+              #   - 'true'
               - key: sandbox.gke.io/runtime
                 operator: In
                 values:
