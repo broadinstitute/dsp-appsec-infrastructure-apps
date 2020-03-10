@@ -20,29 +20,13 @@ spec:
         deployment: ${DEPLOYMENT}
     spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
-      runtimeClassName: gvisor
+      nodeSelector:
+        cloud.google.com/gke-preemptible: 'true'
       tolerations:
-      # - key: cloud.google.com/gke-preemptible
-      #   operator: Equal
-      #   value: 'true'
-      #   effect: NoSchedule
-      - key: sandbox.gke.io/runtime
+      - key: cloud.google.com/gke-preemptible
         operator: Equal
-        value: gvisor
+        value: 'true'
         effect: NoSchedule
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              # - key: cloud.google.com/gke-preemptible
-              #   operator: In
-              #   values:
-              #   - 'true'
-              - key: sandbox.gke.io/runtime
-                operator: In
-                values:
-                - gvisor
 
       containers:
       - name: nginx
