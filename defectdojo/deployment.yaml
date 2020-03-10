@@ -121,7 +121,17 @@ spec:
   ttlSecondsAfterFinished: 0
   template:
     spec:
+      serviceAccountName: ${SERVICE_ACCOUNT}
+      runtimeClassName: gvisor
+      nodeSelector:
+        cloud.google.com/gke-preemptible: 'true'
+      tolerations:
+      - key: cloud.google.com/gke-preemptible
+        operator: Equal
+        value: 'true'
+        effect: NoSchedule
       restartPolicy: OnFailure
+
       containers:
       - name: initializer
         image: ${DD_DJANGO_IMAGE}
