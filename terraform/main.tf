@@ -81,6 +81,10 @@ resource "google_container_cluster" "cluster" {
     shielded_instance_config {
       enable_secure_boot = true
     }
+
+    workload_metadata_config {
+      node_metadata = "GKE_METADATA_SERVER"
+    }
   }
 
   cluster_autoscaling {
@@ -145,6 +149,10 @@ resource "google_container_node_pool" "cnrm_system" {
 
     shielded_instance_config {
       enable_secure_boot = true
+    }
+
+    workload_metadata_config {
+      node_metadata = "GKE_METADATA_SERVER"
     }
 
     labels = {
