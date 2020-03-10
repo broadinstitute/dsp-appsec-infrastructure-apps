@@ -41,8 +41,9 @@ export DJANGO_CONFIG="django"
 export DD_DATABASE_USER="postgres"
 export DD_DATABASE_PORT="5432"
 
-export SQL_INSTANCE="${NAMESPACE}-sql"
 export SQL_REGION="us-east1"
+export SQL_INSTANCE="${NAMESPACE}-sql"
+export SQL_INSTANCE_URI="${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:${DD_DATABASE_PORT}"
 
 export IP_NAME="${NAMESPACE}"
 export LOCALHOST="127.0.0.1"

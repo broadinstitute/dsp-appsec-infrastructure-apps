@@ -108,7 +108,7 @@ spec:
         image: gcr.io/cloudsql-docker/gce-proxy
         command:
         - /cloud_sql_proxy
-        - -instances=${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:${DD_DATABASE_PORT}
+        - -instances=${SQL_INSTANCE_URI}
         securityContext:
           runAsUser: 2 # non-root user
           allowPrivilegeEscalation: false
@@ -126,6 +126,9 @@ spec:
       - name: initializer
         image: ${DD_DJANGO_IMAGE}
         command:
+        - /wait-for-it.sh
+        - ${LOCALHOST}:${DD_DATABASE_PORT}
+        - --
         - /entrypoint-initializer.sh
         envFrom:
         - configMapRef:
@@ -139,6 +142,15 @@ spec:
         env:
         - name: DD_INITIALIZE
           value: 'true'
+
+      - name: cloudsql-proxy
+        image: gcr.io/cloudsql-docker/gce-proxy
+        command:
+        - /cloud_sql_proxy
+        - -instances=${SQL_INSTANCE_URI}
+        securityContext:
+          runAsUser: 2 # non-root user
+          allowPrivilegeEscalation: false
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember
