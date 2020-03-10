@@ -22,12 +22,12 @@ variable "cluster_name" {
 
 variable "cluster_cpu_max" {
   type        = number
-  default     = 8
+  default     = 32
   description = "vCPU limit for the cluster"
 }
 
 variable "cluster_mem_gb_max" {
   type        = number
-  default     = 32
+  default     = 64
   description = "Memory limit for the cluster"
 }
