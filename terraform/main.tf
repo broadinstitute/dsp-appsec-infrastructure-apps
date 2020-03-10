@@ -65,10 +65,23 @@ resource "google_container_cluster" "cluster" {
   subnetwork = google_compute_subnetwork.gke.self_link
   ip_allocation_policy {}
 
-  remove_default_node_pool = true
-  initial_node_count       = 1
-
+  initial_node_count    = 1
   enable_shielded_nodes = true
+
+  # default node pool for kube-system Pods
+  node_config {
+    machine_type = "e2-small"
+    preemptible  = true
+
+    service_account = module.node_sa.email
+    oauth_scopes    = local.oauth_scopes
+
+    image_type = "COS_CONTAINERD"
+
+    shielded_instance_config {
+      enable_secure_boot = true
+    }
+  }
 
   cluster_autoscaling {
     enabled = true
@@ -105,33 +118,6 @@ resource "google_container_cluster" "cluster" {
   addons_config {
     network_policy_config {
       disabled = false
-    }
-  }
-}
-
-# This node pool will be used by GKE "system" Pods,
-# in place of the default one
-
-resource "google_container_node_pool" "kube_system" {
-  provider = google-beta
-
-  name     = "kube-system"
-  location = var.region
-  cluster  = google_container_cluster.cluster.name
-
-  node_count = 1
-
-  node_config {
-    machine_type = "e2-small"
-    preemptible  = true
-
-    service_account = module.node_sa.email
-    oauth_scopes    = local.oauth_scopes
-
-    image_type = "COS_CONTAINERD"
-
-    shielded_instance_config {
-      enable_secure_boot = true
     }
   }
 }
