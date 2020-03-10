@@ -103,41 +103,9 @@ spec:
               name: ${CELERY_SECRET}
               key: DD_CELERY_BROKER_PASSWORD
 
-      - name: cloudsql-proxy
-        image: gcr.io/cloudsql-docker/gce-proxy
-        command:
-        - /cloud_sql_proxy
-        - -instances=${SQL_INSTANCE_URI}
-        securityContext:
-          runAsUser: 2 # non-root user
-          allowPrivilegeEscalation: false
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: initializer
-spec:
-  ttlSecondsAfterFinished: 0
-  template:
-    spec:
-      serviceAccountName: ${SERVICE_ACCOUNT}
-      nodeSelector:
-        cloud.google.com/gke-preemptible: 'true'
-      tolerations:
-      - key: cloud.google.com/gke-preemptible
-        operator: Equal
-        value: 'true'
-        effect: NoSchedule
-      restartPolicy: OnFailure
-
-      containers:
       - name: initializer
         image: ${DD_DJANGO_IMAGE}
-        command:
-        - /wait-for-it.sh
-        - ${LOCALHOST}:${DD_DATABASE_PORT}
-        - --
-        - /entrypoint-initializer.sh
+        command: ['sh', '-c', '/entrypoint-initializer.sh && sleep infinity']
         envFrom:
         - configMapRef:
             name: ${DJANGO_CONFIG}
