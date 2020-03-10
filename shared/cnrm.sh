@@ -8,8 +8,8 @@ SA_EMAIL="$1"
 
 # exit early if already initialized
 wait_init() {
-  kubectl wait --for condition=Initialized pod \
-    cnrm-controller-manager-0 -n cnrm-system
+  kubectl wait --for condition=Available deployment \
+    cnrm-webhook-manager -n cnrm-system
 }
 wait_init && exit 0
 
