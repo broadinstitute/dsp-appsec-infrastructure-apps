@@ -118,6 +118,7 @@ kind: Job
 metadata:
   name: initializer
 spec:
+  ttlSecondsAfterFinished: 0
   template:
     spec:
       restartPolicy: OnFailure
