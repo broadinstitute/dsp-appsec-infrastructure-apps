@@ -10,7 +10,7 @@ kind: Deployment
 metadata:
   name: ${DEPLOYMENT}
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       deployment: ${DEPLOYMENT}
@@ -20,14 +20,6 @@ spec:
         deployment: ${DEPLOYMENT}
     spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
-      nodeSelector:
-        cloud.google.com/gke-preemptible: 'true'
-      tolerations:
-      - key: cloud.google.com/gke-preemptible
-        operator: Equal
-        value: 'true'
-        effect: NoSchedule
-
       containers:
       - name: nginx
         image: defectdojo/defectdojo-nginx
