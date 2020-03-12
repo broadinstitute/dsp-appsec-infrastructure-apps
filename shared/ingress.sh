@@ -6,12 +6,11 @@ set -euo pipefail
 # This script waits for a static IP address to be created,
 # sets DNS record for it, waits for DNS propagation,
 # and finally deploys GKE Ingress and Service with
-# Managed Certificate, Cloud Armor policy,
-# and Vertical Port Autoscaling.
+# Managed Certificate and Cloud Armor policy.
 #
 # Inputs:
 #   DNS_ZONE, DNS_DOMAIN, BROAD_INGRESS_CSP,
-#   NAMESPACE, DEPLOYMENT, TARGET_PORT, IP_NAME,
+#   NAMESPACE, SERVICE, TARGET_PORT, IP_NAME,
 #
 
 # Set/update DNS hostname record
@@ -30,10 +29,9 @@ export DNS_HOSTNAME="${NAMESPACE}.${DNS_DOMAIN}"
 
 # Set up Ingress and related resources
 
-export INGRESS="${DEPLOYMENT}"
-export MANAGED_CERT="${DEPLOYMENT}"
-export BACKEND_CONFIG="${DEPLOYMENT}"
-export SERVICE="${DEPLOYMENT}"
+export INGRESS="${SERVICE}"
+export MANAGED_CERT="${SERVICE}"
+export BACKEND_CONFIG="${SERVICE}"
 export SERVICE_PORT="http"
 
 ./kube-apply.py "ingress.yaml"

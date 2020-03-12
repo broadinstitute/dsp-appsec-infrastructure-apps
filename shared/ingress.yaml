@@ -50,20 +50,8 @@ metadata:
 spec:
   type: NodePort
   selector:
-    deployment: ${DEPLOYMENT}
+    service: ${SERVICE}
   ports:
   - name: ${SERVICE_PORT}
     port: 80
     targetPort: ${TARGET_PORT}
----
-apiVersion: autoscaling.k8s.io/v1
-kind: VerticalPodAutoscaler
-metadata:
-  name: ${SERVICE}
-spec:
-  targetRef:
-    apiVersion: apps/v1
-    kind:       Deployment
-    name:       ${DEPLOYMENT}
-  updatePolicy:
-    updateMode: Auto

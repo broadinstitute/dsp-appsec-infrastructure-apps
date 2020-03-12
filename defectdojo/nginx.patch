@@ -1,0 +1,13 @@
+--- a/nginx.conf
++++ b/nginx.conf
+@@ -42,6 +42,10 @@ http {
+             proxy_read_timeout  90;
+         }
+
++        location /media/ {
++            alias /usr/share/nginx/media;
++        }
++
+         location /static/ {
+             root                    /usr/share/nginx/html;
+             # alias                   /django-DefectDojo/static/;

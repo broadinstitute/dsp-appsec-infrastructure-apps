@@ -1,0 +1,18 @@
+FROM defectdojo/defectdojo-django as dd
+
+
+FROM dd as patch
+
+USER root
+
+WORKDIR /
+
+COPY django.patch .
+
+RUN git apply django.patch
+
+
+FROM dd
+
+COPY --from=patch /app/dojo/management/commands/import_surveys.py /app/dojo/management/commands/import_surveys.py
+COPY --from=patch /entrypoint-initializer.sh /entrypoint-initializer.sh
