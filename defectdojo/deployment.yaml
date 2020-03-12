@@ -22,6 +22,7 @@ spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
       nodeSelector:
         cloud.google.com/gke-preemptible: 'true'
+        deployment: ${DEPLOYMENT}
       tolerations:
       - key: cloud.google.com/gke-preemptible
         operator: Equal
