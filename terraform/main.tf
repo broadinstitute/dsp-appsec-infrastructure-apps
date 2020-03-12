@@ -101,7 +101,6 @@ resource "google_container_cluster" "cluster" {
       service_account = module.node_sa.email
       oauth_scopes    = local.oauth_scopes
     }
-    autoscaling_profile = "OPTIMIZE_UTILIZATION"
   }
 
   vertical_pod_autoscaling {
