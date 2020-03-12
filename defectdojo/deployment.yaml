@@ -186,7 +186,7 @@ data:
   DD_DATABASE_ENGINE: django.db.backends.postgresql_psycopg2
   DD_DATABASE_HOST: ${LOCALHOST}
   DD_DATABASE_PORT: '${DD_DATABASE_PORT}'
-  DD_DATABASE_NAME: dojodb3
+  DD_DATABASE_NAME: postgres
   DD_DATABASE_USER: ${DD_DATABASE_USER}
 ---
 apiVersion: v1
