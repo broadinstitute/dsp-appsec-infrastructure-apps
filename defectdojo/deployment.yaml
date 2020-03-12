@@ -205,4 +205,4 @@ data:
   DD_ADMIN_FIRST_NAME: AppSec
   DD_ADMIN_LAST_NAME: Admin
   DD_ADMIN_MAIL: appsec@broadinstitute.org
-  DD_ADMIN_USER: dojoadmin
+  DD_ADMIN_USER: admin
