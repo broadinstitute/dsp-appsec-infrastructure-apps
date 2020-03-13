@@ -16,7 +16,7 @@ spec:
       service: ${SERVICE}
   volumeClaimTemplates:
   - metadata:
-      name: media
+      name: ${MEDIA_VOLUME}
     spec:
       accessModes:
       - ReadWriteOnce
@@ -34,7 +34,7 @@ spec:
         image: busybox
         command: ['sh', '-c', 'chown 1001 /media']
         volumeMounts:
-        - name: media
+        - name: ${MEDIA_VOLUME}
           mountPath: /media
 
       containers:
@@ -51,7 +51,7 @@ spec:
             path: /login
             port: ${TARGET_PORT}
         volumeMounts:
-        - name: media
+        - name: ${MEDIA_VOLUME}
           mountPath: /usr/share/nginx/media
           readOnly: true
 

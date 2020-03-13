@@ -34,6 +34,7 @@ export DJANGO_SECRET="django"
 export SERVICE="${NAMESPACE}"
 export SERVICE_ACCOUNT="${NAMESPACE}"
 export STATEFUL_SET="${SERVICE}"
+export MEDIA_VOLUME="media"
 
 export ADMIN_CONFIG="admin"
 export CELERY_CONFIG="celery"
