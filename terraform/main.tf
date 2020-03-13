@@ -88,7 +88,8 @@ resource "google_container_cluster" "cluster" {
   }
 }
 
-# This pool will be used in place of the default one
+# This pool will be used for kube-system and
+# Config Connector Pods, in place of the default one
 # (such that any changes to it will not require
 # re-creation of the cluster)
 
@@ -119,14 +120,13 @@ resource "google_container_node_pool" "system" {
   }
 }
 
-# This pool will be used for
-# Config Connector and application Pods,
+# This pool will be used for the application Pods,
 # with GKE Sandbox and Cluster Autoscaler enabled
 
-resource "google_container_node_pool" "apps" {
+resource "google_container_node_pool" "sandbox" {
   provider = google-beta
 
-  name     = "apps"
+  name     = "sandbox"
   location = var.region
   cluster  = google_container_cluster.cluster.name
 
