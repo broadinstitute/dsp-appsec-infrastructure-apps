@@ -30,17 +30,10 @@ spec:
     spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
       runtimeClassName: gvisor
-
-      initContainers:
-      - name: media
-        image: ${DD_DJANGO_IMAGE}
-        command: ['chown', 'nobody', '/media']
-        volumeMounts:
-        - name: ${MEDIA_VOLUME}
-          mountPath: /media
-        securityContext:
-          runAsUser: 0
-          allowPrivilegeEscalation: false
+      securityContext:
+        runAsUser: 65534 # nobody
+        runAsGroup: 0 # required by DefectDojo
+        runAsNonRoot: true
 
       containers:
       - name: nginx
@@ -81,8 +74,6 @@ spec:
         volumeMounts:
         - name: media
           mountPath: /app/media
-        securityContext:
-          runAsUser: &nobody 65534
 
       - name: celerybeat
         image: ${DD_DJANGO_IMAGE}
@@ -97,8 +88,6 @@ spec:
             name: ${CELERY_CONFIG}
         - secretRef:
             name: ${CELERY_SECRET}
-        securityContext:
-          runAsUser: *nobody
 
       - name: celeryworker
         image: ${DD_DJANGO_IMAGE}
@@ -113,8 +102,6 @@ spec:
             name: ${CELERY_CONFIG}
         - secretRef:
             name: ${CELERY_SECRET}
-        securityContext:
-          runAsUser: *nobody
 
       - name: rabbitmq
         image: rabbitmq
@@ -129,8 +116,6 @@ spec:
             secretKeyRef:
               name: ${CELERY_SECRET}
               key: DD_CELERY_BROKER_PASSWORD
-        securityContext:
-          runAsUser: *nobody
 
       - name: initializer
         image: ${DD_DJANGO_IMAGE}
@@ -147,8 +132,6 @@ spec:
         env:
         - name: DD_INITIALIZE
           value: 'true'
-        securityContext:
-          runAsUser: *nobody
 
       - name: cloudsql-proxy
         image: gcr.io/cloudsql-docker/gce-proxy
