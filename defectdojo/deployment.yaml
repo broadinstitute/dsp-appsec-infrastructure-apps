@@ -30,6 +30,8 @@ spec:
     spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
       runtimeClassName: gvisor
+      securityContext:
+        runAsUser: 65534 # nobody
 
       initContainers:
       - name: media
@@ -38,6 +40,9 @@ spec:
         volumeMounts:
         - name: ${MEDIA_VOLUME}
           mountPath: /media
+        securityContext:
+          runAsUser: 0
+          allowPrivilegeEscalation: false
 
       containers:
       - name: nginx
@@ -78,8 +83,6 @@ spec:
         volumeMounts:
         - name: media
           mountPath: /app/media
-        securityContext:
-          runAsUser: 65534 # nobody
 
       - name: celerybeat
         image: ${DD_DJANGO_IMAGE}
