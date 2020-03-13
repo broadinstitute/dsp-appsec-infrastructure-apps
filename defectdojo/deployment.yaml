@@ -33,8 +33,18 @@ spec:
       securityContext:
         runAsUser: &nobody 65534
         runAsGroup: *nobody
-        fsGroup: *nobody
         runAsNonRoot: true
+
+      initContainers:
+      - name: media-permissions
+        image: ${DD_DJANGO_IMAGE}
+        command: ['chown', 'nobody', '/media']
+        volumeMounts:
+        - name: ${MEDIA_VOLUME}
+          mountPath: /media
+        securityContext:
+          runAsUser: 0
+          runAsNonRoot: false
 
       containers:
       - name: nginx
