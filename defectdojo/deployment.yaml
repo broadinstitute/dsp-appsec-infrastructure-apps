@@ -148,7 +148,9 @@ spec:
   member: serviceAccount:${SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
   role: roles/cloudsql.client
   resourceRef:
+    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
     kind: Project
+    external: projects/${PROJECT_ID}
 ---
 apiVersion: sql.cnrm.cloud.google.com/v1beta1
 kind: SQLInstance
