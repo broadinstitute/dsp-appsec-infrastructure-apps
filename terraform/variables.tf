@@ -20,14 +20,8 @@ variable "cluster_name" {
   default = "appsec-apps"
 }
 
-variable "cluster_cpu_max" {
+variable "cluster_nodes_max" {
   type        = number
-  default     = 32
-  description = "vCPU limit for the cluster"
-}
-
-variable "cluster_mem_gb_max" {
-  type        = number
-  default     = 64
-  description = "Memory limit for the cluster"
+  default     = 10
+  description = "Limit on the cluster size"
 }

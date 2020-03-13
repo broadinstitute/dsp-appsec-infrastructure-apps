@@ -71,7 +71,6 @@ resource "google_container_cluster" "cluster" {
   # default node pool for kube-system Pods
   node_config {
     machine_type = "e2-small"
-    preemptible  = true
 
     service_account = module.node_sa.email
     oauth_scopes    = local.oauth_scopes
@@ -85,26 +84,6 @@ resource "google_container_cluster" "cluster" {
     workload_metadata_config {
       node_metadata = "GKE_METADATA_SERVER"
     }
-  }
-
-  cluster_autoscaling {
-    enabled = true
-    resource_limits {
-      resource_type = "cpu"
-      maximum       = var.cluster_cpu_max
-    }
-    resource_limits {
-      resource_type = "memory"
-      maximum       = var.cluster_mem_gb_max
-    }
-    auto_provisioning_defaults {
-      service_account = module.node_sa.email
-      oauth_scopes    = local.oauth_scopes
-    }
-  }
-
-  vertical_pod_autoscaling {
-    enabled = true
   }
 
   release_channel {
@@ -126,26 +105,30 @@ resource "google_container_cluster" "cluster" {
   }
 }
 
-# This node pool will be used exclusively
-# by Config Connector (CNRM) system Pods
+# This node pool will be used for
+# Config Connector and application Pods
 
-resource "google_container_node_pool" "cnrm_system" {
+resource "google_container_node_pool" "apps" {
   provider = google-beta
 
-  name     = "cnrm-system"
+  name     = "apps"
   location = var.region
   cluster  = google_container_cluster.cluster.name
 
-  node_count = 1
+  autoscaling {
+    min_node_count = 1
+    max_node_count = var.cluster_nodes_max - 1
+  }
 
   node_config {
-    machine_type = "e2-small"
-    preemptible  = true
-
     service_account = module.node_sa.email
     oauth_scopes    = local.oauth_scopes
 
     image_type = "COS_CONTAINERD"
+
+    sandbox_config {
+      sandbox_type = "gvisor"
+    }
 
     shielded_instance_config {
       enable_secure_boot = true
@@ -154,16 +137,6 @@ resource "google_container_node_pool" "cnrm_system" {
     workload_metadata_config {
       node_metadata = "GKE_METADATA_SERVER"
     }
-
-    labels = {
-      "cnrm.cloud.google.com/system" = "true",
-    }
-
-    taint = [{
-      key    = "cnrm.cloud.google.com/system"
-      value  = "true"
-      effect = "NO_SCHEDULE"
-    }]
   }
 }
 

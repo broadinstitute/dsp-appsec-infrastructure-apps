@@ -14,15 +14,13 @@ wait_init() {
 wait_init && exit 0
 
 # work in a temp directory
-CWD="${PWD}"
 cd "$(mktemp -d)"
 
-# download and patch Kubernetes config for CNRM
+# download CNRM configs
 gsutil cat "gs://cnrm/latest/release-bundle.tar.gz" | tar xzf -
 cd "install-bundle-workload-identity"
-git apply "${CWD}/0-cnrm-system.yaml.patch"
 
-# apply the config and wait for initialization
+# apply the configs and wait for initialization
 kubectl apply -f .
 wait_init
 

@@ -29,6 +29,8 @@ spec:
         service: ${SERVICE}
     spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
+      runtimeClassName: gvisor
+
       initContainers:
       - name: media-permissions
         image: busybox
@@ -143,18 +145,6 @@ spec:
         securityContext:
           runAsUser: 2 # non-root user
           allowPrivilegeEscalation: false
----
-apiVersion: autoscaling.k8s.io/v1
-kind: VerticalPodAutoscaler
-metadata:
-  name: ${SERVICE}
-spec:
-  targetRef:
-    apiVersion: apps/v1
-    kind:       StatefulSet
-    name:       ${STATEFUL_SET}
-  updatePolicy:
-    updateMode: Auto
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember
