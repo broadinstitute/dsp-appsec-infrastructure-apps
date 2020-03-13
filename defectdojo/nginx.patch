@@ -1,12 +1,12 @@
 --- a/nginx.conf
 +++ b/nginx.conf
-@@ -42,6 +42,10 @@ http {
-             proxy_read_timeout  90;
-         }
-
-+        location /media/ {
-+            alias /usr/share/nginx/media;
-+        }
-+
-         location /static/ {
-             root                    /usr/share/nginx/html;
+@@ -25,6 +25,9 @@ http {
+     location /static {
+       alias /usr/share/nginx/html/static;
+     }
++    location /media/ {
++      alias /usr/share/nginx/media;
++    }
+     location / {
+       include /run/uwsgi_pass;
+       include /etc/nginx/wsgi_params;
