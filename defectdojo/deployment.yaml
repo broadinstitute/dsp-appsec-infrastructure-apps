@@ -29,8 +29,6 @@ spec:
         service: ${SERVICE}
     spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
-      nodeSelector:
-        service: ${SERVICE}
       containers:
       - name: nginx
         image: ${DD_NGINX_IMAGE}
