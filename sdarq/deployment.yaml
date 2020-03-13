@@ -1,1 +1,93 @@
-# sdarq deployment yaml
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeAddress
+metadata:
+  name: ${IP_NAME}
+spec:
+  location: global
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${DEPLOYMENT}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      deployment: ${DEPLOYMENT}
+  template:
+    metadata:
+      labels:
+        deployment: ${DEPLOYMENT}
+    spec:
+      serviceAccountName: ${SERVICE_ACCOUNT}
+      nodeSelector:
+        cloud.google.com/gke-preemptible: 'true'
+      tolerations:
+      - key: cloud.google.com/gke-preemptible
+        operator: Equal
+        value: 'true'
+        effect: NoSchedule
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: deployment
+                operator: In
+                values:
+                - ${DEPLOYMENT}
+            topologyKey: failure-domain.beta.kubernetes.io/zone
+
+      containers:
+      - name: sdarq-frontend
+        image: sdarq/frontend/DOCKERFILE
+        ports:
+        - name: ${TARGET_PORT}
+          containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /
+            port: ${TARGET_PORT}
+
+      - name: sdarq-backend
+        image: sdarq/backend/DOCKERFILE
+        ports:
+        - name: ${TARGET_PORT}
+          containerPort: 8080
+        env:
+        - name: host         
+          valueFrom:
+            secretKeyRef:
+              name: ${SDARQ_SECRET}
+              key: host
+        - name: user         
+          valueFrom:
+            secretKeyRef:
+              name: ${SDARQ_SECRET}
+              key: user
+        - name: api_key  
+          valueFrom:
+            secretKeyRef:
+              name: ${SDARQ_SECRET}
+              key: api_key
+        - name: slack_token   
+          valueFrom:
+            secretKeyRef:
+              name: ${SDARQ_SECRET}
+              key: slack_token
+        - name: jira_username   
+          valueFrom:
+            secretKeyRef:
+              name: ${SDARQ_SECRET}
+              key: jira_username
+        - name: jira_api_token   
+          valueFrom:
+            secretKeyRef:
+              name: ${SDARQ_SECRET}
+              key: jira_api_token
+        - name: jira_instance   
+          valueFrom:
+            secretKeyRef:
+              name: ${SDARQ_SECRET}
+              key: jira_instance
+
