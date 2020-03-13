@@ -30,14 +30,11 @@ spec:
     spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
       runtimeClassName: gvisor
-
-      initContainers:
-      - name: media-permissions
-        image: busybox
-        command: ['sh', '-c', 'chown 1001 /media']
-        volumeMounts:
-        - name: ${MEDIA_VOLUME}
-          mountPath: /media
+      securityContext:
+        runAsUser: &nobody 65534
+        runAsGroup: *nobody
+        fsGroup: *nobody
+        runAsNonRoot: true
 
       containers:
       - name: nginx
@@ -142,9 +139,6 @@ spec:
         command:
         - /cloud_sql_proxy
         - -instances=${SQL_INSTANCE_URI}
-        securityContext:
-          runAsUser: 2 # non-root user
-          allowPrivilegeEscalation: false
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember
