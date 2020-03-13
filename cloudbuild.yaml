@@ -7,6 +7,7 @@ options:
   - TERRAFORM_BUCKET=${PROJECT_ID}-terraform
   - BROAD_INGRESS_CSP=broad-ingress
   - GLOBAL_NAMESPACE=global
+  - REGIONAL_PD_CLASS=regional-pd-standard
 
 steps:
 # prepare GCS backend for Terraform
