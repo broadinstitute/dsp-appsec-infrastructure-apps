@@ -38,6 +38,14 @@ spec:
         value: gvisor
         effect: NoSchedule
 
+      initContainers:
+      - name: media
+        image: ${DD_DJANGO_IMAGE}
+        command: ['chown', '1001', /media]
+        volumeMounts:
+        - name: ${MEDIA_VOLUME}
+          mountPath: /media
+
       containers:
       - name: nginx
         image: ${DD_NGINX_IMAGE}
