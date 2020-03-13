@@ -21,6 +21,9 @@ spec:
       storageClassName: ${REGIONAL_PD_CLASS}
       accessModes:
       - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
   template:
     metadata:
       labels:
