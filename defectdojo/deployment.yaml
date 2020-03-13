@@ -31,12 +31,10 @@ spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
       initContainers:
       - name: media-permissions
-        image: alpine
-        command: ['sh', '-c']
-        args:
-        - chown 1001 /media
+        image: busybox
+        command: ['sh', '-c', 'chown 1001 /media']
         volumeMounts:
-        - name: volume
+        - name: media
           mountPath: /media
 
       containers:
