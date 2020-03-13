@@ -65,26 +65,9 @@ resource "google_container_cluster" "cluster" {
   subnetwork = google_compute_subnetwork.gke.self_link
   ip_allocation_policy {}
 
-  initial_node_count    = 1
-  enable_shielded_nodes = true
-
-  # default node pool for kube-system Pods
-  node_config {
-    machine_type = "e2-small"
-
-    service_account = module.node_sa.email
-    oauth_scopes    = local.oauth_scopes
-
-    image_type = "COS_CONTAINERD"
-
-    shielded_instance_config {
-      enable_secure_boot = true
-    }
-
-    workload_metadata_config {
-      node_metadata = "GKE_METADATA_SERVER"
-    }
-  }
+  initial_node_count       = 1
+  remove_default_node_pool = true
+  enable_shielded_nodes    = true
 
   release_channel {
     channel = "REGULAR"
@@ -105,8 +88,40 @@ resource "google_container_cluster" "cluster" {
   }
 }
 
-# This node pool will be used for
-# Config Connector and application Pods
+# This pool will be used in place of the default one
+# (such that any changes to it will not require
+# re-creation of the cluster)
+
+resource "google_container_node_pool" "system" {
+  provider = google-beta
+
+  name     = "system"
+  location = var.region
+  cluster  = google_container_cluster.cluster.name
+
+  initial_node_count = 1
+
+  node_config {
+    machine_type = "e2-small"
+
+    service_account = module.node_sa.email
+    oauth_scopes    = local.oauth_scopes
+
+    image_type = "COS_CONTAINERD"
+
+    shielded_instance_config {
+      enable_secure_boot = true
+    }
+
+    workload_metadata_config {
+      node_metadata = "GKE_METADATA_SERVER"
+    }
+  }
+}
+
+# This pool will be used for
+# Config Connector and application Pods,
+# with GKE Sandbox and Cluster Autoscaler enabled
 
 resource "google_container_node_pool" "apps" {
   provider = google-beta
@@ -117,7 +132,7 @@ resource "google_container_node_pool" "apps" {
 
   autoscaling {
     min_node_count = 1
-    max_node_count = var.cluster_nodes_max - 1
+    max_node_count = var.zone_max_node_count - 1
   }
 
   node_config {
@@ -137,6 +152,10 @@ resource "google_container_node_pool" "apps" {
     workload_metadata_config {
       node_metadata = "GKE_METADATA_SERVER"
     }
+  }
+
+  timeouts {
+    create = "60m"
   }
 }
 
