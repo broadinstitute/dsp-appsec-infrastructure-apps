@@ -29,11 +29,13 @@ spec:
         service: ${SERVICE}
     spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
-      runtimeClassName: gvisor
-      securityContext:
-        runAsUser: 65534 # nobody
-        runAsGroup: 0 # required by DefectDojo
-        runAsNonRoot: true
+      nodeSelector:
+        sandbox.gke.io/runtime: gvisor
+      tolerations:
+      - key: sandbox.gke.io/runtime
+        operator: Equal
+        value: gvisor
+        effect: NoSchedule
 
       containers:
       - name: nginx
@@ -88,10 +90,6 @@ spec:
             name: ${CELERY_CONFIG}
         - secretRef:
             name: ${CELERY_SECRET}
-        securityContext:
-          capabilities:
-            add:
-            - NET_RAW
 
       - name: celeryworker
         image: ${DD_DJANGO_IMAGE}
@@ -106,10 +104,6 @@ spec:
             name: ${CELERY_CONFIG}
         - secretRef:
             name: ${CELERY_SECRET}
-        securityContext:
-          capabilities:
-            add:
-            - NET_RAW
 
       - name: rabbitmq
         image: rabbitmq
@@ -146,6 +140,9 @@ spec:
         command:
         - /cloud_sql_proxy
         - -instances=${SQL_INSTANCE_URI}
+        securityContext:
+          runAsUser: 2  # non-root user
+          allowPrivilegeEscalation: false
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember
