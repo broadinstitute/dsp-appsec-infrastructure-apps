@@ -88,6 +88,10 @@ spec:
             name: ${CELERY_CONFIG}
         - secretRef:
             name: ${CELERY_SECRET}
+        securityContext:
+          capabilities:
+            add:
+            - NET_RAW
 
       - name: celeryworker
         image: ${DD_DJANGO_IMAGE}
@@ -102,6 +106,10 @@ spec:
             name: ${CELERY_CONFIG}
         - secretRef:
             name: ${CELERY_SECRET}
+        securityContext:
+          capabilities:
+            add:
+            - NET_RAW
 
       - name: rabbitmq
         image: rabbitmq
