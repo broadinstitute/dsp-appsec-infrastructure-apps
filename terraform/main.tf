@@ -65,48 +65,9 @@ resource "google_container_cluster" "cluster" {
   subnetwork = google_compute_subnetwork.gke.self_link
   ip_allocation_policy {}
 
-  initial_node_count    = 1
-  enable_shielded_nodes = true
-
-  # default node pool for kube-system Pods
-  node_config {
-    machine_type = "e2-small"
-    preemptible  = true
-
-    service_account = module.node_sa.email
-    oauth_scopes    = local.oauth_scopes
-
-    image_type = "COS_CONTAINERD"
-
-    shielded_instance_config {
-      enable_secure_boot = true
-    }
-
-    workload_metadata_config {
-      node_metadata = "GKE_METADATA_SERVER"
-    }
-  }
-
-  cluster_autoscaling {
-    enabled = true
-    resource_limits {
-      resource_type = "cpu"
-      maximum       = var.cluster_cpu_max
-    }
-    resource_limits {
-      resource_type = "memory"
-      maximum       = var.cluster_mem_gb_max
-    }
-    auto_provisioning_defaults {
-      service_account = module.node_sa.email
-      oauth_scopes    = local.oauth_scopes
-    }
-    autoscaling_profile = "OPTIMIZE_UTILIZATION"
-  }
-
-  vertical_pod_autoscaling {
-    enabled = true
-  }
+  initial_node_count       = 1
+  remove_default_node_pool = true
+  enable_shielded_nodes    = true
 
   release_channel {
     channel = "REGULAR"
@@ -127,21 +88,22 @@ resource "google_container_cluster" "cluster" {
   }
 }
 
-# This node pool will be used exclusively
-# by Config Connector (CNRM) system Pods
+# This pool will be used for kube-system and
+# Config Connector Pods, in place of the default one
+# (such that any changes to it will not require
+# re-creation of the cluster)
 
-resource "google_container_node_pool" "cnrm_system" {
+resource "google_container_node_pool" "system" {
   provider = google-beta
 
-  name     = "cnrm-system"
+  name     = "system"
   location = var.region
   cluster  = google_container_cluster.cluster.name
 
-  node_count = 1
+  initial_node_count = 1
 
   node_config {
     machine_type = "e2-small"
-    preemptible  = true
 
     service_account = module.node_sa.email
     oauth_scopes    = local.oauth_scopes
@@ -155,16 +117,45 @@ resource "google_container_node_pool" "cnrm_system" {
     workload_metadata_config {
       node_metadata = "GKE_METADATA_SERVER"
     }
+  }
+}
 
-    labels = {
-      "cnrm.cloud.google.com/system" = "true",
+# This pool will be used for the application Pods,
+# with GKE Sandbox and Cluster Autoscaler enabled
+
+resource "google_container_node_pool" "sandbox" {
+  provider = google-beta
+
+  name     = "sandbox"
+  location = var.region
+  cluster  = google_container_cluster.cluster.name
+
+  autoscaling {
+    min_node_count = 1
+    max_node_count = var.zone_max_node_count - 1
+  }
+
+  node_config {
+    service_account = module.node_sa.email
+    oauth_scopes    = local.oauth_scopes
+
+    image_type = "COS_CONTAINERD"
+
+    sandbox_config {
+      sandbox_type = "gvisor"
     }
 
-    taint = [{
-      key    = "cnrm.cloud.google.com/system"
-      value  = "true"
-      effect = "NO_SCHEDULE"
-    }]
+    shielded_instance_config {
+      enable_secure_boot = true
+    }
+
+    workload_metadata_config {
+      node_metadata = "GKE_METADATA_SERVER"
+    }
+  }
+
+  timeouts {
+    create = "60m"
   }
 }
 

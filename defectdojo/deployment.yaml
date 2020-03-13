@@ -6,41 +6,40 @@ spec:
   location: global
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: ${DEPLOYMENT}
+  name: ${STATEFUL_SET}
 spec:
-  replicas: 2
+  serviceName: ${SERVICE}
   selector:
     matchLabels:
-      deployment: ${DEPLOYMENT}
+      service: ${SERVICE}
+  volumeClaimTemplates:
+  - metadata:
+      name: ${MEDIA_VOLUME}
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
   template:
     metadata:
       labels:
-        deployment: ${DEPLOYMENT}
+        service: ${SERVICE}
     spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
       nodeSelector:
-        cloud.google.com/gke-preemptible: 'true'
+        sandbox.gke.io/runtime: gvisor
       tolerations:
-      - key: cloud.google.com/gke-preemptible
+      - key: sandbox.gke.io/runtime
         operator: Equal
-        value: 'true'
+        value: gvisor
         effect: NoSchedule
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: deployment
-                operator: In
-                values:
-                - ${DEPLOYMENT}
-            topologyKey: failure-domain.beta.kubernetes.io/zone
 
       containers:
       - name: nginx
-        image: defectdojo/defectdojo-nginx
+        image: ${DD_NGINX_IMAGE}
         env:
         - name: DD_UWSGI_HOST
           value: ${LOCALHOST}
@@ -51,6 +50,10 @@ spec:
           httpGet:
             path: /login
             port: ${TARGET_PORT}
+        volumeMounts:
+        - name: ${MEDIA_VOLUME}
+          mountPath: /usr/share/nginx/media
+          readOnly: true
 
       - name: uwsgi
         image: ${DD_DJANGO_IMAGE}
@@ -70,6 +73,9 @@ spec:
           value: '*' # validated by Ingress
         - name: DD_DEBUG
           value: 'False'
+        volumeMounts:
+        - name: media
+          mountPath: /app/media
 
       - name: celerybeat
         image: ${DD_DJANGO_IMAGE}
@@ -135,7 +141,7 @@ spec:
         - /cloud_sql_proxy
         - -instances=${SQL_INSTANCE_URI}
         securityContext:
-          runAsUser: 2 # non-root user
+          runAsUser: 2  # non-root user
           allowPrivilegeEscalation: false
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
@@ -146,7 +152,9 @@ spec:
   member: serviceAccount:${SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
   role: roles/cloudsql.client
   resourceRef:
+    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
     kind: Project
+    external: projects/${PROJECT_ID}
 ---
 apiVersion: sql.cnrm.cloud.google.com/v1beta1
 kind: SQLInstance
