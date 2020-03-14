@@ -3,8 +3,6 @@ kind: PersistentVolume
 metadata:
   name: ${SERVICE_VOLUME}
   namespace: ${NAMESPACE}
-  labels:
-    failure-domain.beta.kubernetes.io/zone: ${ZONE_1}__${ZONE_2}
 spec:
   accessModes:
   - ReadWriteOnce

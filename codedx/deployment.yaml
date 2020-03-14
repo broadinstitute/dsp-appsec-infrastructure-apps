@@ -8,6 +8,11 @@ spec:
   selector:
     matchLabels:
       service: ${SERVICE}
+  volumeClaimTemplates:
+  - metadata:
+      name: ${SERVICE_VOLUME}
+    spec:
+      volumeName: ${SERVICE_VOLUME}
   template:
     metadata:
       labels:
@@ -15,10 +20,6 @@ spec:
     spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
       runtimeClassName: gvisor
-      volumes:
-      - name: ${SERVICE_VOLUME}
-        gcePersistentDisk:
-          pdName: ${SERVICE_DISK}
 
       containers:
       - name: codedx
