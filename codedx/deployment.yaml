@@ -39,6 +39,10 @@ spec:
         ports:
         - name: ${TARGET_PORT}
           containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /codedx/login
+            port: ${TARGET_PORT}
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /opt/codedx
