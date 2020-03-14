@@ -47,7 +47,7 @@ spec:
         image: gcr.io/cloudsql-docker/gce-proxy
         command:
         - /cloud_sql_proxy
-        - -instances=${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:${DB_PORT}"
+        - -instances=${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:${DB_PORT}
         securityContext:
           runAsUser: 2  # non-root user
           allowPrivilegeEscalation: false
