@@ -192,6 +192,7 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
     "compute.disks.get",
     "compute.disks.list",
     "compute.disks.create",
+    "compute.disks.setLabels",
     "compute.disks.update",
     "compute.globalAddresses.get",
     "compute.globalAddresses.create",
