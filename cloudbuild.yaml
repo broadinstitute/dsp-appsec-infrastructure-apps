@@ -1,8 +1,8 @@
 options:
   env:
-  - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django:${SHORT_SHA}
-  - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx:${SHORT_SHA}
-  - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx:${SHORT_SHA}
+  - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
+  - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
+  - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx
   - DNS_DOMAIN=dsp-appsec.broadinstitute.org
   - DNS_ZONE=dsp-appsec
   - TERRAFORM_BUCKET=${PROJECT_ID}-terraform
@@ -54,28 +54,32 @@ steps:
   entrypoint: ./deploy.sh
   dir: defectdojo
 
-# build patched DefectDojo Django image to address
-# https://github.com/DefectDojo/django-DefectDojo/issues/1890
+# build patched DefectDojo Django image
+# using Kaniko to speed up builds
 - id: defectdojo-django-docker
-  name: &docker gcr.io/cloud-builders/docker
+  name: &kaniko gcr.io/kaniko-project/executor:debug
   waitFor: ['-']
   entrypoint: sh
   dir: defectdojo
   args:
   - -c
-  - docker build -t $${DD_DJANGO_IMAGE} -f Dockerfile.django . &&
-    docker push $${DD_DJANGO_IMAGE}
+  - executor
+      --destination $${DD_DJANGO_IMAGE}
+      --dockerfile=Dockerfile.django
+      --cache
 
 # build patched DefectDojo Nginx image
 - id: defectdojo-nginx-docker
-  name: *docker
+  name: *kaniko
   waitFor: ['-']
   entrypoint: sh
   dir: defectdojo
   args:
   - -c
-  - docker build -t $${DD_NGINX_IMAGE} -f Dockerfile.nginx . &&
-    docker push $${DD_NGINX_IMAGE}
+  - executor
+      --destination $${DD_NGINX_IMAGE}
+      --dockerfile=Dockerfile.nginx
+      --cache
 
 # deploy CodeDx to GKE cluster
 - id: codedx
@@ -86,13 +90,14 @@ steps:
 
 # build patched CodeDx image
 - id: codedx-docker
-  name: *docker
+  name: *kaniko
   waitFor: ['-']
   entrypoint: sh
   dir: codedx
   args:
   - -c
-  - docker build -t $${CODEDX_IMAGE} . &&
-    docker push $${CODEDX_IMAGE}
+  - executor
+      --destination $${CODEDX_IMAGE}
+      --cache
 
 timeout: 3600s

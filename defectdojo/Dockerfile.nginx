@@ -11,4 +11,4 @@ RUN patch -p1 < nginx.patch
 
 FROM nginx
 
-COPY --from=patch /nginx.conf /etc/nginx/
+COPY --from=patch nginx.conf /etc/nginx/

@@ -1,3 +1,3 @@
-FROM codedx/codedx-tomcat:v4.4.6 as codedx
+FROM codedx/codedx-tomcat:v4.4.6
 
-COPY logback.base.xml templates/
+COPY logback.xml.base templates/
