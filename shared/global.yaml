@@ -58,6 +58,15 @@ spec:
   dnssecConfig:
     state: 'on'
 ---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ${REGIONAL_PD_CLASS}
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-standard
+  replication-type: regional-pd
+---
 apiVersion: compute.cnrm.cloud.google.com/v1beta1
 kind: ComputeResourcePolicy
 metadata:

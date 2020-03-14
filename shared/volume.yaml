@@ -4,6 +4,7 @@ metadata:
   name: ${SERVICE_VOLUME}
   namespace: ${NAMESPACE}
 spec:
+  storageClassName: ${REGIONAL_PD_CLASS}
   accessModes:
   - ReadWriteOnce
   capacity:
