@@ -8,7 +8,6 @@ metadata:
     kubernetes.io/ingress.allow-http: 'false'
     kubernetes.io/ingress.global-static-ip-name: ${IP_NAME}
     networking.gke.io/managed-certificates: ${MANAGED_CERT}
-    ingress.gcp.kubernetes.io/pre-shared-cert: ${MANAGED_CERT}
 spec:
   rules:
   - host: ${DNS_HOSTNAME}
