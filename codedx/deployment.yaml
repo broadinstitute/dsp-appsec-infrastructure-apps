@@ -5,6 +5,18 @@ metadata:
 spec:
   location: global
 ---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ${SERVICE_VOLUME}
+  labels:
+    failure-domain.beta.kubernetes.io/region: ${REGION}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  gcePersistentDisk:
+    pdName: ${SERVICE_DISK}
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -21,10 +33,6 @@ spec:
     spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
       runtimeClassName: gvisor
-      volumes:
-      - name: ${SERVICE_VOLUME}
-        gcePersistentDisk:
-          pdName: ${SERVICE_DISK}
 
       containers:
       - name: codedx
