@@ -47,11 +47,11 @@ steps:
   - -c
   - export $(xargs < ../.env) && ./global.sh
 
-# # deploy DefectDojo to GKE cluster
-# - id: defectdojo
-#   name: *kubectl
-#   entrypoint: ./deploy.sh
-#   dir: defectdojo
+# deploy DefectDojo to GKE cluster
+- id: defectdojo
+  name: *kubectl
+  entrypoint: ./deploy.sh
+  dir: defectdojo
 
 # build patched DefectDojo Django image to address
 # https://github.com/DefectDojo/django-DefectDojo/issues/1890
