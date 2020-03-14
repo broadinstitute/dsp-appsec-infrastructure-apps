@@ -20,6 +20,7 @@ metadata:
   namespace: ${NAMESPACE}
 spec:
   storageClassName: ''
+  volumeName: ${SERVICE_VOLUME}
   accessModes:
   - ReadWriteOnce
   resources:
