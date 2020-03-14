@@ -60,12 +60,12 @@ steps:
   name: &kaniko gcr.io/kaniko-project/executor:debug
   waitFor: ['-']
   entrypoint: sh
-  dir: defectdojo
   args:
   - -c
   - executor
-      --destination $${DD_DJANGO_IMAGE}
+      --context=dir:///workspace/defectdojo
       --dockerfile=Dockerfile.django
+      --destination $${DD_DJANGO_IMAGE}
       --cache
 
 # build patched DefectDojo Nginx image
@@ -73,12 +73,12 @@ steps:
   name: *kaniko
   waitFor: ['-']
   entrypoint: sh
-  dir: defectdojo
   args:
   - -c
   - executor
-      --destination $${DD_NGINX_IMAGE}
+      --context=dir:///workspace/defectdojo
       --dockerfile=Dockerfile.nginx
+      --destination $${DD_NGINX_IMAGE}
       --cache
 
 # deploy CodeDx to GKE cluster
@@ -93,10 +93,10 @@ steps:
   name: *kaniko
   waitFor: ['-']
   entrypoint: sh
-  dir: codedx
   args:
   - -c
   - executor
+      --context=dir:///workspace/codedx
       --destination $${CODEDX_IMAGE}
       --cache
 
