@@ -69,4 +69,11 @@ steps:
   - docker build -t $${DD_NGINX_IMAGE} -f Dockerfile.nginx . &&
     docker push $${DD_NGINX_IMAGE}
 
+# deploy CodeDX to GKE cluster
+- id: codedx
+  name: *kubectl
+  waitFor: ['shared']
+  entrypoint: ./deploy.sh
+  dir: codedx
+
 timeout: 3600s
