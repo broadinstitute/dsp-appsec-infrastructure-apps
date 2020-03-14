@@ -14,6 +14,9 @@ metadata:
 spec:
   accessModes:
   - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  capacity:
+    storage: 200Gi
   gcePersistentDisk:
     pdName: ${SERVICE_DISK}
 ---
