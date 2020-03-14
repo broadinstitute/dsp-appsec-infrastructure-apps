@@ -50,8 +50,9 @@ export SQL_INSTANCE_URI="${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:${DD_DA
 export LOCALHOST="127.0.0.1"
 export TARGET_PORT="http"
 
+./volume.sh
+
 ./kube-apply.py \
-  "volume.yaml" \
   "service-account.yaml" \
   "${CWD}/deployment.yaml"
 

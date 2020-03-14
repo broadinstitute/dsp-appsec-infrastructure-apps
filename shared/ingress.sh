@@ -27,7 +27,8 @@ export IP_NAME="${NAMESPACE}"
 
 IP_ADDRESS=$(
   kubectl wait --for condition=Ready computeaddress \
-    "${IP_NAME}" -o jsonpath='{.spec.address}'
+    "${IP_NAME}" -n "${NAMESPACE}" \
+    -o jsonpath='{.spec.address}'
 )
 
 # Set/update DNS hostname record

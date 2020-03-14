@@ -36,8 +36,9 @@ export SQL_INSTANCE="${NAMESPACE}"
 
 export TARGET_PORT="http"
 
+./volume.sh
+
 ./kube-apply.py \
-  "volume.yaml" \
   "service-account.yaml" \
   "${CWD}/deployment.yaml"
 
