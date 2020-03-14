@@ -9,4 +9,4 @@ spec:
   capacity:
     storage: 200Gi
   gcePersistentDisk:
-    pdName: ${COMPUTE_DISK}
+    pdName: ${SERVICE_DISK}
