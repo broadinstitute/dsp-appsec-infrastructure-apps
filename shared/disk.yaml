@@ -13,3 +13,4 @@ spec:
   resourcePolicies:
   - name: ${DISK_SNAPSHOT_POLICY}
     namespace: ${GLOBAL_NAMESPACE}
+  size: 200
