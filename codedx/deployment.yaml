@@ -15,6 +15,7 @@ spec:
       volumeName: ${SERVICE_VOLUME}
       accessModes:
       - ReadWriteOnce
+      resources: {}
   template:
     metadata:
       labels:
