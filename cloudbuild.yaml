@@ -48,15 +48,9 @@ steps:
   - -c
   - export $(xargs < ../.env) && ./global.sh
 
-# deploy DefectDojo to GKE cluster
-- id: defectdojo
-  name: *kubectl
-  entrypoint: ./deploy.sh
-  dir: defectdojo
-
 # build patched DefectDojo Django image
 # using Kaniko to speed up builds
-- id: defectdojo-django-docker
+- id: defectdojo-django
   name: &kaniko gcr.io/kaniko-project/executor:debug
   waitFor: ['-']
   entrypoint: sh
@@ -69,7 +63,7 @@ steps:
       --cache
 
 # build patched DefectDojo Nginx image
-- id: defectdojo-nginx-docker
+- id: defectdojo-nginx
   name: *kaniko
   waitFor: ['-']
   entrypoint: sh
@@ -81,12 +75,13 @@ steps:
       --destination $${DD_NGINX_IMAGE}
       --cache
 
-# deploy CodeDx to GKE cluster
-- id: codedx
+# deploy DefectDojo to GKE cluster
+- id: defectdojo
   name: *kubectl
-  waitFor: ['shared']
+  waitFor: ['shared', 'defectdojo-django', 'defectdojo-nginx']
   entrypoint: ./deploy.sh
-  dir: codedx
+  dir: defectdojo
+
 
 # build patched CodeDx image
 - id: codedx-docker
@@ -99,5 +94,12 @@ steps:
       --context=dir:///workspace/codedx
       --destination $${CODEDX_IMAGE}
       --cache
+
+# deploy CodeDx to GKE cluster
+- id: codedx
+  name: *kubectl
+  waitFor: ['shared', 'codedx-docker']
+  entrypoint: ./deploy.sh
+  dir: codedx
 
 timeout: 3600s
