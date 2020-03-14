@@ -8,8 +8,8 @@ metadata:
 spec:
   location: ${REGION}
   replicaZones:
-  - ${ZONE_1}
-  - ${ZONE_2}
+  - https://www.googleapis.com/compute/v1/projects/${PROJECT_ID}/zones/${ZONE_1}
+  - https://www.googleapis.com/compute/v1/projects/${PROJECT_ID}/zones/${ZONE_2}
   resourcePolicies:
   - name: ${DISK_SNAPSHOT_POLICY}
     namespace: ${GLOBAL_NAMESPACE}
