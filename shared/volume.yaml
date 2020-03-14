@@ -4,6 +4,8 @@ metadata:
   name: ${SERVICE_VOLUME}
   namespace: ${NAMESPACE}
 spec:
+  accessModes:
+  - ReadWriteOnce
   capacity:
     storage: 200Gi
   gcePersistentDisk:
