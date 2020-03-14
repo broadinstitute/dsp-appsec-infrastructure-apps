@@ -64,3 +64,4 @@ provisioner: kubernetes.io/gce-pd
 parameters:
   type: pd-standard
   replication-type: regional-pd
+  reclaimPolicy: Retain
