@@ -39,7 +39,7 @@ steps:
     terraform apply plan.out &&
     terraform output | tr -d " " > ../.env
 
-# set up Config Connector and other global GKE resources
+# set up Config Connector and other shared GKE resources
 - id: shared
   name: &kubectl gcr.io/cloud-builders/kubectl
   entrypoint: sh
@@ -59,7 +59,7 @@ steps:
   - executor
       --context=dir:///workspace/defectdojo
       --dockerfile=Dockerfile.django
-      --destination $${DD_DJANGO_IMAGE}
+      --destination=$${DD_DJANGO_IMAGE}
       --cache
 
 # build patched DefectDojo Nginx image
@@ -72,7 +72,7 @@ steps:
   - executor
       --context=dir:///workspace/defectdojo
       --dockerfile=Dockerfile.nginx
-      --destination $${DD_NGINX_IMAGE}
+      --destination=$${DD_NGINX_IMAGE}
       --cache
 
 # deploy DefectDojo to GKE cluster
@@ -92,7 +92,7 @@ steps:
   - -c
   - executor
       --context=dir:///workspace/codedx
-      --destination $${CODEDX_IMAGE}
+      --destination=$${CODEDX_IMAGE}
       --cache
 
 # deploy CodeDx to GKE cluster
