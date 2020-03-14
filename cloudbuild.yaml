@@ -2,6 +2,7 @@ options:
   env:
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django:${SHORT_SHA}
   - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx:${SHORT_SHA}
+  - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx:${SHORT_SHA}
   - DNS_DOMAIN=dsp-appsec.broadinstitute.org
   - DNS_ZONE=dsp-appsec
   - TERRAFORM_BUCKET=${PROJECT_ID}-terraform
@@ -56,7 +57,7 @@ steps:
 # build patched DefectDojo Django image to address
 # https://github.com/DefectDojo/django-DefectDojo/issues/1890
 - id: defectdojo-django-docker
-  name: gcr.io/cloud-builders/docker
+  name: &docker gcr.io/cloud-builders/docker
   waitFor: ['-']
   entrypoint: sh
   dir: defectdojo
@@ -67,7 +68,7 @@ steps:
 
 # build patched DefectDojo Nginx image
 - id: defectdojo-nginx-docker
-  name: gcr.io/cloud-builders/docker
+  name: *docker
   waitFor: ['-']
   entrypoint: sh
   dir: defectdojo
@@ -76,11 +77,22 @@ steps:
   - docker build -t $${DD_NGINX_IMAGE} -f Dockerfile.nginx . &&
     docker push $${DD_NGINX_IMAGE}
 
-# deploy CodeDX to GKE cluster
+# deploy CodeDx to GKE cluster
 - id: codedx
   name: *kubectl
   waitFor: ['shared']
   entrypoint: ./deploy.sh
   dir: codedx
+
+# build patched CodeDx image
+- id: codedx-docker
+  name: *docker
+  waitFor: ['-']
+  entrypoint: sh
+  dir: codedx
+  args:
+  - -c
+  - docker build -t $${CODEDX_IMAGE} . &&
+    docker push $${CODEDX_IMAGE}
 
 timeout: 3600s

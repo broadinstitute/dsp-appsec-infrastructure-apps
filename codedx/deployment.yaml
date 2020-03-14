@@ -23,7 +23,7 @@ spec:
 
       containers:
       - name: codedx
-        image: codedx/codedx-tomcat:v4.4.6
+        image: ${CODEDX_IMAGE}
         env:
         - name: DB_URL
           value: jdbc:mysql://localhost/${DB_NAME}
