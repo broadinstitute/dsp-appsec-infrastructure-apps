@@ -79,7 +79,7 @@ metadata:
   annotations:
     cnrm.cloud.google.com/deletion-policy: abandon
 spec:
-  databaseVersion: MYSQL
+  databaseVersion: MYSQL_5_7
   region: ${SQL_REGION}
   settings:
     tier: db-custom-1-3840
