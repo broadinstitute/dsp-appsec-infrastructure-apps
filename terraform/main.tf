@@ -188,6 +188,7 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
     "cloudsql.instances.create",
     "cloudsql.instances.update",
     "cloudsql.users.list",
+    "cloudsql.users.create",
     "cloudsql.users.update",
     "compute.disks.get",
     "compute.disks.list",
