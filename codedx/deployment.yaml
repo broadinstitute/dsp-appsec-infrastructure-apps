@@ -26,7 +26,7 @@ spec:
         image: codedx/codedx-tomcat:v4.4.6
         env:
         - name: DB_URL
-          value: jdbc:mysql://localhost:${DB_PORT}/${DB_NAME}
+          value: jdbc:mysql://localhost/${DB_NAME}
         - name: DB_DRIVER
           value: com.mysql.jdbc.Driver
         - name: DB_USER
@@ -47,7 +47,7 @@ spec:
         image: gcr.io/cloudsql-docker/gce-proxy
         command:
         - /cloud_sql_proxy
-        - -instances=${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:${DB_PORT}
+        - -instances=${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:3306
         securityContext:
           runAsUser: 2  # non-root user
           allowPrivilegeEscalation: false

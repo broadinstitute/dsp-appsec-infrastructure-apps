@@ -30,7 +30,6 @@ export STATEFUL_SET="${SERVICE}"
 
 export DB_NAME="${SERVICE}"
 export DB_USER="${SERVICE}"
-export DB_PORT="3306"
 
 export SQL_REGION="us-east1"
 export SQL_INSTANCE="${NAMESPACE}"
