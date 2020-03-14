@@ -203,6 +203,7 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
     "compute.globalAddresses.create",
     "compute.globalAddresses.setLabels",
     "compute.globalAddresses.delete",
+    "compute.regionOperations.get",
     "compute.securityPolicies.get",
     "compute.securityPolicies.create",
     "compute.securityPolicies.update",
