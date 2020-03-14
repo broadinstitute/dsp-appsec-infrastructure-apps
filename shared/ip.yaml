@@ -1,0 +1,8 @@
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeAddress
+metadata:
+  name: ${IP_NAME}
+  annotations:
+    cnrm.cloud.google.com/deletion-policy: abandon
+spec:
+  location: global

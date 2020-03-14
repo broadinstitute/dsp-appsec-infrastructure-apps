@@ -47,7 +47,6 @@ export SQL_REGION="us-east1"
 export SQL_INSTANCE="${NAMESPACE}"
 export SQL_INSTANCE_URI="${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:${DD_DATABASE_PORT}"
 
-export IP_NAME="${NAMESPACE}"
 export LOCALHOST="127.0.0.1"
 export TARGET_PORT="http"
 

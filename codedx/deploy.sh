@@ -35,7 +35,6 @@ export DB_PORT="3306"
 export SQL_REGION="us-east1"
 export SQL_INSTANCE="${NAMESPACE}"
 
-export IP_NAME="${NAMESPACE}"
 export TARGET_PORT="http"
 
 ./kube-apply.py "service-account.yaml" "${CWD}/deployment.yaml"
