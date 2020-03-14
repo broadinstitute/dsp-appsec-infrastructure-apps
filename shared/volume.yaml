@@ -10,8 +10,6 @@ spec:
     storage: 200
   gcePersistentDisk:
     pdName: ${SERVICE_DISK}
-  claimRef:
-    name: ${SERVICE_VOLUME}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
