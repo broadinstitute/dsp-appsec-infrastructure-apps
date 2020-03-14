@@ -26,7 +26,11 @@ spec:
         image: ${CODEDX_IMAGE}
         command: ['sh', '-c']
         args:
-        - rm /opt/codedx/codedx.props && start.sh
+        - rm -rf \
+            /opt/codedx/codedx.props \
+            /opt/codedx/logback.xml \
+            /opt/codedx/log-files
+          && start.sh
         env:
         - name: DB_URL
           value: jdbc:mysql://localhost/${DB_NAME}
