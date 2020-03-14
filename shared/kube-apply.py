@@ -7,7 +7,9 @@ for name in sys.argv[1:]:
     template = os.path.expandvars(f.read())
     undefined = re.findall(r'\${[^{]+}', template)
     if undefined:
-      raise 'Undefined variable(s) in ' + name + ': ' + ', '.join(undefined)
+      raise Exception(
+        'Undefined variable(s) in {}: {}'.format(name, undefined)
+      )
     subprocess.run(
       ['kubectl', 'apply', '-f', '-'],
       input=template.encode(),
