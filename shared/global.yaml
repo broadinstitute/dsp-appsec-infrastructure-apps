@@ -57,13 +57,3 @@ spec:
   description: AppSec team DNS zone
   dnssecConfig:
     state: 'on'
----
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: ${REGIONAL_PD_CLASS}
-provisioner: kubernetes.io/gce-pd
-parameters:
-  type: pd-standard
-  replication-type: regional-pd
-  reclaimPolicy: Retain

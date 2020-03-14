@@ -24,8 +24,7 @@ export SERVICE_SECRET="${SERVICE}"
 # Deploy the service
 
 export SERVICE_ACCOUNT="${NAMESPACE}"
-export SERVICE_DISK="${NAMESPACE}"
-export SERVICE_VOLUME="${SERVICE}"
+export SERVICE_VOLUME="${NAMESPACE}"
 export STATEFUL_SET="${SERVICE}"
 
 export DB_NAME="${SERVICE}"
@@ -37,5 +36,9 @@ export SQL_INSTANCE="${NAMESPACE}"
 
 export TARGET_PORT="http"
 
-./kube-apply.py "service-account.yaml" "${CWD}/deployment.yaml"
+./kube-apply.py \
+  "volume.yaml" \
+  "service-account.yaml" \
+  "${CWD}/deployment.yaml"
+
 ./ingress.sh

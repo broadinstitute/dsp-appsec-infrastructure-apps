@@ -1,0 +1,46 @@
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeDisk
+metadata:
+  name: ${SERVICE_VOLUME}
+  annotations:
+    cnrm.cloud.google.com/deletion-policy: abandon
+spec:
+  location: ${REGION}
+  replicaZones:
+  - ${ZONE_1}
+  - ${ZONE_2}
+  resourcePolicies:
+  - name: ${SERVICE_VOLUME}-snapshot-policy
+---
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeResourcePolicy
+metadata:
+  name: ${SERVICE_VOLUME}-snapshot-policy
+  annotations:
+    cnrm.cloud.google.com/deletion-policy: abandon
+spec:
+  region: ${REGION}
+  snapshotSchedulePolicy:
+    schedule:
+      dailySchedule:
+        daysInCycle: 1
+        startTime: 04:00
+    retentionPolicy:
+      maxRetentionDays: 7
+      onSourceDiskDelete: KEEP_AUTO_SNAPSHOTS
+    snapshotProperties:
+      storageLocations:
+      - ${REGION}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ${SERVICE_VOLUME}
+  namespace: ${NAMESPACE}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 200Gi
+  gcePersistentDisk:
+    pdName: ${SERVICE_VOLUME}

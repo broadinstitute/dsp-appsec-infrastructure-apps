@@ -7,8 +7,9 @@ options:
   - TERRAFORM_BUCKET=${PROJECT_ID}-terraform
   - BROAD_INGRESS_CSP=broad-ingress
   - GLOBAL_NAMESPACE=global
-  - REGIONAL_PD_CLASS=regional-pd-standard
   - REGION=us-east1
+  - ZONE_1=us-east1-b
+  - ZONE_2=us-east1-c
 
 steps:
 # prepare GCS backend for Terraform
@@ -31,7 +32,8 @@ steps:
       -backend-config="bucket=$${TERRAFORM_BUCKET}" &&
     terraform plan -out=plan.out
       -var="project=${PROJECT_ID}"
-      -var="region=$${REGION}" &&
+      -var="region=$${REGION}"
+      -var="zones=[\"$${ZONE_1}\",\"$${ZONE_2}\"]" &&
     terraform apply plan.out &&
     terraform output | tr -d " " > ../.env
 

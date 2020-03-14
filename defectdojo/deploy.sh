@@ -33,8 +33,8 @@ export DJANGO_SECRET="django"
 
 export SERVICE="${NAMESPACE}"
 export SERVICE_ACCOUNT="${NAMESPACE}"
+export SERVICE_VOLUME="${NAMESPACE}"
 export STATEFUL_SET="${SERVICE}"
-export MEDIA_VOLUME="media"
 
 export ADMIN_CONFIG="admin"
 export CELERY_CONFIG="celery"
@@ -50,5 +50,9 @@ export SQL_INSTANCE_URI="${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:${DD_DA
 export LOCALHOST="127.0.0.1"
 export TARGET_PORT="http"
 
-./kube-apply.py "service-account.yaml" "${CWD}/deployment.yaml"
+./kube-apply.py \
+  "volume.yaml" \
+  "service-account.yaml" \
+  "${CWD}/deployment.yaml"
+
 ./ingress.sh
