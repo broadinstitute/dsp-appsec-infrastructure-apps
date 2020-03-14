@@ -24,6 +24,9 @@ spec:
       containers:
       - name: codedx
         image: ${CODEDX_IMAGE}
+        command: ['sh', '-c']
+        args:
+        - rm /opt/codedx/codedx.props && start.sh
         env:
         - name: DB_URL
           value: jdbc:mysql://localhost/${DB_NAME}
