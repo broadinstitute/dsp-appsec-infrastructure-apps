@@ -8,17 +8,6 @@ spec:
   selector:
     matchLabels:
       service: ${SERVICE}
-  volumeClaimTemplates:
-  - metadata:
-      name: ${SERVICE_VOLUME}
-    spec:
-      volumeName: ${SERVICE_VOLUME}
-      storageClassName: ''
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 200Gi
   template:
     metadata:
       labels:
@@ -26,6 +15,11 @@ spec:
     spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
       runtimeClassName: gvisor
+
+      volumes:
+      - name: ${SERVICE_VOLUME}
+        persistentVolumeClaim:
+          claimName: ${SERVICE_VOLUME}
 
       containers:
       - name: codedx

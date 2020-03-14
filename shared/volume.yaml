@@ -7,6 +7,20 @@ spec:
   accessModes:
   - ReadWriteOnce
   capacity:
-    storage: 200Gi
+    storage: 200
   gcePersistentDisk:
     pdName: ${SERVICE_DISK}
+  claimRef:
+    name: ${SERVICE_VOLUME}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ${SERVICE_VOLUME}
+spec:
+  storageClassName: ''
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200

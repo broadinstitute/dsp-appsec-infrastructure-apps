@@ -24,8 +24,8 @@ spec:
 
       volumes:
       - name: ${SERVICE_VOLUME}
-        gcePersistentDisk:
-          pdName: ${SERVICE_DISK}
+        persistentVolumeClaim:
+          claimName: ${SERVICE_VOLUME}
 
       initContainers:
       - name: media
