@@ -1,1 +1,109 @@
-# codedx deployment yaml
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeAddress
+metadata:
+  name: ${IP_NAME}
+spec:
+  location: global
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ${STATEFUL_SET}
+spec:
+  serviceName: ${SERVICE}
+  selector:
+    matchLabels:
+      service: ${SERVICE}
+  template:
+    metadata:
+      labels:
+        service: ${SERVICE}
+    spec:
+      serviceAccountName: ${SERVICE_ACCOUNT}
+      runtimeClassName: gvisor
+      volumes:
+      - name: ${SERVICE_VOLUME}
+        gcePersistentDisk:
+          pdName: ${SERVICE_DISK}
+
+      containers:
+      - name: codedx
+        image: codedx/codedx-tomcat:v4.4.6
+        env:
+        - name: DB_URL
+          value: jdbc:mysql://localhost:${DB_PORT}/${DB_NAME}
+        - name: DB_DRIVER
+          value: com.mysql.jdbc.Driver
+        - name: DB_USER
+          value: ${DB_USER}
+        - name: SUPERUSER_NAME
+          value: admin
+        envFrom:
+        - secretRef:
+            name: ${SERVICE_SECRET}
+        ports:
+        - name: ${TARGET_PORT}
+          containerPort: 8080
+        volumeMounts:
+        - name: ${SERVICE_VOLUME}
+          mountPath: /opt/codedx
+
+      - name: cloudsql-proxy
+        image: gcr.io/cloudsql-docker/gce-proxy
+        command:
+        - /cloud_sql_proxy
+        - -instances=${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:${DB_PORT}"
+        securityContext:
+          runAsUser: 2  # non-root user
+          allowPrivilegeEscalation: false
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: ${SERVICE_ACCOUNT}-sa-sql-policy
+spec:
+  member: serviceAccount:${SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
+  role: roles/cloudsql.client
+  resourceRef:
+    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+    kind: Project
+    external: projects/${PROJECT_ID}
+---
+apiVersion: sql.cnrm.cloud.google.com/v1beta1
+kind: SQLInstance
+metadata:
+  name: ${SQL_INSTANCE}
+  annotations:
+    cnrm.cloud.google.com/deletion-policy: abandon
+spec:
+  databaseVersion: MYSQL
+  region: ${SQL_REGION}
+  settings:
+    tier: db-custom-1-3840
+    backupConfiguration:
+      enabled: true
+---
+apiVersion: sql.cnrm.cloud.google.com/v1beta1
+kind: SQLDatabase
+metadata:
+  name: ${DB_NAME}
+  annotations:
+    cnrm.cloud.google.com/deletion-policy: abandon
+spec:
+  instanceRef:
+    name: ${SQL_INSTANCE}
+---
+apiVersion: sql.cnrm.cloud.google.com/v1beta1
+kind: SQLUser
+metadata:
+  name: ${DB_USER}
+  annotations:
+    cnrm.cloud.google.com/deletion-policy: abandon
+spec:
+  instanceRef:
+    name: ${SQL_INSTANCE}
+  password:
+    valueFrom:
+      secretKeyRef:
+        name: ${SERVICE_SECRET}
+        key: DB_PASSWORD
