@@ -3,6 +3,7 @@ apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: ${INGRESS}
+  namespace: ${NAMESPACE}
   annotations:
     kubernetes.io/ingress.allow-http: 'false'
     kubernetes.io/ingress.global-static-ip-name: ${IP_NAME}
@@ -20,6 +21,7 @@ apiVersion: networking.gke.io/v1beta1
 kind: ManagedCertificate
 metadata:
   name: ${MANAGED_CERT}
+  namespace: ${NAMESPACE}
 spec:
   domains:
   - ${DNS_HOSTNAME}
