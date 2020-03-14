@@ -2,6 +2,7 @@ apiVersion: compute.cnrm.cloud.google.com/v1beta1
 kind: ComputeSecurityPolicy
 metadata:
   name: ${BROAD_INGRESS_CSP}
+  namespace: ${NAMESPACE}
 spec:
   rule:
   - action: allow
@@ -48,6 +49,7 @@ apiVersion: dns.cnrm.cloud.google.com/v1beta1
 kind: DNSManagedZone
 metadata:
   name: ${DNS_ZONE}
+  namespace: ${NAMESPACE}
   annotations:
     cnrm.cloud.google.com/deletion-policy: abandon
 spec:

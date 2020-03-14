@@ -10,7 +10,7 @@ cd ../shared
 export PROJECT_ID="$(gcloud config get-value project)"
 export NAMESPACE="codedx"
 
-./namespace.sh
+./kube-apply.py "namespace.yaml"
 
 # Generate secrets
 

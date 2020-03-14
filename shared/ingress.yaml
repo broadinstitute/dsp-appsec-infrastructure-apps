@@ -28,6 +28,7 @@ apiVersion: cloud.google.com/v1beta1
 kind: BackendConfig
 metadata:
   name: ${BACKEND_CONFIG}
+  namespace: ${NAMESPACE}
 spec:
   securityPolicy:
     name: ${BROAD_INGRESS_CSP}
@@ -36,6 +37,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ${SERVICE}
+  namespace: ${NAMESPACE}
   annotations:
     cloud.google.com/neg: |
       {

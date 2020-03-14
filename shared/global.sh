@@ -12,5 +12,4 @@ gcloud container clusters get-credentials --region "${region}" "${cluster}"
 export PROJECT_ID="$(gcloud config get-value project)"
 export NAMESPACE="${GLOBAL_NAMESPACE}"
 
-./namespace.sh
-./kube-apply.py "global.yaml"
+./kube-apply.py "namespace.yaml" "global.yaml"

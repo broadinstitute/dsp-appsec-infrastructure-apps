@@ -33,6 +33,7 @@ IP_ADDRESS=$(
 # Set/update DNS hostname record
 
 export IP_ADDRESS
+export DNS_RECORD="${NAMESPACE}"
 export DNS_HOSTNAME="${NAMESPACE}.${DNS_DOMAIN}"
 
 ./kube-apply.py "dns.yaml"
