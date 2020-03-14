@@ -7,7 +7,6 @@ options:
   - TERRAFORM_BUCKET=${PROJECT_ID}-terraform
   - BROAD_INGRESS_CSP=broad-ingress
   - DISK_SNAPSHOT_POLICY=appsec-apps-disk-snapshot-policy
-  - REGIONAL_PD_CLASS=pd-standard-regional
   - GLOBAL_NAMESPACE=global
   - REGION=us-east1
   - ZONE_1=us-east1-b
