@@ -6,16 +6,16 @@ metadata:
 spec:
   selector:
     matchLabels:
-      deployment: ${DEPLOYMENT}
+      service: ${SERVICE}
   template:
     metadata:
       labels:
-        deployment: ${DEPLOYMENT}
+        service: ${SERVICE}
     spec:
       runtimeClassName: gvisor
 
       containers:
-      - name: sdarq-frontend
+      - name: frontend
         image: ${SDARQ_FRONTEND_IMAGE}
         ports:
         - name: ${FRONTEND_PORT}
@@ -25,7 +25,7 @@ spec:
             path: /
             port: ${FRONTEND_PORT}
 
-      - name: sdarq-backend
+      - name: backend
         image: ${SDARQ_BACKEND_IMAGE}
         ports:
         - name: ${BACKEND_PORT}

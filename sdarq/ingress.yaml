@@ -20,10 +20,6 @@ spec:
         backend:
           serviceName: ${SERVICE}
           servicePort: ${BACKEND_PORT}
-      - path: /health/
-        backend:
-          serviceName: ${SERVICE}
-          servicePort: ${BACKEND_PORT}
 ---
 apiVersion: cloud.google.com/v1beta1
 kind: BackendConfig
