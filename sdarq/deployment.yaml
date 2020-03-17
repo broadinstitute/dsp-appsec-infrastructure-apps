@@ -1,1 +1,39 @@
-# sdarq deployment yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${DEPLOYMENT}
+  namespace: ${NAMESPACE}
+spec:
+  selector:
+    matchLabels:
+      deployment: ${DEPLOYMENT}
+  template:
+    metadata:
+      labels:
+        deployment: ${DEPLOYMENT}
+    spec:
+      runtimeClassName: gvisor
+
+      containers:
+      - name: sdarq-frontend
+        image: ${SDARQ_FRONTEND_IMAGE}
+        ports:
+        - name: ${FRONTEND_PORT}
+          containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /
+            port: ${FRONTEND_PORT}
+
+      - name: sdarq-backend
+        image: ${SDARQ_BACKEND_IMAGE}
+        ports:
+        - name: ${BACKEND_PORT}
+          containerPort: 8080
+        envFrom:
+        - secretRef:
+            name: ${SDARQ_SECRET}
+        readinessProbe:
+          httpGet:
+            path: /health # GET /health -> 200
+            port: ${BACKEND_PORT}

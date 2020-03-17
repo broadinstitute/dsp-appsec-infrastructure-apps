@@ -3,6 +3,8 @@ options:
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
   - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
   - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx
+  - SDARQ_FRONTEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-frontend
+  - SDARQ_BACKEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-backend
   - DNS_DOMAIN=dsp-appsec.broadinstitute.org
   - DNS_ZONE=dsp-appsec
   - TERRAFORM_BUCKET=${PROJECT_ID}-terraform
@@ -101,5 +103,36 @@ steps:
   waitFor: ['shared', 'codedx-docker']
   entrypoint: ./deploy.sh
   dir: codedx
+
+# build SDARQ frontend Docker image
+- id: sdarq-frontend
+  name: *kaniko
+  waitFor: ['-']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/sdarq/frontend
+      --destination=$${SDARQ_FRONTEND_IMAGE}
+      --cache
+
+# build SDARQ backend Docker image
+- id: sdarq-backend
+  name: *kaniko
+  waitFor: ['-']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/sdarq/backend
+      --destination=$${SDARQ_BACKEND_IMAGE}
+      --cache
+
+# deploy SDARQ to GKE cluster
+- id: sdarq
+  name: *kubectl
+  waitFor: ['shared', 'sdarq-frontend', 'sdarq-backend']
+  entrypoint: ./deploy.sh
+  dir: sdarq
 
 timeout: 3600s
