@@ -53,15 +53,15 @@ First, it sets up some common infrastructure:
 
     - _Regular_ [release channel](https://cloud.google.com/kubernetes-engine/docs/concepts/release-channels) for cluster/node upgrades
 
-2.  Then, it installs] GKE Config Connector (via [shared/cnrm.sh](shared/cnrm.sh) script)
+2.  Then, it installs GKE Config Connector (via [shared/cnrm.sh](shared/cnrm.sh) script)
     into `system` pool.
 
     [Config Connector](https://cloud.google.com/config-connector/docs/overview)
     is a new GKE cluster add-on that enables declarative
     deployment of GCP resources directly from Kubernetes templates.
 
-    This is highly convient, as we can create a minimal privilege Service Account
-    and related GCP resources (e.g. CloudSQL instances).
+    This is highly convient, as we can deploy a Pod, an associated minimal privilege Service Account,
+    and related GCP resources (e.g. CloudSQL instances) within a single template.
 
     Notice that Config Connector itself needs access to create these GCP resources,
     and as such is assigned a highly-privileged Service Account with the
@@ -81,6 +81,22 @@ First, it sets up some common infrastructure:
     the workloads (apps) are now isolated by multiple layers
     (workload identity, containerization, GKE Sandbox where possible,
     physical nodes, and Network Policies in the future).
+
+    It's also possible to protect GCP resources from deletion when
+    an associated Config Connector resource is removed. This can be done
+    via `cnrm.cloud.google.com/deletion-policy: abandon` annotation for the resource.
+    We use it for such resources as `SQLInstance/Database/User`,
+    `ComputeAddress`, `DNSManagedZone`, `ComputeDisk`, and `ComputeResourcePolicy`,
+    as those generally need to "survive" any cluster/app re-deployments.
+
+    Since Config Connector relies on the project-global names of such resources,
+    they are automatically "acquired" by it on re-deployment. This allows us
+    to safely delete an entire namespace or even the cluster, and
+    re-create it later on, so the cluster/namespaces can be treated as "dispensable"
+    resources that can be completely and easily reproduced via Cloud Build, when needed.
+
+    [Here](https://cloud.google.com/config-connector/docs/reference/resources)
+    is a comprehensive list of all possible GCP resources available via Config Connector.
 
 3.  Finally, using Config Connector we set up `global` namespace (see below)
     and the following GCP resources in it ([shared/global.yaml](shared/global.yaml)):
@@ -126,7 +142,7 @@ A quick overview of what that script should do:
     and then apply it. This pattern is used throughout
     other resource deployments later as well.
 
-2.  Generate secret(s) used by the app, unless they're "external" (e.g. a Slack token).
+2.  Generate Kubernetes secret(s) used by the app, unless they're "external" (e.g. a Slack token).
     This is done via [shared/gen-secret.sh](shared/gen-secret.sh) script, which currently uses
     `/dev/urandom` to generate a random sequence of alphanumeric characters. However,
     it may be better to use a crypto library in the future instead.
@@ -136,10 +152,10 @@ A quick overview of what that script should do:
     should we need that, by just removing them in Kubernetes and re-running the latest
     build in Cloud Build.
 
-    For the manually created secrets, we'll provide a sample template to apply them
+    For the manually created secrets, we'll provide a sample template to deploy them
     from your local shell.
 
-3.  Set up Kubernetes volume for it, if the app stores some of its state on disk
+3.  Set up a Kubernetes volume for the app, if it stores some of its state on disk
     (e.g. DefectDojo and CodeDx).
 
     This is done via [shared/volume.sh](shared/volume.sh) script that
@@ -147,13 +163,14 @@ A quick overview of what that script should do:
       in the cluster, while also providing regional replication)
     - sets up daily snapshots of disk content for disaster recovery
     - waits for the disk to be created on GCE
-    - sets up Kubernetes PersistentVolume and associated PersistentVolumeClaim,
-      the latter of which can be used to associate the volume with a Pod.
+    - sets up Kubernetes
+      [PersistentVolume and PersistentVolumeClaim](https://kubernetes.io/docs/concepts/storage/persistent-volumes/),
+      where the latter can be used to associate the volume with a Pod.
 
 4.  If the app needs access to GCP services (e.g. Cloud SQL), apply
     [shared/service-account.yaml](shared/service-account.yaml) template to:
-    - create a Kubernetes Service Account (KSA) for it (which can be associated with a Pod)
-    - create a Google Service Account(GSA) that will have access to GCP resources
+    - create a Kubernetes Service Account (KSA) for its Pod
+    - create a Google Service Account (GSA) that will have access to GCP resources
     - binds these 2 accounts via a Kubernetes annotation and `iam.workloadIdentityUser` role.
 
     Note that `service-account.yaml` is generic and _doesn't_ grant access to GCP resources,
@@ -167,6 +184,12 @@ A quick overview of what that script should do:
     We also deploy any app-specific GCP resources (e.g. SQLInstance, SQLUser etc.)
     via Config Connector resource types, and create a role binding for the service account
     (if any in use), e.g. `roles/cloudsql.client` for Cloud SQL.
+
+    Finally, it's recommended to set `runtimeClassName: gvisor` for the Pod,
+    to enable GKE Sandbox around it. However, some apps (e.g. DefectDojo) may fail
+    to work properly with it. In that case, the app can still be deployed without it, but
+    will need an extra configuration snippet for `nodeSelector` and `tolerations`
+    (e.g. see how this is done in [defectdojo/deployment.yaml](defectdojo/deployment.yaml)).
 
     For the next steps, this template should also expose
     a `containerPort` and a `readinessProbe`, both of which are used
@@ -202,10 +225,10 @@ A quick overview of what that script should do:
       - DNS hostname mapping via Host header of the request
       - URL path mapping for each Service port
 
-    Please note that these templates may need to be adjusted in an app-specific way
+    Please note that `ingress.yaml` may need to be adjusted in an app-specific way
     (e.g. for Sdarq, which exposes multiple internal paths/ports,
     and could use Cloud DNS for Backend Config), in which case
-    a customized copy of `ingress.yaml` would need to be referenced in `deploy.sh`.
+    a customized copy of `ingress.yaml` would need to be referenced from `deploy.sh`.
 
 ### Questions
 `appsec@broadinstitute.org`
