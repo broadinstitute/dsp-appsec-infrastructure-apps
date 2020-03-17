@@ -25,6 +25,7 @@ export SERVICE="${NAMESPACE}"
 export INGRESS="${SERVICE}"
 export MANAGED_CERT="${SERVICE}"
 export BACKEND_CONFIG="${SERVICE}"
+export SDARQ_CONFIG="${SERVICE}"
 export FRONTEND_PORT="frontend"
 export BACKEND_PORT="backend"
 

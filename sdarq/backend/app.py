@@ -27,6 +27,7 @@ jira_username = os.getenv('jira_username')
 jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
 
+sdarq_host = os.getenv('sdarq_host')
 # Slack communication via slack_token
 slack = Slacker(slack_token)
 
@@ -42,7 +43,7 @@ jira = JIRA(basic_auth=(jira_username, jira_api_token),options={'server': jira_i
 # Prepare to send to DefectDojo
 @app.route('/submit/', methods=['POST'])
 # @cross_origin()
-@cross_origin(origins=['http://127.0.0.1:4200'])
+@cross_origin(origins=[sdarq_host])
 def submit():
     jsonData = request.get_json()
     appName = jsonData['Service'] 

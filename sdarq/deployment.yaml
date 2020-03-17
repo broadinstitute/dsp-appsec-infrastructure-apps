@@ -33,7 +33,17 @@ spec:
         envFrom:
         - secretRef:
             name: ${SDARQ_SECRET}
+        - configMapRef:
+            name: ${SDARQ_CONFIG}
         readinessProbe:
           httpGet:
             path: /health # GET /health -> 200
             port: ${BACKEND_PORT}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${SDARQ_CONFIG}
+  namespace: ${NAMESPACE}
+data:
+  sdarq_host: https://${DNS_HOSTNAME}
