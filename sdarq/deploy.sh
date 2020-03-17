@@ -10,7 +10,7 @@ cd ../shared
 export PROJECT_ID="$(gcloud config get-value project)"
 export NAMESPACE="sdarq"
 
-./kube-apply.sh "namespace.yaml"
+./kube-apply.py "namespace.yaml"
 
 export SDARQ_SECRET="sdarq"
 
