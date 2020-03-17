@@ -43,7 +43,7 @@ jira = JIRA(basic_auth=(jira_username, jira_api_token),options={'server': jira_i
 # Prepare to send to DefectDojo
 @app.route('/health/', methods=['GET'])
 def health():
-    return 
+    return ''
 
 @app.route('/submit/', methods=['POST'])
 @cross_origin(origins=[sdarq_host])
