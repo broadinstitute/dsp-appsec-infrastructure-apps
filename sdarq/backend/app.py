@@ -41,8 +41,11 @@ global jira
 jira = JIRA(basic_auth=(jira_username, jira_api_token),options={'server': jira_instance })
 
 # Prepare to send to DefectDojo
+@app.route('/health/', methods=['GET'])
+def health():
+    return 
+
 @app.route('/submit/', methods=['POST'])
-# @cross_origin()
 @cross_origin(origins=[sdarq_host])
 def submit():
     jsonData = request.get_json()
