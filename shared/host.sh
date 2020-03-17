@@ -11,15 +11,14 @@ set -euo pipefail
 # - deploys GKE Managed Certificate for the hostname
 #
 # Inputs:
-#   DNS_ZONE, DNS_DOMAIN, BROAD_INGRESS_CSP,
-#   NAMESPACE, MANAGED_CERT
+#   DNS_ZONE, DNS_HOSTNAME, IP_NAME,
+#   NAMESPACE, MANAGED_CERT, BROAD_INGRESS_CSP
 #
 
 # Create the IP
 
 cd "$(dirname "$0")"
 
-export IP_NAME="${NAMESPACE}"
 ./kube-apply.py "ip.yaml"
 
 # Wait for IP creation
@@ -34,7 +33,6 @@ IP_ADDRESS=$(
 
 export IP_ADDRESS
 export DNS_RECORD="${NAMESPACE}"
-export DNS_HOSTNAME="${NAMESPACE}.${DNS_DOMAIN}"
 
 ./kube-apply.py "dns.yaml"
 ./wait-dns.py

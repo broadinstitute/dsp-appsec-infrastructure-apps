@@ -34,6 +34,9 @@ export DB_USER="${SERVICE}"
 export SQL_REGION="us-east1"
 export SQL_INSTANCE="${NAMESPACE}"
 
+export IP_NAME="${NAMESPACE}"
+export DNS_HOSTNAME="${NAMESPACE}.${DNS_DOMAIN}"
+
 export INGRESS="${SERVICE}"
 export MANAGED_CERT="${SERVICE}"
 export BACKEND_CONFIG="${SERVICE}"
