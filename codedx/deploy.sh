@@ -34,6 +34,10 @@ export DB_USER="${SERVICE}"
 export SQL_REGION="us-east1"
 export SQL_INSTANCE="${NAMESPACE}"
 
+export INGRESS="${SERVICE}"
+export MANAGED_CERT="${SERVICE}"
+export BACKEND_CONFIG="${SERVICE}"
+export SERVICE_PORT="http"
 export TARGET_PORT="http"
 
 ./volume.sh
@@ -42,4 +46,7 @@ export TARGET_PORT="http"
   "service-account.yaml" \
   "${CWD}/deployment.yaml"
 
-./ingress.sh
+./host.sh
+
+./kube-apply.py \
+  "ingress.yaml"

@@ -1,4 +1,3 @@
----
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
@@ -16,15 +15,6 @@ spec:
       - backend:
           serviceName: ${SERVICE}
           servicePort: ${SERVICE_PORT}
----
-apiVersion: networking.gke.io/v1beta1
-kind: ManagedCertificate
-metadata:
-  name: ${MANAGED_CERT}
-  namespace: ${NAMESPACE}
-spec:
-  domains:
-  - ${DNS_HOSTNAME}
 ---
 apiVersion: cloud.google.com/v1beta1
 kind: BackendConfig

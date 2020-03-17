@@ -49,6 +49,11 @@ export SQL_INSTANCE="${NAMESPACE}"
 export SQL_INSTANCE_URI="${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:${DD_DATABASE_PORT}"
 
 export LOCALHOST="127.0.0.1"
+
+export INGRESS="${SERVICE}"
+export MANAGED_CERT="${SERVICE}"
+export BACKEND_CONFIG="${SERVICE}"
+export SERVICE_PORT="http"
 export TARGET_PORT="http"
 
 ./volume.sh
@@ -57,4 +62,7 @@ export TARGET_PORT="http"
   "service-account.yaml" \
   "${CWD}/deployment.yaml"
 
-./ingress.sh
+./host.sh
+
+./kube-apply.py \
+  "ingress.yaml"
