@@ -114,6 +114,9 @@ First, it sets up some common infrastructure:
       for disk snapshots (see below).
 </details>
 
+
+<details>
+  <summary>**Apps**</summary>
 #### Apps
 
 Next, Cloud Build applies both app-specific and some [shared](shared)
@@ -233,6 +236,7 @@ A quick overview of what that script should do:
     (e.g. for Sdarq, which exposes multiple internal paths/ports,
     and could use Cloud DNS for Backend Config), in which case
     a customized copy of `ingress.yaml` would need to be referenced from `deploy.sh`.
+</details>
 
 ### Questions
 `appsec@broadinstitute.org`
