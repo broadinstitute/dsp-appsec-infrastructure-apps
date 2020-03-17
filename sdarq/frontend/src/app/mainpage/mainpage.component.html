@@ -1,0 +1,41 @@
+<h2><span style="font-weight: bolder;">DSP</span> AppSec | New Service Security Requirements</h2>
+<div class="container">
+  <br>
+  <br>
+  <h5>Introducing a New Service?</h5>
+  <p>
+    You’re launching a new service as a part of the Analysis Platforms (Terra, FireCloud, AoU), congratulations! Great,
+    let's make sure you're aware of security-related considerations related to your service. A new service is defined as
+    a new component that is deployed into a production environment. It may be deployed onto newly provisioned infrastructure
+    such as a GCE instance, or into a serverless framework such as a cloud function. Something where a team is instantiating
+    a new host structure or Google service for the first time For example, a new service could be a:
+  </p>
+  <ul>
+    <li><a href="https://cloud.google.com/compute/docs/containers/deploying-containers">Docker container running on a new GCE node</a></li>
+    <li><a href="https://cloud.google.com/kubernetes-engine/docs/quickstart">Docker container deployed to a GKE/K8S Cluster</a></li>
+    <li><a href="https://cloud.google.com/appengine/docs/">Google App Engine app</a></li>
+    <li><a href="https://cloud.google.com/functions/">Google Cloud Function</a></li>
+  </ul>
+  <br> 
+  <h5>How do I get started?</h5>
+  <p>
+    The set of questions below will be used to gain a better understanding of your architecture, tech stack and security posture,
+    and provide security-related advice and action items. This will enable DSP AppSec and DevOps teams to be involved as early as
+    possible in the SDLC. We want to make sure that all new services have common understanding of security considerations.
+  </p>
+
+        <div class="form-group">
+          <br>
+          <h5>Are you part of DSP?</h5>
+          <input type="radio"  name="partOfDSP" value="Yes" #partOfDSP1 [checked] (click)="isPartOfDSP(partOfDSP1.checked)"> Yes
+          <input type="radio"  name="partOfDSP" value="No" #partOfDSP2 [checked] (click)="isNotPartOfDSP(partOfDSP2.checked)"> No
+        </div>
+
+  <button *ngIf="partofDSP" class="btn btn-primary" routerLink="/questionnaire">Start</button>
+  <button *ngIf="notPartOfDSP" class="btn btn-info" routerLink="/notDSPquestionnaire">Start</button>
+
+  <br>  <br>
+  <h5>Questions?</h5>
+  <p>Email appsec@broadinstitute.org or reach out on Slack.</p>
+</div>
+
