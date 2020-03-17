@@ -1,8 +1,13 @@
 # stage 1
 FROM node:latest AS node
+
 WORKDIR /app
-COPY . .
+
+COPY package.* .
 RUN npm install
+# RUN npm audit fix
+
+COPY . .
 RUN npm run build --prod
 
 # stage 2
