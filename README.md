@@ -13,6 +13,9 @@ This repository hosts dsp-appsec internal infrastructure. These apps are deploye
 
 All apps are deployed via Cloud Build, as defined in [cloudbuild.yaml](cloudbuild.yaml).
 
+<details>
+  <summary>Shared resources</summary>
+
 #### Shared resources
 
 First, it sets up some common infrastructure:
@@ -109,6 +112,7 @@ First, it sets up some common infrastructure:
 
     - [GCE Resource Policy](https://cloud.google.com/compute/docs/disks/scheduled-snapshots)
       for disk snapshots (see below).
+</details>
 
 #### Apps
 
