@@ -116,7 +116,7 @@ First, it sets up some common infrastructure:
 
 
 <details>
-  <summary>**Apps**</summary>
+  <summary>Apps</summary>
 #### Apps
 
 Next, Cloud Build applies both app-specific and some [shared](shared)
