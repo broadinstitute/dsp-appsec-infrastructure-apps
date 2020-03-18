@@ -49,7 +49,7 @@ def health():
 @cross_origin(origins=[sdarq_host])
 def submit():
     jsonData = request.get_json()
-    appName = jsonData['Service'] 
+    appName = jsonData['Service']
 
     # Create a product in DefectDojo
     prod_type = 1
@@ -57,9 +57,12 @@ def submit():
 
     if product.success:
         product_id = product.id()
+    else:
+        print(product)
+        raise Exception("dd.create_product()")
 
     # Create a Jira ticket if user chooses a Jira project
-    if 'JiraProject' in jsonData:  
+    if 'JiraProject' in jsonData:
         project_key_id = jsonData['JiraProject']
         jira_description = json.dumps(jsonData['Ticket_Description']).strip('[]')
         one = jira_description.strip('", "').replace('", "',' \n- ')
@@ -84,7 +87,7 @@ def submit():
         slack.chat.post_message('#new-sec-service-req',
                                 '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL: `https://defect-dojo.dsp-techops.broadinstitute.org/product/' + str(
                                   product_id) + "` ")
-        data = json.dumps(jsonData).strip('{}')                         
+        data = json.dumps(jsonData).strip('{}')
         data1 = data.strip(',').replace(',',' \n')
         data2 = data1.strip('[').replace('[',' ')
         data3 = data2.strip(']').replace(']',' ')
