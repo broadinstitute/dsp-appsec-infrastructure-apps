@@ -12,7 +12,7 @@ spec:
   - host: ${DNS_HOSTNAME}
     http:
       paths:
-      - path: /
+      - path: /*
         backend:
           serviceName: ${SERVICE}
           servicePort: ${FRONTEND_PORT}
