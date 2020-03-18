@@ -16,14 +16,14 @@ export class MainpageComponent implements OnInit {
   }
 
 isPartOfDSP(partOfDSP1) {
-    if(partOfDSP1 === true) {
+    if (partOfDSP1 === true) {
       this.partofDSP = true;
       this.notPartOfDSP = false;
     }
 }
 
 isNotPartOfDSP(partOfDSP2) {
-    if(partOfDSP2 === true) {
+    if (partOfDSP2 === true) {
       this.notPartOfDSP = true;
       this.partofDSP = false;
     }

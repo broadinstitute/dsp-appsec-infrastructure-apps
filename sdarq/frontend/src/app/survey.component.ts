@@ -21,12 +21,11 @@ widgets.prettycheckbox(Survey);
 Survey.JsonObject.metaData.addProperty('questionbase', 'popupdescription:text');
 Survey.JsonObject.metaData.addProperty('page', 'popupdescription:text');
 
-Survey.StylesManager.applyTheme("default");
+Survey.StylesManager.applyTheme('default');
 
 
 @Component({
-   // tslint:disable-next-line:component-selector,
-  selector: 'survey',
+  selector: 'app-survey',
   template: `<div class='survey-container contentcontainer codecontainer '><div id='surveyElement'></div><button class="saveResponses" *ngIf="showPDFButton" (click)='savePDF()'>Save your answers</button></div>`
 
 })
@@ -68,7 +67,7 @@ export class SurveyComponent implements OnInit {
 
 
   savePDF() {
-    var options = {
+    const options = {
       fontSize: 11,
       margins: {
         left: 5,
@@ -79,6 +78,6 @@ export class SurveyComponent implements OnInit {
     };
     const surveyPDF = new SurveyPDF.SurveyPDF(this.json, options);
     surveyPDF.data = this.result;
-    surveyPDF.save("security_requirement");
+    surveyPDF.save('security_requirement');
   }
 }

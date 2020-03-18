@@ -5,9 +5,9 @@ WORKDIR /app
 
 COPY package.* .
 RUN npm install
-# RUN npm audit fix
 
 COPY . .
+RUN npm run lint
 RUN npm run build --prod
 
 # stage 2

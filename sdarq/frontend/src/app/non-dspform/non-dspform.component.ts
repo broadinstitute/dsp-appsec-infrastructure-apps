@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SendFormDataService } from '../send-form-data.service';
 import { HttpClient } from '@angular/common/http';
-import  formJson from './newForm.json';
+import formJson from './newForm.json';
 
 @Component({
   selector: 'app-non-dspform',

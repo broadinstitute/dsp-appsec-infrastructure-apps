@@ -1,9 +1,9 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
-import * as SurveyKo from "survey-knockout";
-import * as SurveyCreator from "survey-creator";
-import * as widgets from "surveyjs-widgets";
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import * as SurveyKo from 'survey-knockout';
+import * as SurveyCreator from 'survey-creator';
+import * as widgets from 'surveyjs-widgets';
 
-import "inputmask/dist/inputmask/phone-codes/phone.js";
+import 'inputmask/dist/inputmask/phone-codes/phone.js';
 
 widgets.icheck(SurveyKo);
 widgets.select2(SurveyKo);
@@ -17,51 +17,52 @@ widgets.sortablejs(SurveyKo);
 widgets.ckeditor(SurveyKo);
 widgets.autocomplete(SurveyKo);
 widgets.bootstrapslider(SurveyKo);
-//widgets.emotionsratings(SurveyKo);
+// widgets.emotionsratings(SurveyKo);
 
-SurveyCreator.StylesManager.applyTheme("default");
+SurveyCreator.StylesManager.applyTheme('default');
 
-var CkEditor_ModalEditor = {
+const CkEditor_ModalEditor = {
   afterRender: function(modalEditor, htmlElement) {
-    var editor = window["CKEDITOR"].replace(htmlElement);
-    editor.on("change", function() {
+    const editor = window['CKEDITOR'].replace(htmlElement);
+    editor.on('change', function() {
       modalEditor.editingValue = editor.getData();
     });
     editor.setData(modalEditor.editingValue);
   },
   destroy: function(modalEditor, htmlElement) {
-    var instance = window["CKEDITOR"].instances[htmlElement.id];
+    const instance = window['CKEDITOR'].instances[htmlElement.id];
     if (instance) {
       instance.removeAllListeners();
-      window["CKEDITOR"].remove(instance);
+      window['CKEDITOR'].remove(instance);
     }
   }
 };
 SurveyCreator.SurveyPropertyModalEditor.registerCustomWidget(
-  "html",
+  'html',
   CkEditor_ModalEditor
 );
 
 @Component({
-  selector: "survey-creator",
+  // tslint:disable-next-line:component-selector
+  selector: 'survey-creator',
   template: `
     <div id="surveyCreatorContainer"></div>
   `
 })
-export class SurveyCreatorComponent {
+export class SurveyCreatorComponent implements OnInit {
   surveyCreator: SurveyCreator.SurveyCreator;
   @Input() json: any;
   @Output() surveySaved: EventEmitter<Object> = new EventEmitter();
   ngOnInit() {
     SurveyKo.JsonObject.metaData.addProperty(
-      "questionbase",
-      "popupdescription:text"
+      'questionbase',
+      'popupdescription:text'
     );
-    SurveyKo.JsonObject.metaData.addProperty("page", "popupdescription:text");
+    SurveyKo.JsonObject.metaData.addProperty('page', 'popupdescription:text');
 
-    let options = { showEmbededSurveyTab: true, generateValidJSON: true };
+    const options = { showEmbededSurveyTab: true, generateValidJSON: true };
     this.surveyCreator = new SurveyCreator.SurveyCreator(
-      "surveyCreatorContainer",
+      'surveyCreatorContainer',
       options
     );
     this.surveyCreator.text = JSON.stringify(this.json);
