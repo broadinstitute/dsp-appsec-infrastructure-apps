@@ -58,8 +58,7 @@ def submit():
     if product.success:
         product_id = product.id()
     else:
-        print(product)
-        raise Exception("dd.create_product()")
+        raise Exception("dd.create_product(): " + str(product))
 
     # Create a Jira ticket if user chooses a Jira project
     if 'JiraProject' in jsonData:
