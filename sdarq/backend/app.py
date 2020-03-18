@@ -19,9 +19,9 @@ import os
 #     jira_api_token = data['jira_api_token']
 #     jira_instance = data['jira_instance']
 
-host = os.getenv('host')
-user = os.getenv('user')
-api_key = os.getenv('api_key')
+dojo_host = os.getenv('dojo_host')
+dojo_user = os.getenv('dojo_user')
+dojo_api_key = os.getenv('dojo_api_key')
 slack_token = os.getenv('slack_token')
 jira_username = os.getenv('jira_username')
 jira_api_token = os.getenv('jira_api_token')
@@ -32,7 +32,7 @@ sdarq_host = os.getenv('sdarq_host')
 slack = Slacker(slack_token)
 
 # Instantiate the DefectDojo backend wrapper
-dd = wrapper.DefectDojoAPI(host, api_key, user, debug=False)
+dd = wrapper.DefectDojoAPI(dojo_host, dojo_api_key, dojo_user, debug=True)
 app = FlaskAPI(__name__)
 #CORS(app, resources={r'/submit/*': { 'origins': 'http://34.68.242.149:80' } } )
 

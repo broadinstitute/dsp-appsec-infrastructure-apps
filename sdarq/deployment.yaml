@@ -46,4 +46,5 @@ metadata:
   name: ${SDARQ_CONFIG}
   namespace: ${NAMESPACE}
 data:
+  dojo_host: http://${DOJO_SERVICE}.${DOJO_NAMESPACE}/
   sdarq_host: https://${DNS_HOSTNAME}

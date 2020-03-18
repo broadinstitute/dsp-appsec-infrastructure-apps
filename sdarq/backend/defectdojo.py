@@ -1142,7 +1142,7 @@ class DefectDojoAPI(object):
 
         try:
             if self.debug:
-                print(method + ' ' + url)
+                print(method + ' ' + self.host + url)
                 print(params)
 
             response = requests.request(method=method, url=self.host + url, params=params, data=data, files=files, headers=headers,

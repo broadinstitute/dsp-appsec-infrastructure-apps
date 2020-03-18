@@ -11,6 +11,8 @@ options:
   - BROAD_INGRESS_CSP=broad-ingress
   - DISK_SNAPSHOT_POLICY=appsec-apps-disk-snapshot-policy
   - GLOBAL_NAMESPACE=global
+  - DOJO_NAMESPACE=defectdojo
+  - DOJO_SERVICE=defectdojo
   - REGION=us-east1
   - ZONE_1=us-east1-b
   - ZONE_2=us-east1-c

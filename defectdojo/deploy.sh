@@ -8,7 +8,7 @@ cd ../shared
 # Create and switch to the namespace
 
 export PROJECT_ID="$(gcloud config get-value project)"
-export NAMESPACE="defectdojo"
+export NAMESPACE="${DOJO_NAMESPACE}"
 
 ./kube-apply.py "namespace.yaml"
 
@@ -31,7 +31,7 @@ export DJANGO_SECRET="django"
 
 # Deploy the service
 
-export SERVICE="${NAMESPACE}"
+export SERVICE="${DOJO_SERVICE}"
 export SERVICE_ACCOUNT="${NAMESPACE}"
 export SERVICE_DISK="${NAMESPACE}"
 export SERVICE_VOLUME="${SERVICE}"
