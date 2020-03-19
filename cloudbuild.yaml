@@ -1,3 +1,6 @@
+substitutions:
+  _CARTOGRAPHY_SERVICE_ACCOUNT: '' # replace in Cloud Build UI
+
 options:
   env:
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
@@ -5,6 +8,7 @@ options:
   - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx
   - SDARQ_FRONTEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-frontend
   - SDARQ_BACKEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-backend
+  - CARTOGRAPHY_IMAGE=us.gcr.io/${PROJECT_ID}/cartography
   - DNS_DOMAIN=dsp-appsec.broadinstitute.org
   - DNS_ZONE=dsp-appsec
   - TERRAFORM_BUCKET=${PROJECT_ID}-terraform
@@ -136,5 +140,26 @@ steps:
   waitFor: ['shared', 'sdarq-frontend', 'sdarq-backend']
   entrypoint: ./deploy.sh
   dir: sdarq
+
+# build Cartography Docker image
+- id: cartography-docker
+  name: *kaniko
+  waitFor: ['-']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/secexplorer
+      --destination=$${CARTOGRAPHY_IMAGE}
+      --cache
+
+# deploy SecExplorer to GKE cluster
+- id: secexplorer
+  name: *kubectl
+  waitFor: ['shared', 'cartography-docker']
+  entrypoint: ./deploy.sh
+  dir: secexplorer
+  env:
+  - GCP_SERVICE_ACCOUNT_EMAIL=${_CARTOGRAPHY_SERVICE_ACCOUNT}
 
 timeout: 3600s
