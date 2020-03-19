@@ -27,7 +27,7 @@ spec:
         args:
           # value in $() will be replaced
           # with values from SERVICE_SECRET at runtime
-        - NEO4J_AUTH=${NEO4J_USERNAME}/$(NEO4J_PASSWORD) exec neo4j
+        - NEO4J_AUTH=${NEO4J_USERNAME}/$(NEO4J_PASSWORD) exec neo4j console
         envFrom:
         - secretRef:
             name: ${SERVICE_SECRET}
