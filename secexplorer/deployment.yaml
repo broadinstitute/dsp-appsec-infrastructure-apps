@@ -39,7 +39,7 @@ spec:
           containerPort: 7687
         readinessProbe:
           httpGet:
-            path: /
+            path: /browser/
             port: ${HTTP_PORT}
         volumeMounts:
         - name: ${SERVICE_VOLUME}
