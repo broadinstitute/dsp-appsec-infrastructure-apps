@@ -33,13 +33,14 @@ spec:
         - secretRef:
             name: ${SERVICE_SECRET}
         ports:
-        - name: ${TARGET_PORT}
+        - name: ${HTTP_PORT}
           containerPort: 7474
-        - containerPort: 7687
+        - name: ${TCP_PORT}
+          containerPort: 7687
         readinessProbe:
           httpGet:
             path: /
-            port: ${TARGET_PORT}
+            port: ${HTTP_PORT}
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /data

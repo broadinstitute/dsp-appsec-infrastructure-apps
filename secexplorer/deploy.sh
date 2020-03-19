@@ -33,8 +33,8 @@ export DNS_HOSTNAME="${NAMESPACE}.${DNS_DOMAIN}"
 export INGRESS="${SERVICE}"
 export MANAGED_CERT="${SERVICE}"
 export BACKEND_CONFIG="${SERVICE}"
-export SERVICE_PORT="http"
-export TARGET_PORT="http"
+export HTTP_PORT="http"
+export TCP_PORT="tcp"
 
 ./volume.sh
 
@@ -42,4 +42,4 @@ export TARGET_PORT="http"
 
 ./host.sh
 
-./kube-apply.py "ingress.yaml"
+./kube-apply.py "${CWD}/ingress.yaml"
