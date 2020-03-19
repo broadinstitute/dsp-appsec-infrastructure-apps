@@ -12,11 +12,11 @@ spec:
   - host: ${DNS_HOSTNAME}
     http:
       paths:
-      - path: /*
+      - path: /browser/*
         backend:
           serviceName: ${SERVICE}
           servicePort: ${HTTP_PORT}
-      - path: /ws/*
+      - path: /*
         backend:
           serviceName: ${SERVICE}
           servicePort: ${TCP_PORT}
