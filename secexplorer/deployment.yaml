@@ -27,7 +27,8 @@ spec:
         args:
           # value in $() will be replaced
           # with values from SERVICE_SECRET at runtime
-        - NEO4J_AUTH=${NEO4J_USERNAME}/$(NEO4J_PASSWORD) exec neo4j console
+        - NEO4J_AUTH=${NEO4J_USERNAME}/$(NEO4J_PASSWORD)
+          /sbin/tini -g -- /docker-entrypoint.sh neo4j
         envFrom:
         - secretRef:
             name: ${SERVICE_SECRET}
