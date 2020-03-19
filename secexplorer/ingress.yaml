@@ -12,15 +12,11 @@ spec:
   - host: ${DNS_HOSTNAME}
     http:
       paths:
-      - path: /favicon.ico
-        backend:
-          serviceName: ${SERVICE}
-          servicePort: ${HTTP_PORT}
-      - path: /browser/*
-        backend:
-          serviceName: ${SERVICE}
-          servicePort: ${HTTP_PORT}
       - path: /*
+        backend:
+          serviceName: ${SERVICE}
+          servicePort: ${HTTP_PORT}
+      - path: /ws/*
         backend:
           serviceName: ${SERVICE}
           servicePort: ${TCP_PORT}

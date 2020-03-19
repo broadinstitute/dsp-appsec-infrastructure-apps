@@ -38,8 +38,9 @@ spec:
         - name: ${TCP_PORT}
           containerPort: 7687
         readinessProbe:
-          tcpSocket:
-            port: ${TCP_PORT}
+          httpGet:
+            path: /
+            port: ${HTTP_PORT}
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /data
