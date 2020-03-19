@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ${STATEFUL_SET}
+  namespace: ${NAMESPACE}
+spec:
+  serviceName: ${SERVICE}
+  selector:
+    matchLabels:
+      service: ${SERVICE}
+  template:
+    metadata:
+      labels:
+        service: ${SERVICE}
+    spec:
+      runtimeClassName: gvisor
+
+      volumes:
+      - name: ${SERVICE_VOLUME}
+        persistentVolumeClaim:
+          claimName: ${SERVICE_VOLUME}
+
+      containers:
+      - name: neo4j
+        image: neo4j
+        command: ['sh', '-c']
+        args:
+          # value in $() will be replaced
+          # with values from SERVICE_SECRET at runtime
+        - NEO4J_AUTH=${NEO4J_USERNAME}/$(NEO4J_PASSWORD) exec neo4j
+        envFrom:
+        - secretRef:
+            name: ${SERVICE_SECRET}
+        ports:
+        - name: ${TARGET_PORT}
+          containerPort: 7474
+        - containerPort: 7687
+        readinessProbe:
+          httpGet:
+            path: /
+            port: ${TARGET_PORT}
+        volumeMounts:
+        - name: ${SERVICE_VOLUME}
+          mountPath: /data
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cartography
+spec:
+  schedule: "0 0 * * *" # daily at midnight
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: ${K8S_SERVICE_ACCOUNT}
+          runtimeClassName: gvisor
+          restartPolicy: OnFailure
+
+          containers:
+          - name: cartography
+            image: ${CARTOGRAPHY_IMAGE}
+            envFrom:
+            - secretRef:
+                name: ${SERVICE_SECRET}
+            args: [
+              '--neo4j-uri', 'bolt://${SERVICE}:7687',
+              '--neo4j-user', '${NEO4J_USERNAME}',
+              '--neo4j-password-env-var', 'NEO4J_PASSWORD',
+            ]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ${K8S_SERVICE_ACCOUNT}
+  namespace: ${NAMESPACE}
+  annotations:
+    iam.gke.io/gcp-service-account: ${GCP_SERVICE_ACCOUNT_EMAIL}
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: ${K8S_SERVICE_ACCOUNT}-gsa-binding
+  namespace: ${NAMESPACE}
+spec:
+  member: serviceAccount:${PROJECT_ID}.svc.id.goog[${NAMESPACE}/${K8S_SERVICE_ACCOUNT}]
+  role: roles/iam.workloadIdentityUser
+  resourceRef:
+    apiVersion: iam.cnrm.cloud.google.com/v1beta1
+    kind: IAMServiceAccount
+    external: https://iam.googleapis.com/v1/projects/-/serviceAccounts/${GCP_SERVICE_ACCOUNT_EMAIL}
