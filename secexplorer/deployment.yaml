@@ -88,4 +88,4 @@ spec:
   resourceRef:
     apiVersion: iam.cnrm.cloud.google.com/v1beta1
     kind: IAMServiceAccount
-    external: https://iam.googleapis.com/v1/projects/-/serviceAccounts/${GCP_SERVICE_ACCOUNT_EMAIL}
+    external: projects/-/serviceAccounts/${GCP_SERVICE_ACCOUNT_EMAIL}
