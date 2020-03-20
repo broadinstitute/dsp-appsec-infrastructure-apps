@@ -81,7 +81,7 @@ spec:
             - secretRef:
                 name: ${SERVICE_SECRET}
             args: [
-              '--neo4j-uri', 'bolt://${SERVICE}:7687',
+              '--neo4j-uri', 'bolt://${SERVICE}:80',
               '--neo4j-user', '${NEO4J_USERNAME}',
               '--neo4j-password-env-var', 'NEO4J_PASSWORD',
             ]
