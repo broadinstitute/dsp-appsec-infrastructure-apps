@@ -39,7 +39,11 @@ spec:
         image: neo4j
         command: ['sh', '-c']
         args:
-        - echo "dbms.connector.bolt.advertised_address=${DNS_HOSTNAME}:443" >> conf/neo4j.conf &&
+        - |
+          cat <<EOF >> conf/neo4j.conf
+          dbms.default_listen_address=localhost
+          dbms.connector.bolt.advertised_address=${DNS_HOSTNAME}:443
+          EOF
           exec /docker-entrypoint.sh neo4j
         env:
         - name: NEO4J_AUTH
