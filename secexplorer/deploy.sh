@@ -13,6 +13,7 @@ export NAMESPACE="secexplorer"
 ./kube-apply.py "namespace.yaml"
 
 # Generate secrets
+
 export SERVICE="${NAMESPACE}"
 export SERVICE_SECRET="${SERVICE}"
 
@@ -21,7 +22,16 @@ export SERVICE_SECRET="${SERVICE}"
 
 export NEO4J_USERNAME="neo4j"
 
+# Create Nginx config
+
+export NGINX_VOLUME="nginx"
+export NGINX_CONFIG="nginx"
+
+kubectl create configmap "${NGINX_CONFIG}" \
+  -n "${NAMESPACE}" --from-file "nginx.conf"
+
 # Deploy the service
+
 export K8S_SERVICE_ACCOUNT="${NAMESPACE}"
 export SERVICE_DISK="${NAMESPACE}"
 export SERVICE_VOLUME="${SERVICE}"
@@ -33,8 +43,8 @@ export DNS_HOSTNAME="${NAMESPACE}.${DNS_DOMAIN}"
 export INGRESS="${SERVICE}"
 export MANAGED_CERT="${SERVICE}"
 export BACKEND_CONFIG="${SERVICE}"
-export HTTP_PORT="http"
-export TCP_PORT="tcp"
+export SERVICE_PORT="http"
+export TARGET_PORT="http"
 
 ./volume.sh
 
@@ -42,4 +52,4 @@ export TCP_PORT="tcp"
 
 ./host.sh
 
-./kube-apply.py "${CWD}/ingress.yaml"
+./kube-apply.py "ingress.yaml"

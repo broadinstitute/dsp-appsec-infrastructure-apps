@@ -16,11 +16,26 @@ spec:
       runtimeClassName: gvisor
 
       volumes:
+      - name: ${NGINX_VOLUME}
+        configMap:
+          name: ${NGINX_CONFIG}
       - name: ${SERVICE_VOLUME}
         persistentVolumeClaim:
           claimName: ${SERVICE_VOLUME}
 
       containers:
+      - name: nginx
+        image: nginx
+        command: ['sh', '-c']
+        ports:
+        - name: ${TARGET_PORT}
+          containerPort: 8080
+        volumeMounts:
+        - name: ${NGINX_VOLUME}
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+          readOnly: true
+
       - name: neo4j
         image: neo4j
         command: ['sh', '-c']
@@ -31,11 +46,6 @@ spec:
         envFrom:
         - secretRef:
             name: ${SERVICE_SECRET}
-        ports:
-        - name: ${HTTP_PORT}
-          containerPort: 7474
-        - name: ${TCP_PORT}
-          containerPort: 7687
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /data
