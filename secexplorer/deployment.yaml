@@ -27,8 +27,12 @@ spec:
       - name: nginx
         image: nginx
         ports:
-        - name: ${TARGET_PORT}
+        - name: ${HTTP_PORT}
           containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /
+            port: ${HTTP_PORT}
         volumeMounts:
         - name: ${NGINX_VOLUME}
           mountPath: /etc/nginx/nginx.conf
@@ -55,6 +59,12 @@ spec:
         envFrom:
         - secretRef:
             name: ${SERVICE_SECRET}
+        ports:
+        - name: ${BOLT_PORT}
+          containerPort: 7687
+        readinessProbe:
+          tcpSocket:
+            port: ${BOLT_PORT}
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /data
