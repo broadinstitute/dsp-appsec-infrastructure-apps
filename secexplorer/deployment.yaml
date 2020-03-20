@@ -41,8 +41,7 @@ spec:
         args:
         - |
           cat <<EOF >> conf/neo4j.conf
-          dbms.default_listen_address=localhost
-          dbms.connector.bolt.advertised_address=${ADVERTISED_ADDRESS}
+          dbms.connector.bolt.advertised_address=${DNS_HOSTNAME}:443
           dbms.logs.debug.path=/dev/stdout
           dbms.logs.http.path=/dev/stdout
           dbms.logs.query.path=/dev/stdout
@@ -82,7 +81,7 @@ spec:
             - secretRef:
                 name: ${SERVICE_SECRET}
             args: [
-              '--neo4j-uri', 'bolt://${ADVERTISED_ADDRESS}',
+              '--neo4j-uri', 'bolt://${SERVICE}:7687',
               '--neo4j-user', '${NEO4J_USERNAME}',
               '--neo4j-password-env-var', 'NEO4J_PASSWORD',
             ]
