@@ -66,7 +66,7 @@ metadata:
   name: cartography
   namespace: ${NAMESPACE}
 spec:
-  schedule: "0 0 * * *" # daily at midnight
+  schedule: "0 4 * * *" # daily at 4am UTC
   jobTemplate:
     spec:
       template:
