@@ -25,9 +25,9 @@ spec:
         image: neo4j
         command: ['sh', '-c']
         args:
-          # value in $() will be replaced
-          # with values from SERVICE_SECRET at runtime
-        - NEO4J_AUTH=${NEO4J_USERNAME}/$(NEO4J_PASSWORD)
+          # value in $() will be replaced at runtime
+        - sed -i "s/0.0.0.0:7687.*/${DNS_HOSTNAME}:443/" conf/neo4j.conf &&
+          NEO4J_AUTH=${NEO4J_USERNAME}/$(NEO4J_PASSWORD)
           /sbin/tini -g -- /docker-entrypoint.sh neo4j
         envFrom:
         - secretRef:
