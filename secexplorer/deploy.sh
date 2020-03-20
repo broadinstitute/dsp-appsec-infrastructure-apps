@@ -22,7 +22,7 @@ export SERVICE_SECRET="${SERVICE}"
 
 export NEO4J_USERNAME="neo4j"
 
-# Create Nginx config
+# Deploy Nginx config
 
 export NGINX_VOLUME="nginx"
 export NGINX_CONFIG="nginx"
@@ -30,7 +30,7 @@ export NGINX_CONFIG="nginx"
 kubectl create configmap "${NGINX_CONFIG}" \
   -n "${NAMESPACE}" \
   --from-file "${CWD}/nginx.conf" \
-  --dry-run -o yaml | kubectl replace -f -
+  --dry-run -o yaml | kubectl apply -f -
 
 # Deploy the service
 
