@@ -29,7 +29,7 @@ spec:
         command: ['sh', '-c']
         ports:
         - name: ${TARGET_PORT}
-          containerPort: 8080
+          containerPort: 80
         volumeMounts:
         - name: ${NGINX_VOLUME}
           mountPath: /etc/nginx/nginx.conf
