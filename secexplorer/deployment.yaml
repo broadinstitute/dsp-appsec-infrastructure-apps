@@ -26,7 +26,6 @@ spec:
       containers:
       - name: nginx
         image: nginx
-        command: ['sh', '-c']
         ports:
         - name: ${TARGET_PORT}
           containerPort: 80
