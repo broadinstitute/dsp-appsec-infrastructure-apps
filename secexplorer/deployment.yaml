@@ -26,7 +26,7 @@ spec:
         command: ['sh', '-c']
         args:
           # value in $() will be replaced at runtime
-        - sed -i "s/0.0.0.0:7687.*/${DNS_HOSTNAME}:443/" conf/neo4j.conf &&
+        - echo "dbms.connector.bolt.advertised_address=${DNS_HOSTNAME}:443" >> conf/neo4j.conf &&
           NEO4J_AUTH=${NEO4J_USERNAME}/$(NEO4J_PASSWORD)
           /sbin/tini -g -- /docker-entrypoint.sh neo4j
         envFrom:
