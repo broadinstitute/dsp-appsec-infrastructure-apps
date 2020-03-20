@@ -35,7 +35,7 @@ spec:
           subPath: nginx.conf
           readOnly: true
 
-      - name: neo4j
+      - name: neo4j:3.5
         image: neo4j
         command: ['sh', '-c']
         args:
