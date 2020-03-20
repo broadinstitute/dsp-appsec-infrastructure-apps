@@ -64,6 +64,7 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: cartography
+  namespace: ${NAMESPACE}
 spec:
   schedule: "0 0 * * *" # daily at midnight
   jobTemplate:
