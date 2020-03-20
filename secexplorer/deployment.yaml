@@ -40,9 +40,11 @@ spec:
         image: neo4j
         command: ['sh', '-c']
         args:
-          # value in $() will be replaced at runtime
         - echo "dbms.connector.bolt.advertised_address=${DNS_HOSTNAME}:443" >> conf/neo4j.conf &&
-          NEO4J_AUTH=${NEO4J_USERNAME}/$(NEO4J_PASSWORD) exec /docker-entrypoint.sh neo4j
+          exec /docker-entrypoint.sh neo4j
+        env:
+        - name: NEO4J_AUTH
+          value: ${NEO4J_USERNAME}/$(NEO4J_PASSWORD)
         envFrom:
         - secretRef:
             name: ${SERVICE_SECRET}
