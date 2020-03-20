@@ -43,6 +43,11 @@ spec:
           cat <<EOF >> conf/neo4j.conf
           dbms.default_listen_address=localhost
           dbms.connector.bolt.advertised_address=${DNS_HOSTNAME}:443
+          dbms.logs.debug.path=/dev/stdout
+          dbms.logs.http.path=/dev/stdout
+          dbms.logs.query.path=/dev/stdout
+          dbms.logs.security.path=/dev/stdout
+          dbms.logs.user.path=/dev/stdout
           EOF
           exec /docker-entrypoint.sh neo4j
         env:
