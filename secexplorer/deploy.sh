@@ -28,7 +28,9 @@ export NGINX_VOLUME="nginx"
 export NGINX_CONFIG="nginx"
 
 kubectl create configmap "${NGINX_CONFIG}" \
-  -n "${NAMESPACE}" --from-file "${CWD}/nginx.conf"
+  -n "${NAMESPACE}" \
+  --from-file "${CWD}/nginx.conf" \
+  --dry-run | kubectl replace -f -
 
 # Deploy the service
 
