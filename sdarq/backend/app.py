@@ -37,8 +37,6 @@ def health():
 def submit():
     jsonData = request.get_json()
     appName = jsonData['Service']
-    defectDojoUrl= 'https://defectdojo.dsp-appsec.broadinstitute.org/product/' 
-    jiraURL= 'https://broadworkbench.atlassian.net/projects/'
 
     # Create a product in DefectDojo
     prod_type = 1
@@ -68,12 +66,12 @@ def submit():
         productDescription = dd.set_product(product_id, description=data4)
          # Set Slack notification
         slack.chat.post_message('#dsp-security',
-                                '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + defectDojoUrl + str(
-                                  product_id) + '`\n 3. Jira Issue Url: `' + jiraURL + str(project_key_id) + "/issues/"+ str(jira_ticket) +"`")
+                                '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host + 'product/' + str(
+                                  product_id) + '`\n 3. Jira Issue Url: `' + jira_instance + '/projects/' + str(project_key_id) + "/issues/"+ str(jira_ticket) +"`")
     else:
         # Set Slack notification
         slack.chat.post_message('#dsp-security',
-                                '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + defectDojoUrl  + str(
+                                '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host + 'product/' + str(
                                   product_id) + "`")
         data = json.dumps(jsonData).strip('{}')
         data1 = data.strip(',').replace(',',' \n')
