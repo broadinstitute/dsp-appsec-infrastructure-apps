@@ -6,8 +6,8 @@ options:
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
   - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
   - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx
-  - SDARQ_FRONTEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-frontend
-  - SDARQ_BACKEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-backend
+  - SDARQ_FRONTEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-frontend:${SHORT_SHA}
+  - SDARQ_BACKEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-backend:${SHORT_SHA}
   - CARTOGRAPHY_IMAGE=us.gcr.io/${PROJECT_ID}/cartography
   - DNS_DOMAIN=dsp-appsec.broadinstitute.org
   - DNS_ZONE=dsp-appsec
