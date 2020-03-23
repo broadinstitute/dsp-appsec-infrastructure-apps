@@ -11,13 +11,14 @@ import os
 # with open('config.json') as config_file:
 #     data = json.load(config_file)
 
-#     host = data['host']
-#     user = data['user']
-#     api_key = data['api_key']
+#     dojo_host = data['dojo_host']
+#     dojo_user = data['dojo_user']
+#     dojo_api_key = data['dojo_api_key']
 #     slack_token = data['slack_token']
 #     jira_username = data['jira_username']
 #     jira_api_token = data['jira_api_token']
 #     jira_instance = data['jira_instance']
+
 
 dojo_host = os.getenv('dojo_host')
 dojo_user = os.getenv('dojo_user')
@@ -28,13 +29,13 @@ jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
 
 sdarq_host = os.getenv('sdarq_host')
+
 # Slack communication via slack_token
 slack = Slacker(slack_token)
 
 # Instantiate the DefectDojo backend wrapper
 dd = wrapper.DefectDojoAPI(dojo_host, dojo_api_key, dojo_user, debug=True)
 app = FlaskAPI(__name__)
-#CORS(app, resources={r'/submit/*': { 'origins': 'http://34.68.242.149:80' } } )
 
 # Instantiate the Jira backend wrapper
 global jira
@@ -50,6 +51,7 @@ def health():
 def submit():
     jsonData = request.get_json()
     appName = jsonData['Service']
+    securityChamp = jsonData['Security champion']
 
     # Create a product in DefectDojo
     prod_type = 1
@@ -78,14 +80,20 @@ def submit():
          # Set product description
         productDescription = dd.set_product(product_id, description=data4)
          # Set Slack notification
-        slack.chat.post_message('#new-sec-service-req',
-                                '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL: `https://defect-dojo.dsp-techops.broadinstitute.org/product/' + str(
-                                  product_id) + '`\n 3. Jira Issue Url: `https://broadworkbench.atlassian.net/projects/'+ str(project_key_id) + "/issues/"+ str(jira_ticket) +"` ")
+        slack.chat.post_message('#dsp-security',
+                                '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host + 'product/' + str(
+                                  product_id) + '`\n 3. Jira Issue Url: `' + jira_instance + '/projects/' + str(project_key_id) + "/issues/"+ str(jira_ticket) + "` \n 4. Security champion: `" + securityChamp + "`")
+        slack.chat.post_message('#dsde-qa',
+                                '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host + 'product/' + str(
+                                product_id) + '`\n 3. Jira Issue Url: `' + jira_instance + '/projects/' + str(project_key_id) + "/issues/"+ str(jira_ticket) + "` \n 4. Security champion: `" + securityChamp + "`")
     else:
         # Set Slack notification
-        slack.chat.post_message('#new-sec-service-req',
-                                '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL: `https://defect-dojo.dsp-techops.broadinstitute.org/product/' + str(
-                                  product_id) + "` ")
+        slack.chat.post_message('#dsp-security',
+                                '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host + 'product/' + str(
+                                  product_id) + "` \n 3. Security champion: `" + securityChamp + "`")
+        slack.chat.post_message('#dsde-qa',
+                                 '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host + 'product/' + str(
+                                product_id) + "` \n 3. Security champion: `" + securityChamp + "`")
         data = json.dumps(jsonData).strip('{}')
         data1 = data.strip(',').replace(',',' \n')
         data2 = data1.strip('[').replace('[',' ')
@@ -104,6 +112,5 @@ def submit():
 
 
 if __name__== "__main__":
-    #  app.run(host='0.0.0.0', port=5000)
      app.run(host='0.0.0.0', port=int(os.getenv('PORT', 8080)))
 
