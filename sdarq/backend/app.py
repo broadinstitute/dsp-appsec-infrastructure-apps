@@ -27,6 +27,7 @@ slack_token = os.getenv('slack_token')
 jira_username = os.getenv('jira_username')
 jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
+dojo_host_url = os.getenv('host')
 
 sdarq_host = os.getenv('sdarq_host')
 
@@ -81,18 +82,18 @@ def submit():
         productDescription = dd.set_product(product_id, description=data4)
          # Set Slack notification
         slack.chat.post_message('#dsp-security',
-                                '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host + 'product/' + str(
+                                '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host_url + 'product/' + str(
                                   product_id) + '`\n 3. Jira Issue Url: `' + jira_instance + '/projects/' + str(project_key_id) + "/issues/"+ str(jira_ticket) + "` \n 4. Security champion: `" + securityChamp + "`")
         slack.chat.post_message('#dsde-qa',
-                                '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host + 'product/' + str(
+                                '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host_url + 'product/' + str(
                                 product_id) + '`\n 3. Jira Issue Url: `' + jira_instance + '/projects/' + str(project_key_id) + "/issues/"+ str(jira_ticket) + "` \n 4. Security champion: `" + securityChamp + "`")
     else:
         # Set Slack notification
         slack.chat.post_message('#dsp-security',
-                                '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host + 'product/' + str(
+                                '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host_url + 'product/' + str(
                                   product_id) + "` \n 3. Security champion: `" + securityChamp + "`")
         slack.chat.post_message('#dsde-qa',
-                                 '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host + 'product/' + str(
+                                 '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host_url + 'product/' + str(
                                 product_id) + "` \n 3. Security champion: `" + securityChamp + "`")
         data = json.dumps(jsonData).strip('{}')
         data1 = data.strip(',').replace(',',' \n')
