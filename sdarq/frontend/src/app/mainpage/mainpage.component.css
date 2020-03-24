@@ -46,3 +46,8 @@ h2{
   /*font-size: 0.8rem;*/
 }
 
+.h5, h5 {
+  font-size: 1.25em;
+  font-weight: 200 !important;
+}
+
