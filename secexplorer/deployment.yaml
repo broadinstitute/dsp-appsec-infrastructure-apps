@@ -33,6 +33,7 @@ spec:
           httpGet:
             path: /
             port: ${HTTP_PORT}
+          timeoutSeconds: 10
         volumeMounts:
         - name: ${NGINX_VOLUME}
           mountPath: /etc/nginx/nginx.conf
@@ -65,6 +66,7 @@ spec:
         readinessProbe:
           tcpSocket:
             port: ${BOLT_PORT}
+          timeoutSeconds: 10
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /data

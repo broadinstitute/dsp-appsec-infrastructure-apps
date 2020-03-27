@@ -49,6 +49,7 @@ spec:
           httpGet:
             path: /codedx/login
             port: ${TARGET_PORT}
+          timeoutSeconds: 10
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /opt/codedx

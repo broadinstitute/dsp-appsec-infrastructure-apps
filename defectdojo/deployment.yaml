@@ -51,6 +51,7 @@ spec:
           httpGet:
             path: /login
             port: ${TARGET_PORT}
+          timeoutSeconds: 10
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /usr/share/nginx/media
