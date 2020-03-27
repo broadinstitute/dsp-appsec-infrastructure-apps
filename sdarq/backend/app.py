@@ -11,6 +11,7 @@ import os
 # with open('config.json') as config_file:
 #     data = json.load(config_file)
 
+#     dojo_host_url = data['dojo_host']
 #     dojo_host = data['dojo_host']
 #     dojo_user = data['dojo_user']
 #     dojo_api_key = data['dojo_api_key']
@@ -29,7 +30,7 @@ jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
 dojo_host_url = os.getenv('host')
 
-sdarq_host = os.getenv('sdarq_host')
+ sdarq_host = os.getenv('sdarq_host')
 
 # Slack communication via slack_token
 slack = Slacker(slack_token)
@@ -50,6 +51,7 @@ def health():
 @app.route('/submit/', methods=['POST'])
 @cross_origin(origins=[sdarq_host])
 def submit():
+    data
     jsonData = request.get_json()
     appName = jsonData['Service']
     securityChamp = jsonData['Security champion']
@@ -63,6 +65,14 @@ def submit():
     else:
         raise Exception("dd.create_product(): " + str(product))
 
+    def createDojoProductDescription(data):
+        data = json.dumps(data).strip('{}')
+        data1 = data.strip(',').replace(',',' \n')
+        data2 = data1.strip('[').replace('[',' ')
+        data3 = data2.strip(']').replace(']',' ')
+        data4 = data3.strip('""').replace('"', ' ')
+        return data4
+
     # Create a Jira ticket if user chooses a Jira project
     if 'JiraProject' in jsonData:
         project_key_id = jsonData['JiraProject']
@@ -73,35 +83,24 @@ def submit():
                                         description=str(one),
                                         issuetype={'name': 'Task'})
         del jsonData['Ticket_Description']  # delete Ticket_Description from json, so it will not be added to DefectDojo product description
-        data = json.dumps(jsonData).strip('{}')
-        data1 = data.strip(',').replace(',',' \n')
-        data2 = data1.strip('[').replace('[',' ')
-        data3 = data2.strip(']').replace(']',' ')
-        data4 = data3.strip('""').replace('"', ' ')
+        
          # Set product description
-        productDescription = dd.set_product(product_id, description=data4)
+        productDescription = dd.set_product(product_id, description=createDojoProductDescription(jsonData))
          # Set Slack notification
-        slack.chat.post_message('#dsp-security',
-                                '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host_url + 'product/' + str(
-                                  product_id) + '`\n 3. Jira Issue Url: `' + jira_instance + '/projects/' + str(project_key_id) + "/issues/"+ str(jira_ticket) + "` \n 4. Security champion: `" + securityChamp + "`")
-        slack.chat.post_message('#dsde-qa',
-                                '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host_url + 'product/' + str(
-                                product_id) + '`\n 3. Jira Issue Url: `' + jira_instance + '/projects/' + str(project_key_id) + "/issues/"+ str(jira_ticket) + "` \n 4. Security champion: `" + securityChamp + "`")
+        slack_list=['#dsp-security', '#dsde-qa', '#appsec-internal']
+        for i in slack_list:
+          slack.chat.post_message(i,
+                                    '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host_url + 'product/' + str(
+                                    product_id) + '`\n 3. Jira Issue Url: `' + jira_instance + '/projects/' + str(project_key_id) + "/issues/"+ str(jira_ticket) + "` \n 4. Security champion: `" + securityChamp + "`")
     else:
         # Set Slack notification
-        slack.chat.post_message('#dsp-security',
+        slack_list=['#dsp-security', '#dsde-qa', '#appsec-internal']
+        for i in slack_list:
+         slack.chat.post_message(i,
                                 '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host_url + 'product/' + str(
                                   product_id) + "` \n 3. Security champion: `" + securityChamp + "`")
-        slack.chat.post_message('#dsde-qa',
-                                 '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host_url + 'product/' + str(
-                                product_id) + "` \n 3. Security champion: `" + securityChamp + "`")
-        data = json.dumps(jsonData).strip('{}')
-        data1 = data.strip(',').replace(',',' \n')
-        data2 = data1.strip('[').replace('[',' ')
-        data3 = data2.strip(']').replace(']',' ')
-        data4 = data3.strip('""').replace('"', ' ')
          # Set product description
-        productDescription = dd.set_product(product_id, description=data4)
+        productDescription = dd.set_product(product_id, description=createDojoProductDescription(jsonData))
 
     response = make_response((json.dumps(data),200,
                        {"X-Frame-Options": "SAMEORIGIN",
