@@ -67,6 +67,7 @@ spec:
           tcpSocket:
             port: ${BOLT_PORT}
           timeoutSeconds: 10
+          initialDelaySeconds: 15
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /data

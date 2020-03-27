@@ -50,6 +50,7 @@ spec:
             path: /codedx/login
             port: ${TARGET_PORT}
           timeoutSeconds: 10
+          initialDelaySeconds: 120
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /opt/codedx
