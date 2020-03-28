@@ -70,7 +70,7 @@ resource "google_container_cluster" "cluster" {
   enable_shielded_nodes    = true
 
   release_channel {
-    channel = "REGULAR"
+    channel = "STABLE"
   }
 
   workload_identity_config {
