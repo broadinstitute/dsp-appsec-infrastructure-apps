@@ -3,21 +3,9 @@ from flask import request, make_response
 from flask_api import FlaskAPI
 from flask_cors import CORS, cross_origin
 import defectdojo as wrapper
-from slacker import Slacker
 from jira import JIRA
 import os
-
-# # # Read config
-# with open('config.json') as config_file:
-#     data = json.load(config_file)
-
-#     dojo_host = data['dojo_host']
-#     dojo_user = data['dojo_user']
-#     dojo_api_key = data['dojo_api_key']
-#     slack_token = data['slack_token']
-#     jira_username = data['jira_username']
-#     jira_api_token = data['jira_api_token']
-#     jira_instance = data['jira_instance']
+import slack
 
 
 dojo_host = os.getenv('dojo_host')
@@ -30,9 +18,6 @@ jira_instance = os.getenv('jira_instance')
 dojo_host_url = os.getenv('host')
 
 sdarq_host = os.getenv('sdarq_host')
-
-# Slack communication via slack_token
-slack = Slacker(slack_token)
 
 # Instantiate the DefectDojo backend wrapper
 dd = wrapper.DefectDojoAPI(dojo_host, dojo_api_key, dojo_user, debug=True)
@@ -50,6 +35,7 @@ def health():
 @app.route('/submit/', methods=['POST'])
 @cross_origin(origins=[sdarq_host])
 def submit():
+    data
     jsonData = request.get_json()
     appName = jsonData['Service']
     securityChamp = jsonData['Security champion']
@@ -63,6 +49,14 @@ def submit():
     else:
         raise Exception("dd.create_product(): " + str(product))
 
+    def createDojoProductDescription(data):
+        data = json.dumps(data).strip('{}')
+        data1 = data.strip(',').replace(',',' \n')
+        data2 = data1.strip('[').replace('[',' ')
+        data3 = data2.strip(']').replace(']',' ')
+        data4 = data3.strip('""').replace('"', ' ')
+        return data4
+
     # Create a Jira ticket if user chooses a Jira project
     if 'JiraProject' in jsonData:
         project_key_id = jsonData['JiraProject']
@@ -73,35 +67,115 @@ def submit():
                                         description=str(one),
                                         issuetype={'name': 'Task'})
         del jsonData['Ticket_Description']  # delete Ticket_Description from json, so it will not be added to DefectDojo product description
-        data = json.dumps(jsonData).strip('{}')
-        data1 = data.strip(',').replace(',',' \n')
-        data2 = data1.strip('[').replace('[',' ')
-        data3 = data2.strip(']').replace(']',' ')
-        data4 = data3.strip('""').replace('"', ' ')
+        
          # Set product description
-        productDescription = dd.set_product(product_id, description=data4)
+        productDescription = dd.set_product(product_id, description=createDojoProductDescription(jsonData))
          # Set Slack notification
-        slack.chat.post_message('#dsp-security',
-                                '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host_url + 'product/' + str(
-                                  product_id) + '`\n 3. Jira Issue Url: `' + jira_instance + '/projects/' + str(project_key_id) + "/issues/"+ str(jira_ticket) + "` \n 4. Security champion: `" + securityChamp + "`")
-        slack.chat.post_message('#dsde-qa',
-                                '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host_url + 'product/' + str(
-                                product_id) + '`\n 3. Jira Issue Url: `' + jira_instance + '/projects/' + str(project_key_id) + "/issues/"+ str(jira_ticket) + "` \n 4. Security champion: `" + securityChamp + "`")
+        slack_list=['#dsp-security', '#appsec-internal', '#dsde-qa']
+        for i in slack_list:
+              client = slack.WebClient(slack_token)
+              response = client.chat_postMessage(
+              channel=i,
+              attachments=[
+                                {
+                    "blocks": [
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "*New service engagement created* :books:"
+                            }
+                        },
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "*Product name:* `{0} `" .format(str(appName))
+                            }
+                        },
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "*Security champion:* `{0} `" .format(str(securityChamp))
+                            }
+                        },
+                        {
+                            "type": "actions",
+                            "elements": [
+                                {
+                                    "type": "button",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "Defect Dojo"
+                                    },
+                                    "url": "{0}product/{1}" .format(dojo_host_url, str(product_id))
+                                },
+                                                {
+                                    "type": "button",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "Jira Ticket"
+                                    },
+                                    "url": "{0}/projects/{1}/issues/{2}" .format(jira_instance, str(project_key_id), str(jira_ticket))
+                                }
+                            ]
+                        }
+                    ],
+                  "color": "#0a88ab"
+                } ]
+                                )
     else:
         # Set Slack notification
-        slack.chat.post_message('#dsp-security',
-                                '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host_url + 'product/' + str(
-                                  product_id) + "` \n 3. Security champion: `" + securityChamp + "`")
-        slack.chat.post_message('#dsde-qa',
-                                 '*New service engagement created* :notebook_with_decorative_cover: \n 1. Project name: `' + appName + '`\n 2. DefectDojo URL:`' + dojo_host_url + 'product/' + str(
-                                product_id) + "` \n 3. Security champion: `" + securityChamp + "`")
-        data = json.dumps(jsonData).strip('{}')
-        data1 = data.strip(',').replace(',',' \n')
-        data2 = data1.strip('[').replace('[',' ')
-        data3 = data2.strip(']').replace(']',' ')
-        data4 = data3.strip('""').replace('"', ' ')
+        slack_list=['#dsp-security', '#appsec-internal', '#dsde-qa']
+        for i in slack_list:
+              client = slack.WebClient(slack_token)
+              response = client.chat_postMessage(
+              channel=i,
+              attachments=[
+                                {
+                    "blocks": [
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "*New service engagement created* :books:"
+                            }
+                        },
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "*Product name:* `{0} `" .format(str(appName))
+                            }
+                        },
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": "*Security champion:* `{0} `" .format(str(securityChamp))
+                            }
+                        },
+                        {
+                            "type": "actions",
+                            "elements": [
+                                {
+                                    "type": "button",
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "Defect Dojo"
+                                    },
+                                    "url": "{0}product/{1}" .format(dojo_host_url, str(product_id))
+                                }
+                            ]
+                        }
+                    ],
+                  "color": "#0a88ab"
+                } ]
+                                )
+
          # Set product description
-        productDescription = dd.set_product(product_id, description=data4)
+        productDescription = dd.set_product(product_id, description=createDojoProductDescription(jsonData))
 
     response = make_response((json.dumps(data),200,
                        {"X-Frame-Options": "SAMEORIGIN",

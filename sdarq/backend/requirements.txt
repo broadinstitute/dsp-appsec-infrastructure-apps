@@ -12,3 +12,4 @@ virtualenv==16.0.0
 slacker
 jira
 gunicorn
+slackclient
