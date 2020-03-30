@@ -71,11 +71,11 @@ def submit():
          # Set product description
         productDescription = dd.set_product(product_id, description=createDojoProductDescription(jsonData))
          # Set Slack notification
-        slack_list=['#dsp-security', '#appsec-internal', '#dsde-qa']
-        for i in slack_list:
+        slack_list=['#appsec-internal']
+        for channel in slack_list:
               client = slack.WebClient(slack_token)
               response = client.chat_postMessage(
-              channel=i,
+              channel=channel,
               attachments=[
                                 {
                     "blocks": [
@@ -127,11 +127,11 @@ def submit():
                                 )
     else:
         # Set Slack notification
-        slack_list=['#dsp-security', '#appsec-internal', '#dsde-qa']
-        for i in slack_list:
+        slack_list=['#appsec-internal']
+        for channel in slack_list:
               client = slack.WebClient(slack_token)
               response = client.chat_postMessage(
-              channel=i,
+              channel=channel,
               attachments=[
                                 {
                     "blocks": [
