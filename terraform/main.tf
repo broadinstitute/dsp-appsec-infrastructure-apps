@@ -108,7 +108,7 @@ resource "google_container_node_pool" "system" {
     service_account = module.node_sa.email
     oauth_scopes    = local.oauth_scopes
 
-    image_type = "COS_CONTAINERD"
+    image_type = "COS" # TODO re-enable COS_CONTAINERD
 
     shielded_instance_config {
       enable_secure_boot = true
