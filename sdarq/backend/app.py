@@ -35,7 +35,7 @@ def health():
 @app.route('/submit/', methods=['POST'])
 @cross_origin(origins=[sdarq_host])
 def submit():
-    data
+    
     jsonData = request.get_json()
     appName = jsonData['Service']
     securityChamp = jsonData['Security champion']
@@ -49,8 +49,8 @@ def submit():
     else:
         raise Exception("dd.create_product(): " + str(product))
 
-    def createDojoProductDescription(data):
-        data = json.dumps(data).strip('{}')
+    def createDojoProductDescription(jsonData):
+        data = json.dumps(jsonData).strip('{}')
         data1 = data.strip(',').replace(',',' \n')
         data2 = data1.strip('[').replace('[',' ')
         data3 = data2.strip(']').replace(']',' ')
