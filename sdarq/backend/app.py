@@ -71,7 +71,7 @@ def submit():
          # Set product description
         productDescription = dd.set_product(product_id, description=createDojoProductDescription(jsonData))
          # Set Slack notification
-        slack_list=['#appsec-internal']
+        slack_list=['#appsec-internal', '#dsp-security']
         for channel in slack_list:
               client = slack.WebClient(slack_token)
               response = client.chat_postMessage(
@@ -127,7 +127,7 @@ def submit():
                                 )
     else:
         # Set Slack notification
-        slack_list=['#appsec-internal']
+        slack_list=['#appsec-internal', '#dsp-security']
         for channel in slack_list:
               client = slack.WebClient(slack_token)
               response = client.chat_postMessage(
@@ -177,8 +177,13 @@ def submit():
          # Set product description
         productDescription = dd.set_product(product_id, description=createDojoProductDescription(jsonData))
 
+    response = make_response((json.dumps(data),200,
+                       {"X-Frame-Options": "SAMEORIGIN",
+                        "X-XSS-Protection":"1; mode=block",
+                        "X-Content-type-Options":"nosniff"}))
 
-    return ''
+
+    return response
 
 
 if __name__== "__main__":
