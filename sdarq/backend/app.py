@@ -15,7 +15,7 @@ slack_token = os.getenv('slack_token')
 jira_username = os.getenv('jira_username')
 jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
-dojo_host_url = os.getenv('host')
+dojo_host_url = os.getenv('dojo_host_url')
 
 sdarq_host = os.getenv('sdarq_host')
 
@@ -35,7 +35,7 @@ def health():
 @app.route('/submit/', methods=['POST'])
 @cross_origin(origins=[sdarq_host])
 def submit():
-    data
+    
     jsonData = request.get_json()
     appName = jsonData['Service']
     securityChamp = jsonData['Security champion']
@@ -49,8 +49,8 @@ def submit():
     else:
         raise Exception("dd.create_product(): " + str(product))
 
-    def createDojoProductDescription(data):
-        data = json.dumps(data).strip('{}')
+    def createDojoProductDescription(jsonData):
+        data = json.dumps(jsonData).strip('{}')
         data1 = data.strip(',').replace(',',' \n')
         data2 = data1.strip('[').replace('[',' ')
         data3 = data2.strip(']').replace(']',' ')
@@ -71,11 +71,11 @@ def submit():
          # Set product description
         productDescription = dd.set_product(product_id, description=createDojoProductDescription(jsonData))
          # Set Slack notification
-        slack_list=['#dsp-security', '#appsec-internal', '#dsde-qa']
-        for i in slack_list:
+        slack_list=['#appsec-internal', '#dsp-security', '#dsde-qa']
+        for channel in slack_list:
               client = slack.WebClient(slack_token)
               response = client.chat_postMessage(
-              channel=i,
+              channel=channel,
               attachments=[
                                 {
                     "blocks": [
@@ -90,14 +90,14 @@ def submit():
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": "*Product name:* `{0} `" .format(str(appName))
+                                "text": "*Product name:* {0} " .format(str(appName))
                             }
                         },
                         {
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": "*Security champion:* `{0} `" .format(str(securityChamp))
+                                "text": "*Security champion:* {0} " .format(str(securityChamp))
                             }
                         },
                         {
@@ -127,11 +127,11 @@ def submit():
                                 )
     else:
         # Set Slack notification
-        slack_list=['#dsp-security', '#appsec-internal', '#dsde-qa']
-        for i in slack_list:
+        slack_list=['#appsec-internal', '#dsp-security', '#dsde-qa']
+        for channel in slack_list:
               client = slack.WebClient(slack_token)
               response = client.chat_postMessage(
-              channel=i,
+              channel=channel,
               attachments=[
                                 {
                     "blocks": [
@@ -146,14 +146,14 @@ def submit():
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": "*Product name:* `{0} `" .format(str(appName))
+                                "text": "*Product name:* {0} " .format(str(appName))
                             }
                         },
                         {
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": "*Security champion:* `{0} `" .format(str(securityChamp))
+                                "text": "*Security champion:* {0} " .format(str(securityChamp))
                             }
                         },
                         {
