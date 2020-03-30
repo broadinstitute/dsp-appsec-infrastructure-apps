@@ -90,14 +90,14 @@ def submit():
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": "*Product name:* `{0} `" .format(str(appName))
+                                "text": "*Product name:* {0} " .format(str(appName))
                             }
                         },
                         {
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": "*Security champion:* `{0} `" .format(str(securityChamp))
+                                "text": "*Security champion:* {0} " .format(str(securityChamp))
                             }
                         },
                         {
@@ -146,14 +146,14 @@ def submit():
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": "*Product name:* `{0} `" .format(str(appName))
+                                "text": "*Product name:* {0} " .format(str(appName))
                             }
                         },
                         {
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
-                                "text": "*Security champion:* `{0} `" .format(str(securityChamp))
+                                "text": "*Security champion:* {0} " .format(str(securityChamp))
                             }
                         },
                         {
@@ -177,13 +177,8 @@ def submit():
          # Set product description
         productDescription = dd.set_product(product_id, description=createDojoProductDescription(jsonData))
 
-    response = make_response((json.dumps(data),200,
-                       {"X-Frame-Options": "SAMEORIGIN",
-                        "X-XSS-Protection":"1; mode=block",
-                        "X-Content-type-Options":"nosniff"}))
 
-
-    return response
+    return ''
 
 
 if __name__== "__main__":
