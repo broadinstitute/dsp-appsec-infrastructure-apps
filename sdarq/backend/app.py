@@ -15,7 +15,7 @@ slack_token = os.getenv('slack_token')
 jira_username = os.getenv('jira_username')
 jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
-dojo_host_url = os.getenv('host')
+dojo_host_url = os.getenv('dojo_host_url')
 
 sdarq_host = os.getenv('sdarq_host')
 
