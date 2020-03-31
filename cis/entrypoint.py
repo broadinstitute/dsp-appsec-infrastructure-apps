@@ -1,1 +1,115 @@
 #!/usr/bin/env python3
+
+from google.cloud import bigquery
+import json
+import os
+import subprocess
+
+GCP_PROJECT_ID = os.getenv('GCP_PROJECT_ID')
+BQ_DATASET = os.getenv('BQ_DATASET')
+
+BENCHMARK_PROFILE = 'inspec-gcp-cis-benchmark'
+
+
+def benchmark():
+    args = f'''
+        inspec exec {BENCHMARK_PROFILE} -t gcp:// --reporter json
+            --input gcp_project_id={GCP_PROJECT_ID}
+    '''.split()
+    p = subprocess.run(args, capture_output=True, text=True)
+
+    # normal exit codes as documented at
+    # https://www.inspec.io/docs/reference/cli
+    if p.returncode not in (0, 100, 101):
+        print(p.stderr)
+        raise subprocess.CalledProcessError(p.returncode, p.args)
+
+    return json.loads(p.stdout)['profiles']
+
+
+def parse_profiles(profiles):
+    profile = None
+    for p in profiles:
+        if p['name'] == 'inspec-gcp':
+            version = p['version']
+        elif p['name'] == BENCHMARK_PROFILE:
+            profile = p
+
+    title = profile['title']
+    rows = []
+    for c in profile['controls']:
+        failures = []
+        for r in c['results']:
+            if r['status'] != 'failed' or 'exception' in r:
+                continue
+            f: str = r['code_desc']
+            f = f.replace(f'[{GCP_PROJECT_ID}] ', '', 1)
+            f = f.replace('cmp == nil', 'be empty')
+            f = f.replace('cmp ==', 'equal')
+            failures.append(f)
+        if not failures:
+            continue
+
+        for d in c['descriptions']:
+            if d['label'] != 'rationale':
+                continue
+            rationale = d['data']
+
+        tags = c['tags']
+        refs = [ref['url'] for ref in c['refs']]
+
+        rows.append({
+            'id': tags['cis_gcp'],
+            'level': tags['cis_level'],
+            'title': c['title'],
+            'failures': failures,
+            'description': c['desc'],
+            'rationale': rationale,
+            'refs': refs,
+        })
+
+    return title, version, rows
+
+
+def load_bigquery(table_desc, version, rows):
+    if not rows:
+        return
+
+    bq = bigquery.Client()
+    table_id = GCP_PROJECT_ID.replace('-', '_')
+    table = bq.dataset(BQ_DATASET).table(table_id)
+
+    f = bigquery.SchemaField
+    schema = (
+        f('id', 'STRING', mode='REQUIRED'),
+        f('level', 'INTEGER', mode='REQUIRED'),
+        f('title', 'STRING', mode='REQUIRED'),
+        f('failures', 'STRING', mode='REPEATED'),
+        f('description', 'STRING', mode='REQUIRED'),
+        f('rationale', 'STRING', mode='REQUIRED'),
+        f('refs', 'STRING', mode='REPEATED'),
+    )
+    job_config = bigquery.LoadJobConfig(
+        schema=schema,
+        destination_table_description=table_desc,
+        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+        time_partitioning=bigquery.TimePartitioning(
+            type_=bigquery.TimePartitioningType.DAY,
+        ),
+        labels={
+            'gcp-project': GCP_PROJECT_ID,
+            'inspec-version': version.replace('.', '_'),
+        },
+    )
+
+    job = bq.load_table_from_json(rows, table, job_config=job_config)
+    job.result()  # wait for completion
+    print(f"Loaded {job.output_rows} rows into {BQ_DATASET}.{table_id}")
+
+
+def main():
+    load_bigquery(*parse_profiles(benchmark()))
+
+
+if __name__ == '__main__':
+    main()
