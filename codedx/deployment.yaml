@@ -54,6 +54,9 @@ spec:
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /opt/codedx
+        resources:
+          requests:
+            memory: 2500M
 
       - name: cloudsql-proxy
         image: gcr.io/cloudsql-docker/gce-proxy
