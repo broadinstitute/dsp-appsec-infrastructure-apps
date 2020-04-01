@@ -123,6 +123,22 @@ module "apps_node_pool" {
   enable_sandbox = true
 }
 
+# This preemptible node pool will be used for batch workloads,
+# with GKE Sandbox and Cluster Autoscaler enabled
+
+module "batch_node_pool" {
+  source = "./modules/node-pool"
+
+  name            = "batch"
+  location        = var.region
+  cluster         = google_container_cluster.cluster.name
+  service_account = module.node_sa.email
+
+  max_node_count = var.max_batch_node_count
+  preemptible    = true
+  enable_sandbox = true
+}
+
 ### Config Connector Service Account and Role
 
 module "cnrm_sa" {
