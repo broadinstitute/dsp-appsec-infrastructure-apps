@@ -20,8 +20,14 @@ variable "cluster_name" {
   default = "appsec-apps"
 }
 
-variable "zone_max_node_count" {
+variable "max_app_node_count" {
   type        = number
   default     = 5
-  description = "Max number of nodes per zone"
+  description = "Max number of app nodes per zone"
+}
+
+variable "max_batch_node_count" {
+  type        = number
+  default     = 20
+  description = "Max number of batch nodes per zone"
 }

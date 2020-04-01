@@ -91,83 +91,36 @@ resource "google_container_cluster" "cluster" {
   }
 }
 
-# This pool will be used for kube-system and
+# This pool will be used for kube-system, Knative and
 # Config Connector Pods, in place of the default one
 # (such that any changes to it will not require
 # re-creation of the cluster)
 
-resource "google_container_node_pool" "system" {
-  provider = google-beta
+module "system_node_pool" {
+  source = "./modules/node-pool"
 
-  name     = "system"
-  location = var.region
-  cluster  = google_container_cluster.cluster.name
+  name            = "system"
+  location        = var.region
+  cluster         = google_container_cluster.cluster.name
+  service_account = module.node_sa.email
 
   initial_node_count = 1
-
-  node_config {
-    machine_type = "e2-small"
-
-    service_account = module.node_sa.email
-    oauth_scopes    = local.oauth_scopes
-
-    image_type = "COS_CONTAINERD"
-
-    shielded_instance_config {
-      enable_secure_boot = true
-    }
-
-    workload_metadata_config {
-      node_metadata = "GKE_METADATA_SERVER"
-    }
-  }
+  machine_type       = "e2-small"
 }
 
 # This pool will be used for the application Pods,
 # with GKE Sandbox and Cluster Autoscaler enabled
 
-resource "google_container_node_pool" "sandbox" {
-  provider = google-beta
+module "apps_node_pool" {
+  source = "./modules/node-pool"
 
-  name     = "sandbox"
-  location = var.region
-  cluster  = google_container_cluster.cluster.name
+  name            = "apps"
+  location        = var.region
+  cluster         = google_container_cluster.cluster.name
+  service_account = module.node_sa.email
 
-  autoscaling {
-    min_node_count = 1
-    max_node_count = var.zone_max_node_count - 1
-  }
-
-  node_config {
-    service_account = module.node_sa.email
-    oauth_scopes    = local.oauth_scopes
-
-    image_type = "COS_CONTAINERD"
-
-    sandbox_config {
-      sandbox_type = "gvisor"
-    }
-
-    shielded_instance_config {
-      enable_secure_boot = true
-    }
-
-    workload_metadata_config {
-      node_metadata = "GKE_METADATA_SERVER"
-    }
-  }
-
-  timeouts {
-    create = "60m"
-  }
-}
-
-locals {
-  oauth_scopes = [
-    "https://www.googleapis.com/auth/devstorage.read_only",
-    "https://www.googleapis.com/auth/logging.write",
-    "https://www.googleapis.com/auth/monitoring",
-  ]
+  max_node_count = var.max_app_node_count
+  enable_sandbox = true
 }
 
 ### Config Connector Service Account and Role
