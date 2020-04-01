@@ -85,6 +85,9 @@ resource "google_container_cluster" "cluster" {
     network_policy_config {
       disabled = false
     }
+    istio_config {
+      disabled = false
+    }
   }
 }
 
