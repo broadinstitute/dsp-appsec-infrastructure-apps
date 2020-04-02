@@ -25,6 +25,9 @@ spec:
             path: /
             port: ${FRONTEND_PORT}
           timeoutSeconds: 10
+        resources:
+          requests:
+            memory: 75M
 
       - name: backend
         image: ${SDARQ_BACKEND_IMAGE}
@@ -41,6 +44,9 @@ spec:
             path: /health/
             port: ${BACKEND_PORT}
           timeoutSeconds: 10
+        resources:
+          requests:
+            memory: 75M
 ---
 apiVersion: v1
 kind: ConfigMap
