@@ -231,6 +231,7 @@ resource "google_compute_instance" "bastion" {
 
   network_interface {
     subnetwork = google_compute_subnetwork.gke.self_link
+    access_config {}
   }
 
   shielded_instance_config {
