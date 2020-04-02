@@ -220,7 +220,7 @@ resource "google_project_service" "iap" {
 
 resource "google_compute_instance" "bastion" {
   name         = "${var.cluster_name}-bastion"
-  zone         = var.zones[1]
+  zone         = var.zones[0]
   machine_type = "f1-micro"
 
   boot_disk {
