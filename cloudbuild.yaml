@@ -162,4 +162,4 @@ steps:
   env:
   - GCP_SERVICE_ACCOUNT_EMAIL=${_CARTOGRAPHY_SERVICE_ACCOUNT}
 
-timeout: 3600s
+timeout: 7200s

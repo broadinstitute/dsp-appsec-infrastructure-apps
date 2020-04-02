@@ -48,6 +48,6 @@ resource "google_container_node_pool" "pool" {
   }
 
   timeouts {
-    create = "60m"
+    create = "120m"
   }
 }
