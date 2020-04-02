@@ -39,6 +39,9 @@ spec:
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
           readOnly: true
+        resources:
+          requests:
+            memory: 315M
 
       - name: neo4j
         image: neo4j:3.5
@@ -71,6 +74,9 @@ spec:
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /data
+        resources:
+          requests:
+            memory: 315M
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
