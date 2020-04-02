@@ -238,25 +238,12 @@ resource "google_compute_instance" "bastion" {
   }
 }
 
-resource "google_compute_health_check" "bastion" {
-  name               = "${var.cluster_name}-bastion"
-  check_interval_sec = 30
-
-  tcp_health_check {
-    port = 22
-  }
-}
-
 resource "google_compute_firewall" "bastion" {
-  name    = "allow-ssh-from-health-checks-and-iap"
+  name    = "allow-ssh-from-iap"
   network = google_compute_network.gke.self_link
 
   source_ranges = [
-    # iap
     "35.235.240.0/20",
-    # health checks
-    "35.191.0.0/16",
-    "130.211.0.0/22",
   ]
 
   allow {
