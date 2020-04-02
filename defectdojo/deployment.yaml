@@ -15,7 +15,7 @@ spec:
     spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
       nodeSelector:
-        sandbox.gke.io/runtime: gvisor
+        cloud.google.com/gke-nodepool: apps
       tolerations:
       - key: sandbox.gke.io/runtime
         operator: Equal

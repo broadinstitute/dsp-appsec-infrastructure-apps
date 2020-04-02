@@ -13,6 +13,8 @@ spec:
         service: ${SERVICE}
     spec:
       runtimeClassName: gvisor
+      nodeSelector:
+        cloud.google.com/gke-nodepool: apps
 
       containers:
       - name: frontend
