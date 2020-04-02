@@ -212,6 +212,72 @@ resource "google_service_account_iam_member" "cnrm_sa_ksa_binding" {
   member             = "serviceAccount:${var.project}.svc.id.goog[cnrm-system/cnrm-controller-manager]"
 }
 
+### Bastion host for cluster access
+
+resource "google_project_service" "iap" {
+  service = "iap.googleapis.com"
+}
+
+resource "google_compute_instance" "bastion" {
+  name         = "${var.cluster_name}-bastion"
+  zone         = var.zones[1]
+  machine_type = "f1-micro"
+
+  boot_disk {
+    initialize_params {
+      image = "cos_containerd"
+    }
+  }
+
+  network_interface {
+    subnetwork = google_compute_subnetwork.gke.self_link
+  }
+
+  shielded_instance_config {
+    enable_secure_boot = true
+  }
+}
+
+resource "google_compute_health_check" "bastion" {
+  name               = "${var.cluster_name}-bastion"
+  check_interval_sec = 30
+
+  tcp_health_check {
+    port = 22
+  }
+}
+
+resource "google_compute_firewall" "bastion" {
+  name    = "allow-ssh-from-health-checks-and-iap"
+  network = google_compute_network.gke.self_link
+
+  source_ranges = [
+    # iap
+    "35.235.240.0/20",
+    # health checks
+    "35.191.0.0/16",
+    "130.211.0.0/22",
+  ]
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+}
+
+resource "google_iap_tunnel_instance_iam_binding" "bastion" {
+  instance = google_compute_instance.bastion.self_link
+  role     = "roles/iap.tunnelResourceAccessor"
+  members = [
+    "serviceAccount:${google_service_account.bastion_client.email}",
+  ]
+}
+
+resource "google_service_account" "bastion_client" {
+  account_id   = "${var.cluster_name}-bastion-client"
+  display_name = "Client for the ${var.cluster_name} cluster bastion host"
+}
+
 ### Outputs
 
 output "region" {
