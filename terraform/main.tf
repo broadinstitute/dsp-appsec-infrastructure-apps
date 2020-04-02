@@ -225,7 +225,7 @@ resource "google_compute_instance" "bastion" {
 
   boot_disk {
     initialize_params {
-      image = "cos"
+      image = "gce-uefi-images/cos-stable"
     }
   }
 
