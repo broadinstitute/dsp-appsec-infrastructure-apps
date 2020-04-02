@@ -20,14 +20,15 @@ resource "google_container_node_pool" "pool" {
     content {
       image_type = "COS_CONTAINERD"
 
+      machine_type = var.machine_type
+      preemptible  = var.preemptible
+
       service_account = var.service_account
       oauth_scopes = [
         "https://www.googleapis.com/auth/devstorage.read_only",
         "https://www.googleapis.com/auth/logging.write",
         "https://www.googleapis.com/auth/monitoring",
       ]
-
-      preemptible = var.preemptible
 
       dynamic "sandbox_config" {
         for_each = var.enable_sandbox ? [1] : []
