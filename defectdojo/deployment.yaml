@@ -78,6 +78,9 @@ spec:
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /app/media
+        resources:
+          requests:
+            memory: 250M
 
       - name: celerybeat
         image: ${DD_DJANGO_IMAGE}
@@ -92,6 +95,9 @@ spec:
             name: ${CELERY_CONFIG}
         - secretRef:
             name: ${CELERY_SECRET}
+        resources:
+          requests:
+            memory: 130M
 
       - name: celeryworker
         image: ${DD_DJANGO_IMAGE}
@@ -106,6 +112,9 @@ spec:
             name: ${CELERY_CONFIG}
         - secretRef:
             name: ${CELERY_SECRET}
+        resources:
+          requests:
+            memory: 130M
 
       - name: rabbitmq
         image: rabbitmq
@@ -120,6 +129,9 @@ spec:
             secretKeyRef:
               name: ${CELERY_SECRET}
               key: DD_CELERY_BROKER_PASSWORD
+        resources:
+          requests:
+            memory: 90M
 
       - name: initializer
         image: ${DD_DJANGO_IMAGE}
