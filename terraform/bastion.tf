@@ -3,6 +3,9 @@
 locals {
   bastion_name = "${var.cluster_name}-bastion"
   bastion_tags = [local.bastion_name]
+  bastion_members = [
+    "serviceAccount:${google_service_account.bastion_client.email}",
+  ]
 }
 
 resource "google_project_service" "iap" {
@@ -38,6 +41,10 @@ resource "google_compute_instance" "bastion" {
     enable_secure_boot = true
   }
 
+  metadata = {
+    os-login = "TRUE"
+  }
+
   tags = local.bastion_tags
 }
 
@@ -62,10 +69,14 @@ resource "google_service_account" "bastion_client" {
   display_name = "Bastion host client for the ${var.cluster_name} cluster"
 }
 
+resource "google_compute_instance_iam_binding" "bastion" {
+  instance_name = google_compute_instance.bastion.name
+  role          = "roles/compute.osLogin"
+  members       = local.bastion_members
+}
+
 resource "google_iap_tunnel_instance_iam_binding" "bastion" {
   instance = google_compute_instance.bastion.name
   role     = "roles/iap.tunnelResourceAccessor"
-  members = [
-    "serviceAccount:${google_service_account.bastion_client.email}",
-  ]
+  members  = local.bastion_members
 }
