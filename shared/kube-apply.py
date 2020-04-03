@@ -5,7 +5,7 @@ import re
 import subprocess
 import sys
 
-HTTPS_PROXY = 'socks5://localhost:' + os.getenv('PROXY_PORT')
+os.environ['HTTPS_PROXY'] = 'socks5://localhost:' + os.getenv('PROXY_PORT')
 
 for name in sys.argv[1:]:
     with open(name) as f:
@@ -20,5 +20,4 @@ for name in sys.argv[1:]:
             input=template.encode(),
             stdout=sys.stdout,
             stderr=sys.stderr,
-            env={'HTTPS_PROXY': HTTPS_PROXY},
         ).check_returncode()
