@@ -31,3 +31,8 @@ variable "max_batch_node_count" {
   default     = 20
   description = "Max number of batch nodes per zone"
 }
+
+variable "bastion_image" {
+  type        = string
+  description = "Container image for the bastion host"
+}

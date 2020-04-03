@@ -52,6 +52,12 @@ resource "google_storage_bucket_iam_member" "node_sa_gcr_role" {
   member = "serviceAccount:${module.node_sa.email}"
 }
 
+resource "google_storage_bucket_iam_member" "bastion_sa_gcr_role" {
+  bucket = google_container_registry.gcr.id
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${module.bastion_host_sa.email}"
+}
+
 ### GKE cluster
 
 resource "google_container_cluster" "cluster" {
@@ -237,10 +243,30 @@ resource "google_compute_instance" "bastion" {
   shielded_instance_config {
     enable_secure_boot = true
   }
+
+  metadata = {
+    google-logging-enabled    = true
+    google-monitoring-enabled = true
+    gce-container-declaration = yamlencode({
+      spec = {
+        containers = [{
+          image = var.bastion_image
+        }]
+      }
+    })
+  }
+
+  service_account {
+    email = module.bastion_host_sa.email
+    scopes = [
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring.write",
+    ]
+  }
 }
 
 resource "google_compute_firewall" "bastion" {
-  name    = "allow-ssh-from-iap"
+  name    = "allow-bastion-proxy-from-iap"
   network = google_compute_network.gke.self_link
 
   source_ranges = [
@@ -249,8 +275,23 @@ resource "google_compute_firewall" "bastion" {
 
   allow {
     protocol = "tcp"
-    ports    = ["22"]
+    ports    = ["8888"]
   }
+}
+
+module "bastion_host_sa" {
+  source       = "./modules/service-account"
+  account_id   = "${var.cluster_name}-bastion-host"
+  display_name = "Bastion host identity for the ${var.cluster_name} cluster"
+  roles = [
+    "roles/logging.logWriter",
+    "roles/monitoring.metricWriter",
+  ]
+}
+
+resource "google_service_account" "bastion_client" {
+  account_id   = "${var.cluster_name}-bastion-client"
+  display_name = "Bastion host client for the ${var.cluster_name} cluster"
 }
 
 resource "google_iap_tunnel_instance_iam_binding" "bastion" {
@@ -259,11 +300,6 @@ resource "google_iap_tunnel_instance_iam_binding" "bastion" {
   members = [
     "serviceAccount:${google_service_account.bastion_client.email}",
   ]
-}
-
-resource "google_service_account" "bastion_client" {
-  account_id   = "${var.cluster_name}-bastion-client"
-  display_name = "Client for the ${var.cluster_name} cluster bastion host"
 }
 
 ### Outputs
