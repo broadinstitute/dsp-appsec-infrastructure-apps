@@ -79,10 +79,7 @@ module "bastion_host_sa" {
   source       = "./modules/service-account"
   account_id   = "${var.cluster_name}-bastion-host"
   display_name = "Bastion host identity for the ${var.cluster_name} cluster"
-  roles = [
-    "roles/logging.logWriter",
-    "roles/monitoring.metricWriter",
-  ]
+  roles        = []
 }
 
 resource "google_service_account" "bastion_client" {
