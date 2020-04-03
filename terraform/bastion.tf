@@ -56,7 +56,7 @@ resource "google_compute_instance" "bastion" {
 }
 
 locals {
-  bastion_tags = ["iap-proxy"]
+  bastion_tags = ["${var.cluster_name}-bastion-proxy"]
 }
 
 resource "google_compute_firewall" "bastion" {
