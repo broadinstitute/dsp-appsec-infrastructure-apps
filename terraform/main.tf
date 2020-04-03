@@ -265,11 +265,19 @@ resource "google_compute_instance" "bastion" {
       "https://www.googleapis.com/auth/monitoring.write",
     ]
   }
+
+  tags = local.bastion_tags
+}
+
+locals {
+  bastion_tags = ["iap-proxy"]
 }
 
 resource "google_compute_firewall" "bastion" {
   name    = "allow-bastion-proxy-from-iap"
   network = google_compute_network.gke.self_link
+
+  target_tags = local.bastion_tags
 
   source_ranges = [
     "35.235.240.0/20",
