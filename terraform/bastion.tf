@@ -4,6 +4,10 @@ resource "google_project_service" "iap" {
   service = "iap.googleapis.com"
 }
 
+resource "google_compute_address" "bastion" {
+  name = "${var.cluster_name}-bastion"
+}
+
 resource "google_compute_instance" "bastion" {
   name         = "${var.cluster_name}-bastion"
   zone         = var.zones[0]
@@ -19,7 +23,9 @@ resource "google_compute_instance" "bastion" {
 
   network_interface {
     subnetwork = google_compute_subnetwork.gke.self_link
-    access_config {}
+    access_config {
+      nat_ip = google_compute_address.bastion.address
+    }
   }
 
   shielded_instance_config {
