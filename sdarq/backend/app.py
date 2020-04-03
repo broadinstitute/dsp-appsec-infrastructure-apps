@@ -7,7 +7,7 @@ from jira import JIRA
 import os
 import slack
 
-
+# Env variables
 dojo_host = os.getenv('dojo_host')
 dojo_user = os.getenv('dojo_user')
 dojo_api_key = os.getenv('dojo_api_key')
@@ -16,7 +16,6 @@ jira_username = os.getenv('jira_username')
 jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
 dojo_host_url = os.getenv('dojo_host_url')
-
 sdarq_host = os.getenv('sdarq_host')
 
 # Instantiate the DefectDojo backend wrapper
@@ -49,6 +48,7 @@ def submit():
     else:
         raise Exception("dd.create_product(): " + str(product))
 
+    # Create Dojo Description
     def createDojoProductDescription(jsonData):
         data = json.dumps(jsonData).strip('{}')
         data1 = data.strip(',').replace(',',' \n')
@@ -66,19 +66,19 @@ def submit():
                                         summary='New security requirements issue',
                                         description=str(one),
                                         issuetype={'name': 'Task'})
-        del jsonData['Ticket_Description']  # delete Ticket_Description from json, so it will not be added to DefectDojo product description
+        # Delete Ticket_Description from json, so it will not be added to DefectDojo product description
+        del jsonData['Ticket_Description']
         
-         # Set product description
+        # Set product description
         productDescription = dd.set_product(product_id, description=createDojoProductDescription(jsonData))
-         # Set Slack notification
+        
+        # Set Slack notification
         slack_list=['#appsec-internal', '#dsp-security', '#dsde-qa']
         for channel in slack_list:
               client = slack.WebClient(slack_token)
               response = client.chat_postMessage(
               channel=channel,
-              attachments=[
-                                {
-                    "blocks": [
+              attachments=[{"blocks": [
                         {
                             "type": "section",
                             "text": {
@@ -182,10 +182,8 @@ def submit():
                         "X-XSS-Protection":"1; mode=block",
                         "X-Content-type-Options":"nosniff"}))
 
-
     return response
 
 
 if __name__== "__main__":
      app.run(host='0.0.0.0', port=int(os.getenv('PORT', 8080)))
-
