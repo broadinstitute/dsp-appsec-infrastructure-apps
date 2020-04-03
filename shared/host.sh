@@ -24,7 +24,7 @@ cd "$(dirname "$0")"
 # Wait for IP creation
 
 IP_ADDRESS=$(
-  kubectl wait --for condition=Ready computeaddress \
+  ./kubectl.sh wait --for condition=Ready computeaddress \
     "${IP_NAME}" -n "${NAMESPACE}" \
     -o jsonpath='{.spec.address}'
 )

@@ -8,7 +8,7 @@ SA_EMAIL="$1"
 
 # exit early if already initialized
 wait_init() {
-  kubectl wait --for condition=Available deployment \
+  ./kubectl.sh wait --for condition=Available deployment \
     cnrm-webhook-manager -n cnrm-system
 }
 wait_init && exit 0
@@ -21,10 +21,10 @@ gsutil cat "gs://cnrm/latest/release-bundle.tar.gz" | tar xzf -
 cd "install-bundle-workload-identity"
 
 # apply the configs and wait for initialization
-kubectl apply -f .
+./kubectl.sh apply -f .
 wait_init
 
 # patch the service account
-kubectl annotate serviceaccount \
+./kubectl.sh annotate serviceaccount \
   -n cnrm-system cnrm-controller-manager \
   --overwrite "iam.gke.io/gcp-service-account=${SA_EMAIL}"
