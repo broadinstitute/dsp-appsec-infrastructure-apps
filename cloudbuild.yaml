@@ -56,7 +56,8 @@ steps:
   args:
   - -c
   - export $(xargs < .env) &&
-    docker run -d --network cloudbuild --name $${PROXY_HOST}
+    docker run -d --network cloudbuild
+      --name $${PROXY_HOST} -p "$${PROXY_PORT}:$${PROXY_PORT}"
       gcr.io/cloud-builders/gcloud compute ssh "${bastion_instance}"
         --tunnel-through-iap -- -ND "$${PROXY_PORT}"
 
