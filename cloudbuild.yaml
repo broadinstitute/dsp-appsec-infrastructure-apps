@@ -21,7 +21,7 @@ options:
   - ZONE_1=us-east1-b
   - ZONE_2=us-east1-c
   - PROXY_HOST=proxy
-  - PROXY_PORT=8080
+  - PROXY_PORT=8888
 
 steps:
 # prepare GCS backend for Terraform
@@ -56,8 +56,8 @@ steps:
   args:
   - -c
   - export $(xargs < .env) &&
-    docker run -d --network --name $${PROXY_HOST} cloudbuild
-      gcr.io/cloud-builders/gcloud compute ssh "${bastion_instance}" \
+    docker run -d --network cloudbuild --name $${PROXY_HOST}
+      gcr.io/cloud-builders/gcloud compute ssh "${bastion_instance}"
         --tunnel-through-iap -- -ND "$${PROXY_PORT}"
 
 # set up Config Connector and other shared GKE resources
