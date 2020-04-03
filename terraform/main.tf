@@ -235,6 +235,8 @@ resource "google_compute_instance" "bastion" {
     }
   }
 
+  allow_stopping_for_update = true
+
   network_interface {
     subnetwork = google_compute_subnetwork.gke.self_link
     access_config {}
