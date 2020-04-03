@@ -5,6 +5,7 @@ locals {
   bastion_tags = [local.bastion_name]
   bastion_members = [
     "serviceAccount:${google_service_account.bastion_client.email}",
+    "serviceAccount:${local.project_number}@cloudbuild.gserviceaccount.com",
   ]
 }
 
@@ -81,4 +82,10 @@ resource "google_iap_tunnel_instance_iam_binding" "bastion" {
   zone     = google_compute_instance.bastion.zone
   role     = "roles/iap.tunnelResourceAccessor"
   members  = local.bastion_members
+}
+
+### Outputs
+
+output "bastion_instance" {
+  value = google_compute_instance.bastion.name
 }

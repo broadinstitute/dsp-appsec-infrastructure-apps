@@ -14,6 +14,12 @@ provider "google-beta" {
   region  = var.region
 }
 
+data "google_project" "project" {}
+
+locals {
+  project_number = data.google_project.project.number
+}
+
 ### VPC
 
 resource "google_compute_network" "gke" {
@@ -64,6 +70,13 @@ resource "google_container_cluster" "cluster" {
   network    = google_compute_network.gke.self_link
   subnetwork = google_compute_subnetwork.gke.self_link
   ip_allocation_policy {}
+
+  master_authorized_networks_config {
+    cidr_blocks {
+      cidr_block   = "${google_compute_address.bastion.address}/32"
+      display_name = local.bastion_name
+    }
+  }
 
   initial_node_count       = 1
   remove_default_node_pool = true
