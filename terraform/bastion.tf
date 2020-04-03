@@ -14,9 +14,10 @@ resource "google_compute_address" "bastion" {
 }
 
 resource "google_compute_instance" "bastion" {
-  name         = local.bastion_name
-  zone         = var.zones[0]
-  machine_type = "e2-micro"
+  name = local.bastion_name
+  zone = var.zones[0]
+
+  machine_type = "f1-micro"
 
   boot_disk {
     initialize_params {
@@ -38,8 +39,7 @@ resource "google_compute_instance" "bastion" {
   }
 
   metadata = {
-    google-logging-enabled    = true
-    google-monitoring-enabled = true
+    google-logging-enabled = true
     gce-container-declaration = yamlencode({
       spec = {
         containers = [{
@@ -54,7 +54,6 @@ resource "google_compute_instance" "bastion" {
     scopes = [
       "https://www.googleapis.com/auth/devstorage.read_only",
       "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring.write",
     ]
   }
 
@@ -83,7 +82,6 @@ module "bastion_host_sa" {
   display_name = "Bastion host identity for the ${var.cluster_name} cluster"
   roles = [
     "roles/logging.logWriter",
-    "roles/monitoring.metricWriter",
   ]
 }
 
