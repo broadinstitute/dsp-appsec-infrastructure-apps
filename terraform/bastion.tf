@@ -38,30 +38,11 @@ resource "google_compute_instance" "bastion" {
     enable_secure_boot = true
   }
 
-  metadata = {
-    google-logging-enabled = true
-    gce-container-declaration = yamlencode({
-      spec = {
-        containers = [{
-          image = var.bastion_image
-        }]
-      }
-    })
-  }
-
-  service_account {
-    email = module.bastion_host_sa.email
-    scopes = [
-      "https://www.googleapis.com/auth/devstorage.read_only",
-      "https://www.googleapis.com/auth/logging.write",
-    ]
-  }
-
   tags = local.bastion_tags
 }
 
 resource "google_compute_firewall" "bastion" {
-  name    = "allow-bastion-proxy-from-iap"
+  name    = "allow-bastion-ssh-from-iap"
   network = google_compute_network.gke.self_link
 
   target_tags = local.bastion_tags
@@ -72,17 +53,8 @@ resource "google_compute_firewall" "bastion" {
 
   allow {
     protocol = "tcp"
-    ports    = ["8888"]
+    ports    = ["22"]
   }
-}
-
-module "bastion_host_sa" {
-  source       = "./modules/service-account"
-  account_id   = "${local.bastion_name}-host"
-  display_name = "Bastion host identity for the ${var.cluster_name} cluster"
-  roles = [
-    "roles/logging.logWriter",
-  ]
 }
 
 resource "google_service_account" "bastion_client" {

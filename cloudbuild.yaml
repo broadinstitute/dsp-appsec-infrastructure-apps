@@ -3,7 +3,6 @@ substitutions:
 
 options:
   env:
-  - BASTION_IMAGE=us.gcr.io/${PROJECT_ID}/bastion
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
   - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
   - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx
@@ -32,23 +31,9 @@ steps:
   - gsutil mb "gs://$${TERRAFORM_BUCKET}" &&
     gsutil versioning set on "gs://$${TERRAFORM_BUCKET}" || true
 
-# build Docker image for the bastion host
-# using Kaniko to speed up builds
-- id: bastion-docker
-  name: &kaniko gcr.io/kaniko-project/executor:debug
-  waitFor: ['-']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/bastion
-      --destination=$${BASTION_IMAGE}
-      --cache
-
 # deploy GKE cluster and associated GCP resources
 - id: terraform
   name: hashicorp/terraform
-  waitFor: ['terraform-bucket', 'bastion-docker']
   entrypoint: sh
   dir: terraform
   args:
@@ -58,8 +43,7 @@ steps:
     terraform plan -out=plan.out
       -var="project=${PROJECT_ID}"
       -var="region=$${REGION}"
-      -var="zones=[\"$${ZONE_1}\",\"$${ZONE_2}\"]"
-      -var="bastion_image=$${BASTION_IMAGE}" &&
+      -var="zones=[\"$${ZONE_1}\",\"$${ZONE_2}\"]" &&
     terraform apply plan.out &&
     terraform output | tr -d " " > ../.env
 
@@ -72,9 +56,10 @@ steps:
   - -c
   - export $(xargs < ../.env) && ./global.sh
 
-# build patched DefectDojo Django image
+# build patched DefectDojo Django image,
+# using Kaniko to speed up builds
 - id: defectdojo-django
-  name: *kaniko
+  name: &kaniko gcr.io/kaniko-project/executor:debug
   waitFor: ['-']
   entrypoint: sh
   args:

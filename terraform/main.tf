@@ -52,12 +52,6 @@ resource "google_storage_bucket_iam_member" "node_sa_gcr_role" {
   member = "serviceAccount:${module.node_sa.email}"
 }
 
-resource "google_storage_bucket_iam_member" "bastion_sa_gcr_role" {
-  bucket = google_container_registry.gcr.id
-  role   = "roles/storage.objectViewer"
-  member = "serviceAccount:${module.bastion_host_sa.email}"
-}
-
 ### GKE cluster
 
 resource "google_container_cluster" "cluster" {
