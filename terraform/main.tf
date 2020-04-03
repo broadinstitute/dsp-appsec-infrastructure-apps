@@ -52,6 +52,12 @@ resource "google_storage_bucket_iam_member" "node_sa_gcr_role" {
   member = "serviceAccount:${module.node_sa.email}"
 }
 
+resource "google_storage_bucket_iam_member" "bastion_sa_gcr_role" {
+  bucket = google_container_registry.gcr.id
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${module.bastion_host_sa.email}"
+}
+
 ### GKE cluster
 
 resource "google_container_cluster" "cluster" {
@@ -210,60 +216,6 @@ resource "google_service_account_iam_member" "cnrm_sa_ksa_binding" {
   service_account_id = module.cnrm_sa.name
   role               = "roles/iam.workloadIdentityUser"
   member             = "serviceAccount:${var.project}.svc.id.goog[cnrm-system/cnrm-controller-manager]"
-}
-
-### Bastion host for cluster access
-
-resource "google_project_service" "iap" {
-  service = "iap.googleapis.com"
-}
-
-resource "google_compute_instance" "bastion" {
-  name         = "${var.cluster_name}-bastion"
-  zone         = var.zones[0]
-  machine_type = "f1-micro"
-
-  boot_disk {
-    initialize_params {
-      image = "gce-uefi-images/cos-stable"
-    }
-  }
-
-  network_interface {
-    subnetwork = google_compute_subnetwork.gke.self_link
-    access_config {}
-  }
-
-  shielded_instance_config {
-    enable_secure_boot = true
-  }
-}
-
-resource "google_compute_firewall" "bastion" {
-  name    = "allow-ssh-from-iap"
-  network = google_compute_network.gke.self_link
-
-  source_ranges = [
-    "35.235.240.0/20",
-  ]
-
-  allow {
-    protocol = "tcp"
-    ports    = ["22"]
-  }
-}
-
-resource "google_iap_tunnel_instance_iam_binding" "bastion" {
-  instance = google_compute_instance.bastion.self_link
-  role     = "roles/iap.tunnelResourceAccessor"
-  members = [
-    "serviceAccount:${google_service_account.bastion_client.email}",
-  ]
-}
-
-resource "google_service_account" "bastion_client" {
-  account_id   = "${var.cluster_name}-bastion-client"
-  display_name = "Client for the ${var.cluster_name} cluster bastion host"
 }
 
 ### Outputs
