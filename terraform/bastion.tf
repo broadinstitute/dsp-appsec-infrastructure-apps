@@ -1,15 +1,20 @@
 ### Bastion host for cluster access
 
+locals {
+  bastion_name = "${var.cluster_name}-bastion"
+  bastion_tags = [local.bastion_name]
+}
+
 resource "google_project_service" "iap" {
   service = "iap.googleapis.com"
 }
 
 resource "google_compute_address" "bastion" {
-  name = "${var.cluster_name}-bastion"
+  name = local.bastion_name
 }
 
 resource "google_compute_instance" "bastion" {
-  name         = "${var.cluster_name}-bastion"
+  name         = local.bastion_name
   zone         = var.zones[0]
   machine_type = "f1-micro"
 
@@ -56,10 +61,6 @@ resource "google_compute_instance" "bastion" {
   tags = local.bastion_tags
 }
 
-locals {
-  bastion_tags = ["${var.cluster_name}-bastion"]
-}
-
 resource "google_compute_firewall" "bastion" {
   name    = "allow-bastion-proxy-from-iap"
   network = google_compute_network.gke.self_link
@@ -78,13 +79,13 @@ resource "google_compute_firewall" "bastion" {
 
 module "bastion_host_sa" {
   source       = "./modules/service-account"
-  account_id   = "${var.cluster_name}-bastion-host"
+  account_id   = "${local.bastion_name}-host"
   display_name = "Bastion host identity for the ${var.cluster_name} cluster"
   roles        = []
 }
 
 resource "google_service_account" "bastion_client" {
-  account_id   = "${var.cluster_name}-bastion-client"
+  account_id   = "${local.bastion_name}-client"
   display_name = "Bastion host client for the ${var.cluster_name} cluster"
 }
 
