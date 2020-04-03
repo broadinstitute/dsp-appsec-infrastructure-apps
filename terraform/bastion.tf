@@ -89,7 +89,7 @@ resource "google_service_account" "bastion_client" {
 }
 
 resource "google_iap_tunnel_instance_iam_binding" "bastion" {
-  instance = google_compute_instance.bastion.self_link
+  instance = google_compute_instance.bastion.name
   role     = "roles/iap.tunnelResourceAccessor"
   members = [
     "serviceAccount:${google_service_account.bastion_client.email}",
