@@ -3,10 +3,6 @@
 locals {
   bastion_name = "${var.cluster_name}-bastion"
   bastion_tags = [local.bastion_name]
-  bastion_members = [
-    "serviceAccount:${google_service_account.bastion_client.email}",
-    "serviceAccount:${local.project_number}@cloudbuild.gserviceaccount.com",
-  ]
 }
 
 resource "google_project_service" "iap" {
@@ -43,14 +39,28 @@ resource "google_compute_instance" "bastion" {
   }
 
   metadata = {
-    os-login = "TRUE"
+    google-logging-enabled = true
+    gce-container-declaration = jsonencode({
+      spec = {
+        containers = [{
+          name = var.bastion_image
+        }]
+      }
+    })
+  }
+
+  service_account {
+    email = module.bastion_host_sa.email
+    scopes = [
+      "https://www.googleapis.com/auth/logging.write",
+    ]
   }
 
   tags = local.bastion_tags
 }
 
 resource "google_compute_firewall" "bastion" {
-  name    = "allow-bastion-ssh-from-iap"
+  name    = "allow-bastion-proxy-from-iap"
   network = google_compute_network.gke.self_link
 
   target_tags = local.bastion_tags
@@ -61,27 +71,32 @@ resource "google_compute_firewall" "bastion" {
 
   allow {
     protocol = "tcp"
-    ports    = ["22"]
+    ports    = [var.bastion_port]
   }
+}
+
+module "bastion_host_sa" {
+  source       = "./modules/service-account"
+  account_id   = "${local.bastion_name}-host"
+  display_name = "Bastion host for ${var.cluster_name} cluster"
+  roles = [
+    "roles/logging.logWriter",
+  ]
 }
 
 resource "google_service_account" "bastion_client" {
   account_id   = "${local.bastion_name}-client"
-  display_name = "Bastion host client for the ${var.cluster_name} cluster"
-}
-
-resource "google_compute_instance_iam_binding" "bastion" {
-  instance_name = google_compute_instance.bastion.name
-  zone          = google_compute_instance.bastion.zone
-  role          = "roles/compute.osLogin"
-  members       = local.bastion_members
+  display_name = "Bastion client for ${var.cluster_name} cluster"
 }
 
 resource "google_iap_tunnel_instance_iam_binding" "bastion" {
   instance = google_compute_instance.bastion.name
   zone     = google_compute_instance.bastion.zone
   role     = "roles/iap.tunnelResourceAccessor"
-  members  = local.bastion_members
+  members = [
+    "serviceAccount:${google_service_account.bastion_client.email}",
+    "serviceAccount:${local.project_number}@cloudbuild.gserviceaccount.com",
+  ]
 }
 
 ### Outputs

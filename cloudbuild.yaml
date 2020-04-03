@@ -21,7 +21,7 @@ options:
   - ZONE_1=us-east1-b
   - ZONE_2=us-east1-c
   - PROXY_HOST=proxy
-  - PROXY_PORT=8888
+  - PROXY_PORT=1080
 
 steps:
 # prepare GCS backend for Terraform
@@ -41,11 +41,11 @@ steps:
   args:
   - -c
   - terraform init
-      -backend-config="bucket=$${TERRAFORM_BUCKET}" &&
+      -backend-config "bucket=$${TERRAFORM_BUCKET}" &&
     terraform plan -out=plan.out
-      -var="project=${PROJECT_ID}"
-      -var="region=$${REGION}"
-      -var="zones=[\"$${ZONE_1}\",\"$${ZONE_2}\"]" &&
+      -var "project=${PROJECT_ID}"
+      -var "region=$${REGION}"
+      -var "zones=[\"$${ZONE_1}\",\"$${ZONE_2}\"]" &&
     terraform apply plan.out &&
     terraform output | tr -d " " > ../.env
 
@@ -56,10 +56,10 @@ steps:
   args:
   - -c
   - export $(xargs < .env) &&
-    docker run -d --network cloudbuild
-      --name $${PROXY_HOST} -p "$${PROXY_PORT}:$${PROXY_PORT}"
-      gcr.io/cloud-builders/gcloud compute ssh "${bastion_instance}"
-        --tunnel-through-iap -- -ND "$${PROXY_PORT}"
+    docker run -d --network cloudbuild --name $${PROXY_HOST}
+      gcr.io/cloud-builders/gcloud compute start-iap-tunnel
+        "${bastion_instance}" "$${PROXY_PORT}"
+        --local-host-port "localhost:$${PROXY_PORT}"
 
 # set up Config Connector and other shared GKE resources
 - id: shared
