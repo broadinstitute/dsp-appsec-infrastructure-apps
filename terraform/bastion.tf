@@ -71,12 +71,14 @@ resource "google_service_account" "bastion_client" {
 
 resource "google_compute_instance_iam_binding" "bastion" {
   instance_name = google_compute_instance.bastion.name
+  zone          = google_compute_instance.bastion.zone
   role          = "roles/compute.osLogin"
   members       = local.bastion_members
 }
 
 resource "google_iap_tunnel_instance_iam_binding" "bastion" {
   instance = google_compute_instance.bastion.name
+  zone     = google_compute_instance.bastion.zone
   role     = "roles/iap.tunnelResourceAccessor"
   members  = local.bastion_members
 }
