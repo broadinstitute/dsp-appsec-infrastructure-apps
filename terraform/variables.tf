@@ -34,12 +34,10 @@ variable "max_batch_node_count" {
 
 variable "bastion_image" {
   type        = string
-  default     = "wernight/dante"
   description = "Docker image name for bastion SOCKS proxy"
 }
 
 variable "bastion_port" {
   type        = number
-  default     = 1080
   description = "Port for bastion SOCKS proxy"
 }

@@ -3,6 +3,7 @@ substitutions:
 
 options:
   env:
+  - BASTION_IMAGE=us.gcr.io/${PROJECT_ID}/bastion
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
   - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
   - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx
@@ -33,9 +34,23 @@ steps:
   - gsutil mb "gs://$${TERRAFORM_BUCKET}" &&
     gsutil versioning set on "gs://$${TERRAFORM_BUCKET}" || true
 
+# build bastion proxy Docker image,
+# using Kaniko to speed up builds
+- id: bastion-image
+  name: &kaniko gcr.io/kaniko-project/executor:debug
+  waitFor: ['-']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/bastion
+      --destination=$${BASTION_IMAGE}
+      --cache
+
 # deploy GKE cluster and associated GCP resources
 - id: terraform
   name: hashicorp/terraform
+  waitFor: ['bastion-image']
   entrypoint: sh
   dir: terraform
   args:
@@ -45,7 +60,8 @@ steps:
     terraform plan -out=plan.out
       -var "project=${PROJECT_ID}"
       -var "region=$${REGION}"
-      -var "zones=[\"$${ZONE_1}\",\"$${ZONE_2}\"]" &&
+      -var "zones=[\"$${ZONE_1}\",\"$${ZONE_2}\"]"
+      -var "bastion_image=$${BASTION_IMAGE}" &&
     terraform apply plan.out &&
     terraform output | tr -d " " > ../.env
 
@@ -73,7 +89,7 @@ steps:
 # build patched DefectDojo Django image,
 # using Kaniko to speed up builds
 - id: defectdojo-django
-  name: &kaniko gcr.io/kaniko-project/executor:debug
+  name: *kaniko
   waitFor: ['-']
   entrypoint: sh
   args:
@@ -85,7 +101,7 @@ steps:
       --cache
 
 # build patched DefectDojo Nginx image
-- id: defectdojo-nginx
+- id: defectdojo-nginx-image
   name: *kaniko
   waitFor: ['-']
   entrypoint: sh
@@ -100,13 +116,13 @@ steps:
 # deploy DefectDojo to GKE cluster
 - id: defectdojo
   name: *kubectl
-  waitFor: ['shared', 'defectdojo-django', 'defectdojo-nginx']
+  waitFor: ['shared', 'defectdojo-django-image', 'defectdojo-nginx-image']
   entrypoint: ./deploy.sh
   dir: defectdojo
 
 
 # build patched CodeDx image
-- id: codedx-docker
+- id: codedx-image
   name: *kaniko
   waitFor: ['-']
   entrypoint: sh
@@ -120,12 +136,12 @@ steps:
 # deploy CodeDx to GKE cluster
 - id: codedx
   name: *kubectl
-  waitFor: ['shared', 'codedx-docker']
+  waitFor: ['shared', 'codedx-image']
   entrypoint: ./deploy.sh
   dir: codedx
 
 # build SDARQ frontend Docker image
-- id: sdarq-frontend
+- id: sdarq-frontend-image
   name: *kaniko
   waitFor: ['-']
   entrypoint: sh
@@ -137,7 +153,7 @@ steps:
       --cache
 
 # build SDARQ backend Docker image
-- id: sdarq-backend
+- id: sdarq-backend-image
   name: *kaniko
   waitFor: ['-']
   entrypoint: sh
@@ -151,12 +167,12 @@ steps:
 # deploy SDARQ to GKE cluster
 - id: sdarq
   name: *kubectl
-  waitFor: ['shared', 'sdarq-frontend', 'sdarq-backend']
+  waitFor: ['shared', 'sdarq-frontend-image', 'sdarq-backend-image']
   entrypoint: ./deploy.sh
   dir: sdarq
 
 # build Cartography Docker image
-- id: cartography-docker
+- id: cartography-image
   name: *kaniko
   waitFor: ['-']
   entrypoint: sh
@@ -170,7 +186,7 @@ steps:
 # deploy SecExplorer to GKE cluster
 - id: secexplorer
   name: *kubectl
-  waitFor: ['shared', 'cartography-docker']
+  waitFor: ['shared', 'cartography-image']
   entrypoint: ./deploy.sh
   dir: secexplorer
   env:
