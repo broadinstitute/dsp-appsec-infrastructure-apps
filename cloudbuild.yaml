@@ -50,7 +50,7 @@ steps:
 # deploy GKE cluster and associated GCP resources
 - id: terraform
   name: hashicorp/terraform
-  waitFor: ['bastion-image']
+  waitFor: ['terraform-bucket', 'bastion-image']
   entrypoint: sh
   dir: terraform
   args:
@@ -88,7 +88,7 @@ steps:
 
 # build patched DefectDojo Django image,
 # using Kaniko to speed up builds
-- id: defectdojo-django
+- id: defectdojo-django-image
   name: *kaniko
   waitFor: ['-']
   entrypoint: sh
