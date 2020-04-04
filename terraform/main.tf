@@ -52,10 +52,14 @@ resource "google_container_registry" "gcr" {
   location = "US"
 }
 
-resource "google_storage_bucket_iam_member" "node_sa_gcr_role" {
+resource "google_storage_bucket_iam_member" "gcr_viewers" {
+  for_each = toset([
+    "serviceAccount:${module.node_sa.email}",
+    "serviceAccount:${module.bastion_host_sa.email}",
+  ])
   bucket = google_container_registry.gcr.id
   role   = "roles/storage.objectViewer"
-  member = "serviceAccount:${module.node_sa.email}"
+  member = each.value
 }
 
 ### GKE cluster
