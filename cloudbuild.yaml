@@ -68,13 +68,13 @@ steps:
 
 # set up background proxy for Kubernetes master
 - id: proxy
-  name: &kubectl gcr.io/cloud-builders/docker
+  name: &kubectl gcr.io/cloud-builders/gcloud
   entrypoint: sh
+  # docker run --network cloudbuild --name $${PROXY_HOST} gcr.io/cloud-builders/gcloud
   args:
   - -c
   - export $(xargs < .env) &&
-    docker run --network cloudbuild --name $${PROXY_HOST} gcr.io/cloud-builders/gcloud
-      compute start-iap-tunnel "${bastion_instance}" --zone "${bastion_zone}"
+      gcloud compute start-iap-tunnel "${bastion_instance}" --zone "${bastion_zone}"
         --local-host-port "localhost:$${PROXY_PORT}" "$${PROXY_PORT}"
 
 # set up Config Connector and other shared GKE resources
