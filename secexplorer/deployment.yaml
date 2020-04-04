@@ -89,11 +89,14 @@ spec:
   schedule: "0 4 * * *" # daily at 4am UTC
   jobTemplate:
     spec:
+      ttlSecondsAfterFinished: 0
       template:
         spec:
           serviceAccountName: ${K8S_SERVICE_ACCOUNT}
           runtimeClassName: gvisor
           restartPolicy: OnFailure
+          nodeSelector:
+            cloud.google.com/gke-nodepool: apps
 
           containers:
           - name: cartography
