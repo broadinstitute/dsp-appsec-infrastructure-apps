@@ -13,3 +13,7 @@ export PROJECT_ID="$(gcloud config get-value project)"
 export NAMESPACE="${GLOBAL_NAMESPACE}"
 
 ./kube-apply.py "namespace.yaml" "global.yaml"
+
+# deploy Knative
+
+./knative.sh
