@@ -62,7 +62,7 @@ steps:
       -var "region=$${REGION}"
       -var "zones=[\"$${ZONE_1}\",\"$${ZONE_2}\"]"
       -var "bastion_image=$${BASTION_IMAGE}"
-      -var "bastion_port=$${BASTION_PORT}" &&
+      -var "bastion_port=$${PROXY_PORT}" &&
     terraform apply plan.out &&
     terraform output | tr -d " " > ../.env
 
@@ -75,7 +75,7 @@ steps:
   - export $(xargs < .env) &&
     docker run --network cloudbuild --name $${PROXY_HOST}
       gcr.io/cloud-builders/gcloud compute start-iap-tunnel
-        "${bastion_instance}" "$${PROXY_PORT}"
+        "${bastion_instance}" "$${PROXY_PORT}" --region "${region}"
         --local-host-port "localhost:$${PROXY_PORT}"
 
 # set up Config Connector and other shared GKE resources
