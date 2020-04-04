@@ -56,7 +56,7 @@ steps:
   args:
   - -c
   - export $(xargs < .env) &&
-    docker run -d --network cloudbuild --name $${PROXY_HOST}
+    docker run --network cloudbuild --name $${PROXY_HOST}
       gcr.io/cloud-builders/gcloud compute start-iap-tunnel
         "${bastion_instance}" "$${PROXY_PORT}"
         --local-host-port "localhost:$${PROXY_PORT}"
