@@ -61,7 +61,8 @@ steps:
       -var "project=${PROJECT_ID}"
       -var "region=$${REGION}"
       -var "zones=[\"$${ZONE_1}\",\"$${ZONE_2}\"]"
-      -var "bastion_image=$${BASTION_IMAGE}" &&
+      -var "bastion_image=$${BASTION_IMAGE}"
+      -var "bastion_port=$${BASTION_PORT}" &&
     terraform apply plan.out &&
     terraform output | tr -d " " > ../.env
 
