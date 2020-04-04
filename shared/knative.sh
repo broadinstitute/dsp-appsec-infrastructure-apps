@@ -14,7 +14,7 @@ kube_install() {
 
   while (( $# )) ; do
     local res="$1" && shift
-    ./kubectl.sh apply --filename \
+    ./kubectl.sh apply -f \
       "https://github.com/${repo}/releases/download/${VERSION}/${res}.yaml"
   done
 }
@@ -39,7 +39,21 @@ kube_install knative/eventing \
   eventing-crds \
   eventing-core
 
-kube_install google/knative-gcp \
-  cloud-run-events.yaml
-
 wait_component knative-eventing
+
+# Install GCP Sources with Workload Identity
+
+export NAMESPACE="cloud-run-events"
+
+kube_install google/knative-gcp \
+  "${NAMESPACE}".yaml
+
+export IAM_SERVICE_ACCOUNT="${NAMESPACE}-appsec-apps"
+export K8S_SERVICE_ACCOUNT="controller"
+
+./kube-apply.py "gcp-events-sa.yaml"
+
+./kubectl.sh annotate serviceaccount "${K8S_SERVICE_ACCOUNT}" -n "${NAMESPACE}" \
+  "iam.gke.io/gcp-service-account=${IAM_SERVICE_ACCOUNT}@$PROJECT_ID.iam.gserviceaccount.com"
+
+wait_component "${NAMESPACE}"

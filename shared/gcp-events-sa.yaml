@@ -1,0 +1,33 @@
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMServiceAccount
+metadata:
+  name: ${IAM_SERVICE_ACCOUNT}
+  namespace: ${NAMESPACE}
+spec:
+  displayName: Knative GCP Sources identity for ${cluster}
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: ${IAM_SERVICE_ACCOUNT}-ksa-binding
+  namespace: ${NAMESPACE}
+spec:
+  member: serviceAccount:${PROJECT_ID}.svc.id.goog[${NAMESPACE}/${K8S_SERVICE_ACCOUNT}]
+  role: roles/iam.workloadIdentityUser
+  resourceRef:
+    apiVersion: iam.cnrm.cloud.google.com/v1beta1
+    kind: IAMServiceAccount
+    name: ${IAM_SERVICE_ACCOUNT}
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: ${IAM_SERVICE_ACCOUNT}-pubsub-policy
+  namespace: ${NAMESPACE}
+spec:
+  member: serviceAccount:${IAM_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
+  role: roles/pubsub.editor
+  resourceRef:
+    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+    kind: Project
+    external: projects/${PROJECT_ID}
