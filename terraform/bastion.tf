@@ -104,3 +104,7 @@ resource "google_iap_tunnel_instance_iam_binding" "bastion" {
 output "bastion_instance" {
   value = google_compute_instance.bastion.name
 }
+
+output "bastion_zone" {
+  value = google_compute_instance.bastion.zone
+}
