@@ -119,6 +119,10 @@ resource "google_iap_tunnel_instance_iam_binding" "bastion_client" {
 
 ### Outputs
 
+output "bastion_ip" {
+  value = google_compute_address.bastion.address
+}
+
 output "bastion_instance" {
   value = google_compute_instance.bastion.name
 }
