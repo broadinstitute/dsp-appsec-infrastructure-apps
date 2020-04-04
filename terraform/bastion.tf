@@ -85,17 +85,31 @@ module "bastion_host_sa" {
   ]
 }
 
-resource "google_service_account" "bastion_client" {
+module "bastion_client_sa" {
+  source       = "./modules/service-account"
   account_id   = "${local.bastion_name}-client"
   display_name = "Bastion client for ${var.cluster_name} cluster"
+  roles = [
+    google_project_iam_custom_role.cnrm_sa.id,
+  ]
 }
 
-resource "google_iap_tunnel_instance_iam_binding" "bastion" {
-  instance = google_compute_instance.bastion.name
-  zone     = google_compute_instance.bastion.zone
-  role     = "roles/iap.tunnelResourceAccessor"
+resource "google_project_iam_custom_role" "bastion_client" {
+  role_id     = replace("${local.bastion_name}-client", "-", "_")
+  title       = "AppSec Apps Bastion Client"
+  description = "Bastion client for ${var.cluster_name} cluster"
+  permissions = [
+    "compute.instances.get",
+    "iap.tunnelInstances.accessViaIAP",
+  ]
+}
+
+resource "google_compute_instance_iam_binding" "binding" {
+  instance_name = google_compute_instance.bastion.name
+  zone          = google_compute_instance.bastion.zone
+  role          = google_project_iam_custom_role.bastion_client.id
   members = [
-    "serviceAccount:${google_service_account.bastion_client.email}",
+    "serviceAccount:${module.bastion_client_sa.email}",
     "serviceAccount:${local.project_number}@cloudbuild.gserviceaccount.com",
   ]
 }
