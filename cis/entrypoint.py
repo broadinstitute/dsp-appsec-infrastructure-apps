@@ -42,11 +42,12 @@ def parse_profiles(profiles):
         for r in c['results']:
             if r['status'] != 'failed' or 'exception' in r:
                 continue
-            f: str = r['code_desc']
-            f = f.replace(f'[{GCP_PROJECT_ID}] ', '', 1)
-            f = f.replace('cmp == nil', 'be empty')
-            f = f.replace('cmp ==', 'equal')
-            failures.append(f)
+            failures.append(
+                r['code_desc']
+                .replace(f'[{GCP_PROJECT_ID}] ', '', 1)
+                .replace('cmp == nil', 'be empty')
+                .replace('cmp ==', 'equal')
+            )
         if not failures:
             continue
 
