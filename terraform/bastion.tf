@@ -43,7 +43,7 @@ resource "google_compute_instance" "bastion" {
     gce-container-declaration = jsonencode({
       spec = {
         containers = [{
-          name = var.bastion_image
+          image = var.bastion_image
         }]
       }
     })
