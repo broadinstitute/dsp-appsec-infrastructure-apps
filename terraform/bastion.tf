@@ -85,13 +85,9 @@ module "bastion_host_sa" {
   ]
 }
 
-module "bastion_client_sa" {
-  source       = "./modules/service-account"
+resource "google_service_account" "bastion_client" {
   account_id   = "${local.bastion_name}-client"
   display_name = "Bastion client for ${var.cluster_name} cluster"
-  roles = [
-    google_project_iam_custom_role.cnrm_sa.id,
-  ]
 }
 
 resource "google_project_iam_custom_role" "bastion_client" {
@@ -104,12 +100,12 @@ resource "google_project_iam_custom_role" "bastion_client" {
   ]
 }
 
-resource "google_compute_instance_iam_binding" "binding" {
+resource "google_compute_instance_iam_binding" "bastion_client" {
   instance_name = google_compute_instance.bastion.name
   zone          = google_compute_instance.bastion.zone
   role          = google_project_iam_custom_role.bastion_client.id
   members = [
-    "serviceAccount:${module.bastion_client_sa.email}",
+    "serviceAccount:${google_service_account.bastion_client.email}",
     "serviceAccount:${local.project_number}@cloudbuild.gserviceaccount.com",
   ]
 }
