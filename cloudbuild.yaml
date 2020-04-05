@@ -3,6 +3,7 @@ substitutions:
 
 options:
   env:
+  - PROJECT_ID=${PROJECT_ID}
   - BATCH_DISPATCHER_IMAGE=us.gcr.io/${PROJECT_ID}/batch-dispatcher
   - BASTION_IMAGE=us.gcr.io/${PROJECT_ID}/bastion
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django

@@ -5,9 +5,8 @@ set -euo pipefail
 CWD="${PWD}"
 cd ../shared
 
-# Create and switch to the namespace
+# Create namespace
 
-export PROJECT_ID="$(gcloud config get-value project)"
 export NAMESPACE="secexplorer"
 
 ./kube-apply.py "namespace.yaml"
