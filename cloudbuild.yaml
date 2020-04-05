@@ -21,7 +21,7 @@ options:
   - JOB_CREATOR_ROLE=job-creator
   - GLOBAL_NAMESPACE=global
   - CIS_NAMESPACE=cis
-  - CIS_DATASET=cis_scans
+  - CIS_DATASET=cis
   - DOJO_NAMESPACE=defectdojo
   - DOJO_SERVICE=defectdojo
   - REGION=us-east1
