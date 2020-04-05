@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -eu
 
 # Generates GKE secret with variables
 # set to passphrases of given lengths
