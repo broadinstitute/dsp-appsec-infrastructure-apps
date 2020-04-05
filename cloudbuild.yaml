@@ -78,6 +78,25 @@ steps:
   - -c
   - export $(xargs < ../.env) && ./global.sh
 
+# build CIS Docker image
+- id: cis-image
+  name: *kaniko
+  waitFor: ['-']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/cis
+      --destination=$${CIS_IMAGE}
+      --cache
+
+# deploy CIS scanner resources
+- id: cis
+  name: *kubectl
+  waitFor: ['shared', 'cis-image']
+  entrypoint: ./deploy.sh
+  dir: cis
+
 # build patched DefectDojo Django image,
 # using Kaniko to speed up builds
 - id: defectdojo-django-image
@@ -195,24 +214,5 @@ steps:
       --context=dir:///workspace/batch
       --destination=$${BATCH_DISPATCHER_IMAGE}
       --cache
-
-# build CIS Docker image
-- id: cis-image
-  name: *kaniko
-  waitFor: ['-']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/cis
-      --destination=$${CIS_IMAGE}
-      --cache
-
-# deploy CIS scanner resources
-- id: cis
-  name: *kubectl
-  waitFor: ['shared', 'cis-image']
-  entrypoint: ./deploy.sh
-  dir: cis
 
 timeout: 7200s
