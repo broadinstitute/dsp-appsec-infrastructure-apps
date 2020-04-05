@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine AS base
 
 ENV INSPEC_VERSION=4.18.51 \
     CHEF_LICENSE=accept-no-persist
@@ -26,9 +26,19 @@ RUN apk add --no-cache \
     mkdir .inspec && \
     chown nobody .inspec inspec-gcp-cis-benchmark
 
+
+FROM base AS test
+
+RUN pip3 install pytest
+
 COPY *.py /
 
 RUN pytest /*.py
+
+
+FROM base
+
+COPY entrypoint.py /
 
 USER nobody
 
