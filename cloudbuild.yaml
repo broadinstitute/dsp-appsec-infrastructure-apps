@@ -16,6 +16,7 @@ options:
   - TERRAFORM_BUCKET=${PROJECT_ID}-terraform
   - BROAD_INGRESS_CSP=broad-ingress
   - DISK_SNAPSHOT_POLICY=appsec-apps-disk-snapshot-policy
+  - JOB_CREATOR_ROLE=job-creator
   - GLOBAL_NAMESPACE=global
   - DOJO_NAMESPACE=defectdojo
   - DOJO_SERVICE=defectdojo

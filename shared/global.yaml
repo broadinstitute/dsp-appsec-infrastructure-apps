@@ -79,3 +79,12 @@ spec:
     snapshotProperties:
       storageLocations:
       - ${REGION}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ${JOB_CREATOR_ROLE}
+rules:
+- apiGroups: ['batch']
+  resources: ['jobs']
+  verbs: ['create']
