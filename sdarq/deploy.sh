@@ -29,9 +29,9 @@ export SDARQ_CONFIG="${SERVICE}"
 export FRONTEND_PORT="frontend"
 export BACKEND_PORT="backend"
 
-./kube-apply.py "service-account.yaml"
-
-./kube-apply.py "${CWD}/deployment.yaml"
+./kube-apply.py \
+  "service-account.yaml" \
+  "${CWD}/deployment.yaml"
 
 ./host.sh
 
