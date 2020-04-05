@@ -18,6 +18,8 @@ options:
   - DISK_SNAPSHOT_POLICY=appsec-apps-disk-snapshot-policy
   - JOB_CREATOR_ROLE=job-creator
   - GLOBAL_NAMESPACE=global
+  - CIS_NAMESPACE=cis
+  - CIS_DATASET=cis-scans
   - DOJO_NAMESPACE=defectdojo
   - DOJO_SERVICE=defectdojo
   - REGION=us-east1

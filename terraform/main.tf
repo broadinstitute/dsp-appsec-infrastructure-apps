@@ -160,6 +160,11 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
   title       = "AppSec Apps Config Connector"
   description = "Grants access to manage GCP resources via GKE Config Connector in ${var.cluster_name} cluster"
   permissions = [
+    "bigquery.datasets.get",
+    "bigquery.datasets.create",
+    "bigquery.datasets.update",
+    "bigquery.datasets.getIamPolicy",
+    "bigquery.datasets.setIamPolicy",
     "cloudsql.instances.get",
     "cloudsql.instances.list",
     "cloudsql.instances.create",
