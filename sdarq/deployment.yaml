@@ -12,7 +12,10 @@ spec:
       labels:
         service: ${SERVICE}
     spec:
+      serviceAccountName: ${SERVICE_ACCOUNT}
       runtimeClassName: gvisor
+      nodeSelector:
+        cloud.google.com/gke-nodepool: apps
 
       containers:
       - name: frontend
@@ -24,6 +27,10 @@ spec:
           httpGet:
             path: /
             port: ${FRONTEND_PORT}
+          timeoutSeconds: 10
+        resources:
+          requests:
+            memory: 75M
 
       - name: backend
         image: ${SDARQ_BACKEND_IMAGE}
@@ -39,6 +46,23 @@ spec:
           httpGet:
             path: /health/
             port: ${BACKEND_PORT}
+          timeoutSeconds: 10
+        resources:
+          requests:
+            memory: 75M
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: ${SERVICE_ACCOUNT}-sa-sql-policy
+  namespace: ${NAMESPACE}
+spec:
+  member: serviceAccount:${SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
+  role: roles/bigquery.dataEditor
+  resourceRef:
+    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+    kind: Project
+    external: projects/${PROJECT_ID}
 ---
 apiVersion: v1
 kind: ConfigMap
