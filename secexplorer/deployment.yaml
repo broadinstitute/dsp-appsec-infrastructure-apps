@@ -14,6 +14,8 @@ spec:
         service: ${SERVICE}
     spec:
       runtimeClassName: gvisor
+      nodeSelector:
+        cloud.google.com/gke-nodepool: apps
 
       volumes:
       - name: ${NGINX_VOLUME}
@@ -33,11 +35,15 @@ spec:
           httpGet:
             path: /
             port: ${HTTP_PORT}
+          timeoutSeconds: 10
         volumeMounts:
         - name: ${NGINX_VOLUME}
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
           readOnly: true
+        resources:
+          requests:
+            memory: 315M
 
       - name: neo4j
         image: neo4j:3.5
@@ -65,9 +71,14 @@ spec:
         readinessProbe:
           tcpSocket:
             port: ${BOLT_PORT}
+          timeoutSeconds: 10
+          initialDelaySeconds: 15
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /data
+        resources:
+          requests:
+            memory: 315M
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
@@ -78,11 +89,14 @@ spec:
   schedule: "0 4 * * *" # daily at 4am UTC
   jobTemplate:
     spec:
+      ttlSecondsAfterFinished: 0
       template:
         spec:
           serviceAccountName: ${K8S_SERVICE_ACCOUNT}
           runtimeClassName: gvisor
           restartPolicy: OnFailure
+          nodeSelector:
+            cloud.google.com/gke-nodepool: apps
 
           containers:
           - name: cartography
