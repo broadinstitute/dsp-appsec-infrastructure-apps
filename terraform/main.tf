@@ -14,12 +14,6 @@ provider "google-beta" {
   region  = var.region
 }
 
-data "google_project" "project" {}
-
-locals {
-  project_number = data.google_project.project.number
-}
-
 ### VPC
 
 resource "google_compute_network" "gke" {

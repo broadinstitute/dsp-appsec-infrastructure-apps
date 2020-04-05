@@ -3,10 +3,7 @@
 locals {
   bastion_name = "${var.cluster_name}-bastion"
   bastion_tags = [local.bastion_name]
-  bastion_members = [
-    "serviceAccount:${google_service_account.bastion_client.email}",
-    "serviceAccount:${local.project_number}@cloudbuild.gserviceaccount.com",
-  ]
+  bastion_sa   = "serviceAccount:${google_service_account.bastion_client.email}"
 }
 
 resource "google_project_service" "iap" {
@@ -103,18 +100,18 @@ resource "google_project_iam_custom_role" "bastion_client" {
   ]
 }
 
-resource "google_compute_instance_iam_binding" "bastion_client" {
+resource "google_compute_instance_iam_member" "bastion_client" {
   instance_name = google_compute_instance.bastion.name
   zone          = google_compute_instance.bastion.zone
   role          = google_project_iam_custom_role.bastion_client.id
-  members       = local.bastion_members
+  member        = local.bastion_sa
 }
 
-resource "google_iap_tunnel_instance_iam_binding" "bastion_client" {
+resource "google_iap_tunnel_instance_iam_member" "bastion_client" {
   instance = google_compute_instance.bastion.name
   zone     = google_compute_instance.bastion.zone
   role     = "roles/iap.tunnelResourceAccessor"
-  members  = local.bastion_members
+  member   = local.bastion_sa
 }
 
 ### Outputs
