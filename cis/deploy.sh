@@ -5,7 +5,7 @@ set -euo pipefail
 CWD="${PWD}"
 cd ../shared
 
-export NAMESPACE="${CIS_NAMESPACE}"
+export NAMESPACE="cis"
 
 ./kube-apply.py \
   "namespace.yaml" \

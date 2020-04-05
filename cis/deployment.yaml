@@ -7,3 +7,6 @@ metadata:
     cnrm.cloud.google.com/deletion-policy: abandon
 spec:
   description: "CIS scan results"
+  access:
+  - role: roles/bigquery.dataEditor
+    userByEmail: ${SDARQ_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com

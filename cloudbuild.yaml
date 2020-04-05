@@ -20,10 +20,10 @@ options:
   - DISK_SNAPSHOT_POLICY=appsec-apps-disk-snapshot-policy
   - JOB_CREATOR_ROLE=job-creator
   - GLOBAL_NAMESPACE=global
-  - CIS_NAMESPACE=cis
   - CIS_DATASET=cis
   - DOJO_NAMESPACE=defectdojo
   - DOJO_SERVICE=defectdojo
+  - SDARQ_SERVICE_ACCOUNT=sdarq-sa
   - REGION=us-east1
   - ZONE_1=us-east1-b
   - ZONE_2=us-east1-c
@@ -178,7 +178,7 @@ steps:
 # deploy SDARQ to GKE cluster
 - id: sdarq
   name: *kubectl
-  waitFor: ['shared', 'sdarq-frontend-image', 'sdarq-backend-image', 'cis']
+  waitFor: ['shared', 'sdarq-frontend-image', 'sdarq-backend-image']
   entrypoint: ./deploy.sh
   dir: sdarq
 
