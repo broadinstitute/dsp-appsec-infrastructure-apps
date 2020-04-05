@@ -3,6 +3,7 @@ substitutions:
 
 options:
   env:
+  - BATCH_DISPATCHER_IMAGE=us.gcr.io/${PROJECT_ID}/batch-dispatcher
   - BASTION_IMAGE=us.gcr.io/${PROJECT_ID}/bastion
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
   - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
@@ -191,5 +192,17 @@ steps:
   dir: secexplorer
   env:
   - GCP_SERVICE_ACCOUNT_EMAIL=${_CARTOGRAPHY_SERVICE_ACCOUNT}
+
+# build Batch dispatcher image
+- id: batch-dispatcher-image
+  name: *kaniko
+  waitFor: ['-']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/batch
+      --destination=$${BATCH_DISPATCHER_IMAGE}
+      --cache
 
 timeout: 7200s
