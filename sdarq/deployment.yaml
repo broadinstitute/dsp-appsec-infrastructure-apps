@@ -55,7 +55,7 @@ apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember
 metadata:
   name: ${SERVICE_ACCOUNT}-sa-bq-policy
-  namespace: ${NAMESPACE}
+  namespace: ${CIS_NAMESPACE}
 spec:
   member: serviceAccount:${SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
   role: roles/bigquery.dataEditor
@@ -63,7 +63,6 @@ spec:
     apiVersion: bigquery.cnrm.cloud.google.com/v1beta1
     kind: BigQueryDataset
     name: ${CIS_DATASET}
-    namespace: ${CIS_NAMESPACE}
 ---
 apiVersion: v1
 kind: ConfigMap

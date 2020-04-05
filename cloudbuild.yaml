@@ -6,6 +6,7 @@ options:
   - PROJECT_ID=${PROJECT_ID}
   - BATCH_DISPATCHER_IMAGE=us.gcr.io/${PROJECT_ID}/batch-dispatcher
   - BASTION_IMAGE=us.gcr.io/${PROJECT_ID}/bastion
+  - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
   - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
   - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx
@@ -194,5 +195,24 @@ steps:
       --context=dir:///workspace/batch
       --destination=$${BATCH_DISPATCHER_IMAGE}
       --cache
+
+# build CIS Docker image
+- id: cis-image
+  name: *kaniko
+  waitFor: ['-']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/cis
+      --destination=$${CIS_IMAGE}
+      --cache
+
+# deploy CIS scanner resources
+- id: cis
+  name: *kubectl
+  waitFor: ['shared', 'cis-image']
+  entrypoint: ./deploy.sh
+  dir: cis
 
 timeout: 7200s
