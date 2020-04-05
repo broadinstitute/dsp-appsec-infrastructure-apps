@@ -4,7 +4,7 @@ set -euo pipefail
 
 ./kube-apply.py "disk.yaml"
 
-./kubectl.sh wait --for condition=Ready ComputeDisk \
+kubectl wait --for condition=Ready ComputeDisk \
     "${SERVICE_DISK}" -n "${NAMESPACE}" --timeout "120s"
 
 ./kube-apply.py "volume.yaml"
