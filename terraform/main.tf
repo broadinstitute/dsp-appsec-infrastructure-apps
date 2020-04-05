@@ -139,7 +139,9 @@ module "batch_node_pool" {
   cluster         = google_container_cluster.cluster.name
   service_account = module.node_sa.email
 
+  min_node_count = 0
   max_node_count = var.max_batch_node_count
+
   preemptible    = true
   enable_sandbox = true
 }
