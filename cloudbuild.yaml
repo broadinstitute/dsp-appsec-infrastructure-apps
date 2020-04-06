@@ -1,5 +1,5 @@
 substitutions:
-  _CARTOGRAPHY_SERVICE_ACCOUNT: '' # replace in Cloud Build UI
+  _ORG_VIEWER_SA_EMAIL: '' # replace in Cloud Build UI
 
 options:
   env:
@@ -97,7 +97,7 @@ steps:
   entrypoint: ./deploy.sh
   dir: cis
   env:
-  - GCP_SERVICE_ACCOUNT_EMAIL=${_CARTOGRAPHY_SERVICE_ACCOUNT}
+  - GCP_SERVICE_ACCOUNT_EMAIL=${_ORG_VIEWER_SA_EMAIL}
 
 # build patched DefectDojo Django image,
 # using Kaniko to speed up builds
@@ -203,7 +203,7 @@ steps:
   entrypoint: ./deploy.sh
   dir: secexplorer
   env:
-  - GCP_SERVICE_ACCOUNT_EMAIL=${_CARTOGRAPHY_SERVICE_ACCOUNT}
+  - GCP_SERVICE_ACCOUNT_EMAIL=${_ORG_VIEWER_SA_EMAIL}
 
 # build Batch dispatcher image
 - id: batch-dispatcher-image
