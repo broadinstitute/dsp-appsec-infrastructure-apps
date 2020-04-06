@@ -1,47 +1,21 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: owasp-zap
-  labels:
-    app: owasp-zap
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: owasp-zap
-  template:
-    metadata:
-      labels:
-        app: owasp-zap
-    spec:
-      containers:
-      - name: owasp-zap
-        image: owasp/zap2docker-stable
-        args:
-          - zap-cli
-          - --verbose
-          - quick-scan
-          - --self-contained
-          - --start-options '-config api.disablekey=true'
-          - --spider
-          - -s xss,sqli
-          - -r https://app.terra.bio
-    restartPolicy: Never
-
---- 
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: owasp-zap
+  name: zap
+  namespace: ${NAMESPACE}
 spec:
-  schedule: "*/5 * * * *"
+  schedule: "0 4 * * 0"
   jobTemplate:
     spec:
+      ttlSecondsAfterFinished: 3600
       template:
         spec:
+          runtimeClassName: gvisor
+          nodeSelector:
+            cloud.google.com/gke-nodepool: batch
+          restartPolicy: Never
           containers:
-          - name: owasp-zap
+          - name: zap
             image: owasp/zap2docker-weekly
             command: ["/bin/sh", "-c"]
-            args: ["quick-scan -sc -o '-config api.disablekey=true' -s xss,sqli https://app.terra.bio]
-          restartPolicy: Never
+            args: ["zap-cli quick-scan -sc -o '-config api.disablekey=true' -s xss https://app.terra.bio"]
