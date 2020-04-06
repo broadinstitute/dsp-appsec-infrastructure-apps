@@ -16,7 +16,7 @@ data:
           cloud.google.com/gke-nodepool: batch
 
         containers:
-        - name: cartography
+        - name: cis-scan
           image: ${CIS_IMAGE}
           env:
           - name: BQ_DATASET
