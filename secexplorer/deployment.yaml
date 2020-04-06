@@ -96,7 +96,7 @@ spec:
           runtimeClassName: gvisor
           restartPolicy: OnFailure
           nodeSelector:
-            cloud.google.com/gke-nodepool: apps
+            cloud.google.com/gke-nodepool: batch
 
           containers:
           - name: cartography
