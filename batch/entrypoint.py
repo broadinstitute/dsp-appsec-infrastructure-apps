@@ -4,7 +4,7 @@ from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.subscriber.message import Message
 from hashlib import md5
 from kubernetes.client import BatchV1Api, V1Job, V1ObjectMeta
-from kubernetes.config import load_kube_config
+from kubernetes.config import load_kube_config, load_incluster_config
 import logging as log
 from os import environ
 from typing import Callable
@@ -57,6 +57,14 @@ def load_job_spec(spec_path: str) -> str:
         return f.read()
 
 
+def get_batch_v1():
+    try:
+        load_kube_config()
+    except:
+        load_incluster_config()
+    return BatchV1Api()
+
+
 def main():
     namespace = environ['NAMESPACE']
     subscription = environ['SUBSCRIPTION']
@@ -66,9 +74,7 @@ def main():
     log.basicConfig(level=log_level)
 
     spec = load_job_spec(spec_path)
-
-    load_kube_config()
-    batch_v1 = BatchV1Api()
+    batch_v1 = get_batch_v1()
 
     listen(subscription, batch_v1, namespace, spec)
 
