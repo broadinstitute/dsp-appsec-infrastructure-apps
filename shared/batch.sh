@@ -26,7 +26,7 @@ set -euo pipefail
 #
 
 export JOB_SUBSCRIPTION="${JOB_TOPIC}"
-export JOB_DEPLOYMENT="${JOB_TOPIC}"
+export JOB_DEPLOYMENT="${JOB_TOPIC}-dispatcher"
 export JOB_CONFIG_MAP="${JOB_DEPLOYMENT}"
 export JOB_CONFIG_VOLUME="job-config"
 export JOB_CONFIG_MOUNT_PATH="/job"
