@@ -8,7 +8,7 @@ metadata:
 spec:
   description: "CIS scan results"
   access:
-  - role: roles/bigquery.dataOwner
+  - role: OWNER
     specialGroup: projectOwners
-  - role: roles/bigquery.dataEditor
+  - role: WRITER
     userByEmail: ${SDARQ_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
