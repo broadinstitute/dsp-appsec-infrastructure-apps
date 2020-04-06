@@ -40,8 +40,7 @@ metadata:
   name: read-secrets
   namespace: ${NAMESPACE}
 subjects:
-- apiGroup: rbac.authorization.k8s.io
-  kind: ServiceAccount
+- kind: ServiceAccount
   name: ${SERVICE_ACCOUNT}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
