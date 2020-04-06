@@ -18,4 +18,4 @@ spec:
           - name: zap
             image: owasp/zap2docker-weekly
             command: ["/bin/sh", "-c"]
-            args: ["quick-scan -sc -o '-config api.disablekey=true' -s xss https://app.terra.bio"]
+            args: ["zap-cli quick-scan -sc -o '-config api.disablekey=true' -s xss https://app.terra.bio"]
