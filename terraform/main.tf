@@ -221,6 +221,8 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
     "pubsub.subscriptions.create",
     "pubsub.subscriptions.update",
     "pubsub.subscriptions.delete",
+    "projects.subscriptions.getIamPolicy",
+    "projects.subscriptions.setIamPolicy",
     "resourcemanager.projects.getIamPolicy",
     "resourcemanager.projects.setIamPolicy",
   ]
