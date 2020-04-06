@@ -11,7 +11,7 @@ from typing import Callable
 import yaml
 
 
-def render_job(name: str, subscription: str, spec: str, job_input: str) -> V1Job:
+def render_job(name: str, spec: str, job_input: str) -> V1Job:
     metadata = V1ObjectMeta(name=name)
     spec = spec.format(JOB_INPUT=job_input)
     spec = yaml.safe_load(spec)
