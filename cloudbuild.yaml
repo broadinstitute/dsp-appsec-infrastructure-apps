@@ -215,4 +215,11 @@ steps:
       --destination=$${BATCH_DISPATCHER_IMAGE}
       --cache
 
+# deploy Zap to GKE cluster
+- id: zap
+  name: *kubectl
+  waitFor: ['shared']
+  entrypoint: ./deploy.sh
+  dir: zap
+
 timeout: 7200s
