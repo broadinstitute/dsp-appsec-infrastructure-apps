@@ -23,10 +23,11 @@ def render_job(name: str, spec: str, job_input: str) -> V1Job:
     )
 
 
-def callback(namespace: str, spec: str) -> Callable[[Message], None]:
+def callback(namespace: str, spec: str, job_prefix: str) -> Callable[[Message], None]:
     def cb(m: Message):
         try:
-            job_name = md5(m.message_id.encode('utf-8')).hexdigest()
+            job_name = job_prefix + \
+                md5(m.message_id.encode('utf-8')).hexdigest()
             job_input = m.data.decode('utf-8')
             log.info(f'Submitting job {job_name} with input "{job_input}"')
 
@@ -42,7 +43,8 @@ def callback(namespace: str, spec: str) -> Callable[[Message], None]:
 def listen(subscription: str, namespace: str, spec: str) -> None:
     subscriber = pubsub_v1.SubscriberClient()
     with subscriber:
-        cb = callback(namespace, spec)
+        job_prefix = subscription.split('/')[-1] + '-'
+        cb = callback(namespace, spec, job_prefix)
         streaming_pull = subscriber.subscribe(subscription, cb)
         log.info(f'Listening to subscription {subscription}')
         try:
