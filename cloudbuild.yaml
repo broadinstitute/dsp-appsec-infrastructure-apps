@@ -96,6 +96,8 @@ steps:
   waitFor: ['shared', 'cis-image']
   entrypoint: ./deploy.sh
   dir: cis
+  env:
+  - GCP_SERVICE_ACCOUNT_EMAIL=${_CARTOGRAPHY_SERVICE_ACCOUNT}
 
 # build patched DefectDojo Django image,
 # using Kaniko to speed up builds

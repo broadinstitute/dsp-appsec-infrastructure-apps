@@ -1,3 +1,37 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${JOB_CONFIG_MAP}
+  namespace: ${NAMESPACE}
+data:
+  spec: |
+    ttlSecondsAfterFinished: 0
+    template:
+      spec:
+        serviceAccountName: ${K8S_SERVICE_ACCOUNT}
+        runtimeClassName: gvisor
+        restartPolicy: OnFailure
+        nodeSelector:
+          cloud.google.com/gke-nodepool: batch
+
+        containers:
+        - name: cartography
+          image: ${CIS_IMAGE}
+          env:
+          - name: BQ_DATASET
+            value: ${CIS_DATASET}
+          - name: GCP_PROJECT_ID
+            value: {JOB_INPUT}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ${K8S_SERVICE_ACCOUNT}
+  namespace: ${NAMESPACE}
+  annotations:
+    iam.gke.io/gcp-service-account: ${GCP_SERVICE_ACCOUNT_EMAIL}
+---
 apiVersion: bigquery.cnrm.cloud.google.com/v1beta1
 kind: BigQueryDataset
 metadata:
@@ -10,5 +44,7 @@ spec:
   access:
   - role: OWNER
     specialGroup: projectOwners
+  - role: WRITER
+    userByEmail: ${GCP_SERVICE_ACCOUNT_EMAIL}
   - role: WRITER
     userByEmail: ${SDARQ_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
