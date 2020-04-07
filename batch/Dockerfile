@@ -20,11 +20,12 @@ RUN apt update && \
 
 FROM base AS test
 
-RUN pip3 install pylint pytest
+RUN pip3 install mypy pylint pytest
 
 COPY *.py /
 
-RUN pylint /*.py && \
+RUN mypy --ignore-missing-imports /*.py && \
+    pylint /*.py && \
     pytest /*.py
 
 
