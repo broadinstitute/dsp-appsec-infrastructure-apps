@@ -53,3 +53,16 @@ spec:
     userByEmail: ${GCP_SERVICE_ACCOUNT_EMAIL}
   - role: WRITER
     userByEmail: ${SDARQ_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: ${K8S_SERVICE_ACCOUNT}-sa-bq-policy
+  namespace: ${NAMESPACE}
+spec:
+  member: serviceAccount:${GCP_SERVICE_ACCOUNT_EMAIL}
+  role: roles/bigquery.jobUser
+  resourceRef:
+    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+    kind: Project
+    external: projects/${PROJECT_ID}
