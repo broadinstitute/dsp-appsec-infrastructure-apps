@@ -11,7 +11,7 @@ set -euo pipefail
 #   PROJECT_ID - GCP project ID
 #   NAMESPACE - namespace for deployment
 #   BATCH_DISPATCHER_IMAGE - Docker image for the dispatcher
-#   JOB_CREATOR_ROLE - ClusterRole for creating Jobs
+#   JOB_DISPATCHER_ROLE - ClusterRole for the dispatcher
 #   JOB_TOPIC - PubSub topic name to be created by this script
 #   JOB_CONFIG_MAP - name of the ConfigMap storing the Job spec
 #
