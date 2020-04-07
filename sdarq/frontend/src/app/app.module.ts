@@ -12,6 +12,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { SendFormDataService } from './send-form-data.service';
 import { NonDSPformComponent } from './non-dspform/non-dspform.component';
 import { HomepageComponent } from './homepage/homepage.component';
+import { CisComponent } from './cis/cis.component';
+import { CisProjectService} from './cis-project.service'
 
 
 @NgModule({
@@ -22,7 +24,8 @@ import { HomepageComponent } from './homepage/homepage.component';
     FormComponent,
     MainpageComponent,
     NonDSPformComponent,
-    HomepageComponent
+    HomepageComponent,
+    CisComponent
   ],
   imports: [
     BrowserModule,
@@ -31,7 +34,8 @@ import { HomepageComponent } from './homepage/homepage.component';
     AppRoutingModule,
   ],
   providers: [
-    SendFormDataService
+    SendFormDataService,
+    CisProjectService
   ],
   bootstrap: [
     AppComponent

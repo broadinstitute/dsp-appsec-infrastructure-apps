@@ -4,12 +4,14 @@ import { MainpageComponent } from './mainpage/mainpage.component';
 import { FormComponent} from './form/form.component';
 import { NonDSPformComponent} from './non-dspform/non-dspform.component';
 import { HomepageComponent } from './homepage/homepage.component';
+import { CisComponent } from './cis/cis.component';
 
 const routes: Routes = [
   { path: '', component: HomepageComponent},
   { path: 'newService', component: MainpageComponent},
   { path: 'questionnaire', component: FormComponent},
-  { path: 'notDSPquestionnaire', component: NonDSPformComponent}
+  { path: 'notDSPquestionnaire', component: NonDSPformComponent},
+  { path: 'cisScan', component: CisComponent}
 ];
 
 @NgModule({

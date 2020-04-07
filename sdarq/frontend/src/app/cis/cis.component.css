@@ -1,0 +1,25 @@
+h2{
+    font-weight: 200 !important;
+    color: #4173c9;
+    padding-top: 2%;
+    text-align: center;
+  }
+  .sv_main .sv_body {
+    background-color: white;
+    border-top: 2px solid #5985d0 !important;
+  }
+  .sv_main .sv_container .sv_body .sv_progress .sv_progress_bar > span {
+    position: absolute;
+    top: -1.5em;
+    display: none !important;
+    white-space: nowrap;
+  }
+  
+  
+  .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    font-family: inherit;
+    font-weight: lighter;
+    line-height: 1.1;
+    color: inherit;
+  }
+  
