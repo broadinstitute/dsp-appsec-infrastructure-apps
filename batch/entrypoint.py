@@ -8,7 +8,7 @@ import logging as log
 from hashlib import md5
 from os import environ
 from threading import Thread
-from typing import Callable
+from typing import Any, Dict, Callable
 
 from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.subscriber.message import Message
@@ -19,19 +19,30 @@ from kubernetes.watch import Watch
 
 import yaml
 
+JobTree = Dict[str, Any]
+JobSpec = JobTree
+
+
+def replace_job_input(tree: JobTree, job_input: str) -> JobTree:
+    """
+    Recursively replace `JOB_INPUT` in `JobTree`
+    """
+    for key, val in tree.items():
+        if val == 'JOB_INPUT':
+            tree[key] = job_input
+        elif isinstance(val, dict):
+            replace_job_input(val, job_input)
+    return tree
+
 
 def render_job(subscription: str,
-               job_name: str, job_spec: str, job_input: str) -> V1Job:
+               name: str, spec: JobSpec, job_input: str) -> V1Job:
     """
-    Replace {JOB_INPUT} in job_spec
-    and compose Job request with spec and metadata
+    Renders Job request with spec and metadata
     """
-
-    spec = job_spec.format(JOB_INPUT=job_input)
-    spec = yaml.safe_load(spec)
-
+    spec = replace_job_input(spec, job_input)
     metadata = V1ObjectMeta(
-        name=job_name,
+        name=name,
         labels={
             'subscription': subscription,
         },
@@ -45,17 +56,17 @@ def render_job(subscription: str,
     )
 
 
-def get_callback(subscription: str,
-                 namespace: str, job_spec: str) -> Callable[[Message], None]:
+def get_pubsub_callback(subscription: str,
+                        namespace: str, job_spec: JobSpec) -> Callable[[Message], None]:
     """
-    Returns callback function to be called on every PubSub message
+    Returns `callback` function to be called on every PubSub message
     """
     def callback(msg: Message):
         """
         Constructs `job_name` and `job_input` from
         `message_id` and data in PubSub message.
 
-        Submits the rendered Job object via Kubernetes Batch API.
+        Submits rendered Job object to Kubernetes Batch API.
         """
         try:
             job_name = subscription.split('/')[-1] + '-' + \
@@ -72,7 +83,7 @@ def get_callback(subscription: str,
     return callback
 
 
-def listen(subscription: str, namespace: str, job_spec: str) -> None:
+def listen_pubsub(subscription: str, namespace: str, job_spec: JobSpec) -> None:
     """
     Subscribes callback function to messages in the PubSub Subscription.
 
@@ -80,7 +91,7 @@ def listen(subscription: str, namespace: str, job_spec: str) -> None:
     """
     subscriber = pubsub_v1.SubscriberClient()
     with subscriber:
-        callback = get_callback(subscription, namespace, job_spec)
+        callback = get_pubsub_callback(subscription, namespace, job_spec)
         streaming_pull = subscriber.subscribe(subscription, callback)
         log.info('Listening to subscription %s', subscription)
         try:
@@ -90,12 +101,12 @@ def listen(subscription: str, namespace: str, job_spec: str) -> None:
             raise err
 
 
-def load_job_spec(spec_path: str) -> str:
+def load_job_spec(spec_path: str) -> JobSpec:
     """
-    Reads job spec from spec_path (no validation is done here)
+    Reads job spec from `spec_path` into a YAML object.
     """
     with open(spec_path) as spec:
-        return spec.read()
+        return yaml.safe_load(spec)
 
 
 def get_batch_v1() -> BatchV1Api:
@@ -152,7 +163,7 @@ def main() -> None:
 
     schedule_cleanup(subscription, namespace)
     job_spec = load_job_spec(spec_path)
-    listen(subscription, namespace, job_spec)
+    listen_pubsub(subscription, namespace, job_spec)
 
 
 if __name__ == '__main__':

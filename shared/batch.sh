@@ -15,9 +15,9 @@ set -euo pipefail
 #   JOB_TOPIC - PubSub topic name to be created by this script
 #   JOB_CONFIG_MAP - name of the ConfigMap storing the Job spec
 #
-# JOB_CONFIG_MAP must store Job spec as a string under 'spec' key.
+# JOB_CONFIG_MAP must store Job spec as a string under `spec` key.
 #
-# Job spec must contain a literal {JOB_INPUT},
+# Job spec must contain a literal `JOB_INPUT` value,
 # which will be replaced with the contents
 # of an incoming PubSub message,
 # and it is up to the Job how to interpret it
