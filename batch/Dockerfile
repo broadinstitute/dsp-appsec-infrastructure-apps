@@ -20,11 +20,12 @@ RUN apt update && \
 
 FROM base AS test
 
-RUN pip3 install pytest
+RUN pip3 install pylint pytest
 
 COPY *.py /
 
-RUN pytest /*.py
+RUN pylint /*.py && \
+    pytest /*.py
 
 
 FROM base

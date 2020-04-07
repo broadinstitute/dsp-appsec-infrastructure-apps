@@ -1,19 +1,29 @@
 #!/usr/bin/env python3
+"""
+Listens to a PubSub subscription
+and submits a Kubernetes Job for each message.
+"""
 
-from google.cloud import pubsub_v1
-from google.cloud.pubsub_v1.subscriber.message import Message
-from hashlib import md5
-from kubernetes.client import BatchV1Api, V1Job, V1ObjectMeta
-from kubernetes.config import load_kube_config, load_incluster_config
-from kubernetes.watch import Watch
 import logging as log
+from hashlib import md5
 from os import environ
 from threading import Thread
 from typing import Callable
+from google.cloud import pubsub_v1
+from google.cloud.pubsub_v1.subscriber.message import Message
+from kubernetes.client import BatchV1Api, V1Job, V1ObjectMeta, rest
+from kubernetes.config import config_exception, load_kube_config, load_incluster_config
+from kubernetes.watch import Watch
 import yaml
 
 
-def render_job(subscription: str, job_name: str, job_spec: str, job_input: str) -> V1Job:
+def render_job(subscription: str,
+               job_name: str, job_spec: str, job_input: str) -> V1Job:
+    """
+    Replace {JOB_INPUT} in job_spec
+    and compose Job request with spec and metadata
+    """
+
     spec = job_spec.format(JOB_INPUT=job_input)
     spec = yaml.safe_load(spec)
 
@@ -27,68 +37,109 @@ def render_job(subscription: str, job_name: str, job_spec: str, job_input: str) 
     return V1Job(
         api_version='batch/v1',
         kind='Job',
-        metadata=metadata,
         spec=spec,
+        metadata=metadata,
     )
 
 
-def callback(subscription: str, namespace: str, job_spec: str) -> Callable[[Message], None]:
-    def cb(m: Message):
+def get_callback(subscription: str,
+                 namespace: str, job_spec: str) -> Callable[[Message], None]:
+    """
+    Returns callback function to be called on every PubSub message
+    """
+    def callback(msg: Message):
+        """
+        Constructs job_name and job_input from
+        message_id and data in PubSub message.
+
+        Submits the rendered Job object via Kubernetes Batch API.
+        """
         try:
             job_name = subscription.split('/')[-1] + '-' + \
-                md5(m.message_id.encode('utf-8')).hexdigest()
-            job_input = m.data.decode('utf-8')
-            log.info(f'Submitting job {job_name} with input "{job_input}"')
+                md5(msg.message_id.encode('utf-8')).hexdigest()
+            job_input = msg.data.decode('utf-8')
+            log.info('Submitting job %s with input %s', job_name, job_input)
 
             job = render_job(subscription, job_name, job_spec, job_input)
             get_batch_v1().create_namespaced_job(namespace, job)
-            log.info(f'Submitted job {job_name}')
-        except Exception:
+            log.info('Submitted job %s', job_name)
+        except (UnicodeError, rest.ApiException):
             log.exception('PubSub subscriber callback')
-        m.ack()
-    return cb
+        msg.ack()
+    return callback
 
 
 def listen(subscription: str, namespace: str, job_spec: str) -> None:
+    """
+    Subscribes callback function to messages in the PubSub Subscription.
+
+    Waits indefinitely until subscription produces an error.
+    """
     subscriber = pubsub_v1.SubscriberClient()
     with subscriber:
-        cb = callback(subscription, namespace, job_spec)
-        streaming_pull = subscriber.subscribe(subscription, cb)
-        log.info(f'Listening to subscription {subscription}')
+        callback = get_callback(subscription, namespace, job_spec)
+        streaming_pull = subscriber.subscribe(subscription, callback)
+        log.info('Listening to subscription %s', subscription)
         try:
             streaming_pull.result()
-        except Exception as e:
+        except (TimeoutError, Exception) as err:
             streaming_pull.cancel()
-            raise e
+            raise err
 
 
 def load_job_spec(spec_path: str) -> str:
-    with open(spec_path) as f:
-        return f.read()
+    """
+    Reads job spec from spec_path (no validation is done here)
+    """
+    with open(spec_path) as spec:
+        return spec.read()
 
 
 def get_batch_v1() -> BatchV1Api:
+    """
+    Attempts to load Kubernetes config from kube_config,
+    or otherwise loads it from in-cluster config (when run as a Pod)
+
+    Returns the initialized BatchV1Api object.
+    """
     try:
         load_kube_config()
-    except:
+    except config_exception.ConfigException:
         load_incluster_config()
     return BatchV1Api()
 
 
 def cleanup(subscription: str, namespace: str):
-    for event in Watch().stream(
+    """
+    Watches for events in list_namespaced_job API call.
+
+    TODO: Cleanup terminated Jobs.
+    """
+    events = Watch().stream(
         get_batch_v1().list_namespaced_job,
         namespace,
         label_selector=f'subscription={subscription}',
-    ):
+    )
+    for event in events:
         print('Event', event)
 
 
 def schedule_cleanup(namespace: str):
+    """
+    Schedules cleanup() function to run on a background thread.
+    """
     Thread(target=cleanup, args=namespace).start()
 
 
 def main():
+    """
+    Parses inputs from environmental variables.
+    Configures basic logging.
+    Schedules cleanup of terminated Jobs.
+    Loads job spec from SPEC_PATH.
+    Sets up listener for the PubSub subscription.
+    """
+
     namespace = environ['NAMESPACE']
     subscription = environ['SUBSCRIPTION']
     spec_path = environ['SPEC_PATH']
@@ -96,7 +147,7 @@ def main():
 
     log.basicConfig(level=log_level)
 
-    schedule_cleanup()
+    schedule_cleanup(namespace)
     job_spec = load_job_spec(spec_path)
     listen(subscription, namespace, job_spec)
 
