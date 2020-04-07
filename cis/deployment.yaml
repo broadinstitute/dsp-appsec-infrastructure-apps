@@ -14,6 +14,11 @@ data:
         restartPolicy: OnFailure
         nodeSelector:
           cloud.google.com/gke-nodepool: batch
+        tolerations:
+        - key: sandbox.gke.io/runtime
+          operator: Equal
+          value: gvisor
+          effect: NoSchedule
 
         containers:
         - name: cis-scan
