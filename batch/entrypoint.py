@@ -9,11 +9,14 @@ from hashlib import md5
 from os import environ
 from threading import Thread
 from typing import Callable
+
 from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.subscriber.message import Message
+
 from kubernetes.client import BatchV1Api, V1Job, V1ObjectMeta, rest
 from kubernetes.config import config_exception, load_kube_config, load_incluster_config
 from kubernetes.watch import Watch
+
 import yaml
 
 
@@ -49,8 +52,8 @@ def get_callback(subscription: str,
     """
     def callback(msg: Message):
         """
-        Constructs job_name and job_input from
-        message_id and data in PubSub message.
+        Constructs `job_name` and `job_input` from
+        `message_id` and data in PubSub message.
 
         Submits the rendered Job object via Kubernetes Batch API.
         """
@@ -98,7 +101,7 @@ def load_job_spec(spec_path: str) -> str:
 def get_batch_v1() -> BatchV1Api:
     """
     Attempts to load Kubernetes config from kube_config,
-    or otherwise loads it from in-cluster config (when run as a Pod)
+    or otherwise loads it from in-cluster config (when run as a Pod).
 
     Returns the initialized BatchV1Api object.
     """
@@ -109,9 +112,9 @@ def get_batch_v1() -> BatchV1Api:
     return BatchV1Api()
 
 
-def cleanup(subscription: str, namespace: str):
+def cleanup(subscription: str, namespace: str) -> None:
     """
-    Watches for events in list_namespaced_job API call.
+    Watches for events in `list_namespaced_job` API call.
 
     TODO: Cleanup terminated Jobs.
     """
@@ -124,19 +127,19 @@ def cleanup(subscription: str, namespace: str):
         print('Event', event)
 
 
-def schedule_cleanup(namespace: str):
+def schedule_cleanup(subscription: str, namespace: str) -> None:
     """
-    Schedules cleanup() function to run on a background thread.
+    Schedules :func:`cleanup` to run on a background thread.
     """
-    Thread(target=cleanup, args=namespace).start()
+    Thread(target=cleanup, args=(subscription, namespace)).start()
 
 
-def main():
+def main() -> None:
     """
     Parses inputs from environmental variables.
     Configures basic logging.
     Schedules cleanup of terminated Jobs.
-    Loads job spec from SPEC_PATH.
+    Loads job spec from `SPEC_PATH`.
     Sets up listener for the PubSub subscription.
     """
 
@@ -147,7 +150,7 @@ def main():
 
     log.basicConfig(level=log_level)
 
-    schedule_cleanup(namespace)
+    schedule_cleanup(subscription, namespace)
     job_spec = load_job_spec(spec_path)
     listen(subscription, namespace, job_spec)
 
