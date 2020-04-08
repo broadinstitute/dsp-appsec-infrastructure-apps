@@ -220,7 +220,7 @@ steps:
 # deploy Zap to GKE cluster
 - id: zap
   name: *kubectl
-  waitFor: ['shared']
+  waitFor: ['shared', 'batch-dispatcher-image']
   entrypoint: ./deploy.sh
   dir: zap
 
