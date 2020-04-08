@@ -47,7 +47,6 @@ def render_job(subscription: str,
             'subscription': subscription,
         },
     )
-
     return V1Job(
         api_version='batch/v1',
         kind='Job',
@@ -77,8 +76,10 @@ def get_pubsub_callback(subscription: str,
             job = render_job(subscription, job_name, job_spec, job_input)
             get_batch_v1().create_namespaced_job(namespace, job)
             log.info('Submitted job %s', job_name)
+
         except (UnicodeError, rest.ApiException):
             log.exception('PubSub subscriber callback')
+
         msg.ack()
     return callback
 
@@ -89,8 +90,7 @@ def listen_pubsub(subscription: str, namespace: str, job_spec: JobSpec) -> None:
 
     Waits indefinitely until subscription produces an error.
     """
-    subscriber = pubsub_v1.SubscriberClient()
-    with subscriber:
+    with pubsub_v1.SubscriberClient() as subscriber:
         callback = get_pubsub_callback(subscription, namespace, job_spec)
         streaming_pull = subscriber.subscribe(subscription, callback)
         log.info('Listening to subscription %s', subscription)
