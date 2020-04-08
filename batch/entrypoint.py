@@ -8,7 +8,7 @@ import logging as log
 from hashlib import md5
 from os import environ
 from threading import Thread
-from typing import Any, Callable, Dict, Iterable, Literal
+from typing import Any, Callable, Dict, Iterable, Literal, NamedTuple
 
 from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.subscriber.message import Message
@@ -125,7 +125,7 @@ def get_batch_api() -> BatchV1Api:
     return BatchV1Api()
 
 
-class JobEvent():
+class JobEvent(NamedTuple):
     """ Represents a watch event from batch_v1.list_namespaced_job() request """
     type: Literal['ADDED', 'MODIFIED', 'DELETED', 'ERROR']
     object: V1Job
