@@ -68,7 +68,7 @@ def get_pubsub_callback(subscription: str,
         Submits rendered Job object to Kubernetes Batch API.
         """
         try:
-            job_name = subscription.split('/')[-1] + '-' + \
+            job_name = subscription + '-' + \
                 md5(msg.message_id.encode('utf-8')).hexdigest()
             job_input = msg.data.decode('utf-8')
             log.info('Submitting job %s with input %s', job_name, job_input)
@@ -84,15 +84,17 @@ def get_pubsub_callback(subscription: str,
     return callback
 
 
-def listen_pubsub(subscription: str, namespace: str, job_spec: JobSpec) -> None:
+def listen_pubsub(project_id: str, subscription: str, namespace: str, job_spec: JobSpec) -> None:
     """
     Subscribes callback function to messages in the PubSub Subscription.
 
     Waits indefinitely until subscription produces an error.
     """
     with pubsub_v1.SubscriberClient() as subscriber:
+        # https://github.com/googleapis/python-pubsub/issues/67
+        subscription_path = f'projects/{project_id}/subscriptions/${subscription}'
         callback = get_pubsub_callback(subscription, namespace, job_spec)
-        streaming_pull = subscriber.subscribe(subscription, callback)
+        streaming_pull = subscriber.subscribe(subscription_path, callback)
         log.info('Listening to subscription %s', subscription)
         try:
             streaming_pull.result()
@@ -154,8 +156,9 @@ def main() -> None:
     Sets up listener for the PubSub subscription.
     """
 
-    namespace = environ['NAMESPACE']
+    project_id = environ['PROJECT_ID']
     subscription = environ['SUBSCRIPTION']
+    namespace = environ['NAMESPACE']
     spec_path = environ['SPEC_PATH']
     log_level = environ.get('LOG_LEVEL', 'INFO')
 
@@ -163,7 +166,7 @@ def main() -> None:
 
     schedule_cleanup(subscription, namespace)
     job_spec = load_job_spec(spec_path)
-    listen_pubsub(subscription, namespace, job_spec)
+    listen_pubsub(project_id, subscription, namespace, job_spec)
 
 
 if __name__ == '__main__':

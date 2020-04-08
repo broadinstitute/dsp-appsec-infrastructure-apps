@@ -20,10 +20,12 @@ spec:
       - name: batch-dispatcher
         image: ${BATCH_DISPATCHER_IMAGE}
         env:
+        - name: PROJECT_ID
+          value: ${PROJECT_ID}
+        - name: SUBSCRIPTION
+          value: ${JOB_SUBSCRIPTION}
         - name: NAMESPACE
           value: ${NAMESPACE}
-        - name: SUBSCRIPTION
-          value: projects/${PROJECT_ID}/subscriptions/${JOB_SUBSCRIPTION}
         - name: SPEC_PATH
           value: ${JOB_CONFIG_MOUNT_PATH}/${JOB_SPEC_KEY}
         volumeMounts:
