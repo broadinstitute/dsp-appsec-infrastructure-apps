@@ -92,7 +92,7 @@ def listen_pubsub(project_id: str, subscription: str, namespace: str, job_spec: 
     """
     with pubsub_v1.SubscriberClient() as subscriber:
         # https://github.com/googleapis/python-pubsub/issues/67
-        subscription_path = f'projects/{project_id}/subscriptions/${subscription}'
+        subscription_path = f'projects/{project_id}/subscriptions/{subscription}'
         callback = get_pubsub_callback(subscription, namespace, job_spec)
         streaming_pull = subscriber.subscribe(subscription_path, callback)
         log.info('Listening to subscription %s', subscription)
