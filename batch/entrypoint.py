@@ -32,6 +32,9 @@ def replace_job_input(tree: JobTree, job_input: str) -> JobTree:
             tree[key] = job_input
         elif isinstance(val, dict):
             replace_job_input(val, job_input)
+        elif isinstance(val, list):
+            for item in val:
+                replace_job_input(item, job_input)
     return tree
 
 
