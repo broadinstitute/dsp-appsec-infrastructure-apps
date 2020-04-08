@@ -11,11 +11,12 @@ data:
         runtimeClassName: gvisor
         nodeSelector:
           cloud.google.com/gke-nodepool: batch
-        restartPolicy: Never
+        restartPolicy: OnFailure
         containers:
         - name: zap
           image: owasp/zap2docker-weekly
-          args: ['zap-cli', 'quick-scan', '-sco', '-config api.disablekey=true', '-s', 'xss', 'JOB_INPUT']
+          command: ['zap-cli']
+          args: ['quick-scan', '-sc', '-o', '-config api.disablekey=true', '-s', 'xss', 'JOB_INPUT']
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
