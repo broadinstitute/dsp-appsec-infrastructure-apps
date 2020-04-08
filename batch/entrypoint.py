@@ -140,6 +140,8 @@ def cleanup(subscription: str, namespace: str) -> None:
         label_selector=f'subscription={subscription}',
     )
     for event in events:
+        if event['type'] == 'DELETED':
+            continue
         job: V1Job = event['object']
         for cond in job.status.conditions:
             if cond.type in ('Complete', 'Failed') and cond.status == 'True':
