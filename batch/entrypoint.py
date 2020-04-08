@@ -5,6 +5,7 @@ and submits a Kubernetes Job for each message.
 """
 
 import logging as log
+from copy import deepcopy
 from hashlib import md5
 from os import environ
 from threading import Thread
@@ -44,7 +45,7 @@ def render_job(subscription: str,
     """
     Renders Job request with spec and metadata
     """
-    spec = replace_job_input(spec, job_input)
+    spec = replace_job_input(deepcopy(spec), job_input)
     metadata = V1ObjectMeta(
         name=name,
         labels={
