@@ -9,7 +9,7 @@ from copy import deepcopy
 from hashlib import md5
 from os import environ
 from threading import Thread
-from typing import Any, Callable, Dict
+from typing import Callable, Union
 
 from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.subscriber.message import Message
@@ -20,7 +20,7 @@ from kubernetes.watch import Watch
 
 import yaml
 
-JobTree = Dict[str, Any]
+JobTree = Union[dict, list]
 JobSpec = JobTree
 
 
@@ -28,15 +28,12 @@ def replace_job_input(tree: JobTree, job_input: str) -> JobTree:
     """
     Recursively replace `JOB_INPUT` in `JobTree`
     """
-    for key, val in tree.items():
+    items = tree.items() if isinstance(tree, dict) else enumerate(tree)
+    for key, val in items:
         if val == 'JOB_INPUT':
             tree[key] = job_input
-        elif isinstance(val, dict):
+        elif isinstance(val, (dict, list)):
             replace_job_input(val, job_input)
-        elif isinstance(val, list):
-            for item in val:
-                if isinstance(item, dict):
-                    replace_job_input(item, job_input)
     return tree
 
 
