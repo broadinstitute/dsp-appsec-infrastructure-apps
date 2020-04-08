@@ -161,7 +161,9 @@ def cleanup(subscription: str, namespace: str) -> None:
         job: V1Job = event['object']
         if is_job_terminated(job):
             meta = job.metadata
-            get_batch_api().delete_namespaced_job(meta.name, meta.namespace)
+            get_batch_api().delete_namespaced_job(
+                meta.name, meta.namespace, propagation_policy='Background',
+            )
 
 
 def schedule_cleanup(subscription: str, namespace: str) -> None:
