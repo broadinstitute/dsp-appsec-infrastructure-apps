@@ -8,7 +8,7 @@ import logging as log
 from hashlib import md5
 from os import environ
 from threading import Thread
-from typing import Any, Callable, Dict, Iterable, Literal, NamedTuple
+from typing import Any, Callable, Dict, Iterable, Literal, TypedDict
 
 from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.subscriber.message import Message
@@ -125,7 +125,7 @@ def get_batch_api() -> BatchV1Api:
     return BatchV1Api()
 
 
-class JobEvent(NamedTuple):
+class JobEvent(TypedDict):
     """ Represents a watch event from batch_v1.list_namespaced_job() request """
     type: Literal['ADDED', 'MODIFIED', 'DELETED', 'ERROR']
     object: V1Job
@@ -143,9 +143,9 @@ def cleanup(subscription: str, namespace: str) -> None:
         label_selector=f'subscription={subscription}',
     )
     for event in events:
-        log.info('Event: %s', type(event))
-        if event.type == 'MODIFIED' and event.object.status.active != 1:
-            meta = event.object.metadata
+        log.info('Event object: %s', type(event['object']))
+        if event['type'] == 'MODIFIED' and event['object'].status.active != 1:
+            meta = event['object'].metadata
             get_batch_api().delete_namespaced_job(meta.name, meta.namespace)
 
 
