@@ -6,7 +6,6 @@ metadata:
   namespace: ${NAMESPACE}
 data:
   spec: |
-    ttlSecondsAfterFinished: 0
     template:
       spec:
         serviceAccountName: ${K8S_SERVICE_ACCOUNT}
