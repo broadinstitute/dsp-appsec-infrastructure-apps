@@ -78,6 +78,18 @@ steps:
   - -c
   - export $(xargs < ../.env) && ./global.sh
 
+# build Batch dispatcher image
+- id: batch-dispatcher-image
+  name: *kaniko
+  waitFor: ['-']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/batch
+      --destination=$${BATCH_DISPATCHER_IMAGE}
+      --cache
+
 # build CIS Docker image
 - id: cis-image
   name: *kaniko
@@ -93,7 +105,7 @@ steps:
 # deploy CIS scanner resources
 - id: cis
   name: *kubectl
-  waitFor: ['shared', 'cis-image']
+  waitFor: ['shared', 'batch-dispatcher-image', 'cis-image']
   entrypoint: ./deploy.sh
   dir: cis
   env:
@@ -204,18 +216,6 @@ steps:
   dir: secexplorer
   env:
   - GCP_SERVICE_ACCOUNT_EMAIL=${_ORG_VIEWER_SA_EMAIL}
-
-# build Batch dispatcher image
-- id: batch-dispatcher-image
-  name: *kaniko
-  waitFor: ['-']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/batch
-      --destination=$${BATCH_DISPATCHER_IMAGE}
-      --cache
 
 # deploy Zap to GKE cluster
 - id: zap
