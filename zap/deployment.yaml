@@ -1,3 +1,22 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${JOB_CONFIG_MAP}
+  namespace: ${NAMESPACE}
+data:
+  spec: |
+    template:
+      spec:
+        runtimeClassName: gvisor
+        nodeSelector:
+          cloud.google.com/gke-nodepool: batch
+        restartPolicy: Never
+        containers:
+        - name: zap
+          image: owasp/zap2docker-weekly
+          args: ['zap-cli', 'quick-scan', '-sco', '-config api.disablekey=true', '-s', 'xss', 'JOB_INPUT']
+---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
