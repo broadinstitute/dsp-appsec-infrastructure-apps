@@ -8,12 +8,12 @@ import logging as log
 from hashlib import md5
 from os import environ
 from threading import Thread
-from typing import Any, Callable, Dict, Iterable, List, Literal, TypedDict
+from typing import Any, Callable, Dict
 
 from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.subscriber.message import Message
 
-from kubernetes.client import BatchV1Api, V1Job, V1JobCondition, V1ObjectMeta, rest
+from kubernetes.client import BatchV1Api, V1Job, V1ObjectMeta, rest
 from kubernetes.config import config_exception, load_kube_config, load_incluster_config
 from kubernetes.watch import Watch
 
@@ -125,28 +125,19 @@ def get_batch_api() -> BatchV1Api:
     return BatchV1Api()
 
 
-class JobEvent(TypedDict):
-    """ Represents a watch event from batch_v1.list_namespaced_job() request """
-    type: Literal['ADDED', 'MODIFIED', 'DELETED', 'ERROR']
-    object: V1Job
-
-
 def cleanup(subscription: str, namespace: str) -> None:
     """
     Watches for events in `list_namespaced_job` API call.
     """
-    events: Iterable[JobEvent] = Watch().stream(
+    events = Watch().stream(
         get_batch_api().list_namespaced_job,
         namespace,
         label_selector=f'subscription={subscription}',
     )
     for event in events:
-        job = event['object']
-        log.info('Event %s %s %s',
-                 event['type'], job.metadata.name, job.status)
-        conditions: List[V1JobCondition] = job.status.conditions
-        for cond in conditions:
-            if cond.type in ('COMPLETE', 'FAILED') and cond.status == 'True':
+        job: V1Job = event['object']
+        for cond in job.status.conditions:
+            if cond.type in ('Complete', 'Failed') and cond.status == 'True':
                 meta = job.metadata
                 get_batch_api().delete_namespaced_job(meta.name, meta.namespace)
 
