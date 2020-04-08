@@ -29,6 +29,9 @@ spec:
         volumeMounts:
         - name: ${JOB_CONFIG_VOLUME}
           mountPath: ${JOB_CONFIG_MOUNT_PATH}
+        resources:
+          requests:
+            memory: 65M
       volumes:
       - name: ${JOB_CONFIG_VOLUME}
         configMap:
