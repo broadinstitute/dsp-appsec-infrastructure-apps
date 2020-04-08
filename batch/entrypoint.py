@@ -137,7 +137,7 @@ def cleanup(subscription: str, namespace: str) -> None:
         label_selector=f'subscription={subscription}',
     )
     for event in events:
-        print('Event', event)
+        log.info('Event: %s', event)
 
 
 def schedule_cleanup(subscription: str, namespace: str) -> None:
