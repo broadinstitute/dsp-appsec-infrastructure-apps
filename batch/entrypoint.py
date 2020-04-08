@@ -143,8 +143,9 @@ def cleanup(subscription: str, namespace: str) -> None:
         label_selector=f'subscription={subscription}',
     )
     for event in events:
-        log.info('Event %s %s %s',
-                 event['type'], event['object'].metadata, event['object'].status)
+        log.info('Event %s %s %s %s',
+                 event['type'], event['object'].metadata.name,
+                 type(event['object'].status), event['object'].status)
         if event['type'] == 'MODIFIED' and event['object'].status.active != 1:
             meta = event['object'].metadata
             get_batch_api().delete_namespaced_job(meta.name, meta.namespace)
