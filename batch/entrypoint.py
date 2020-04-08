@@ -125,9 +125,14 @@ def get_batch_api() -> BatchV1Api:
     return BatchV1Api()
 
 
+# This function would not normally be needed if ttlSecondsAfterFinished worked.
+# However, that feature is currently hidden behind an alpha flag,
+# so we do the cleanup explicitly instead.
+#
 def cleanup(subscription: str, namespace: str) -> None:
     """
-    Watches for events in `list_namespaced_job` API call.
+    Watches for events from `list_namespaced_job` API call,
+    and deletes terminated Jobs.
     """
     events = Watch().stream(
         get_batch_api().list_namespaced_job,
