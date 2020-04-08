@@ -164,6 +164,7 @@ def cleanup(subscription: str, namespace: str) -> None:
             get_batch_api().delete_namespaced_job(
                 meta.name, meta.namespace, propagation_policy='Background',
             )
+            log.info('Deleted job %s', meta.name)
 
 
 def schedule_cleanup(subscription: str, namespace: str) -> None:
