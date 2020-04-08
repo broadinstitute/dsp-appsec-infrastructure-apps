@@ -129,6 +129,8 @@ def is_job_terminated(job: V1Job) -> bool:
     """
     Detects if a Job was terminated.
     """
+    if not job.status.conditions:
+        return False
     for cond in job.status.conditions:
         if cond.type in ('Complete', 'Failed') and cond.status == 'True':
             return True
