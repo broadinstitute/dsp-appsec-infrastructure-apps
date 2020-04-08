@@ -8,7 +8,7 @@ import logging as log
 from hashlib import md5
 from os import environ
 from threading import Thread
-from typing import Any, Dict, Callable
+from typing import Any, Callable, Dict, Iterable, Literal
 
 from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.subscriber.message import Message
@@ -74,7 +74,7 @@ def get_pubsub_callback(subscription: str,
             log.info('Submitting job %s with input %s', job_name, job_input)
 
             job = render_job(subscription, job_name, job_spec, job_input)
-            get_batch_v1().create_namespaced_job(namespace, job)
+            get_batch_api().create_namespaced_job(namespace, job)
             log.info('Submitted job %s', job_name)
 
         except (UnicodeError, rest.ApiException):
@@ -111,7 +111,7 @@ def load_job_spec(spec_path: str) -> JobSpec:
         return yaml.safe_load(spec)
 
 
-def get_batch_v1() -> BatchV1Api:
+def get_batch_api() -> BatchV1Api:
     """
     Attempts to load Kubernetes config from kube_config,
     or otherwise loads it from in-cluster config (when run as a Pod).
@@ -125,19 +125,28 @@ def get_batch_v1() -> BatchV1Api:
     return BatchV1Api()
 
 
+class JobEvent():
+    """ Represents a watch event from batch_v1.list_namespaced_job() request """
+    type: Literal['ADDED', 'MODIFIED', 'DELETED', 'ERROR']
+    object: V1Job
+
+
 def cleanup(subscription: str, namespace: str) -> None:
     """
     Watches for events in `list_namespaced_job` API call.
 
     TODO: Cleanup terminated Jobs.
     """
-    events = Watch().stream(
-        get_batch_v1().list_namespaced_job,
+    events: Iterable[JobEvent] = Watch().stream(
+        get_batch_api().list_namespaced_job,
         namespace,
         label_selector=f'subscription={subscription}',
     )
     for event in events:
-        log.info('Event: %s', event)
+        log.info('Event: %s', type(event))
+        if event.type == 'MODIFIED' and event.object.status.active != 1:
+            meta = event.object.metadata
+            get_batch_api().delete_namespaced_job(meta.name, meta.namespace)
 
 
 def schedule_cleanup(subscription: str, namespace: str) -> None:

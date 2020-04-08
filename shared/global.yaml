@@ -87,4 +87,4 @@ metadata:
 rules:
 - apiGroups: ['batch']
   resources: ['jobs']
-  verbs: ['create', 'watch']
+  verbs: ['create', 'watch', 'delete']
