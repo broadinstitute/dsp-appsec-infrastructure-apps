@@ -125,14 +125,24 @@ def get_batch_api() -> BatchV1Api:
     return BatchV1Api()
 
 
-# This function would not normally be needed if ttlSecondsAfterFinished worked.
-# However, that feature is currently hidden behind an alpha flag,
-# so we do the cleanup explicitly instead.
-#
+def is_job_terminated(job: V1Job) -> bool:
+    """
+    Detects if a Job was terminated.
+    """
+    for cond in job.status.conditions:
+        if cond.type in ('Complete', 'Failed') and cond.status == 'True':
+            return True
+    return False
+
+
 def cleanup(subscription: str, namespace: str) -> None:
     """
     Watches for events from `list_namespaced_job` API call,
     and deletes terminated Jobs.
+
+    This function would not normally be needed if `ttlSecondsAfterFinished` worked.
+    However, that feature is currently hidden behind an `alpha` flag,
+    so we do the cleanup explicitly here instead.
     """
     events = Watch().stream(
         get_batch_api().list_namespaced_job,
@@ -143,10 +153,9 @@ def cleanup(subscription: str, namespace: str) -> None:
         if event['type'] == 'DELETED':
             continue
         job: V1Job = event['object']
-        for cond in job.status.conditions:
-            if cond.type in ('Complete', 'Failed') and cond.status == 'True':
-                meta = job.metadata
-                get_batch_api().delete_namespaced_job(meta.name, meta.namespace)
+        if is_job_terminated(job):
+            meta = job.metadata
+            get_batch_api().delete_namespaced_job(meta.name, meta.namespace)
 
 
 def schedule_cleanup(subscription: str, namespace: str) -> None:
