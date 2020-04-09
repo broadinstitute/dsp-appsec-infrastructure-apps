@@ -27,15 +27,14 @@ spec:
   schedule: "0 4 * * 0"
   jobTemplate:
     spec:
-      ttlSecondsAfterFinished: 3600
       template:
         spec:
           runtimeClassName: gvisor
           nodeSelector:
             cloud.google.com/gke-nodepool: batch
-          restartPolicy: Never
+          restartPolicy: OnFailure
           containers:
           - name: zap
             image: owasp/zap2docker-weekly
-            command: ["/bin/sh", "-c"]
-            args: ["zap-cli quick-scan -sc -o '-config api.disablekey=true' -s xss https://app.terra.bio"]
+            command: ['zap-cli']
+            args: ['quick-scan', '-sc', '-o', '-config api.disablekey=true', '-s', 'xss', '{URL}']
