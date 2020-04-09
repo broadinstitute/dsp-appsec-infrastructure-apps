@@ -32,7 +32,9 @@ def get_job(subscription: str,
     Spec template annotations are set/updated with `job_inputs`.
     """
     spec = deepcopy(spec)
-    anno = spec['template'].setdefault('annotations', {})
+    anno = spec['template'] \
+        .setdefault('metadata', {}) \
+        .setdefault('annotations', {})
     anno.update(job_inputs)
 
     return V1Job(
