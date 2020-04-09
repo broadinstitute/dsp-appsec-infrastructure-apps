@@ -17,6 +17,9 @@ data:
           image: owasp/zap2docker-weekly
           command: ['zap-cli']
           args: ['quick-scan', '-sc', '-o', '-config api.disablekey=true', '-s', 'xss', '{URL}']
+          resources:
+            requests:
+              memory: 250M
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
@@ -38,3 +41,6 @@ spec:
             image: owasp/zap2docker-weekly
             command: ['zap-cli']
             args: ['quick-scan', '-sc', '-o', '-config api.disablekey=true', '-s', 'xss', '{URL}']
+            resources:
+              requests:
+                memory: 250M
