@@ -26,7 +26,7 @@ data:
           - name: BQ_DATASET
             value: ${CIS_DATASET}
           - name: GCP_PROJECT_ID
-            value: {GCP_PROJECT_ID}
+            value: '{GCP_PROJECT_ID}'
           resources:
             requests:
               memory: 250M
