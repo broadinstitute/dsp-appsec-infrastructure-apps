@@ -5,61 +5,51 @@ and submits a Kubernetes Job for each message.
 """
 
 import logging as log
+
 from copy import deepcopy
 from hashlib import md5
 from os import environ
 from threading import Thread
-from typing import Callable, Mapping, Union
+from typing import Callable, Dict
 
 from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.subscriber.message import Message
 
-from kubernetes.client import BatchV1Api, V1Job, V1ObjectMeta, rest
+from kubernetes.client import BatchV1Api, V1Job, V1JobSpec, V1ObjectMeta, rest
 from kubernetes.config import config_exception, load_kube_config, load_incluster_config
 from kubernetes.watch import Watch
 
 import yaml
 
-JobInputs = Mapping[str, str]
-JobTree = Union[dict, list]
-JobSpec = JobTree
+JobInputs = Dict[str, str]
 
 
-def replace_job_inputs(tree: JobTree, job_inputs: JobInputs) -> JobTree:
+def get_job(subscription: str,
+            name: str, spec: V1JobSpec, job_inputs: JobInputs) -> V1Job:
     """
-    Recursively replace `job_inputs` in `JobTree`
-    """
-    items = tree.items() if isinstance(tree, dict) else enumerate(tree)
-    for key, val in items:
-        if isinstance(val, str):
-            tree[key] = val.format(**job_inputs)
-        elif isinstance(val, (dict, list)):
-            replace_job_inputs(val, job_inputs)
-    return tree
+    Constructs Job request with spec and metadata.
 
+    Spec template annotations are set/updated with `job_inputs`.
+    """
+    spec = deepcopy(spec)
+    anno = spec['template'].setdefault('annotations', {})
+    anno.update(job_inputs)
 
-def render_job(subscription: str,
-               name: str, spec: JobSpec, job_inputs: JobInputs) -> V1Job:
-    """
-    Renders Job request with spec and metadata
-    """
-    spec = replace_job_inputs(deepcopy(spec), job_inputs)
-    metadata = V1ObjectMeta(
-        name=name,
-        labels={
-            'subscription': subscription,
-        },
-    )
     return V1Job(
         api_version='batch/v1',
         kind='Job',
+        metadata=V1ObjectMeta(
+            name=name,
+            labels={
+                'subscription': subscription,
+            },
+        ),
         spec=spec,
-        metadata=metadata,
     )
 
 
 def get_pubsub_callback(subscription: str,
-                        namespace: str, job_spec: JobSpec) -> Callable[[Message], None]:
+                        namespace: str, job_spec: V1JobSpec) -> Callable[[Message], None]:
     """
     Returns `callback` function to be called on every PubSub message
     """
@@ -77,7 +67,7 @@ def get_pubsub_callback(subscription: str,
             log.info('Submitting job %s with input(s) %s',
                      job_name, job_inputs)
 
-            job = render_job(subscription, job_name, job_spec, job_inputs)
+            job = get_job(subscription, job_name, job_spec, job_inputs)
             get_batch_api().create_namespaced_job(namespace, job)
             log.info('Submitted job %s', job_name)
 
@@ -88,7 +78,7 @@ def get_pubsub_callback(subscription: str,
     return callback
 
 
-def listen_pubsub(project_id: str, subscription: str, namespace: str, job_spec: JobSpec) -> None:
+def listen_pubsub(project_id: str, subscription: str, namespace: str, job_spec: V1JobSpec) -> None:
     """
     Subscribes callback function to messages in the PubSub Subscription.
 
@@ -107,7 +97,7 @@ def listen_pubsub(project_id: str, subscription: str, namespace: str, job_spec: 
             raise err
 
 
-def load_job_spec(spec_path: str) -> JobSpec:
+def load_job_spec(spec_path: str) -> V1JobSpec:
     """
     Reads job spec from `spec_path` into a YAML object.
     """

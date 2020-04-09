@@ -15,14 +15,14 @@ set -euo pipefail
 #   JOB_TOPIC - PubSub topic name to be created by this script
 #   JOB_CONFIG_MAP - name of the ConfigMap storing the Job spec
 #
-# JOB_CONFIG_MAP must store Job spec as a string under `spec` key.
+# JOB_CONFIG_MAP must store Job spec
+# as a multi-line YAML string under `spec` key.
 #
-# Job spec must contain value(s) with `{}` (like `{EXAMPLE_KEY}`),
-# which will be replaced with the corresponding attributes
-# of an incoming PubSub message (which can itself be empty),
-# and it is up to the Job how to interpret them
-# (for example, you can pass a value as part of
-# a command-line arg, or an env variable).
+# Job spec must use Downward API
+# (https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information)
+# to pull job parameters from pod annotations,
+# which will be set from the corresponding attributes
+# of an incoming PubSub message (which can itself be empty).
 #
 
 export JOB_SUBSCRIPTION="${JOB_TOPIC}"
