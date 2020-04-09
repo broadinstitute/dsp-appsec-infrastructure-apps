@@ -15,7 +15,7 @@ from typing import Callable, Dict
 from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.subscriber.message import Message
 
-from kubernetes.client import BatchV1Api, V1Job, V1JobSpec, V1ObjectMeta, rest
+from kubernetes.client import BatchV1Api, V1Job, V1ObjectMeta, rest
 from kubernetes.config import config_exception, load_kube_config, load_incluster_config
 from kubernetes.watch import Watch
 
@@ -24,34 +24,20 @@ import yaml
 JobInputs = Dict[str, str]
 
 
-def get_job(subscription: str,
-            name: str, spec: V1JobSpec, job_inputs: JobInputs) -> V1Job:
+def get_job(job: V1Job, name: str, inputs: JobInputs) -> V1Job:
     """
-    Constructs Job request with spec and metadata.
-
-    Spec template annotations are set/updated with `job_inputs`.
+    Returns a copy of the Job object with job `name`, where
+    template annotations are set/updated with job `inputs`.
     """
-    spec = deepcopy(spec)
-    anno = spec['template'] \
-        .setdefault('metadata', {}) \
-        .setdefault('annotations', {})
-    anno.update(job_inputs)
-
-    return V1Job(
-        api_version='batch/v1',
-        kind='Job',
-        metadata=V1ObjectMeta(
-            name=name,
-            labels={
-                'subscription': subscription,
-            },
-        ),
-        spec=spec,
-    )
+    job = deepcopy(job)
+    job.metadata.name = name
+    anno = job['spec']['template']['metadata']['annotations']
+    anno.update({**anno, **inputs})
+    return job
 
 
 def get_pubsub_callback(subscription: str,
-                        namespace: str, job_spec: V1JobSpec) -> Callable[[Message], None]:
+                        namespace: str, job: V1Job) -> Callable[[Message], None]:
     """
     Returns `callback` function to be called on every PubSub message
     """
@@ -69,8 +55,8 @@ def get_pubsub_callback(subscription: str,
             log.info('Submitting job %s with input(s) %s',
                      job_name, job_inputs)
 
-            job = get_job(subscription, job_name, job_spec, job_inputs)
-            get_batch_api().create_namespaced_job(namespace, job)
+            new_job = get_job(job, job_name, job_inputs)
+            get_batch_api().create_namespaced_job(namespace, new_job)
             log.info('Submitted job %s', job_name)
 
         except (UnicodeError, rest.ApiException):
@@ -80,7 +66,7 @@ def get_pubsub_callback(subscription: str,
     return callback
 
 
-def listen_pubsub(project_id: str, subscription: str, namespace: str, job_spec: V1JobSpec) -> None:
+def listen_pubsub(project_id: str, subscription: str, namespace: str, job: V1Job) -> None:
     """
     Subscribes callback function to messages in the PubSub Subscription.
 
@@ -89,7 +75,7 @@ def listen_pubsub(project_id: str, subscription: str, namespace: str, job_spec: 
     with pubsub_v1.SubscriberClient() as subscriber:
         # https://github.com/googleapis/python-pubsub/issues/67
         subscription_path = f'projects/{project_id}/subscriptions/{subscription}'
-        callback = get_pubsub_callback(subscription, namespace, job_spec)
+        callback = get_pubsub_callback(subscription, namespace, job)
         streaming_pull = subscriber.subscribe(subscription_path, callback)
         log.info('Listening to subscription %s', subscription)
         try:
@@ -99,12 +85,28 @@ def listen_pubsub(project_id: str, subscription: str, namespace: str, job_spec: 
             raise err
 
 
-def load_job_spec(spec_path: str) -> V1JobSpec:
+def load_job(subscription: str, spec_path: str) -> V1Job:
     """
     Reads job spec from `spec_path` into a YAML object.
+
+    Constructs a Job object with this spec.
     """
-    with open(spec_path) as spec:
-        return yaml.safe_load(spec)
+    with open(spec_path) as spec_file:
+        spec = yaml.safe_load(spec_file)
+        spec['template'] \
+            .setdefault('metadata', {}) \
+            .setdefault('annotations', {})
+
+        return V1Job(
+            api_version='batch/v1',
+            kind='Job',
+            metadata=V1ObjectMeta(
+                labels={
+                    'subscription': subscription,
+                },
+            ),
+            spec=spec,
+        )
 
 
 def get_batch_api() -> BatchV1Api:
@@ -185,8 +187,8 @@ def main() -> None:
     log.basicConfig(level=log_level)
 
     schedule_cleanup(subscription, namespace)
-    job_spec = load_job_spec(spec_path)
-    listen_pubsub(project_id, subscription, namespace, job_spec)
+    job = load_job(subscription, spec_path)
+    listen_pubsub(project_id, subscription, namespace, job)
 
 
 if __name__ == '__main__':
