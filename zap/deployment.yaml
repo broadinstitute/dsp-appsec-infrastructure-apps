@@ -40,7 +40,7 @@ spec:
           - name: zap
             image: owasp/zap2docker-weekly
             command: ['zap-cli']
-            args: ['quick-scan', '-sc', '-o', '-config api.disablekey=true', '-s', 'xss', '{URL}']
+            args: ['quick-scan', '-sc', '-o', '-config api.disablekey=true', '-s', 'xss', 'https://app.terra.bio']
             resources:
               requests:
                 memory: 250M
