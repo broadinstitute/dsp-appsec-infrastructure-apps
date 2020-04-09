@@ -16,7 +16,7 @@ data:
         - name: zap
           image: owasp/zap2docker-weekly
           command: ['zap-cli']
-          args: ['quick-scan', '-sc', '-o', '-config api.disablekey=true', '-s', 'xss', 'JOB_INPUT']
+          args: ['quick-scan', '-sc', '-o', '-config api.disablekey=true', '-s', 'xss', '{URL}']
 ---
 apiVersion: batch/v1beta1
 kind: CronJob

@@ -17,11 +17,11 @@ set -euo pipefail
 #
 # JOB_CONFIG_MAP must store Job spec as a string under `spec` key.
 #
-# Job spec must contain a literal `JOB_INPUT` value,
-# which will be replaced with the contents
-# of an incoming PubSub message,
-# and it is up to the Job how to interpret it
-# (for example, you can pass it as
+# Job spec must contain value(s) with `{}` (like `{EXAMPLE_KEY}`),
+# which will be replaced with the corresponding attributes
+# of an incoming PubSub message (which can itself be empty),
+# and it is up to the Job how to interpret them
+# (for example, you can pass a value as part of
 # a command-line arg, or an env variable).
 #
 

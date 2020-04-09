@@ -9,7 +9,7 @@ from copy import deepcopy
 from hashlib import md5
 from os import environ
 from threading import Thread
-from typing import Callable, Union
+from typing import Callable, Mapping, Union
 
 from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.subscriber.message import Message
@@ -20,29 +20,30 @@ from kubernetes.watch import Watch
 
 import yaml
 
+JobInputs = Mapping[str, str]
 JobTree = Union[dict, list]
 JobSpec = JobTree
 
 
-def replace_job_input(tree: JobTree, job_input: str) -> JobTree:
+def replace_job_inputs(tree: JobTree, job_inputs: JobInputs) -> JobTree:
     """
-    Recursively replace `JOB_INPUT` in `JobTree`
+    Recursively replace `job_inputs` in `JobTree`
     """
     items = tree.items() if isinstance(tree, dict) else enumerate(tree)
     for key, val in items:
-        if val == 'JOB_INPUT':
-            tree[key] = job_input
+        if isinstance(val, str):
+            tree[key] = val.format(**job_inputs)
         elif isinstance(val, (dict, list)):
-            replace_job_input(val, job_input)
+            replace_job_inputs(val, job_inputs)
     return tree
 
 
 def render_job(subscription: str,
-               name: str, spec: JobSpec, job_input: str) -> V1Job:
+               name: str, spec: JobSpec, job_inputs: JobInputs) -> V1Job:
     """
     Renders Job request with spec and metadata
     """
-    spec = replace_job_input(deepcopy(spec), job_input)
+    spec = replace_job_inputs(deepcopy(spec), job_inputs)
     metadata = V1ObjectMeta(
         name=name,
         labels={
@@ -64,18 +65,19 @@ def get_pubsub_callback(subscription: str,
     """
     def callback(msg: Message):
         """
-        Constructs `job_name` and `job_input` from
-        `message_id` and data in PubSub message.
+        Constructs `job_name` and `job_inputs` from
+        `message_id` and attributes of a PubSub message.
 
         Submits rendered Job object to Kubernetes Batch API.
         """
         try:
             job_name = subscription + '-' + \
                 md5(msg.message_id.encode('utf-8')).hexdigest()
-            job_input = msg.data.decode('utf-8')
-            log.info('Submitting job %s with input %s', job_name, job_input)
+            job_inputs = msg.attributes
+            log.info('Submitting job %s with input(s) %s',
+                     job_name, job_inputs)
 
-            job = render_job(subscription, job_name, job_spec, job_input)
+            job = render_job(subscription, job_name, job_spec, job_inputs)
             get_batch_api().create_namespaced_job(namespace, job)
             log.info('Submitted job %s', job_name)
 
