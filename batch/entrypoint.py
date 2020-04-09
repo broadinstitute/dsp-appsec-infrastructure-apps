@@ -31,7 +31,7 @@ def get_job(job: V1Job, name: str, inputs: JobInputs) -> V1Job:
     """
     job = deepcopy(job)
     job.metadata.name = name
-    anno = job['spec']['template']['metadata']['annotations']
+    anno = job.spec['template']['metadata']['annotations']
     anno.update({**anno, **inputs})
     return job
 
