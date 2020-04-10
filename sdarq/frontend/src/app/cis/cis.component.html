@@ -1,7 +1,7 @@
 <h2><span style="font-weight: bolder;">DSP</span> AppSec |  Google Project-CIS Scan</h2>
 <div class="container">
-  <!-- <app-survey [json]="json" (submitSurvey)="sendProjectId($event)"></app-survey> -->
-
+  <br>
+  <br>
   <form [formGroup]="submitForm" novalidate enctype="multipart/form-data">
     <div class="form-group" >
       <label for="Project Id" >Google Project ID *</label>
@@ -32,7 +32,7 @@
     <td>{{findings.failures}}</td>
     <td>{{findings.description}}</td>
     <td>{{findings.rationale}}</td>
-    <td><a href="{{findings.refs}}">Link</a></td>
+    <td><ul *ngFor="let link of findings.refs"><li><a href="{{link}}">Ref</a></li></ul></td>
    </tr>
   </table>
 
