@@ -1,0 +1,15 @@
+{
+    "pages": [
+     {
+      "name": "CIS Scan",
+      "elements": [
+       {
+        "type": "text",
+        "name": "project_id",
+        "title": "Enter your Google Project ID"
+       }
+      ],
+      "title": "CIS Scan"
+     }
+    ]
+   }

@@ -1,0 +1,41 @@
+<h2><span style="font-weight: bolder;">DSP</span> AppSec |  Google Project-CIS Scan</h2>
+<div class="container">
+  <br>
+  <br>
+  <form [formGroup]="submitForm" novalidate enctype="multipart/form-data">
+    <div class="form-group" >
+      <label for="Project Id" >Google Project ID *</label>
+      <br>
+      <input type="text" id="project_id"  class="form-control" formControlName="project_id" #project_id/>
+      </div>
+      <br>
+      <button type="submit" (click)="submit()" class="btn btn-primary">Send</button>
+  </form>
+  <br>
+  <br>
+  <table class="table table-striped" *ngIf="table_show">
+    <thead>
+    <tr>
+    <th scope="col">id</th>
+    <th scope="col">level</th>
+    <th scope="col">title</th> 
+    <th scope="col">failures</th>
+    <th scope="col">description</th>
+    <th scope="col">rationale</th>
+    <th scope="col">refs</th>
+  </tr>
+  </thead>
+   <tr mdbTableCol *ngFor="let findings of projectFindings">
+    <td>{{findings.id}}</td>
+    <td>{{findings.level}}</td>
+    <td>{{findings.title}}</td>
+    <td>{{findings.failures}}</td>
+    <td>{{findings.description}}</td>
+    <td>{{findings.rationale}}</td>
+    <td><ul *ngFor="let link of findings.refs"><li><a href="{{link}}">Ref</a></li></ul></td>
+   </tr>
+  </table>
+
+</div>
+
+
