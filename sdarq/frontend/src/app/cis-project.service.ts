@@ -11,7 +11,8 @@ import { retry, catchError, map } from 'rxjs/operators';
 })
 export class CisProjectService {
 
-  private Url = location.origin + '/cis_results/';
+  // private Url = location.origin + '/cis_results/';
+  private Url = 'http://0.0.0.0:8080/cis_results/';
 
   constructor(private http: HttpClient) { }
 
@@ -20,7 +21,21 @@ export class CisProjectService {
     const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
-    return this.http.post(this.Url, data, options).pipe(map(res => res)
+    return this.http.post(this.Url, data, options).pipe(map(res => res),
+    catchError(this.handleError)
+
           )}
     
-}
+  handleError(error: HttpErrorResponse) {
+    let errorMessage = 'ERROR';
+    if (error.error instanceof ErrorEvent) {
+      // client-side error
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // server-side error
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    console.log(errorMessage);
+    return throwError(errorMessage);
+  }
+  }
