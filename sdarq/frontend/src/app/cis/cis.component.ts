@@ -39,7 +39,7 @@ export class CisComponent implements OnInit {
     if (this.submitForm.invalid) {
       return;
     } else {
-    this.sendProject.sendCisProject(this.submitForm.value).subscribe((data:any ) => {
+    this.sendProject.sendCisProject(this.submitForm.value).subscribe((data: any ) => {
       this.projectFindings = data;
       this.table_show = true;
     })
