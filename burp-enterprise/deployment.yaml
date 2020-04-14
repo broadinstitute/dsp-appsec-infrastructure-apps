@@ -30,7 +30,7 @@ spec:
         workingDir: /etc/init.d
         args:
         - cp ${SECRET_CONFIG_PATH}/${SECRET_CONFIG_FILE}
-            /usr/local/burpsuite_enterprise/enterpriseServer/${BURP_VERSION}/${SECRET_CONFIG_FILE} &&
+            /usr/local/burpsuite_enterprise/enterpriseServer/${BURP_VERSION}/ &&
           ./burpsuiteenterpriseedition_agent start &&
           ./burpsuiteenterpriseedition_enterpriseserver start &&
           ./burpsuiteenterpriseedition_webserver start &&
