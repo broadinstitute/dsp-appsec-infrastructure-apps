@@ -20,7 +20,6 @@ export class CisProjectService {
     return this.http.post(this.Url, data, options).pipe(map(res => res),
     catchError(this.handleError))
   }
-    
   handleError(error: HttpErrorResponse) {
     let errorMessage = 'ERROR';
     if (error.error instanceof ErrorEvent) {
