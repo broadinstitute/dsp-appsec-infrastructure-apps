@@ -51,8 +51,8 @@ export TARGET_PORT="http"
 export BURP_VERSION="1.1.04"
 
 ./kube-apply.py \
-  "secret-config.yaml" \
   "service-account.yaml" \
+  "${CWD}/secret-config.yaml" \
   "${CWD}/deployment.yaml"
 
 ./host.sh
