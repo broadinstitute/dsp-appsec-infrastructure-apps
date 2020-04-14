@@ -14,8 +14,7 @@ export DNS_HOSTNAME="${NAMESPACE}.${DNS_DOMAIN}"
 export SERVICE="${NAMESPACE}"
 export INGRESS="${SERVICE}"
 export MANAGED_CERT="${SERVICE}"
-
-export SERVICE_PORT="docs"
+export SERVICE_PORT="${SERVICE}"
 
 ./kube-apply.py \
   "namespace.yaml" \
