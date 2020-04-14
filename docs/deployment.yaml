@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${DEPLOYMENT}
+  namespace: ${NAMESPACE}
+spec:
+  selector:
+    matchLabels:
+      service: ${SERVICE}
+  template:
+    metadata:
+      labels:
+        service: ${SERVICE}
+    spec:
+      runtimeClassName: gvisor
+      nodeSelector:
+        cloud.google.com/gke-nodepool: apps
+
+      containers:
+      - name: docs
+        image: ${DOCS_IMAGE}
+        ports:
+        - name: ${DOCS_PORT}
+          containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /
+            port: ${DOCS_PORT}
+          timeoutSeconds: 10
+        resources:
+          requests:
+            memory: 75M
