@@ -29,7 +29,9 @@ spec:
         command: ['sh', '-c']
         workingDir: /etc/init.d
         args:
-        - ./burpsuiteenterpriseedition_agent start &&
+        - cp ${SECRET_CONFIG_PATH}/${SECRET_CONFIG_FILE}
+            /usr/local/burpsuite_enterprise/enterpriseServer/${BURP_VERSION}/${SECRET_CONFIG_FILE} &&
+          ./burpsuiteenterpriseedition_agent start &&
           ./burpsuiteenterpriseedition_enterpriseserver start &&
           ./burpsuiteenterpriseedition_webserver start &&
           exec sleep infinity
@@ -44,8 +46,7 @@ spec:
           initialDelaySeconds: 30
         volumeMounts:
         - name: ${SECRET_CONFIG_VOLUME}
-          mountPath: /usr/local/burpsuite_enterprise/enterpriseServer/${BURP_VERSION}/enterprise-server.config
-          subPath: enterprise-server.config
+          mountPath: ${SECRET_CONFIG_PATH}
         resources:
           requests:
             memory: 900M

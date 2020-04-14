@@ -20,6 +20,8 @@ export DEPLOYMENT="${SERVICE}"
 
 export SECRET_CONFIG="${SERVICE}"
 export SECRET_CONFIG_VOLUME="${SECRET_CONFIG}"
+export SECRET_CONFIG_PATH="/config"
+export SECRET_CONFIG_FILE="enterprise-server.config"
 
 export DB_SECRET="${SERVICE}-db"
 export DB_NAME="burp"
