@@ -40,11 +40,17 @@ steps:
   - gsutil mb "gs://$${TERRAFORM_BUCKET}" &&
     gsutil versioning set on "gs://$${TERRAFORM_BUCKET}" || true
 
+# Pre-pull Kaniko image, used to speed up Docker builds
+- id: kaniko
+  name: &kaniko gcr.io/kaniko-project/executor:debug
+  waitFor: ['-']
+  entrypoint: 'true'
+
 # build bastion proxy Docker image,
 # using Kaniko to speed up builds
 - id: bastion-image
-  name: &kaniko gcr.io/kaniko-project/executor:debug
-  waitFor: ['-']
+  name: *kaniko
+  waitFor: ['kaniko']
   entrypoint: sh
   args:
   - -c
@@ -90,7 +96,7 @@ steps:
 # build Batch dispatcher image
 - id: batch-dispatcher-image
   name: *kaniko
-  waitFor: ['-']
+  waitFor: ['kaniko']
   entrypoint: sh
   args:
   - -c
@@ -102,7 +108,7 @@ steps:
 # build CIS Docker image
 - id: cis-image
   name: *kaniko
-  waitFor: ['-']
+  waitFor: ['kaniko']
   entrypoint: sh
   args:
   - -c
@@ -124,7 +130,7 @@ steps:
 # using Kaniko to speed up builds
 - id: defectdojo-django-image
   name: *kaniko
-  waitFor: ['-']
+  waitFor: ['kaniko']
   entrypoint: sh
   args:
   - -c
@@ -137,7 +143,7 @@ steps:
 # build patched DefectDojo Nginx image
 - id: defectdojo-nginx-image
   name: *kaniko
-  waitFor: ['-']
+  waitFor: ['kaniko']
   entrypoint: sh
   args:
   - -c
@@ -157,7 +163,7 @@ steps:
 # build Docs image
 - id: docs-image
   name: *kaniko
-  waitFor: ['-']
+  waitFor: ['kaniko']
   entrypoint: sh
   args:
   - -c
@@ -176,7 +182,7 @@ steps:
 # build patched CodeDx image
 - id: codedx-image
   name: *kaniko
-  waitFor: ['-']
+  waitFor: ['kaniko']
   entrypoint: sh
   args:
   - -c
@@ -195,7 +201,7 @@ steps:
 # build SDARQ frontend Docker image
 - id: sdarq-frontend-image
   name: *kaniko
-  waitFor: ['-']
+  waitFor: ['kaniko']
   entrypoint: sh
   args:
   - -c
@@ -207,7 +213,7 @@ steps:
 # build SDARQ backend Docker image
 - id: sdarq-backend-image
   name: *kaniko
-  waitFor: ['-']
+  waitFor: ['kaniko']
   entrypoint: sh
   args:
   - -c
@@ -226,7 +232,7 @@ steps:
 # build Cartography Docker image
 - id: cartography-image
   name: *kaniko
-  waitFor: ['-']
+  waitFor: ['kaniko']
   entrypoint: sh
   args:
   - -c
