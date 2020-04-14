@@ -41,6 +41,9 @@ spec:
         - name: ${SECRET_CONFIG_VOLUME}
           mountPath: /usr/local/burpsuite_enterprise/enterpriseServer/${BURP_VERSION}/enterprise-server.config
           subPath: enterprise-server.config
+        resources:
+          requests:
+            memory: 400M
 
       - name: cloudsql-proxy
         image: gcr.io/cloudsql-docker/gce-proxy
