@@ -24,6 +24,7 @@ export SECRET_CONFIG_PATH="/config"
 export SECRET_CONFIG_FILE="enterprise-server.config"
 
 export DB_SECRET="${SERVICE}-db"
+export DB_PORT="5432"
 export DB_NAME="burp"
 export DB_USER="burpsuite"
 
