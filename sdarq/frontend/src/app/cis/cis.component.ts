@@ -18,7 +18,7 @@ export class CisComponent implements OnInit {
   table_show: boolean;
   projectIdPattern = '^[a-z][a-z0-9-]{4,28}[a-z0-9]$' // pattern
 
-  constructor(private sendProject: CisProjectService, private http: HttpClient, private form: FormBuilder){ 
+  constructor(private sendProject: CisProjectService, private http: HttpClient, private form: FormBuilder) {
   this.submitForm = form.group({
      'project_id': this.project_id
       });
@@ -39,7 +39,7 @@ export class CisComponent implements OnInit {
     if (this.submitForm.invalid) {
       return;
     } else {
-    this.sendProject.sendCisProject(this.submitForm.value).subscribe((data:any) => { 
+    this.sendProject.sendCisProject(this.submitForm.value).subscribe((data:any ) => {
       this.projectFindings = data;
       this.table_show = true;
     })
