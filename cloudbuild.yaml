@@ -153,7 +153,7 @@ steps:
   entrypoint: ./deploy.sh
   dir: defectdojo
 
-# build docs image
+# build Docs image
 - id: docs-image
   name: *kaniko
   waitFor: ['-']
@@ -162,10 +162,10 @@ steps:
   - -c
   - executor
       --context=dir:///workspace/docs/src
-      --destination=${DOCS_IMAGE}
+      --destination=$${DOCS_IMAGE}
       --cache
 
-# deploy docs to GKE cluster
+# deploy Docs to GKE cluster
 - id: docs
   name: *kubectl
   waitFor: ['shared', 'docs-image']
