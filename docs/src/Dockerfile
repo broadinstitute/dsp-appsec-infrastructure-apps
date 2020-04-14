@@ -2,9 +2,12 @@ FROM node:latest as node
 
 WORKDIR /app/website
 
-COPY ./docs /app/docs
-COPY ./website /app/website
+COPY ./website/package.json .
+
 RUN yarn install
+
+COPY ./docs /app/docs
+COPY ./website .
 
 RUN yarn build
 
