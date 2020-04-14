@@ -1,0 +1,10 @@
+{
+  "docs": {
+    "Kubernetes Cluster": ["kubernetes-cluster"],
+    "Cluster Deployed Applications": ["security-apps"],
+    "Security Automation Tools": ["security-tools"]
+  },
+  "docs-other": {
+    "First Category": ["doc4", "doc5"]
+  }
+}
