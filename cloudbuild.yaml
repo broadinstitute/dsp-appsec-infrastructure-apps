@@ -46,8 +46,7 @@ steps:
   waitFor: ['-']
   entrypoint: 'true'
 
-# build bastion proxy Docker image,
-# using Kaniko to speed up builds
+# build bastion proxy Docker image
 - id: bastion-image
   name: *kaniko
   waitFor: ['kaniko']
