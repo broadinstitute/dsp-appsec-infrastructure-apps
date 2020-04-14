@@ -23,6 +23,8 @@ export SECRET_CONFIG_VOLUME="${SECRET_CONFIG}"
 
 export DB_NAME="${SERVICE}"
 export DB_PORT="3306"
+
+export DB_SECRET="${SERVICE}-db"
 export DB_USER="burpsuite"
 
 ./gen-secret.sh "${DB_SECRET}" \
@@ -33,7 +35,6 @@ DB_PASSWORD=$(
     -o jsonpath='{.data.DB_PASSWORD}' | base64 --decode
 )
 export DB_PASSWORD
-export DB_SECRET="${SERVICE}-db"
 
 export SQL_REGION="us-east1"
 export SQL_INSTANCE="${NAMESPACE}"
