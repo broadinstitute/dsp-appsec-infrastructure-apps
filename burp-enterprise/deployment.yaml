@@ -41,20 +41,20 @@ spec:
             path: /
             port: ${TARGET_PORT}
           timeoutSeconds: 10
-          initialDelaySeconds: 120
+          initialDelaySeconds: 30
         volumeMounts:
         - name: ${SECRET_CONFIG_VOLUME}
           mountPath: /usr/local/burpsuite_enterprise/enterpriseServer/${BURP_VERSION}/enterprise-server.config
           subPath: enterprise-server.config
         resources:
           requests:
-            memory: 400M
+            memory: 900M
 
       - name: cloudsql-proxy
         image: gcr.io/cloudsql-docker/gce-proxy
         command:
         - /cloud_sql_proxy
-        - -instances=${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:3306
+        - -instances=${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:5432
         securityContext:
           runAsUser: 2  # non-root user
           allowPrivilegeEscalation: false
