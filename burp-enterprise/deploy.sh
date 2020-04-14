@@ -34,8 +34,8 @@ DB_PASSWORD=$(
 )
 export DB_PASSWORD
 
+export SQL_INSTANCE="burpsuite-enterprise"
 export SQL_REGION="us-east1"
-export SQL_INSTANCE="${NAMESPACE}"
 
 export IP_NAME="${NAMESPACE}"
 export DNS_HOSTNAME="${NAMESPACE}.${DNS_DOMAIN}"

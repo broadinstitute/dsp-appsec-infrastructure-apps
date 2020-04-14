@@ -26,8 +26,12 @@ spec:
       - name: burp-enterprise
         image: us.gcr.io/${PROJECT_ID}/burp-enterprise:${BURP_VERSION}
         command: ['sh', '-c']
+        workingDir: /etc/init.d
         args:
-        - /etc/init.d/burpsuiteenterpriseedition_enterpriseserver start && sleep infinity
+        - ./burpsuiteenterpriseedition_agent start &&
+          ./burpsuiteenterpriseedition_enterpriseserver start &&
+          ./burpsuiteenterpriseedition_webserver start &&
+          exec sleep infinity
         ports:
         - name: ${TARGET_PORT}
           containerPort: 8080
@@ -75,7 +79,7 @@ metadata:
   annotations:
     cnrm.cloud.google.com/deletion-policy: abandon
 spec:
-  databaseVersion: MYSQL_5_7
+  databaseVersion: POSTGRES_11
   region: ${SQL_REGION}
   settings:
     tier: db-custom-1-3840
@@ -103,7 +107,6 @@ metadata:
 spec:
   instanceRef:
     name: ${SQL_INSTANCE}
-  host: cloudsqlproxy~%
   password:
     valueFrom:
       secretKeyRef:
