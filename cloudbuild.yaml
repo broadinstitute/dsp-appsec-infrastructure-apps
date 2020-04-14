@@ -2,6 +2,7 @@ substitutions:
   _ORG_VIEWER_SA_EMAIL: '' # replace in Cloud Build UI
 
 options:
+  machineType: N1_HIGHCPU_8
   env:
   - PROJECT_ID=${PROJECT_ID}
   - BATCH_DISPATCHER_IMAGE=us.gcr.io/${PROJECT_ID}/batch-dispatcher:${SHORT_SHA}
