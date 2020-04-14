@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpHeaders, HttpClient, HttpErrorResponse } from '@angular/common/http';
-import {  throwError } from 'rxjs';
-import { retry, catchError, map } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +18,8 @@ export class CisProjectService {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
     return this.http.post(this.Url, data, options).pipe(map(res => res),
-    catchError(this.handleError))}
-    
+    catchError(this.handleError))
+  }
   handleError(error: HttpErrorResponse) {
     let errorMessage = 'ERROR';
     if (error.error instanceof ErrorEvent) {
