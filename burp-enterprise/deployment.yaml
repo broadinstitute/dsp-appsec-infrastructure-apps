@@ -39,7 +39,7 @@ spec:
           initialDelaySeconds: 120
         volumeMounts:
         - name: ${SECRET_CONFIG_VOLUME}
-          mountPath: /usr/local/burpsuite_enterprise/enterpriseServer/${BURP_VERSION}
+          mountPath: /usr/local/burpsuite_enterprise/enterpriseServer/${BURP_VERSION}/enterprise-server.config
           subPath: enterprise-server.config
 
       - name: cloudsql-proxy
