@@ -43,13 +43,13 @@ spec:
             path: /
             port: ${TARGET_PORT}
           timeoutSeconds: 10
-          initialDelaySeconds: 30
+          initialDelaySeconds: 60
         volumeMounts:
         - name: ${SECRET_CONFIG_VOLUME}
           mountPath: ${SECRET_CONFIG_PATH}
         resources:
           requests:
-            memory: 900M
+            memory: 1850M
 
       - name: cloudsql-proxy
         image: gcr.io/cloudsql-docker/gce-proxy
