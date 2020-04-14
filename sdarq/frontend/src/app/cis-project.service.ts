@@ -9,8 +9,7 @@ import { retry, catchError, map } from 'rxjs/operators';
 })
 export class CisProjectService {
 
-  // private Url = location.origin + '/cis_results/';
-  private Url = 'http://0.0.0.0:8080/cis_results/';
+  private Url = location.origin + '/cis_results/';
 
   constructor(private http: HttpClient) { }
 
@@ -34,4 +33,3 @@ export class CisProjectService {
     return throwError(errorMessage);
   }
   }
-  
