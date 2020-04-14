@@ -20,12 +20,12 @@ spec:
       - name: docs
         image: ${DOCS_IMAGE}
         ports:
-        - name: ${DOCS_PORT}
+        - name: ${SERVICE_PORT}
           containerPort: 80
         readinessProbe:
           httpGet:
             path: /
-            port: ${DOCS_PORT}
+            port: ${SERVICE_PORT}
           timeoutSeconds: 10
         resources:
           requests:

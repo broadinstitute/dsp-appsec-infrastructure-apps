@@ -5,7 +5,7 @@ set -euo pipefail
 CWD="${PWD}"
 cd ../shared
 
-export NAMESPACE="sdarq"
+export NAMESPACE="docs"
 export DEPLOYMENT="${NAMESPACE}"
 
 export IP_NAME="${NAMESPACE}"
@@ -18,7 +18,7 @@ export MANAGED_CERT="${SERVICE}"
 export BACKEND_CONFIG="${SERVICE}"
 
 export SDARQ_CONFIG="${SERVICE}"
-export SDARQ_SECRET="sdarq"
+export SDARQ_SECRET="docs"
 
 export FRONTEND_PORT="frontend"
 export BACKEND_PORT="backend"
