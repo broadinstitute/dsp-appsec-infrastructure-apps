@@ -15,7 +15,7 @@ export SERVICE="${NAMESPACE}"
 export INGRESS="${SERVICE}"
 export MANAGED_CERT="${SERVICE}"
 
-export DOCS_PORT="docs"
+export SERVICE_PORT="docs"
 
 ./kube-apply.py \
   "namespace.yaml" \
