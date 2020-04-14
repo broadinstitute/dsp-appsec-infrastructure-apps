@@ -25,6 +25,7 @@ spec:
       containers:
       - name: burp-enterprise
         image: us.gcr.io/${PROJECT_ID}/burp-enterprise:${BURP_VERSION}
+        imagePullPolicy: Always
         command: ['sh', '-c']
         workingDir: /etc/init.d
         args:
