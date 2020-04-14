@@ -21,9 +21,8 @@ export DEPLOYMENT="${SERVICE}"
 export SECRET_CONFIG="${SERVICE}"
 export SECRET_CONFIG_VOLUME="${SECRET_CONFIG}"
 
-export DB_NAME="${SERVICE}"
-
 export DB_SECRET="${SERVICE}-db"
+export DB_NAME="burp"
 export DB_USER="burpsuite"
 
 ./gen-secret.sh "${DB_SECRET}" \
