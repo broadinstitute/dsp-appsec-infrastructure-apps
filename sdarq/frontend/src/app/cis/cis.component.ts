@@ -17,8 +17,7 @@ export class CisComponent implements OnInit {
   project_id: FormGroup;
   table_show: boolean = false;
   
-  projectIdPattern = "^[a-z][a-z0-9-]{4,28}[a-z0-9]$" // pattern
-
+  projectIdPattern = '^[a-z][a-z0-9-]{4,28}[a-z0-9]$' // pattern
 
   constructor(private sendProject: CisProjectService, private http: HttpClient, private form: FormBuilder) { 
     this.submitForm = form.group({
@@ -45,9 +44,7 @@ export class CisComponent implements OnInit {
       this.projectFindings = data;
       this.table_show = true;
     }),
-    (data) => {
-      console.log('Form not sent');
-     }
+    (data) => {}
 }
 }
 }
