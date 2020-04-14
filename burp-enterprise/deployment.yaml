@@ -1,0 +1,108 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${DEPLOYMENT}
+  namespace: ${NAMESPACE}
+spec:
+  selector:
+    matchLabels:
+      service: ${SERVICE}
+  template:
+    metadata:
+      labels:
+        service: ${SERVICE}
+    spec:
+      serviceAccountName: ${SERVICE_ACCOUNT}
+      runtimeClassName: gvisor
+      nodeSelector:
+        cloud.google.com/gke-nodepool: apps
+
+      volumes:
+      - name: ${SECRET_CONFIG_VOLUME}
+        secret:
+          secretName: ${SECRET_CONFIG}
+
+      containers:
+      - name: burp-enterprise
+        image: us.gcr.io/${PROJECT_ID}/burp-enterprise:${BURP_VERSION}
+        command: ['sh', '-c']
+        args:
+        - /etc/init.d/burpsuiteenterpriseedition_enterpriseserver start && sleep infinity
+        ports:
+        - name: ${TARGET_PORT}
+          containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /
+            port: ${TARGET_PORT}
+          timeoutSeconds: 10
+          initialDelaySeconds: 120
+        volumeMounts:
+        - name: ${SECRET_CONFIG_VOLUME}
+          mountPath: /usr/local/burpsuite_enterprise/enterpriseServer/${BURP_VERSION}
+          subPath: enterprise-server.config
+
+      - name: cloudsql-proxy
+        image: gcr.io/cloudsql-docker/gce-proxy
+        command:
+        - /cloud_sql_proxy
+        - -instances=${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:${DB_PORT}
+        securityContext:
+          runAsUser: 2  # non-root user
+          allowPrivilegeEscalation: false
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: ${SERVICE_ACCOUNT}-sa-sql-policy
+  namespace: ${NAMESPACE}
+spec:
+  member: serviceAccount:${SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
+  role: roles/cloudsql.client
+  resourceRef:
+    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+    kind: Project
+    external: projects/${PROJECT_ID}
+---
+apiVersion: sql.cnrm.cloud.google.com/v1beta1
+kind: SQLInstance
+metadata:
+  name: ${SQL_INSTANCE}
+  namespace: ${NAMESPACE}
+  annotations:
+    cnrm.cloud.google.com/deletion-policy: abandon
+spec:
+  databaseVersion: MYSQL_5_7
+  region: ${SQL_REGION}
+  settings:
+    tier: db-custom-1-3840
+    backupConfiguration:
+      enabled: true
+---
+apiVersion: sql.cnrm.cloud.google.com/v1beta1
+kind: SQLDatabase
+metadata:
+  name: ${DB_NAME}
+  namespace: ${NAMESPACE}
+  annotations:
+    cnrm.cloud.google.com/deletion-policy: abandon
+spec:
+  instanceRef:
+    name: ${SQL_INSTANCE}
+---
+apiVersion: sql.cnrm.cloud.google.com/v1beta1
+kind: SQLUser
+metadata:
+  name: ${DB_USER}
+  namespace: ${NAMESPACE}
+  annotations:
+    cnrm.cloud.google.com/deletion-policy: abandon
+spec:
+  instanceRef:
+    name: ${SQL_INSTANCE}
+  host: cloudsqlproxy~%
+  password:
+    valueFrom:
+      secretKeyRef:
+        name: ${DB_SECRET}
+        key: DB_PASSWORD

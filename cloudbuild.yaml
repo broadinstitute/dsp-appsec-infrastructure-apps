@@ -78,6 +78,13 @@ steps:
   - -c
   - export $(xargs < ../.env) && ./global.sh
 
+# deploy Burp Enterprise to GKE cluster
+- id: burp-enterprise
+  name: *kubectl
+  waitFor: ['shared']
+  entrypoint: ./deploy.sh
+  dir: burp-enterprise
+
 # build Batch dispatcher image
 - id: batch-dispatcher-image
   name: *kaniko
