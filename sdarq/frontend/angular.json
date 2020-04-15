@@ -21,7 +21,6 @@
               "src/favicon.ico"
             ],
             "styles": [
-              "node_modules/animate.css/animate.min.css",
               "src/styles.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/survey-angular/survey.css",
@@ -41,14 +40,23 @@
               "node_modules/jquery-bar-rating/dist/themes/bars-reversed.css",
               "node_modules/jquery-bar-rating/dist/themes/bars-square.css",
               "node_modules/jquery-bar-rating/dist/themes/bootstrap-stars.css",
-              "node_modules/jquery-bar-rating/dist/themes/fontawesome-stars-o.css"
+              "node_modules/jquery-bar-rating/dist/themes/fontawesome-stars-o.css",
+              "node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss",
+              "node_modules/@fortawesome/fontawesome-free/scss/solid.scss",
+              "node_modules/@fortawesome/fontawesome-free/scss/regular.scss",
+              "node_modules/@fortawesome/fontawesome-free/scss/brands.scss",
+              "node_modules/angular-bootstrap-md/assets/scss/bootstrap/bootstrap.scss",
+              "node_modules/angular-bootstrap-md/assets/scss/mdb.scss",
+              "node_modules/animate.css/animate.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
               "node_modules/jquery-ui/ui/widgets/datepicker.js",
               "node_modules/select2/dist/js/select2.js",
               "node_modules/jquery-bar-rating/dist/jquery.barrating.min.js",
-              "node_modules/ckeditor/ckeditor.js"
+              "node_modules/ckeditor/ckeditor.js",
+              "node_modules/chart.js/dist/Chart.js",
+              "node_modules/hammerjs/hammer.min.js"
             ]
           },
           "configurations": {
