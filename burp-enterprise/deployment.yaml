@@ -56,7 +56,7 @@ spec:
           mountPath: ${SECRET_LICENSE_PATH}
         resources:
           requests:
-            memory: 1850M
+            memory: 2300M
 
       - name: cloudsql-proxy
         image: gcr.io/cloudsql-docker/gce-proxy

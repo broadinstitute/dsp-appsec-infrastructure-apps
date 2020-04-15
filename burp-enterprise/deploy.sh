@@ -25,8 +25,9 @@ export SECRET_LICENSE_FILE="prefs.xml"
 
 echo "
   Please set up Burp Enterprise license secret with
-    kubectl create secret generic ${SECRET_LICENSE} -n ${NAMESPACE} \
-      --from-file <path/to/${SECRET_LICENSE_FILE}>
+    kubectl create secret generic ${SECRET_LICENSE} -n ${NAMESPACE} \\
+      --from-file <path/to/${SECRET_LICENSE_FILE}> --dry-run -o yaml |
+    kubectl apply -f -
 "
 
 export SECRET_CONFIG="${SERVICE}"
