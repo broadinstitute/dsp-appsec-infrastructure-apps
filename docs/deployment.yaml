@@ -26,7 +26,10 @@ spec:
           httpGet:
             path: /
             port: ${SERVICE_PORT}
-          timeoutSeconds: 10
         resources:
           requests:
-            memory: 75M
+            cpu: 10m
+            memory: 20M
+          limits:
+            cpu: 100m
+            memory: 200M
