@@ -31,8 +31,11 @@ const siteConfig = {
   //   baseUrl: '/test-site/',
 
   // Used for publishing and more
+  // This must match your GitHub repository project name (case-sensitive).
   projectName: 'dsp-appsec-infrastructure-automation',
-  organizationName: 'Data Sciences Platform - Broad Institute',
+  // GitHub username of the organization or user hosting this project.
+  // This is used by the publishing script to determine where your GitHub pages website will be hosted.
+  organizationName: 'broadinstitute',
   // For top-level user or org sites, the organization is still the same.
   // e.g., for the https://JoelMarcey.github.io site, it would be set like...
   //   organizationName: 'JoelMarcey'
