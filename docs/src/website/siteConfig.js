@@ -38,13 +38,13 @@ const siteConfig = {
   //   organizationName: 'JoelMarcey'
 
 
-  
+
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
-    {doc: 'kubernetes-cluster', label: 'Docs'},
-    {doc: 'security-apps', label: 'Apps'},
-    {page: 'help', label: 'Help'},
-    {blog: true, label: 'Blog'},
+    { doc: 'kubernetes-cluster', label: 'Docs' },
+    { doc: 'security-apps', label: 'Apps' },
+    { page: 'help', label: 'Help' },
+    { blog: true, label: 'Blog' },
   ],
 
   // If you have users set above, you add it here:
