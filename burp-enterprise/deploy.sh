@@ -49,7 +49,7 @@ export BACKEND_CONFIG="${SERVICE}"
 export SERVICE_PORT="http"
 export TARGET_PORT="http"
 
-export BURP_VERSION="1.1.04"
+export BURP_VERSION="2012.2"
 
 ./kube-apply.py \
   "service-account.yaml" \
