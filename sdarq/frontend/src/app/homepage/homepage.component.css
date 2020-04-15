@@ -1,98 +1,22 @@
-h2{
-   text-align: center;
-    padding-top: 1%;
-    font-size: 2.5em !important;
-    font-weight: 200 !important;
-  }
-
-  h3{
-    font-weight: 200 !important;
-    color: #4173c9 !important;
-    padding: 2.5% 0% 0.5% 0%;
-    text-align: center;
-  }
-  .h4, h4 {
-    font-size: 1.5em !important;
-}
-  body {
-    margin: 0;
-    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
-    /*font-size: 0.8rem;*/
-    font-weight: 400;
-    line-height: 1.7;
-    color: #212529;
-    text-align: left;
-    background-color: #fff;
-  }
-  .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
-    font-family: inherit;
-    font-weight: lighter;
-    line-height: 1.1;
-    color: inherit;
-  }
-  
-  .border{
-      margin: 30px 0 30px 0;
-      border-radius: 8px;
-      transition: transform .2s;
-      -webkit-animation: fadein 0.7s;
-      -moz-animation: fadein 0.7s;
-       -ms-animation: fadein 0.7s;
-        -o-animation: fadein 0.7s;
-           animation: fadein 0.7s;
-  }
-
-  .border:hover{
-    transform: scale(1.1);   
-  }
-
-  .text-inside-box{
-      padding: 15px 8px 15px 8px;
-      -webkit-animation: fadein 0.7s;
-      -moz-animation: fadein 0.7s;
-       -ms-animation: fadein 0.7s;
-        -o-animation: fadein 0.7s;
-           animation: fadein 0.7s;
-  }
-
-  .btn-primary{ 
-    -webkit-animation: fadein 0.7s;
-    -moz-animation: fadein 0.7s;
-     -ms-animation: fadein 0.7s;
-      -o-animation: fadein 0.7s;
-         animation: fadein 0.7s;
-         color: white;
-  }
-  hr {
-    margin-top: 3px;
-    margin-bottom: 20px;
-    border: 0;
-    width: 51%;
-    border-top: 1px solid #ececec;
+.jumbotron jumbotron-fluid{
+background: linear-gradient(87deg,#2438a2 0,#2196F3 100%) !important;
 }
 
-.second {
-  border-bottom: 2px solid #4173c1;
-  color: #4173c9;
-  border-radius: 15%;
-  margin-bottom: 20px;
+.card-title {
+  margin-bottom: 0.75rem;
+  font-weight: 200 !important;
+  color: #2774d7 !important;
 }
-.third {
-  border-bottom: 2px solid #65acff;
-  color: #65acff;
-  border-radius: 15%;
+.fa, .fas {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  color: #253ea7;
+}
+.lead {
+  text-align:center;
+  color:white;
 }
 
-.jumbotron {
-  padding: 2rem 1rem;
-  margin-bottom: 2rem;
-  background-color: white !important;
-  border-radius: .3rem;
-}
-.container {
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-  border-top: 1px solid #d0d0d0;
+.card .card-body h4 {
+  font-weight: 200;
 }

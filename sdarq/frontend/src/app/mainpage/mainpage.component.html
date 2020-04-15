@@ -1,4 +1,3 @@
-<h2><span style="font-weight: bolder;">DSP</span> AppSec | New Service Security Requirements</h2>
 <div class="container">
   <br>
   <br>
@@ -27,12 +26,12 @@
         <div class="form-group">
           <br>
           <h5>Are you part of DSP?</h5>
-          <input type="radio"  name="partOfDSP" value="Yes" #partOfDSP1 [checked] (click)="isPartOfDSP(partOfDSP1.checked)"> Yes
+          <input type="radio"  name="partOfDSP" value="Yes" #partOfDSP1 [checked] (click)="isPartOfDSP(partOfDSP1.checked)"> Yes <br>
           <input type="radio"  name="partOfDSP" value="No" #partOfDSP2 [checked] (click)="isNotPartOfDSP(partOfDSP2.checked)"> No
         </div>
 
-  <button *ngIf="partofDSP" class="btn btn-primary" routerLink="/questionnaire">Start</button>
-  <button *ngIf="notPartOfDSP" class="btn btn-info" routerLink="/notDSPquestionnaire">Start</button>
+  <a href="/questionnaire" mdbBtn  *ngIf="partofDSP" mdbBtn type="button" gradient="blue" rounded="true" mdbWavesEffect>Start</a>
+  <a href="/notdspquestionnaire" mdbBtn  *ngIf="notPartOfDSP" mdbBtn type="button" gradient="aqua" rounded="true" mdbWavesEffect>Start</a>
 
   <br>  <br>
   <h5>Questions?</h5>

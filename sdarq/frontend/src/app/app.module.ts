@@ -14,6 +14,10 @@ import { NonDSPformComponent } from './non-dspform/non-dspform.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { CisComponent } from './cis/cis.component';
 import { CisProjectService} from './cis-project.service';
+import { MDBBootstrapModule } from 'angular-bootstrap-md';
+import { NavbarComponent } from './navbar/navbar.component';
+import { ScanpageComponent } from './scanpage/scanpage.component';
+
 
 
 @NgModule({
@@ -25,14 +29,17 @@ import { CisProjectService} from './cis-project.service';
     MainpageComponent,
     NonDSPformComponent,
     HomepageComponent,
-    CisComponent
+    CisComponent,
+    NavbarComponent,
+    ScanpageComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MDBBootstrapModule
   ],
   providers: [
     SendFormDataService,
