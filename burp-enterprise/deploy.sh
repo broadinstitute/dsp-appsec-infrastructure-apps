@@ -18,6 +18,17 @@ export SERVICE="${NAMESPACE}"
 export SERVICE_ACCOUNT="${NAMESPACE}"
 export DEPLOYMENT="${SERVICE}"
 
+export SECRET_LICENSE="${SERVICE}-license"
+export SECRET_LICENSE_VOLUME="${SECRET_LICENSE}"
+export SECRET_LICENSE_PATH="/license"
+export SECRET_LICENSE_FILE="prefs.xml"
+
+echo "
+  Please set up Burp Enterprise license secret with
+    kubectl create secret generic ${SECRET_LICENSE} -n ${NAMESPACE} \
+      --from-file <path/to/${SECRET_LICENSE_FILE}>
+"
+
 export SECRET_CONFIG="${SERVICE}"
 export SECRET_CONFIG_VOLUME="${SECRET_CONFIG}"
 export SECRET_CONFIG_PATH="/config"

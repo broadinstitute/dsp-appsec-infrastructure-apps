@@ -21,6 +21,9 @@ spec:
       - name: ${SECRET_CONFIG_VOLUME}
         secret:
           secretName: ${SECRET_CONFIG}
+      - name: ${SECRET_LICENSE_VOLUME}
+        secret:
+          secretName: ${SECRET_LICENSE}
 
       containers:
       - name: burp-enterprise
@@ -31,6 +34,8 @@ spec:
         args:
         - cp ${SECRET_CONFIG_PATH}/${SECRET_CONFIG_FILE}
             /usr/local/burpsuite_enterprise/enterpriseServer/${BURP_VERSION}/ &&
+          cp ${SECRET_LICENSE_PATH}/${SECRET_LICENSE_FILE}
+            /var/lib/BurpSuiteEnterpriseEdition/.BurpSuiteEnterprise/enterprise-server/.java/.userPrefs/burp/ &&
           ./burpsuiteenterpriseedition_agent start &&
           ./burpsuiteenterpriseedition_enterpriseserver start &&
           ./burpsuiteenterpriseedition_webserver start &&
@@ -47,6 +52,8 @@ spec:
         volumeMounts:
         - name: ${SECRET_CONFIG_VOLUME}
           mountPath: ${SECRET_CONFIG_PATH}
+        - name: ${SECRET_LICENSE_VOLUME}
+          mountPath: ${SECRET_LICENSE_PATH}
         resources:
           requests:
             memory: 1850M
