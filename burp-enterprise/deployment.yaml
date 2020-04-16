@@ -42,16 +42,16 @@ spec:
           mkfifo "${LOGBACK_LOG_FILE}"
           chown burpsuite "${LOGBACK_LOG_FILE}"
 
-          cd enterpriseServer/${BURP_VERSION}/
-          cp ${SECRET_CONFIG_PATH}/${SECRET_CONFIG_FILE} .
-          chown burpsuite ${SECRET_CONFIG_FILE}
+          cd "enterpriseServer/${BURP_VERSION}/"
+          cp "${SECRET_CONFIG_PATH}/${SECRET_CONFIG_FILE}" .
+          chown burpsuite "${SECRET_CONFIG_FILE}"
 
           cd /etc/init.d
           ./burpsuiteenterpriseedition_agent start
           ./burpsuiteenterpriseedition_enterpriseserver start
           ./burpsuiteenterpriseedition_webserver start
 
-          exec cat ${LOGBACK_LOG_FILE}
+          exec cat "${LOGBACK_LOG_FILE}"
         ports:
         - name: ${TARGET_PORT}
           containerPort: 8080
