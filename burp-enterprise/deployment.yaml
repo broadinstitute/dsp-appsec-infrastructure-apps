@@ -38,10 +38,10 @@ spec:
           set -e
 
           cd /usr/local/burpsuite_enterprise
-          cp ${CONFIG_PATH}/${SECRET_CONFIG_FILE} enterpriseServer/${BURP_VERSION}/
-          sed -i 's|\(logback.configurationFile=\)[^ ]*|\1${CONFIG_PATH}/${LOGBACK_CONFIG_FILE}|' */component.sh
+          cp ${SECRET_CONFIG_PATH}/${SECRET_CONFIG_FILE} enterpriseServer/${BURP_VERSION}/
+          sed -i 's|\(logback.configurationFile=\)[^ ]*|\1${LOGBACK_CONFIG_PATH}/${LOGBACK_CONFIG_FILE}|' */component.sh
 
-          cp ${CONFIG_PATH}/${SECRET_LICENSE_FILE}
+          cp ${SECRET_LICENSE_PATH}/${SECRET_LICENSE_FILE} \
             /var/lib/BurpSuiteEnterpriseEdition/.BurpSuiteEnterprise/enterprise-server/.java/.userPrefs/burp/
 
           cd /etc/init.d
@@ -61,14 +61,11 @@ spec:
           initialDelaySeconds: 60
         volumeMounts:
         - name: ${SECRET_CONFIG_VOLUME}
-          mountPath: ${CONFIG_PATH}
-          subPath: ${SECRET_CONFIG_FILE}
+          mountPath: ${SECRET_CONFIG_PATH}
         - name: ${SECRET_LICENSE_VOLUME}
-          mountPath: ${CONFIG_PATH}
-          subPath: ${SECRET_LICENSE_FILE}
+          mountPath: ${SECRET_LICENSE_PATH}
         - name: ${LOGBACK_CONFIG_VOLUME}
-          mountPath: ${CONFIG_PATH}
-          subPath: ${LOGBACK_CONFIG_FILE}
+          mountPath: ${LOGBACK_CONFIG_PATH}
         resources:
           requests:
             memory: 2300M
