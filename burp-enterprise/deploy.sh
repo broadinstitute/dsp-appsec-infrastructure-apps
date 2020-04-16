@@ -18,9 +18,15 @@ export SERVICE="${NAMESPACE}"
 export SERVICE_ACCOUNT="${NAMESPACE}"
 export DEPLOYMENT="${SERVICE}"
 
+export CONFIG_PATH="/config"
+
+export LOGBACK_CONFIG="${SERVICE}-logback"
+export LOGBACK_CONFIG_VOLUME="${LOGBACK_CONFIG}"
+export LOGBACK_CONFIG_FILE="prefs.xml"
+export LOGBACK_LOG_FILE="/var/log/burp.log"
+
 export SECRET_LICENSE="${SERVICE}-license"
 export SECRET_LICENSE_VOLUME="${SECRET_LICENSE}"
-export SECRET_LICENSE_PATH="/license"
 export SECRET_LICENSE_FILE="prefs.xml"
 
 echo "
@@ -32,7 +38,6 @@ echo "
 
 export SECRET_CONFIG="${SERVICE}"
 export SECRET_CONFIG_VOLUME="${SECRET_CONFIG}"
-export SECRET_CONFIG_PATH="/config"
 export SECRET_CONFIG_FILE="enterprise-server.config"
 
 export DB_SECRET="${SERVICE}-db"

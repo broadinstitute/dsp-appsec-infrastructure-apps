@@ -24,22 +24,34 @@ spec:
       - name: ${SECRET_LICENSE_VOLUME}
         secret:
           secretName: ${SECRET_LICENSE}
+      - name: ${LOGBACK_CONFIG_VOLUME}
+        configMap:
+          name: ${LOGBACK_CONFIG}
 
       containers:
       - name: burp-enterprise
         image: us.gcr.io/${PROJECT_ID}/burp-enterprise:${BURP_VERSION}
         imagePullPolicy: Always
-        command: ['sh', '-c']
-        workingDir: /etc/init.d
+        command: ['bash', '-c']
         args:
-        - cp ${SECRET_CONFIG_PATH}/${SECRET_CONFIG_FILE}
-            /usr/local/burpsuite_enterprise/enterpriseServer/${BURP_VERSION}/ &&
-          cp ${SECRET_LICENSE_PATH}/${SECRET_LICENSE_FILE}
-            /var/lib/BurpSuiteEnterpriseEdition/.BurpSuiteEnterprise/enterprise-server/.java/.userPrefs/burp/ &&
-          ./burpsuiteenterpriseedition_agent start &&
-          ./burpsuiteenterpriseedition_enterpriseserver start &&
-          ./burpsuiteenterpriseedition_webserver start &&
-          exec sleep infinity
+        - |
+          set -e
+
+          cd /usr/local/burpsuite_enterprise
+          cp ${CONFIG_PATH}/${SECRET_CONFIG_FILE} enterpriseServer/${BURP_VERSION}/
+          ln -s ${CONFIG_PATH}/${LOGBACK_CONFIG_FILE} enterpriseAgent/${BURP_VERSION}/agent-logback.xml
+          ln -s ${CONFIG_PATH}/${LOGBACK_CONFIG_FILE} enterpriseServer/${BURP_VERSION}/server-logback.xml
+          ln -s ${CONFIG_PATH}/${LOGBACK_CONFIG_FILE} webServer/${BURP_VERSION}/web-logback.xml
+
+          cp ${CONFIG_PATH}/${SECRET_LICENSE_FILE}
+            /var/lib/BurpSuiteEnterpriseEdition/.BurpSuiteEnterprise/enterprise-server/.java/.userPrefs/burp/
+
+          cd /etc/init.d
+          ./burpsuiteenterpriseedition_agent start
+          ./burpsuiteenterpriseedition_enterpriseserver start
+          ./burpsuiteenterpriseedition_webserver start
+
+          exec tail -f ${LOGBACK_LOG_FILE}
         ports:
         - name: ${TARGET_PORT}
           containerPort: 8080
@@ -51,9 +63,14 @@ spec:
           initialDelaySeconds: 60
         volumeMounts:
         - name: ${SECRET_CONFIG_VOLUME}
-          mountPath: ${SECRET_CONFIG_PATH}
+          mountPath: ${CONFIG_PATH}
+          subPath: ${SECRET_CONFIG_FILE}
         - name: ${SECRET_LICENSE_VOLUME}
-          mountPath: ${SECRET_LICENSE_PATH}
+          mountPath: ${CONFIG_PATH}
+          subPath: ${SECRET_LICENSE_FILE}
+        - name: ${LOGBACK_CONFIG_VOLUME}
+          mountPath: ${CONFIG_PATH}
+          subPath: ${LOGBACK_CONFIG_FILE}
         resources:
           requests:
             memory: 2300M
@@ -121,3 +138,22 @@ spec:
       secretKeyRef:
         name: ${DB_SECRET}
         key: DB_PASSWORD
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${LOGBACK_CONFIG}
+  namespace: ${NAMESPACE}
+data:
+  ${LOGBACK_CONFIG_FILE}: |-
+    <configuration>
+      <appender name="main" class="ch.qos.logback.core.FileAppender">
+        <file>${LOGBACK_LOG_FILE}</file>
+        <encoder>
+          <pattern>%-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+      </appender>
+      <root level="INFO">
+        <appender-ref ref="main" />
+      </root>
+    </configuration>
