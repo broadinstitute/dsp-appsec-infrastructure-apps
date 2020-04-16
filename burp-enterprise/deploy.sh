@@ -22,7 +22,7 @@ export CONFIG_PATH="/config"
 
 export LOGBACK_CONFIG="${SERVICE}-logback"
 export LOGBACK_CONFIG_VOLUME="${LOGBACK_CONFIG}"
-export LOGBACK_CONFIG_FILE="prefs.xml"
+export LOGBACK_CONFIG_FILE="logback.xml"
 export LOGBACK_LOG_FILE="/var/log/burp.log"
 
 export SECRET_LICENSE="${SERVICE}-license"
