@@ -38,11 +38,11 @@ spec:
           set -e
 
           cd /usr/local/burpsuite_enterprise
-          cp ${SECRET_CONFIG_PATH}/${SECRET_CONFIG_FILE} enterpriseServer/${BURP_VERSION}/
           sed -i 's|\(logback.configurationFile=\)[^ ]*|\1${LOGBACK_CONFIG_PATH}/${LOGBACK_CONFIG_FILE}|' */component.sh
 
-          cp ${SECRET_LICENSE_PATH}/${SECRET_LICENSE_FILE} \
-            /var/lib/BurpSuiteEnterpriseEdition/.BurpSuiteEnterprise/enterprise-server/.java/.userPrefs/burp/
+          cd enterpriseServer/${BURP_VERSION}/
+          cp ${SECRET_CONFIG_PATH}/${SECRET_CONFIG_FILE} .
+          chown burpsuite ${SECRET_CONFIG_FILE}
 
           cd /etc/init.d
           ./burpsuiteenterpriseedition_agent start
@@ -64,7 +64,8 @@ spec:
         - name: ${SECRET_CONFIG_VOLUME}
           mountPath: ${SECRET_CONFIG_PATH}
         - name: ${SECRET_LICENSE_VOLUME}
-          mountPath: ${SECRET_LICENSE_PATH}
+          mountPath: /var/lib/BurpSuiteEnterpriseEdition/.BurpSuiteEnterprise/enterprise-server/.java/.userPrefs/burp
+          subPath: ${SECRET_LICENSE_FILE}
         - name: ${LOGBACK_CONFIG_VOLUME}
           mountPath: ${LOGBACK_CONFIG_PATH}
         resources:
