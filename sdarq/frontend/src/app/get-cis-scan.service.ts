@@ -7,19 +7,21 @@ import { catchError, map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class CisProjectService {
+export class GetCisScanService {
 
-  private Url = location.origin + '/cis_scan/';
+  private Url = location.origin + '/cis_results/';
+
 
   constructor(private http: HttpClient) { }
 
-  sendCisProject(data): Observable<any> {
+  getCisScan(data: string): Observable<any> {
     const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
-    return this.http.post(this.Url, data, options).pipe(map(res => res),
+    return this.http.get(this.Url+data, options ).pipe(map(res => res),
     catchError(this.handleError))
   }
+
   handleError(error: HttpErrorResponse) {
     let errorMessage = 'ERROR';
     if (error.error instanceof ErrorEvent) {
@@ -32,4 +34,4 @@ export class CisProjectService {
     console.log(errorMessage);
     return throwError(errorMessage);
   }
-  }
+}
