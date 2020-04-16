@@ -49,6 +49,7 @@ spec:
           ./burpsuiteenterpriseedition_enterpriseserver start
           ./burpsuiteenterpriseedition_webserver start
 
+          sleep 10
           exec tail -f ${LOGBACK_LOG_FILE}
         ports:
         - name: ${TARGET_PORT}

@@ -22,7 +22,7 @@ export LOGBACK_CONFIG="${SERVICE}-logback"
 export LOGBACK_CONFIG_VOLUME="${LOGBACK_CONFIG}"
 export LOGBACK_CONFIG_PATH="/logback"
 export LOGBACK_CONFIG_FILE="logback.xml"
-export LOGBACK_LOG_FILE="/var/log/burp.log"
+export LOGBACK_LOG_FILE="/var/log/BurpSuiteEnterpriseEdition/burp.log"
 
 export SECRET_LICENSE="${SERVICE}-license"
 export SECRET_LICENSE_VOLUME="${SECRET_LICENSE}"
