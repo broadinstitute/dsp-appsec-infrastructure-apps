@@ -39,6 +39,8 @@ spec:
 
           cd /usr/local/burpsuite_enterprise
           sed -i 's|\(logback.configurationFile=\)[^ ]*|\1${LOGBACK_CONFIG_PATH}/${LOGBACK_CONFIG_FILE}|' */component.sh
+          mkfifo "${LOGBACK_LOG_FILE}"
+          chown burpsuite "${LOGBACK_LOG_FILE}"
 
           cd enterpriseServer/${BURP_VERSION}/
           cp ${SECRET_CONFIG_PATH}/${SECRET_CONFIG_FILE} .
@@ -49,8 +51,7 @@ spec:
           ./burpsuiteenterpriseedition_enterpriseserver start
           ./burpsuiteenterpriseedition_webserver start
 
-          sleep 10
-          exec tail -f ${LOGBACK_LOG_FILE}
+          exec cat ${LOGBACK_LOG_FILE}
         ports:
         - name: ${TARGET_PORT}
           containerPort: 8080
