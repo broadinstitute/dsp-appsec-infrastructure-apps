@@ -65,7 +65,6 @@ spec:
           mountPath: ${SECRET_CONFIG_PATH}
         - name: ${SECRET_LICENSE_VOLUME}
           mountPath: /var/lib/BurpSuiteEnterpriseEdition/.BurpSuiteEnterprise/enterprise-server/.java/.userPrefs/burp
-          subPath: ${SECRET_LICENSE_FILE}
         - name: ${LOGBACK_CONFIG_VOLUME}
           mountPath: ${LOGBACK_CONFIG_PATH}
         resources:
