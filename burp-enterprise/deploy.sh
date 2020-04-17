@@ -26,6 +26,7 @@ export LOGBACK_LOG_FILE="/var/log/BurpSuiteEnterpriseEdition/burp.log"
 
 export SECRET_LICENSE="${SERVICE}-license"
 export SECRET_LICENSE_VOLUME="${SECRET_LICENSE}"
+export SECRET_LICENSE_PATH="/var/lib/BurpSuiteEnterpriseEdition/.BurpSuiteEnterprise/enterprise-agent/.java/.userPrefs/burp"
 export SECRET_LICENSE_FILE="prefs.xml"
 
 echo "
