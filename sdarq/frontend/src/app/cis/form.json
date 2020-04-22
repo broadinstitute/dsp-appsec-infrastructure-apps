@@ -1,0 +1,26 @@
+{
+    "pages": [
+     {
+      "name": "Google Project Get Cis Scan Results",
+      "elements": [
+       {
+        "type": "text",
+        "name": "project_id",
+        "title": "Enter your Google Project ID",
+        "isRequired": true,
+        "requiredErrorText": "Project Id is required.",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Start with an alphabetic character and include only '-' , '_' , numbers and alphabetic characters.",
+          "regex": "^[a-z][a-z0-9-_]{4,28}[a-z0-9]$"
+         }
+        ]
+       }
+      ],
+      "title": "Google Project Get Cis Scan Results"
+     }
+    ],
+    "showCompletedPage": false,
+    "showQuestionNumbers": "off"
+   }

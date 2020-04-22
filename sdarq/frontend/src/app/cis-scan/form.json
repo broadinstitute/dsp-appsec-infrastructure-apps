@@ -1,0 +1,46 @@
+{
+    "completedHtml": "Thank you! <br>\nWe will send you a slack notification once the scan job has been completed. \n<br>\n<br>\nDSP APPSEC TEAM",
+    "pages": [
+     {
+      "name": "Google Project Cis Scan",
+      "elements": [
+       {
+        "type": "text",
+        "name": "project_id",
+        "title": "Enter your Google Project ID",
+        "isRequired": true,
+        "requiredErrorText": "Project Id is required.",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Start with an alphabetic character and include only '-' , '_' , numbers and alphabetic characters.",
+          "regex": "^[a-z][a-z0-9-_]{4,28}[a-z0-9]$"
+         }
+        ]
+       },
+       {
+        "type": "checkbox",
+        "name": "results_in_slack",
+        "title": "Info: Average scan time is about 3 min depending on the resources and APIs enabled on your GCP Project.",
+        "choices": [
+         {
+          "value": "Yes",
+          "text": "Do you want to send results to a slack channel?"
+         }
+        ]
+       },
+       {
+        "type": "text",
+        "name": "slack_channel",
+        "visibleIf": "{results_in_slack} = ['Yes']",
+        "title": "Enter Slack channel",
+        "enableIf": "{results_in_slack} = ['Yes']",
+        "isRequired": true
+       }
+      ],
+      "title": "Google Project Cis Scan"
+     }
+    ],
+    "showCompletedPage": true,
+    "showQuestionNumbers": "off"
+   }
