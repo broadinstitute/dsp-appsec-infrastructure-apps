@@ -5,15 +5,9 @@ h2{
   text-align: center;
 }
 
-.container, .container-lg, .container-md, .container-sm {
-  border-top: 1px solid #cccdce !important;
-}
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
   font-family: inherit;
   font-weight: lighter;
   line-height: 1.1;
   color: inherit;
-}
-.input-alerts{
-    color: #de1111;
 }

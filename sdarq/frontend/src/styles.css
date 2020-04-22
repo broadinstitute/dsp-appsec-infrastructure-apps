@@ -188,12 +188,19 @@ color: #333;
   background: linear-gradient(87deg,#2438a2 0,#2196F3 100%) !important;
 }
 
-.jumbotron {
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-  border-radius: 0.125rem;
+.teal {
   background: linear-gradient(87deg,#2438a2 0,#2196F3 100%) !important;
 }
 
 .center{
   padding-left: 40%;
+}
+
+.jumbotron {
+  border-radius: 0.125rem;
+  box-shadow: none !important;
+  overflow:hidden;
+  height:85vh; 
+  overflow: scroll;
+  margin-bottom: 0px;
 }

@@ -1,3 +1,4 @@
+<div class="jumbotron">
 <div class="container">
   <br>
   <br>
@@ -23,12 +24,12 @@
     possible in the SDLC. We want to make sure that all new services have common understanding of security considerations.
   </p>
 
-        <div class="form-group">
-          <br>
-          <h5>Are you part of DSP?</h5>
-          <input type="radio"  name="partOfDSP" value="Yes" #partOfDSP1 [checked] (click)="isPartOfDSP(partOfDSP1.checked)"> Yes <br>
-          <input type="radio"  name="partOfDSP" value="No" #partOfDSP2 [checked] (click)="isNotPartOfDSP(partOfDSP2.checked)"> No
-        </div>
+  <div class="form-group">
+    <br>
+    <h5>Are you part of DSP?</h5>
+    <input type="radio"  name="partOfDSP" value="Yes" #partOfDSP1 [checked] (click)="isPartOfDSP(partOfDSP1.checked)"> Yes <br>
+    <input type="radio"  name="partOfDSP" value="No" #partOfDSP2 [checked] (click)="isNotPartOfDSP(partOfDSP2.checked)"> No
+  </div>
 
   <a href="/questionnaire" mdbBtn  *ngIf="partofDSP" mdbBtn type="button" gradient="blue" rounded="true" mdbWavesEffect>Start</a>
   <a href="/notdspquestionnaire" mdbBtn  *ngIf="notPartOfDSP" mdbBtn type="button" gradient="aqua" rounded="true" mdbWavesEffect>Start</a>
@@ -36,5 +37,6 @@
   <br>  <br>
   <h5>Questions?</h5>
   <p>Email appsec@broadinstitute.org or reach out on Slack.</p>
+</div>
 </div>
 

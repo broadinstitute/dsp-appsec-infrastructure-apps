@@ -1,5 +1,10 @@
-.jumbotron jumbotron-fluid{
-background: linear-gradient(87deg,#2438a2 0,#2196F3 100%) !important;
+.jumbotron {
+  border-radius: 0.125rem;
+  background: linear-gradient(87deg,#2438a2 0,#2196F3 100%) !important;
+  overflow:hidden;
+  height:85vh;
+  overflow: scroll;
+  margin-bottom: 0px;
 }
 
 .card-title {
@@ -20,3 +25,4 @@ background: linear-gradient(87deg,#2438a2 0,#2196F3 100%) !important;
 .card .card-body h4 {
   font-weight: 200;
 }
+

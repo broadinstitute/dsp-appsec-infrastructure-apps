@@ -1,50 +1,9 @@
+<div class="jumbotron">
 <div class="container">
   <br>
   <br>
-<p>Enter a google project id name to get the results from CIS scan.</p>
-  <form [formGroup]="submitForm" novalidate enctype="multipart/form-data">
-    <div class="form-group" >
-      <label for="Project Id" >Google Project ID *</label>
-      <br>
-      <input type="text" id="project_id"  class="form-control"  formControlName="project_id" #project_id/>
-      </div>
-
-      <div *ngIf="f.project_id.errors?.pattern || f.project_id.errors?.maxLength ">
-      <div class='input-alerts'>
-       <li>Project Id field must not be empty. </li>
-       <li>Start with an alphabetic character. </li>  
-       <li>Must be more than 6 characters and less than 30 characters. </li> 
-       <li>Include only '-' ,  '_' , numbers and alphabetic characters. </li> 
-      </div>
-      </div>
-      <br>
-      <button type="submit" (click)="submit()" class="btn btn-primary" [disabled]="f.project_id.invalid" >Send</button>
-  </form>
+  <app-survey [json]="json" (submitSurvey)="sendData($event)"></app-survey>
   <br>
   <br>
-  <table class="table table-striped" *ngIf="table_show">
-    <thead>
-    <tr>
-    <th scope="col">id</th>
-    <th scope="col">level</th>
-    <th scope="col">title</th> 
-    <th scope="col">failures</th>
-    <th scope="col">description</th>
-    <th scope="col">rationale</th>
-    <th scope="col">refs</th>
-  </tr>
-  </thead>
-   <tr mdbTableCol *ngFor="let findings of projectFindings">
-    <td>{{findings.id}}</td>
-    <td>{{findings.level}}</td>
-    <td>{{findings.title}}</td>
-    <td>{{findings.failures}}</td>
-    <td>{{findings.description}}</td>
-    <td>{{findings.rationale}}</td>
-    <td><ul *ngFor="let link of findings.refs"><li><a href="{{link}}" target="_blank">Ref</a></li></ul></td>
-   </tr>
-  </table>
-
 </div>
-
-
+</div>
