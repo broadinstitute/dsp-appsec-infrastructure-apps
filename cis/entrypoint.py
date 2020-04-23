@@ -4,6 +4,7 @@ from google.cloud import bigquery
 import json
 import os
 import subprocess
+import slack
 
 GCP_PROJECT_ID = os.getenv('GCP_PROJECT_ID')
 BQ_DATASET = os.getenv('BQ_DATASET')
