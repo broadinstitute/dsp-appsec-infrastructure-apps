@@ -18,12 +18,31 @@ export SERVICE="${NAMESPACE}"
 export SERVICE_ACCOUNT="${NAMESPACE}"
 export DEPLOYMENT="${SERVICE}"
 
+export LOGBACK_CONFIG="${SERVICE}-logback"
+export LOGBACK_CONFIG_VOLUME="${LOGBACK_CONFIG}"
+export LOGBACK_CONFIG_PATH="/logback"
+export LOGBACK_CONFIG_FILE="logback.xml"
+export LOGBACK_LOG_FILE="/var/log/BurpSuiteEnterpriseEdition/burp.log"
+
+export SECRET_LICENSE="${SERVICE}-license"
+export SECRET_LICENSE_VOLUME="${SECRET_LICENSE}"
+export SECRET_LICENSE_PATH="/license"
+export SECRET_LICENSE_FILE="prefs.xml"
+
+echo "
+  Please set up Burp Enterprise license secret with
+    kubectl create secret generic ${SECRET_LICENSE} -n ${NAMESPACE} \\
+      --from-file <path/to/${SECRET_LICENSE_FILE}> --dry-run -o yaml |
+    kubectl apply -f -
+"
+
 export SECRET_CONFIG="${SERVICE}"
 export SECRET_CONFIG_VOLUME="${SECRET_CONFIG}"
 export SECRET_CONFIG_PATH="/config"
 export SECRET_CONFIG_FILE="enterprise-server.config"
 
 export DB_SECRET="${SERVICE}-db"
+export DB_PORT="5432"
 export DB_NAME="burp"
 export DB_USER="burpsuite"
 
@@ -48,7 +67,7 @@ export BACKEND_CONFIG="${SERVICE}"
 export SERVICE_PORT="http"
 export TARGET_PORT="http"
 
-export BURP_VERSION="1.1.04"
+export BURP_VERSION="2020.2"
 
 ./kube-apply.py \
   "service-account.yaml" \

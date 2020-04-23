@@ -2,6 +2,7 @@ substitutions:
   _ORG_VIEWER_SA_EMAIL: '' # replace in Cloud Build UI
 
 options:
+  machineType: N1_HIGHCPU_8
   env:
   - PROJECT_ID=${PROJECT_ID}
   - BATCH_DISPATCHER_IMAGE=us.gcr.io/${PROJECT_ID}/batch-dispatcher:${SHORT_SHA}
@@ -9,6 +10,7 @@ options:
   - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
   - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
+  - DOCS_IMAGE=us.gcr.io/${PROJECT_ID}/docs:${SHORT_SHA}
   - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx
   - SDARQ_FRONTEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-frontend:${SHORT_SHA}
   - SDARQ_BACKEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-backend:${SHORT_SHA}
@@ -38,11 +40,16 @@ steps:
   - gsutil mb "gs://$${TERRAFORM_BUCKET}" &&
     gsutil versioning set on "gs://$${TERRAFORM_BUCKET}" || true
 
-# build bastion proxy Docker image,
-# using Kaniko to speed up builds
-- id: bastion-image
+# Pre-pull Kaniko image, used to speed up Docker builds
+- id: kaniko
   name: &kaniko gcr.io/kaniko-project/executor:debug
   waitFor: ['-']
+  entrypoint: 'true'
+
+# build bastion proxy Docker image
+- id: bastion-image
+  name: *kaniko
+  waitFor: ['kaniko']
   entrypoint: sh
   args:
   - -c
@@ -88,7 +95,7 @@ steps:
 # build Batch dispatcher image
 - id: batch-dispatcher-image
   name: *kaniko
-  waitFor: ['-']
+  waitFor: ['kaniko']
   entrypoint: sh
   args:
   - -c
@@ -100,7 +107,7 @@ steps:
 # build CIS Docker image
 - id: cis-image
   name: *kaniko
-  waitFor: ['-']
+  waitFor: ['kaniko']
   entrypoint: sh
   args:
   - -c
@@ -122,7 +129,7 @@ steps:
 # using Kaniko to speed up builds
 - id: defectdojo-django-image
   name: *kaniko
-  waitFor: ['-']
+  waitFor: ['kaniko']
   entrypoint: sh
   args:
   - -c
@@ -135,7 +142,7 @@ steps:
 # build patched DefectDojo Nginx image
 - id: defectdojo-nginx-image
   name: *kaniko
-  waitFor: ['-']
+  waitFor: ['kaniko']
   entrypoint: sh
   args:
   - -c
@@ -152,11 +159,29 @@ steps:
   entrypoint: ./deploy.sh
   dir: defectdojo
 
+# build Docs image
+- id: docs-image
+  name: *kaniko
+  waitFor: ['kaniko']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/docs/src
+      --destination=$${DOCS_IMAGE}
+      --cache
+
+# deploy Docs to GKE cluster
+- id: docs
+  name: *kubectl
+  waitFor: ['shared', 'docs-image']
+  entrypoint: ./deploy.sh
+  dir: docs
 
 # build patched CodeDx image
 - id: codedx-image
   name: *kaniko
-  waitFor: ['-']
+  waitFor: ['kaniko']
   entrypoint: sh
   args:
   - -c
@@ -175,7 +200,7 @@ steps:
 # build SDARQ frontend Docker image
 - id: sdarq-frontend-image
   name: *kaniko
-  waitFor: ['-']
+  waitFor: ['kaniko']
   entrypoint: sh
   args:
   - -c
@@ -187,7 +212,7 @@ steps:
 # build SDARQ backend Docker image
 - id: sdarq-backend-image
   name: *kaniko
-  waitFor: ['-']
+  waitFor: ['kaniko']
   entrypoint: sh
   args:
   - -c
@@ -206,7 +231,7 @@ steps:
 # build Cartography Docker image
 - id: cartography-image
   name: *kaniko
-  waitFor: ['-']
+  waitFor: ['kaniko']
   entrypoint: sh
   args:
   - -c
