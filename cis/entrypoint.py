@@ -4,7 +4,6 @@ from google.cloud import bigquery
 import json
 import os
 import subprocess
-import slack
 
 GCP_PROJECT_ID = os.getenv('GCP_PROJECT_ID')
 BQ_DATASET = os.getenv('BQ_DATASET')
@@ -112,7 +111,7 @@ def load_bigquery(table_desc, version, rows):
     print(f"Loaded {job.output_rows} rows into {BQ_DATASET}.{table_id}")
 
 
-def slackNotification(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL){
+def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL){
     client = slack.WebClient(slack_token)
     response = client.chat_postMessage(
     channel=SLACK_CHANNEL,
@@ -146,11 +145,8 @@ def slackNotification(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL){
 def main():
     load_bigquery(*parse_profiles(benchmark()))
     if SLACK_CHANNEL != "":
-        {
-            slackNotification(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL)          
-        }
-
-
+        slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL)          
 
 if __name__ == '__main__':
     main()
+
