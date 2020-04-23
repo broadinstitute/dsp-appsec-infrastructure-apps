@@ -7,6 +7,9 @@ import subprocess
 
 GCP_PROJECT_ID = os.getenv('GCP_PROJECT_ID')
 BQ_DATASET = os.getenv('BQ_DATASET')
+slack_token = os.getenv('slack_token')
+SLACK_CHANNEL = os.getenv('SLACK_CHANNEL')
+RESULTS_URL = os.getenv('RESULTS_URL')
 
 BENCHMARK_PROFILE = 'inspec-gcp-cis-benchmark'
 
@@ -108,9 +111,42 @@ def load_bigquery(table_desc, version, rows):
     print(f"Loaded {job.output_rows} rows into {BQ_DATASET}.{table_id}")
 
 
+def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL){
+    client = slack.WebClient(slack_token)
+    response = client.chat_postMessage(
+    channel=SLACK_CHANNEL,
+    attachments=[{"blocks": [
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Check `{0}` results* :blue_book:" .format(str(GCP_PROJECT_ID))
+                }
+            },
+            {
+                "type": "actions",
+                "elements": [
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Get results"
+                        },
+                        "url": "{0}/cis/results?project_id={1}" .format(str(RESULTS_URL),str(GCP_PROJECT_ID))
+                    }
+                ]
+            }
+        ],
+        "color": "#0a88ab"
+    } ])
+    return ''
+}
+
 def main():
     load_bigquery(*parse_profiles(benchmark()))
-
+    if SLACK_CHANNEL != "":
+        slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL)          
 
 if __name__ == '__main__':
     main()
+
