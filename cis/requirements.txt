@@ -1,2 +1,4 @@
 google-cloud-bigquery
+google-cloud-resource-manager
 slackclient
+oauth2client

@@ -5,6 +5,7 @@ import json
 import os
 import subprocess
 import slack
+from google.cloud import resource_manager
 
 GCP_PROJECT_ID = os.getenv('GCP_PROJECT_ID')
 BQ_DATASET = os.getenv('BQ_DATASET')
@@ -112,7 +113,7 @@ def load_bigquery(table_desc, version, rows):
     print(f"Loaded {job.output_rows} rows into {BQ_DATASET}.{table_id}")
 
 
-def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL){
+def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL):
     client = slack.WebClient(slack_token)
     response = client.chat_postMessage(
     channel=SLACK_CHANNEL,
@@ -141,12 +142,29 @@ def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL){
         "color": "#0a88ab"
     } ])
     return ''
-}
+
+
+
+def checktwo(GCP_PROJECT_ID: str) -> bool:
+    """
+	Given: GCP Project ID 
+	Returns: Whether or not the project id exists
+	"""
+
+    all_projects = []
+    for p in resource_manager.Client().list_projects():
+        all_projects.append(p.name)
+    if GCP_PROJECT_ID in all_projects:
+       return True
+    else: 
+       return False
+
 
 def main():
-    load_bigquery(*parse_profiles(benchmark()))
-    if SLACK_CHANNEL != "":
-        slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL)          
+    if checktwo(GCP_PROJECT_ID) == True:
+        load_bigquery(*parse_profiles(benchmark()))
+        if SLACK_CHANNEL != "":
+            slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL)          
 
 if __name__ == '__main__':
     main()
