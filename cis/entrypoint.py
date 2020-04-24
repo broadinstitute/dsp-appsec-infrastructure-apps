@@ -108,6 +108,7 @@ def load_bigquery(table_desc, version, rows):
         },
     )
 
+
     job = bq.load_table_from_json(rows, table, job_config=job_config)
     job.result()  # wait for completion
     print(f"Loaded {job.output_rows} rows into {BQ_DATASET}.{table_id}")
@@ -145,11 +146,14 @@ def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL):
 
 
 
-def checktwo(GCP_PROJECT_ID: str) -> bool:
+def project_exists(GCP_PROJECT_ID: str) -> bool:
     """
-	Given: GCP Project ID 
-	Returns: Whether or not the project id exists
-	"""
+    Function that checks if a project exists in GCP
+    Args:
+        project_id: GCP Project ID
+    Returns:
+        True if the project exists, false otherwise
+    """
 
     all_projects = []
     for p in resource_manager.Client().list_projects():
@@ -161,10 +165,12 @@ def checktwo(GCP_PROJECT_ID: str) -> bool:
 
 
 def main():
-    if checktwo(GCP_PROJECT_ID) == True:
+    if project_exists(GCP_PROJECT_ID):
         load_bigquery(*parse_profiles(benchmark()))
-        if SLACK_CHANNEL != "":
-            slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL)          
+
+        if os.environ.get('SLACK_CHANNEL') is not None and SLACK_CHANNEL:
+            slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL)      
+         
 
 if __name__ == '__main__':
     main()
