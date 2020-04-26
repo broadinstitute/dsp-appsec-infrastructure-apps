@@ -145,7 +145,6 @@ def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL):
     return ''
 
 
-
 def project_exists(GCP_PROJECT_ID: str) -> bool:
     """
     Function that checks if a project exists in GCP
@@ -154,24 +153,26 @@ def project_exists(GCP_PROJECT_ID: str) -> bool:
     Returns:
         True if the project exists, false otherwise
     """
-
+    result = False
     all_projects = []
     for p in resource_manager.Client().list_projects():
         all_projects.append(p.name)
     if GCP_PROJECT_ID in all_projects:
-       return True
+       result = True
     else: 
-       return False
+       result = False
+    return result
 
 
 def main():
+    # Only load to bigquery if gcp project exists
     if project_exists(GCP_PROJECT_ID):
         load_bigquery(*parse_profiles(benchmark()))
 
+        # Check env variable set and not empty
         if os.environ.get('SLACK_CHANNEL') is not None and SLACK_CHANNEL:
             slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL)      
          
 
 if __name__ == '__main__':
     main()
-
