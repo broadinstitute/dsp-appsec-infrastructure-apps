@@ -9,7 +9,7 @@ from google.cloud import resource_manager
 
 GCP_PROJECT_ID = os.getenv('GCP_PROJECT_ID')
 BQ_DATASET = os.getenv('BQ_DATASET')
-slack_token = os.getenv('slack_token')
+SLACK_TOKEN = os.getenv('SLACK_TOKEN')
 SLACK_CHANNEL = os.getenv('SLACK_CHANNEL')
 RESULTS_URL = os.getenv('RESULTS_URL')
 
@@ -115,7 +115,14 @@ def load_bigquery(table_desc, version, rows):
 
 
 def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL):
-    client = slack.WebClient(slack_token)
+    """
+    Function that sends a slack notification
+    Args:
+        project_id: GCP Project ID, Slack channel, results page URL
+    Returns:
+        200 if slack notification is sent, 500 otherwise
+    """
+    client = slack.WebClient(SLACK_TOKEN)
     response = client.chat_postMessage(
     channel=SLACK_CHANNEL,
     attachments=[{"blocks": [
