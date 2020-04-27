@@ -59,3 +59,16 @@ metadata:
 data:
   dojo_host: http://${DOJO_SERVICE}.${DOJO_NAMESPACE}/
   sdarq_host: https://${DNS_HOSTNAME}
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: ${SERVICE_ACCOUNT}-sa-firestore-policy
+  namespace: ${NAMESPACE}
+spec:
+  member: serviceAccount:${SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
+  role: roles/datastore.user
+  resourceRef:
+    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+    kind: Project
+    external: projects/${PROJECT_ID}
