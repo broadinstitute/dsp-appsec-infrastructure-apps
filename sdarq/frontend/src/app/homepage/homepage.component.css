@@ -1,8 +1,8 @@
 .jumbotron {
   border-radius: 0.125rem;
-  background: linear-gradient(87deg,#2438a2 0,#2196F3 100%) !important;
-  overflow:hidden;
-  height:85vh;
+  background: linear-gradient(87deg, #2438a2 0, #2196F3 100%) !important;
+  overflow: hidden;
+  height: 85vh;
   overflow: scroll;
   margin-bottom: 0px;
 }
@@ -12,17 +12,19 @@
   font-weight: 200 !important;
   color: #2774d7 !important;
 }
-.fa, .fas {
+
+.fa,
+.fas {
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
   color: #253ea7;
 }
+
 .lead {
-  text-align:center;
-  color:white;
+  text-align: center;
+  color: white;
 }
 
 .card .card-body h4 {
   font-weight: 200;
 }
-

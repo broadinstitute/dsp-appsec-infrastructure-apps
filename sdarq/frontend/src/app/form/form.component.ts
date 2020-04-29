@@ -11,15 +11,14 @@ import formJson from './form.json';
 export class FormComponent implements OnInit {
   constructor(private sendForm: SendFormDataService, private http: HttpClient) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   json = formJson
 
   sendData(result) {
-      this.sendForm.sendFormData(result).subscribe((res) => {
-          console.log('Form sent');
-        },
-        (res) => {
-        });
-    }
+    this.sendForm.sendFormData(result).subscribe((res) => {
+      console.log('Form sent');
+    },
+      (res) => { });
+  }
 }

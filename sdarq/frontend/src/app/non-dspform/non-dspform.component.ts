@@ -10,18 +10,18 @@ import formJson from './newForm.json';
 })
 export class NonDSPformComponent implements OnInit {
 
-   constructor(private sendFormNotDSP: SendFormDataService, private http: HttpClient) { }
+  constructor(private sendFormNotDSP: SendFormDataService, private http: HttpClient) { }
 
-   ngOnInit() {}
+  ngOnInit() { }
 
   json = formJson
 
   sendDataNotDSP(result) {
-      this.sendFormNotDSP.sendFormData(result).subscribe((res) => {
-          console.log('Form sent');
-        },
-        (res) => {
-        });
-    }
+    this.sendFormNotDSP.sendFormData(result).subscribe((res) => {
+      console.log('Form sent');
+    },
+      (res) => {
+      });
+  }
 
 }

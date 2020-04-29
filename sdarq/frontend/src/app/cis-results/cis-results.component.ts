@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { GetCisScanService} from '../services/get-cis-scan.service';
+import { GetCisScanService } from '../services/get-cis-scan.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -9,40 +9,37 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class CisResultsComponent implements OnInit {
 
- 
-    result: any;
-    projectFindings: any[];
-    data: any[];
-    params: any; 
-    value: string;
-    showModal: boolean;
-    showSpinner: boolean = true;
-    errors: any[];
-    showTable: boolean;
+
+  result: any;
+  projectFindings: any[];
+  data: any[];
+  params: any;
+  value: string;
+  showModal: boolean;
+  showSpinner: boolean = true;
+  errors: any[];
+  showTable: boolean;
 
   constructor(private getProjectScan: GetCisScanService, private router: ActivatedRoute) { }
 
   ngOnInit() {
-  
-    this.router.queryParams.subscribe(params => {
-      this.value = params.project_id 
-      this.getResults(this.value)
-    }) 
-  } 
 
-   private getResults(value) {
-      this.getProjectScan.getCisScan(this.value).subscribe((data: any) => {
-        this.projectFindings = data;
-        this.showSpinner = false;
-        this.showTable =true;
-        console.log(data)
-       }, 
-          (data) => {
-            this.showModal = true;
-            this.errors = data;
-            this.showSpinner = false;
-          });
-    }
+    this.router.queryParams.subscribe(params => {
+      this.value = params.project_id
+      this.getResults(this.value)
+    })
   }
 
-
+  private getResults(value) {
+    this.getProjectScan.getCisScan(this.value).subscribe((data: any) => {
+      this.projectFindings = data;
+      this.showSpinner = false;
+      this.showTable = true;
+    },
+      (data) => {
+        this.showModal = true;
+        this.errors = data;
+        this.showSpinner = false;
+      });
+  }
+}

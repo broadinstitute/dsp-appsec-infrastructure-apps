@@ -18,24 +18,23 @@ export class CisScanComponent implements OnInit {
 
   constructor(private sendProject: CisProjectService, private http: HttpClient) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
   sendData(result) {
-    if (result.slack_channel) { 
-    this.sendProject.sendCisProject(result).subscribe((data: any ) => {
-    },
+    if (result.slack_channel) {
+      this.sendProject.sendCisProject(result).subscribe((data: any) => { },
         (data) => {
           console.log("Not sent")
         });
 
-      }
-    else {
-      this.sendProject.sendCisProject(result).subscribe((data: any ) => {
+    } else {
+      this.sendProject.sendCisProject(result).subscribe((data: any) => {
+        if (!result.slack_channel && data.status == 'true') {
+          location.href = location.origin + '/cis/results?project_id=' + result.project_id;
+        }
       },
-          (data) => {
-            console.log("Not sent")
-          }); 
-     location.href = 'http://127.0.0.1:4200/cis/results?project_id=' + result.project_id;
+        (data) => {
+          console.log("Not sent")
+        });
     }
-}
+  }
 }

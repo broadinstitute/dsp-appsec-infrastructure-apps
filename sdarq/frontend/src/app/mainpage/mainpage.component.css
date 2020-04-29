@@ -4,19 +4,21 @@ label {
   font-weight: 700;
 }
 
-h3,h4,h5 {
+h3,
+h4,
+h5 {
   color: #4173c9;
 }
 
-h2{
+h2 {
   padding-top: 1%;
   font-weight: 200 !important;
   color: #323232;
   text-align: center;
 }
 
-.h5, h5 {
+.h5,
+h5 {
   font-size: 1.25em;
   font-weight: 200 !important;
 }
-

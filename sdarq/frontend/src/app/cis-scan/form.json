@@ -1,5 +1,5 @@
 {
-    "completedHtml": "Thank you! <br>\nWe will send you a slack notification once the scan job has been completed. \n<br>\n<br>\nDSP APPSEC TEAM",
+    "completedHtml": "Project is scanning.<br>\nWe will send you a slack notification (if you choosed this option) or redirect you to the results page once the scan job has been completed. \n<br>\nThank you for your patience!<br>\nDSP APPSEC TEAM",
     "pages": [
      {
       "name": "Google Project Cis Scan",

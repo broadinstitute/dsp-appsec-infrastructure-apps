@@ -1,11 +1,22 @@
-h2{
+h2 {
   font-weight: 200 !important;
   color: #4173c9;
   padding-top: 2%;
   text-align: center;
 }
 
-.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: inherit;
   font-weight: lighter;
   line-height: 1.1;
