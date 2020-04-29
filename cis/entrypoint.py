@@ -7,11 +7,16 @@ import subprocess
 import slack
 from google.cloud import resource_manager
 
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+
 GCP_PROJECT_ID = os.getenv('GCP_PROJECT_ID')
 BQ_DATASET = os.getenv('BQ_DATASET')
-SLACK_TOKEN = os.getenv('SLACK_TOKEN')
+slack_token = os.getenv('slack_token')
 SLACK_CHANNEL = os.getenv('SLACK_CHANNEL')
 RESULTS_URL = os.getenv('RESULTS_URL')
+FIRESTORE_COLLECTION = os.getenv('FIRESTORE_COLLECTION')
 
 BENCHMARK_PROFILE = 'inspec-gcp-cis-benchmark'
 
@@ -77,7 +82,7 @@ def parse_profiles(profiles):
     return title, version, rows
 
 
-def load_bigquery(table_desc, version, rows):
+def load_bigquery(table_desc, version, rows, FIRESTORE_COLLECTION):
     if not rows:
         return
 
@@ -108,24 +113,25 @@ def load_bigquery(table_desc, version, rows):
         },
     )
 
-
     job = bq.load_table_from_json(rows, table, job_config=job_config)
-    job.result()  # wait for completion
+    results = job.result()  # wait for completion
     print(f"Loaded {job.output_rows} rows into {BQ_DATASET}.{table_id}")
+    if results.total_rows != 0:  # check if there are table rows
+        cred = credentials.ApplicationDefault()
+        firebase_admin.initialize_app(
+            cred, {'projectId': 'dsp-appsec-dev-100f7', })
+        db = firestore.client()
+        doc_ref = db.collection(FIRESTORE_COLLECTION).document(table_id)
+        doc_ref.set({
+            u'project_id': table_id
+        })
 
 
 def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL):
-    """
-    Function that sends a slack notification
-    Args:
-        project_id: GCP Project ID, Slack channel, results page URL
-    Returns:
-        200 if slack notification is sent, 500 otherwise
-    """
-    client = slack.WebClient(SLACK_TOKEN)
+    client = slack.WebClient(slack_token)
     response = client.chat_postMessage(
-    channel=SLACK_CHANNEL,
-    attachments=[{"blocks": [
+        channel=SLACK_CHANNEL,
+        attachments=[{"blocks": [
             {
                 "type": "section",
                 "text": {
@@ -142,13 +148,13 @@ def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL):
                             "type": "plain_text",
                             "text": "Get results"
                         },
-                        "url": "{0}/cis/results?project_id={1}" .format(str(RESULTS_URL),str(GCP_PROJECT_ID))
+                        "url": "{0}/cis/results?project_id={1}" .format(str(RESULTS_URL), str(GCP_PROJECT_ID))
                     }
                 ]
             }
         ],
-        "color": "#0a88ab"
-    } ])
+            "color": "#0a88ab"
+        }])
     return ''
 
 
@@ -165,9 +171,9 @@ def project_exists(GCP_PROJECT_ID: str) -> bool:
     for p in resource_manager.Client().list_projects():
         all_projects.append(p.name)
     if GCP_PROJECT_ID in all_projects:
-       result = True
-    else: 
-       result = False
+        result = True
+    else:
+        result = False
     return result
 
 
@@ -178,8 +184,8 @@ def main():
 
         # Check env variable set and not empty
         if os.environ.get('SLACK_CHANNEL') is not None and SLACK_CHANNEL:
-            slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL)      
-         
+            slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL)
+
 
 if __name__ == '__main__':
     main()
