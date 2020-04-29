@@ -6,14 +6,13 @@ import os
 import subprocess
 import slack
 from google.cloud import resource_manager
-
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
 GCP_PROJECT_ID = os.getenv('GCP_PROJECT_ID')
 BQ_DATASET = os.getenv('BQ_DATASET')
-slack_token = os.getenv('slack_token')
+SLACK_TOKEN = os.getenv('SLACK_TOKEN')
 SLACK_CHANNEL = os.getenv('SLACK_CHANNEL')
 RESULTS_URL = os.getenv('RESULTS_URL')
 FIRESTORE_COLLECTION = os.getenv('FIRESTORE_COLLECTION')
@@ -128,7 +127,7 @@ def load_bigquery(table_desc, version, rows, FIRESTORE_COLLECTION):
 
 
 def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL):
-    client = slack.WebClient(slack_token)
+    client = slack.WebClient(SLACK_TOKEN)
     response = client.chat_postMessage(
         channel=SLACK_CHANNEL,
         attachments=[{"blocks": [
