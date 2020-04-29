@@ -21,20 +21,43 @@ spec:
       - name: ${SECRET_CONFIG_VOLUME}
         secret:
           secretName: ${SECRET_CONFIG}
+      - name: ${SECRET_LICENSE_VOLUME}
+        secret:
+          secretName: ${SECRET_LICENSE}
+      - name: ${LOGBACK_CONFIG_VOLUME}
+        configMap:
+          name: ${LOGBACK_CONFIG}
 
       containers:
       - name: burp-enterprise
         image: us.gcr.io/${PROJECT_ID}/burp-enterprise:${BURP_VERSION}
         imagePullPolicy: Always
-        command: ['sh', '-c']
-        workingDir: /etc/init.d
+        command: ['bash', '-c']
         args:
-        - cp ${SECRET_CONFIG_PATH}/${SECRET_CONFIG_FILE}
-            /usr/local/burpsuite_enterprise/enterpriseServer/${BURP_VERSION}/ &&
-          ./burpsuiteenterpriseedition_agent start &&
-          ./burpsuiteenterpriseedition_enterpriseserver start &&
-          ./burpsuiteenterpriseedition_webserver start &&
-          exec sleep infinity
+        - |
+          set -e
+
+          cd /usr/local/burpsuite_enterprise
+          sed -i 's|\(logback.configurationFile=\)[^ ]*|\1${LOGBACK_CONFIG_PATH}/${LOGBACK_CONFIG_FILE}|' */component.sh
+          mkfifo "${LOGBACK_LOG_FILE}"
+          chown burpsuite "${LOGBACK_LOG_FILE}"
+
+          cd "enterpriseServer/${BURP_VERSION}"
+          cp "${SECRET_CONFIG_PATH}/${SECRET_CONFIG_FILE}" .
+          chown burpsuite "${SECRET_CONFIG_FILE}"
+
+          cd "/var/lib/BurpSuiteEnterpriseEdition/.BurpSuiteEnterprise"
+          mkdir -p "enterprise-agent/.java/.userPrefs/burp"
+          cd "enterprise-agent/.java/.userPrefs/burp"
+          cp "${SECRET_LICENSE_PATH}/${SECRET_LICENSE_FILE}" .
+          chown burpsuite "${SECRET_LICENSE_FILE}"
+
+          cd /etc/init.d
+          ./burpsuiteenterpriseedition_agent start
+          ./burpsuiteenterpriseedition_enterpriseserver start
+          ./burpsuiteenterpriseedition_webserver start
+
+          exec cat "${LOGBACK_LOG_FILE}"
         ports:
         - name: ${TARGET_PORT}
           containerPort: 8080
@@ -47,15 +70,19 @@ spec:
         volumeMounts:
         - name: ${SECRET_CONFIG_VOLUME}
           mountPath: ${SECRET_CONFIG_PATH}
+        - name: ${SECRET_LICENSE_VOLUME}
+          mountPath: ${SECRET_LICENSE_PATH}
+        - name: ${LOGBACK_CONFIG_VOLUME}
+          mountPath: ${LOGBACK_CONFIG_PATH}
         resources:
           requests:
-            memory: 1850M
+            memory: 2300M
 
       - name: cloudsql-proxy
         image: gcr.io/cloudsql-docker/gce-proxy
         command:
         - /cloud_sql_proxy
-        - -instances=${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:5432
+        - -instances=${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:${DB_PORT}
         securityContext:
           runAsUser: 2  # non-root user
           allowPrivilegeEscalation: false
@@ -114,3 +141,22 @@ spec:
       secretKeyRef:
         name: ${DB_SECRET}
         key: DB_PASSWORD
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${LOGBACK_CONFIG}
+  namespace: ${NAMESPACE}
+data:
+  ${LOGBACK_CONFIG_FILE}: |-
+    <configuration>
+      <appender name="main" class="ch.qos.logback.core.FileAppender">
+        <file>${LOGBACK_LOG_FILE}</file>
+        <encoder>
+          <pattern>%-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+      </appender>
+      <root level="INFO">
+        <appender-ref ref="main" />
+      </root>
+    </configuration>

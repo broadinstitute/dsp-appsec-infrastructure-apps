@@ -11,7 +11,7 @@ widgets.jquerybarrating(Survey);
 widgets.jqueryuidatepicker(Survey);
 widgets.nouislider(Survey);
 widgets.select2tagbox(Survey);
-widgets.signaturepad(Survey);
+// widgets.signaturepad(Survey);
 widgets.sortablejs(Survey);
 widgets.ckeditor(Survey);
 widgets.autocomplete(Survey);

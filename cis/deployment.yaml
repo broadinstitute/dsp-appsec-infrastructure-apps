@@ -70,3 +70,16 @@ spec:
     apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
     kind: Project
     external: projects/${PROJECT_ID}
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: ${K8S_SERVICE_ACCOUNT}-sa-firestore-policy
+  namespace: ${NAMESPACE}
+spec:
+  member: serviceAccount:${GCP_SERVICE_ACCOUNT_EMAIL}
+  role: roles/datastore.user
+  resourceRef:
+    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+    kind: Project
+    external: projects/${PROJECT_ID}
