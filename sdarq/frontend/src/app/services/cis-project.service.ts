@@ -9,8 +9,7 @@ import { catchError, map } from 'rxjs/operators';
 })
 export class CisProjectService {
 
-  // private Url = location.origin + '/cis_scan/';
-  private Url = "http://0.0.0.0:8080/cis_scan/"
+  private Url = location.origin + '/cis_scan/';
 
   constructor(private http: HttpClient) { }
 
@@ -19,7 +18,7 @@ export class CisProjectService {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
     return this.http.post(this.Url, data, options).pipe(map(res => res),
-    catchError(this.handleError))
+      catchError(this.handleError))
   }
   handleError(error: HttpErrorResponse) {
     let errorMessage = 'ERROR';
@@ -33,4 +32,4 @@ export class CisProjectService {
     console.log(errorMessage);
     return throwError(errorMessage);
   }
-  }
+}
