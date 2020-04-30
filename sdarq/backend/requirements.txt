@@ -1,4 +1,4 @@
-Flask==1.0
+Flask==1.1
 Flask-Limiter==1.0.1
 requests==2.20.0
 requests-oauthlib==1.0.0
@@ -10,3 +10,5 @@ slacker
 jira
 gunicorn
 slackclient
+google-cloud-bigquery
+pubsub
