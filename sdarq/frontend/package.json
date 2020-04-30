@@ -25,7 +25,7 @@
     "bootstrap": "^4.4.1",
     "ckeditor": "^4.12.1",
     "core-js": "^3.6.4",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "rxjs": "^6.5.4",
     "survey-angular": "^1.5.16",
     "survey-creator": "^1.5.16",
