@@ -18,6 +18,9 @@
     <div class="alert alert-warning animated fadeInRight" role="alert" *ngIf="showModal">
       {{errors.error.statusText}}
     </div>
+    <div class="text-center animated fadeInRight" *ngIf="showModal">
+      <a href="/cis/latest" mdbBtn color="primary" mdbWavesEffect>Try Again</a>
+    </div>
   </div>
   <br>
   <br>

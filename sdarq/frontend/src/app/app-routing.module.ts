@@ -15,7 +15,7 @@ const routes: Routes = [
   { path: 'newservice', component: MainpageComponent },
   { path: 'questionnaire', component: FormComponent },
   { path: 'notdspquestionnaire', component: NonDSPformComponent },
-  { path: 'cis/getresults', component: CisComponent },
+  { path: 'cis/latest', component: CisComponent },
   { path: 'scan', component: ScanpageComponent },
   { path: 'cis/results', component: CisResultsComponent },
   { path: 'cis/scan', component: CisScanComponent },

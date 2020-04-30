@@ -1,6 +1,6 @@
 {
     "pages": [{
-        "name": "Google Project Get Cis Scan Results",
+        "name": "Get CIS scan results for your GCP project",
         "elements": [{
             "type": "text",
             "name": "project_id",
@@ -13,7 +13,7 @@
                 "regex": "^[a-z][a-z0-9-_]{4,28}[a-z0-9]$"
             }]
         }],
-        "title": "Google Project Get Cis Scan Results"
+        "title": "Get CIS scan results for your GCP project"
     }],
     "showCompletedPage": false,
     "showQuestionNumbers": "off"
