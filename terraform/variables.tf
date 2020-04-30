@@ -34,7 +34,7 @@ variable "max_batch_node_count" {
 
 variable "gke_release_channel" {
   type        = string
-  default     = "RAPID"
+  default     = "REGULAR"
   description = "GKE release channel"
 }
 
