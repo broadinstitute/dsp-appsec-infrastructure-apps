@@ -25,7 +25,6 @@ export class CisScanComponent implements OnInit {
         (data) => {
           console.log("Sent")
         });
-
     } else {
       this.sendProject.sendCisProject(result).subscribe((data: any) => {
         if (!result.slack_channel && data.status == 'true') {
