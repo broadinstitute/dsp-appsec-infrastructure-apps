@@ -11,4 +11,3 @@ jira
 gunicorn
 slackclient
 google-cloud-bigquery
-pubsub
