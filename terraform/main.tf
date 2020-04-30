@@ -75,7 +75,7 @@ resource "google_container_cluster" "cluster" {
   enable_shielded_nodes    = true
 
   release_channel {
-    channel = "RAPID"
+    channel = var.gke_release_channel
   }
 
   workload_identity_config {
