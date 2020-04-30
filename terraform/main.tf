@@ -76,11 +76,12 @@ resource "google_container_cluster" "cluster" {
 
   # use a fixed min version until
   # 1.16 is available in the REGULAR channel
+  # (which contains fixes for excessive logging)
   min_master_version = "1.16.8-gke.9"
 
-  # release_channel {
-  #   channel = "REGULAR"
-  # }
+  release_channel {
+    channel = "UNSPECIFIED"
+  }
 
   workload_identity_config {
     identity_namespace = "${var.project}.svc.id.goog"
