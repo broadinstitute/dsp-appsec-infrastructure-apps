@@ -37,8 +37,8 @@ steps:
   entrypoint: sh
   args:
   - -c
-  - gsutil mb "gs://$${TERRAFORM_BUCKET}" &&
-    gsutil versioning set on "gs://$${TERRAFORM_BUCKET}" || true
+  - gsutil mb "gs://$${TERRAFORM_BUCKET}" ;
+    gsutil versioning set on "gs://$${TERRAFORM_BUCKET}"
 
 # Pre-pull Kaniko image, used to speed up Docker builds
 - id: kaniko
