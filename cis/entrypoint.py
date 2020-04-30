@@ -121,9 +121,7 @@ def load_bigquery(table_desc, version, rows, FIRESTORE_COLLECTION):
             cred, {'projectId': 'dsp-appsec-dev-100f7', })
         db = firestore.client()
         doc_ref = db.collection(FIRESTORE_COLLECTION).document(table_id)
-        doc_ref.set({
-            u'project_id': table_id
-        })
+        doc_ref.set({})
 
 
 def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL):
