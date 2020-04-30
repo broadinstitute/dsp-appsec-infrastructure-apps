@@ -74,9 +74,13 @@ resource "google_container_cluster" "cluster" {
   remove_default_node_pool = true
   enable_shielded_nodes    = true
 
-  release_channel {
-    channel = var.gke_release_channel
-  }
+  # use a fixed min version until
+  # 1.16 is available in the REGULAR channel
+  min_master_version = "1.16.8-gke.9"
+
+  # release_channel {
+  #   channel = "REGULAR"
+  # }
 
   workload_identity_config {
     identity_namespace = "${var.project}.svc.id.goog"

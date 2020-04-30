@@ -32,12 +32,6 @@ variable "max_batch_node_count" {
   description = "Max number of batch nodes per zone"
 }
 
-variable "gke_release_channel" {
-  type        = string
-  default     = "REGULAR"
-  description = "GKE release channel"
-}
-
 variable "bastion_image" {
   type        = string
   description = "Docker image name for bastion SOCKS proxy"
