@@ -118,7 +118,7 @@ def load_bigquery(table_desc, version, rows, FIRESTORE_COLLECTION):
     if results.total_rows != 0:  # check if there are table rows
         cred = credentials.ApplicationDefault()
         firebase_admin.initialize_app(
-            cred, {'projectId': 'dsp-appsec-dev-100f7', })
+            cred, {'projectId': 'dsp-appsec-infra-prod', })
         db = firestore.client()
         doc_ref = db.collection(FIRESTORE_COLLECTION).document(table_id)
         doc_ref.set({})
