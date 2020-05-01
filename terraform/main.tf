@@ -129,6 +129,7 @@ module "apps_node_pool" {
   cluster         = google_container_cluster.cluster.name
   service_account = module.node_sa.email
 
+  machine_type   = "n1-highmem-2"
   max_node_count = var.max_app_node_count
   enable_sandbox = true
 }
