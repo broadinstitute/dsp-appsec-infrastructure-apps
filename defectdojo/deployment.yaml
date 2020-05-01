@@ -150,7 +150,7 @@ spec:
           value: 'true'
 
       - name: cloudsql-proxy
-        image: gcr.io/cloudsql-docker/gce-proxy
+        image: gcr.io/cloudsql-docker/gce-proxy:1.17
         command:
         - /cloud_sql_proxy
         - -instances=${SQL_INSTANCE_URI}
