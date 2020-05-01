@@ -47,6 +47,11 @@ resource "google_container_node_pool" "pool" {
     }
   }
 
+  management {
+    auto_upgrade = true
+    auto_repair  = true
+  }
+
   timeouts {
     create = "120m"
   }
