@@ -25,7 +25,6 @@ slack_token = os.getenv('slack_token')
 jira_username = os.getenv('jira_username')
 jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
-dojo_host_url = os.getenv('dojo_host_url')
 sdarq_host = os.getenv('sdarq_host')
 firebase_project_id = os.getenv('firebase_project_id')
 
@@ -194,7 +193,6 @@ def cis_scan():
     json_data = request.get_json()
     user_project_id = json_data['project_id']
     pattern = "^[a-z][a-z0-9-_]{4,28}[a-z0-9]$"
-    # results_url = "http://127.0.0.1:4200/"
     results_url = sdarq_host
     topic_name = "cis-scans"
     project_id = "dsp-appsec-infra-prod"
@@ -238,3 +236,4 @@ def cis_scan():
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 8080)))
+    
