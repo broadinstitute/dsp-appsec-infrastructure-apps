@@ -165,12 +165,12 @@ steps:
       --destination=$${DD_NGINX_IMAGE}
       --cache
 
-# # deploy DefectDojo to GKE cluster
-# - id: defectdojo
-#   name: *kubectl
-#   waitFor: ['shared', 'defectdojo-django-image', 'defectdojo-nginx-image']
-#   entrypoint: ./deploy.sh
-#   dir: defectdojo
+# deploy DefectDojo to GKE cluster
+- id: defectdojo
+  name: *kubectl
+  waitFor: ['shared', 'defectdojo-django-image', 'defectdojo-nginx-image']
+  entrypoint: ./deploy.sh
+  dir: defectdojo
 
 # build Docs image
 - id: docs-image
