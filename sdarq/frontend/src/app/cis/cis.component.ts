@@ -21,6 +21,6 @@ export class CisComponent implements OnInit {
   ngOnInit() { }
 
   sendData(result) {
-    location.href = 'http://127.0.0.1:4200/cis/results?project_id=' + result.project_id;
+    location.href = location.origin + '/cis/results?project_id=' + result.project_id;
   }
 }
