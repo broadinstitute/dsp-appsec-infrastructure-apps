@@ -1,0 +1,13 @@
+diff --git a/cmd/cloud_sql_proxy/cloud_sql_proxy.go b/cmd/cloud_sql_proxy/cloud_sql_proxy.go
+index dbac0d7..9945bf3 100644
+--- a/cmd/cloud_sql_proxy/cloud_sql_proxy.go
++++ b/cmd/cloud_sql_proxy/cloud_sql_proxy.go
+@@ -307,7 +307,7 @@ func authenticatedClient(ctx context.Context) (*http.Client, error) {
+        // credentials.
+        src, err := util.GcloudTokenSource(ctx)
+        if err != nil {
+-               src, err = goauth.DefaultTokenSource(ctx, proxy.SQLScope)
++               src, err = goauth.DefaultTokenSource(ctx)
+        }
+        if err != nil {
+                return nil, err

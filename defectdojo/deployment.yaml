@@ -150,17 +150,12 @@ spec:
           value: 'true'
 
       - name: cloudsql-proxy
-        # workaround for instance metadata endpoint bug
+        # workaround for instance metadata endpoint issue
         # image: gcr.io/cloudsql-docker/gce-proxy
         image: ${CLOUDSQL_PROXY_IMAGE}
-        command: ['sh', '-c']
-        args:
-        - |
-          exec /cloud_sql_proxy -instances=${SQL_INSTANCE_URI} \
-            -token=$(curl http://169.254.169.254/computeMetadata/v1/instance/service-accounts/default/token -sH "Metadata-Flavor: Google" | jq -r .access_token)
-        securityContext:
-          runAsUser: 2  # non-root user
-          allowPrivilegeEscalation: false
+        command:
+        - /cloud_sql_proxy
+        - -instances=${SQL_INSTANCE_URI}
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember
