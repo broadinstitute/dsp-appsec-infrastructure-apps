@@ -64,6 +64,7 @@ spec:
         # workaround for instance metadata endpoint issue
         # image: gcr.io/cloudsql-docker/gce-proxy
         image: ${CLOUDSQL_PROXY_IMAGE}
+        imagePullPolicy: Always
         command:
         - /cloud_sql_proxy
         - -instances=${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:3306

@@ -153,6 +153,7 @@ spec:
         # workaround for instance metadata endpoint issue
         # image: gcr.io/cloudsql-docker/gce-proxy
         image: ${CLOUDSQL_PROXY_IMAGE}
+        imagePullPolicy: Always
         command:
         - /cloud_sql_proxy
         - -instances=${SQL_INSTANCE_URI}
