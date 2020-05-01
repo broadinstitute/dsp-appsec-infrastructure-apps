@@ -7,6 +7,7 @@ options:
   - PROJECT_ID=${PROJECT_ID}
   - BATCH_DISPATCHER_IMAGE=us.gcr.io/${PROJECT_ID}/batch-dispatcher:${SHORT_SHA}
   - BASTION_IMAGE=us.gcr.io/${PROJECT_ID}/bastion
+  - CLOUDSQL_PROXY_IMAGE=us.gcr.io/${PROJECT_ID}/cloudsql-proxy:workaround
   - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
   - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
@@ -84,6 +85,18 @@ steps:
   args:
   - -c
   - export $(xargs < ../.env) && ./global.sh
+
+# workaround for instance metadata endpoint in CloudSQL proxy
+- id: cloudsql-proxy
+  name: *kaniko
+  waitFor: ['kaniko']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/cloudsql-proxy
+      --destination=$${CLOUDSQL_PROXY_IMAGE}
+      --cache
 
 # # deploy Burp Enterprise to GKE cluster
 # - id: burp-enterprise
@@ -193,7 +206,7 @@ steps:
 # deploy CodeDx to GKE cluster
 - id: codedx
   name: *kubectl
-  waitFor: ['shared', 'codedx-image']
+  waitFor: ['shared', 'cloudsql-proxy', 'codedx-image']
   entrypoint: ./deploy.sh
   dir: codedx
 
