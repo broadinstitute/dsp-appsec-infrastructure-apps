@@ -77,7 +77,7 @@ steps:
   dir: terraform
   args:
   - -c
-  - tfsec . &&
+  - ./tfsec . &&
     terraform init
       -backend-config "bucket=$${TERRAFORM_BUCKET}" &&
     terraform plan -out=plan.out
