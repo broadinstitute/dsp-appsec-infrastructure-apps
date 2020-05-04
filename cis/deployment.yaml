@@ -25,10 +25,24 @@ data:
           env:
           - name: BQ_DATASET
             value: ${CIS_DATASET}
+          - name: SLACK_TOKEN
+            value: ${SLACK_TOKEN}
           - name: GCP_PROJECT_ID
             valueFrom:
               fieldRef:
                 fieldPath: metadata.annotations['GCP_PROJECT_ID']
+          - name: FIRESTORE_COLLECTION
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.annotations['FIRESTORE_COLLECTION']
+          - name: SLACK_CHANNEL
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.annotations['SLACK_CHANNEL']
+          - name: RESULTS_URL
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.annotations['RESULTS_URL']
           resources:
             requests:
               memory: 250M

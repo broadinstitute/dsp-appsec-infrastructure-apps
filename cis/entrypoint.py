@@ -4,9 +4,18 @@ from google.cloud import bigquery
 import json
 import os
 import subprocess
+import slack
+from google.cloud import resource_manager
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
 
 GCP_PROJECT_ID = os.getenv('GCP_PROJECT_ID')
 BQ_DATASET = os.getenv('BQ_DATASET')
+SLACK_TOKEN = os.getenv('SLACK_TOKEN')
+SLACK_CHANNEL = os.getenv('SLACK_CHANNEL')
+RESULTS_URL = os.getenv('RESULTS_URL')
+FIRESTORE_COLLECTION = os.getenv('FIRESTORE_COLLECTION')
 
 BENCHMARK_PROFILE = 'inspec-gcp-cis-benchmark'
 
@@ -72,7 +81,7 @@ def parse_profiles(profiles):
     return title, version, rows
 
 
-def load_bigquery(table_desc, version, rows):
+def load_bigquery(table_desc, version, rows, FIRESTORE_COLLECTION):
     if not rows:
         return
 
@@ -104,12 +113,75 @@ def load_bigquery(table_desc, version, rows):
     )
 
     job = bq.load_table_from_json(rows, table, job_config=job_config)
-    job.result()  # wait for completion
+    results = job.result()  # wait for completion
     print(f"Loaded {job.output_rows} rows into {BQ_DATASET}.{table_id}")
+    if results.total_rows != 0:  # check if there are table rows
+        cred = credentials.ApplicationDefault()
+        firebase_admin.initialize_app(
+            cred, {'projectId': 'dsp-appsec-infra-prod', })
+        db = firestore.client()
+        doc_ref = db.collection(FIRESTORE_COLLECTION).document(table_id)
+        doc_ref.set({})
+
+
+def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL):
+    client = slack.WebClient(SLACK_TOKEN)
+    response = client.chat_postMessage(
+        channel=SLACK_CHANNEL,
+        attachments=[{"blocks": [
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Check `{0}` results* :blue_book:" .format(str(GCP_PROJECT_ID))
+                }
+            },
+            {
+                "type": "actions",
+                "elements": [
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Get results"
+                        },
+                        "url": "{0}/cis/results?project_id={1}" .format(str(RESULTS_URL), str(GCP_PROJECT_ID))
+                    }
+                ]
+            }
+        ],
+            "color": "#0a88ab"
+        }])
+    return ''
+
+
+def project_exists(GCP_PROJECT_ID: str) -> bool:
+    """
+    Function that checks if a project exists in GCP
+    Args:
+        project_id: GCP Project ID
+    Returns:
+        True if the project exists, false otherwise
+    """
+    result = False
+    all_projects = []
+    for p in resource_manager.Client().list_projects():
+        all_projects.append(p.name)
+    if GCP_PROJECT_ID in all_projects:
+        result = True
+    else:
+        result = False
+    return result
 
 
 def main():
-    load_bigquery(*parse_profiles(benchmark()))
+    # Only load to bigquery if gcp project exists
+    if project_exists(GCP_PROJECT_ID):
+        load_bigquery(*parse_profiles(benchmark()))
+
+        # Check env variable set and not empty
+        if os.environ.get('SLACK_CHANNEL') is not None and SLACK_CHANNEL:
+            slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL)
 
 
 if __name__ == '__main__':
