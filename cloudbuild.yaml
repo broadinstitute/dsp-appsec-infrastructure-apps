@@ -59,27 +59,15 @@ steps:
       --destination=$${BASTION_IMAGE}
       --cache
 
-# download https://github.com/liamg/tfsec
-- id: tfsec-download
-  name: mirror.gcr.io/library/golang
-  waitFor: ['-']
-  entrypoint: sh
-  dir: terraform
-  args:
-  - -c
-  - go get github.com/liamg/tfsec/cmd/tfsec &&
-    cp /go/bin/tfsec .
-
 # deploy GKE cluster and associated GCP resources
 - id: terraform
   name: hashicorp/terraform
-  waitFor: ['terraform-bucket', 'tfsec-download', 'bastion-image']
+  waitFor: ['terraform-bucket', 'bastion-image']
   entrypoint: sh
   dir: terraform
   args:
   - -c
-  - apk add libc6-compat && ./tfsec . &&
-    terraform init
+  - terraform init
       -backend-config "bucket=$${TERRAFORM_BUCKET}" &&
     terraform plan -out=plan.out
       -var "project=${PROJECT_ID}"
