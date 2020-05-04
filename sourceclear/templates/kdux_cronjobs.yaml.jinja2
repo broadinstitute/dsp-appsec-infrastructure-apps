@@ -1,0 +1,120 @@
+{%- set params = [{ 
+                    "project": "ddp", 
+                    "branch": "v1", 
+                    "org": "broadinstitute", 
+                    "subdir": "/pepper-apis", 
+                  },
+                  { 
+                    "project": "ddp", 
+                    "branch": "v1", 
+                    "org": "broadinstitute", 
+                    "subdir": "/pepper-angular/ddp-workspace", 
+                  },
+                  { 
+                    "project": "ddp-mmrf", 
+                    "branch": "qa", 
+                    "org": "broadinstitute", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "ddp-mmrf", 
+                    "branch": "qa", 
+                    "org": "broadinstitute", 
+                    "subdir": "/frontend", 
+                  }]
+%}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${JOB_CONFIG_MAP}
+  namespace: ${NAMESPACE}
+data:
+  spec: |
+    template:
+      spec:
+        runtimeClassName: gvisor
+        nodeSelector:
+          cloud.google.com/gke-nodepool: batch
+        restartPolicy: OnFailure
+        serviceAccountName: srcclr-kdux-ksa
+        containers:
+          - name: NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['NAME']
+            image: us.gcr.io/dsp-appsec-infra-prod/srcclr_scanner
+            imagePullPolicy: Always
+            env:
+            - name: PROJECT
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['PROJECT']
+            - name: BRANCH
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['BRANCH']
+            - name: REPO
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['REPO']
+            - name: SRCCLR_API_TOKEN_PATH
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['SRCCLR_API_TOKEN_PATH']
+            - name: ORG
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['ORG']
+            - name: SCAN_SUBDIR
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['SUBDIR']
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: sourceclear-kdux-scans
+  namespace: ${NAMESPACE}
+  labels:
+    jobgroup: weekly-sourceclear-scans
+spec:
+  schedule: "0 0 * * 0"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+            name: kdux-weekly-sourceclear-scans
+            labels:
+                jobgroup: weekly-sourceclear-scans
+        spec:
+            runtimeClassName: gvisor
+            nodeSelector:
+              cloud.google.com/gke-nodepool: batch
+            serviceAccountName: srcclr-kdux-ksa
+            containers:
+            {%- for p in params %}
+            {%- set project = p["project"] %}
+            {%- set branch = p["branch"] %}
+            {%- set org = p["org"] %}
+            {%- set subdir = p["subdir"] %}
+            {%- set name = org.lower()|replace("_", "-") + "-" + project.lower()|replace("_", "-") + subdir.lower()|replace("/", "-") %}
+            - name: {{ name }}
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "{{ project }}"
+              - name: BRANCH
+                value: "{{ branch }}"
+              - name: REPO
+                value: "{{ org }}/{{ project }}"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-kdux-api-token"
+              - name: ORG
+                value: "{{ org }}"
+              - name: SCAN_SUBDIR
+                value: "{{ subdir }}"
+            {%- endfor %}
+            restartPolicy: OnFailure
+      backoffLimit: 3

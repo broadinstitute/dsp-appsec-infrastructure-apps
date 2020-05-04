@@ -1,0 +1,641 @@
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${JOB_CONFIG_MAP}
+  namespace: ${NAMESPACE}
+data:
+  spec: |
+    template:
+      spec:
+        runtimeClassName: gvisor
+        nodeSelector:
+          cloud.google.com/gke-nodepool: batch
+        restartPolicy: OnFailure
+        serviceAccountName: srcclr-dsde-ksa
+        containers:
+          - name: NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['NAME']
+            image: us.gcr.io/dsp-appsec-infra-prod/srcclr_scanner
+            imagePullPolicy: Always
+            env:
+            - name: PROJECT
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['PROJECT']
+            - name: BRANCH
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['BRANCH']
+            - name: REPO
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['REPO']
+            - name: SRCCLR_API_TOKEN_PATH
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['SRCCLR_API_TOKEN_PATH']
+            - name: ORG
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['ORG']
+            - name: SCAN_SUBDIR
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['SUBDIR']
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: sourceclear-dsde-scans
+  namespace: ${NAMESPACE}
+  labels:
+    jobgroup: weekly-sourceclear-scans
+spec:
+  schedule: "0 0 * * 0"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+            name: dsde-weekly-sourceclear-scans
+            labels:
+                jobgroup: weekly-sourceclear-scans
+        spec:
+            serviceAccountName: srcclr-dsde-ksa
+            runtimeClassName: gvisor
+            nodeSelector:
+              cloud.google.com/gke-nodepool: batch
+            containers:
+            - name: broadinstitute-firecloud-ui
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "firecloud-ui"
+              - name: BRANCH
+                value: "develop"
+              - name: REPO
+                value: "/firecloud-ui"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: broadinstitute-firecloud-orchestration
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "firecloud-orchestration"
+              - name: BRANCH
+                value: "develop"
+              - name: REPO
+                value: "/firecloud-orchestration"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: broadinstitute-cromwell
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "cromwell"
+              - name: BRANCH
+                value: "develop"
+              - name: REPO
+                value: "/cromwell"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: broadinstitute-rawls
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "rawls"
+              - name: BRANCH
+                value: "develop"
+              - name: REPO
+                value: "/rawls"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: broadinstitute-leonardo
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "leonardo"
+              - name: BRANCH
+                value: "develop"
+              - name: REPO
+                value: "/leonardo"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: broadinstitute-sam
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "sam"
+              - name: BRANCH
+                value: "develop"
+              - name: REPO
+                value: "/sam"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: humancellatlas-secondary-analysis
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "secondary-analysis"
+              - name: BRANCH
+                value: "master"
+              - name: REPO
+                value: "/secondary-analysis"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "humancellatlas"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: broadinstitute-agora
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "agora"
+              - name: BRANCH
+                value: "develop"
+              - name: REPO
+                value: "/agora"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: broadinstitute-consent-ontology
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "consent-ontology"
+              - name: BRANCH
+                value: "develop"
+              - name: REPO
+                value: "/consent-ontology"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: broadinstitute-consent
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "consent"
+              - name: BRANCH
+                value: "develop"
+              - name: REPO
+                value: "/consent"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: broadinstitute-thurloe
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "thurloe"
+              - name: BRANCH
+                value: "develop"
+              - name: REPO
+                value: "/thurloe"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: broadinstitute-clio
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "clio"
+              - name: BRANCH
+                value: "develop"
+              - name: REPO
+                value: "/clio"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: broadinstitute-single-cell-portal-core
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "single_cell_portal_core"
+              - name: BRANCH
+                value: "development"
+              - name: REPO
+                value: "/single_cell_portal_core"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: databiosphere-saturn-ui
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "saturn-ui"
+              - name: BRANCH
+                value: "dev"
+              - name: REPO
+                value: "/saturn-ui"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "DataBiosphere"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: databiosphere-bond
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "bond"
+              - name: BRANCH
+                value: "develop"
+              - name: REPO
+                value: "/bond"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "DataBiosphere"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: broadinstitute-workbench-tos-function
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "workbench-tos"
+              - name: BRANCH
+                value: "develop"
+              - name: REPO
+                value: "/workbench-tos"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: "/function"
+            - name: databiosphere-calhoun
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "calhoun"
+              - name: BRANCH
+                value: "master"
+              - name: REPO
+                value: "/calhoun"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "DataBiosphere"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: broadinstitute-orsp-pub
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "orsp-pub"
+              - name: BRANCH
+                value: "master"
+              - name: REPO
+                value: "/orsp-pub"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: databiosphere-duos-ui
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "duos-ui"
+              - name: BRANCH
+                value: "develop"
+              - name: REPO
+                value: "/duos-ui"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "DataBiosphere"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: databiosphere-jade-data-repo-ui
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "jade-data-repo-ui"
+              - name: BRANCH
+                value: "develop"
+              - name: REPO
+                value: "/jade-data-repo-ui"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "DataBiosphere"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: databiosphere-jade-data-repo
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "jade-data-repo"
+              - name: BRANCH
+                value: "develop"
+              - name: REPO
+                value: "/jade-data-repo"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "DataBiosphere"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: broadinstitute-depmap
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "depmap"
+              - name: BRANCH
+                value: "master"
+              - name: REPO
+                value: "/depmap"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: databiosphere-transporter
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "transporter"
+              - name: BRANCH
+                value: "master"
+              - name: REPO
+                value: "/transporter"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "DataBiosphere"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: broadinstitute-martha
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "martha"
+              - name: BRANCH
+                value: "dev"
+              - name: REPO
+                value: "/martha"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: databiosphere-job-manager-ui
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "job-manager"
+              - name: BRANCH
+                value: "master"
+              - name: REPO
+                value: "/job-manager"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "DataBiosphere"
+              - name: SCAN_SUBDIR
+                value: "/ui"
+            - name: broadinstitute-carrot
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "carrot"
+              - name: BRANCH
+                value: "develop"
+              - name: REPO
+                value: "/carrot"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: broadinstitute-import-service
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "import-service"
+              - name: BRANCH
+                value: "develop"
+              - name: REPO
+                value: "/import-service"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: ""
+            restartPolicy: OnFailure
+      backoffLimit: 3
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${JOB_CONFIG_MAP}
+  namespace: ${NAMESPACE}
+data:
+  spec: |
+    template:
+      spec:
+        runtimeClassName: gvisor
+        nodeSelector:
+          cloud.google.com/gke-nodepool: batch
+        restartPolicy: OnFailure
+        serviceAccountName: srcclr-kdux-ksa
+        containers:
+          - name: NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['NAME']
+            image: us.gcr.io/dsp-appsec-infra-prod/srcclr_scanner
+            imagePullPolicy: Always
+            env:
+            - name: PROJECT
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['PROJECT']
+            - name: BRANCH
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['BRANCH']
+            - name: REPO
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['REPO']
+            - name: SRCCLR_API_TOKEN_PATH
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['SRCCLR_API_TOKEN_PATH']
+            - name: ORG
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['ORG']
+            - name: SCAN_SUBDIR
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['SUBDIR']
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: sourceclear-kdux-scans
+  namespace: ${NAMESPACE}
+  labels:
+    jobgroup: weekly-sourceclear-scans
+spec:
+  schedule: "0 0 * * 0"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+            name: kdux-weekly-sourceclear-scans
+            labels:
+                jobgroup: weekly-sourceclear-scans
+        spec:
+            runtimeClassName: gvisor
+            nodeSelector:
+              cloud.google.com/gke-nodepool: batch
+            serviceAccountName: srcclr-kdux-ksa
+            containers:
+            - name: broadinstitute-ddp-pepper-apis
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "ddp"
+              - name: BRANCH
+                value: "v1"
+              - name: REPO
+                value: "broadinstitute/ddp"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-kdux-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: "/pepper-apis"
+            - name: broadinstitute-ddp-pepper-angular-ddp-workspace
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "ddp"
+              - name: BRANCH
+                value: "v1"
+              - name: REPO
+                value: "broadinstitute/ddp"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-kdux-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: "/pepper-angular/ddp-workspace"
+            - name: broadinstitute-ddp-mmrf
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "ddp-mmrf"
+              - name: BRANCH
+                value: "qa"
+              - name: REPO
+                value: "broadinstitute/ddp-mmrf"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-kdux-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: ""
+            - name: broadinstitute-ddp-mmrf-frontend
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "ddp-mmrf"
+              - name: BRANCH
+                value: "qa"
+              - name: REPO
+                value: "broadinstitute/ddp-mmrf"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-kdux-api-token"
+              - name: ORG
+                value: "broadinstitute"
+              - name: SCAN_SUBDIR
+                value: "/frontend"
+            restartPolicy: OnFailure
+      backoffLimit: 3

@@ -1,0 +1,258 @@
+{%- set params = [{ 
+                    "project": "firecloud-ui", 
+                    "branch": "develop", 
+                    "org": "broadinstitute", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "firecloud-orchestration", 
+                    "branch": "develop", 
+                    "org": "broadinstitute", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "cromwell", 
+                    "branch": "develop", 
+                    "org": "broadinstitute", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "rawls", 
+                    "branch": "develop", 
+                    "org": "broadinstitute", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "leonardo", 
+                    "branch": "develop", 
+                    "org": "broadinstitute", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "sam", 
+                    "branch": "develop", 
+                    "org": "broadinstitute", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "secondary-analysis", 
+                    "branch": "master", 
+                    "org": "humancellatlas", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "agora", 
+                    "branch": "develop", 
+                    "org": "broadinstitute", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "consent-ontology", 
+                    "branch": "develop", 
+                    "org": "broadinstitute", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "consent", 
+                    "branch": "develop", 
+                    "org": "broadinstitute", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "thurloe", 
+                    "branch": "develop", 
+                    "org": "broadinstitute", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "clio", 
+                    "branch": "develop", 
+                    "org": "broadinstitute", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "single_cell_portal_core", 
+                    "branch": "development", 
+                    "org": "broadinstitute", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "saturn-ui", 
+                    "branch": "dev", 
+                    "org": "DataBiosphere", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "bond", 
+                    "branch": "develop", 
+                    "org": "DataBiosphere", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "workbench-tos", 
+                    "branch": "develop", 
+                    "org": "broadinstitute", 
+                    "subdir": "/function", 
+                  },
+                  { 
+                    "project": "calhoun", 
+                    "branch": "master", 
+                    "org": "DataBiosphere", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "orsp-pub", 
+                    "branch": "master", 
+                    "org": "broadinstitute", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "duos-ui", 
+                    "branch": "develop", 
+                    "org": "DataBiosphere", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "jade-data-repo-ui", 
+                    "branch": "develop", 
+                    "org": "DataBiosphere", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "jade-data-repo", 
+                    "branch": "develop", 
+                    "org": "DataBiosphere", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "depmap", 
+                    "branch": "master", 
+                    "org": "broadinstitute", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "transporter", 
+                    "branch": "master", 
+                    "org": "DataBiosphere", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "martha", 
+                    "branch": "dev", 
+                    "org": "broadinstitute", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "job-manager", 
+                    "branch": "master", 
+                    "org": "DataBiosphere", 
+                    "subdir": "/ui", 
+                  },
+                  { 
+                    "project": "carrot", 
+                    "branch": "develop", 
+                    "org": "broadinstitute", 
+                    "subdir": "", 
+                  },
+                  { 
+                    "project": "import-service", 
+                    "branch": "develop", 
+                    "org": "broadinstitute", 
+                    "subdir": "", 
+                  }]
+%}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${JOB_CONFIG_MAP}
+  namespace: ${NAMESPACE}
+data:
+  spec: |
+    template:
+      spec:
+        runtimeClassName: gvisor
+        nodeSelector:
+          cloud.google.com/gke-nodepool: batch
+        restartPolicy: OnFailure
+        serviceAccountName: srcclr-dsde-ksa
+        containers:
+          - name: NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['NAME']
+            image: us.gcr.io/dsp-appsec-infra-prod/srcclr_scanner
+            imagePullPolicy: Always
+            env:
+            - name: PROJECT
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['PROJECT']
+            - name: BRANCH
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['BRANCH']
+            - name: REPO
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['REPO']
+            - name: SRCCLR_API_TOKEN_PATH
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['SRCCLR_API_TOKEN_PATH']
+            - name: ORG
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['ORG']
+            - name: SCAN_SUBDIR
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['SUBDIR']
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: sourceclear-dsde-scans
+  namespace: ${NAMESPACE}
+  labels:
+    jobgroup: weekly-sourceclear-scans
+spec:
+  schedule: "0 0 * * 0"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+            name: dsde-weekly-sourceclear-scans
+            labels:
+                jobgroup: weekly-sourceclear-scans
+        spec:
+            serviceAccountName: srcclr-dsde-ksa
+            runtimeClassName: gvisor
+            nodeSelector:
+              cloud.google.com/gke-nodepool: batch
+            containers:
+            {%- for p in params %}
+            {%- set project = p["project"] %}
+            {%- set branch = p["branch"] %}
+            {%- set org = p["org"] %}
+            {%- set subdir = p["subdir"] %}
+            {%- set name = org.lower()|replace("_", "-") + "-" + project.lower()|replace("_", "-") + subdir.lower()|replace("/", "-") %}
+            - name: {{ name }}
+              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
+              imagePullPolicy: Always
+              env:
+              - name: PROJECT
+                value: "{{ project }}"
+              - name: BRANCH
+                value: "{{ branch }}"
+              - name: REPO
+                value: "{{ repo }}/{{ project }}"
+              - name: SRCCLR_API_TOKEN_PATH
+                value: "srcclr-dsde-api-token"
+              - name: ORG
+                value: "{{ org }}"
+              - name: SCAN_SUBDIR
+                value: "{{ subdir }}"
+            {%- endfor %}
+            restartPolicy: OnFailure
+      backoffLimit: 3
