@@ -61,7 +61,7 @@ steps:
 
 # download https://github.com/liamg/tfsec
 - id: tfsec-download
-  name: golang
+  name: mirror.gcr.io/library/golang
   waitFor: ['-']
   entrypoint: sh
   dir: terraform
@@ -78,7 +78,7 @@ steps:
   dir: terraform
   args:
   - -c
-  - ./tfsec . &&
+  - apk add libc6-compat && ./tfsec . &&
     terraform init
       -backend-config "bucket=$${TERRAFORM_BUCKET}" &&
     terraform plan -out=plan.out
