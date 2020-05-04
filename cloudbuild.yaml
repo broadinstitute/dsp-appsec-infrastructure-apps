@@ -61,7 +61,7 @@ steps:
 
 # download https://github.com/liamg/tfsec
 - id: tfsec-download
-  name: mirror.gcr.io/library/golang
+  name: golang
   waitFor: ['-']
   entrypoint: sh
   dir: terraform
