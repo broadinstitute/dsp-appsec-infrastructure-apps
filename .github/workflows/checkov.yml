@@ -1,3 +1,6 @@
+name: Checkov for Terraform
+on: [push]
+
 jobs:
   checkov-job:
     runs-on: ubuntu-latest
