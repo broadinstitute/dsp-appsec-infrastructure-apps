@@ -9,6 +9,7 @@ RUN apk add --no-cache \
         build-base \
         git \
         python3 \
+        python3-dev \
         ruby-dev \
         ruby-etc \
         ruby-io-console \
@@ -21,6 +22,7 @@ RUN apk add --no-cache \
     && \
     apk del \
         build-base \
+        python3-dev \
         ruby-dev \
     && \
     mkdir .inspec && \
