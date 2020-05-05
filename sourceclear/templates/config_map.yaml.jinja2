@@ -12,10 +12,6 @@ data:
         nodeSelector:
           cloud.google.com/gke-nodepool: batch
         restartPolicy: OnFailure
-        serviceAccountName: KSA
-            valueFrom:
-                    fieldRef:
-                    fieldPath: metadata.annotations['KSA']
         containers:
           - name: NAME
               valueFrom:
