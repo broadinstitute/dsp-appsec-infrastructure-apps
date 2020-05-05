@@ -1,5 +1,4 @@
 google-cloud-bigquery
 google-cloud-resource-manager
 slackclient
-firebase_admin
 google-cloud-firestore

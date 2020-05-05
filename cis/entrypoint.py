@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 
-from google.cloud import bigquery
 import json
 import os
 import subprocess
 import slack
 from google.cloud import resource_manager
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
+from google.cloud import bigquery
+from google.cloud import firestore
+
 
 GCP_PROJECT_ID = os.getenv('GCP_PROJECT_ID')
 BQ_DATASET = os.getenv('BQ_DATASET')
@@ -16,7 +15,6 @@ SLACK_TOKEN = os.getenv('SLACK_TOKEN')
 SLACK_CHANNEL = os.getenv('SLACK_CHANNEL')
 RESULTS_URL = os.getenv('RESULTS_URL')
 FIRESTORE_COLLECTION = os.getenv('FIRESTORE_COLLECTION')
-
 BENCHMARK_PROFILE = 'inspec-gcp-cis-benchmark'
 
 
@@ -116,12 +114,9 @@ def load_bigquery(table_desc, version, rows, FIRESTORE_COLLECTION):
     results = job.result()  # wait for completion
     print(f"Loaded {job.output_rows} rows into {BQ_DATASET}.{table_id}")
     if results.total_rows != 0:  # check if there are table rows
-        cred = credentials.ApplicationDefault()
-        firebase_admin.initialize_app(
-            cred, {'projectId': 'dsp-appsec-infra-prod', })
-        db = firestore.client()
+        db = firestore.Client()
         doc_ref = db.collection(FIRESTORE_COLLECTION).document(table_id)
-        doc_ref.set({})
+        doc_ref.set({})      
 
 
 def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL):
