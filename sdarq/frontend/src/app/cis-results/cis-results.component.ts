@@ -16,14 +16,14 @@ export class CisResultsComponent implements OnInit {
   params: any;
   value: string;
   showModal: boolean;
-  showSpinner: boolean = true;
+  showSpinner: boolean;
   errors: any[];
   showTable: boolean;
 
   constructor(private getProjectScan: GetCisScanService, private router: ActivatedRoute) { }
 
   ngOnInit() {
-
+    this.showSpinner = true;
     this.router.queryParams.subscribe(params => {
       this.value = params.project_id
       this.getResults(this.value)
