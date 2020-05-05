@@ -116,7 +116,7 @@ def load_bigquery(table_desc, version, rows, FIRESTORE_COLLECTION):
     if results.total_rows != 0:  # check if there are table rows
         db = firestore.Client()
         doc_ref = db.collection(FIRESTORE_COLLECTION).document(table_id)
-        doc_ref.set({})      
+        doc_ref.set({})
 
 
 def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL):
