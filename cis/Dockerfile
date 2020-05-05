@@ -1,29 +1,32 @@
-FROM alpine AS base
+FROM debian:sid-slim AS base
 
 ENV INSPEC_VERSION=4.18.51 \
     CHEF_LICENSE=accept-no-persist
 
 COPY requirements.txt .
 
-RUN apk add --no-cache \
-        build-base \
-        git \
-        python3 \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        git-core \
         python3-dev \
+        python3-pip \
         ruby-dev \
-        ruby-etc \
-        ruby-io-console \
-        ruby-webrick \
+        ruby \
     && \
     pip3 install -r requirements.txt \
     && \
     gem install inspec-bin -qN -v "${INSPEC_VERSION}" && \
     git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gcp-cis-benchmark.git \
     && \
-    apk del \
-        build-base \
+    apt-get remove -y \
+        build-essential \
+        git-core \
         python3-dev \
         ruby-dev \
+    && \
+    apt autoremove -y && \
+    rm -rf /var/lib/apt/lists/* \
     && \
     mkdir .inspec && \
     chown nobody .inspec inspec-gcp-cis-benchmark
