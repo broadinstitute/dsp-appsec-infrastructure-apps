@@ -1,4 +1,3 @@
-
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -13,7 +12,10 @@ data:
         nodeSelector:
           cloud.google.com/gke-nodepool: batch
         restartPolicy: OnFailure
-        serviceAccountName: srcclr-dsde-ksa
+        serviceAccountName: KSA
+            valueFrom:
+                    fieldRef:
+                    fieldPath: metadata.annotations['KSA']
         containers:
           - name: NAME
               valueFrom:
@@ -50,7 +52,7 @@ data:
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: sourceclear-dsde-scans
+  name: sourceclear-dsde-pubsub
   namespace: ${NAMESPACE}
   labels:
     jobgroup: weekly-sourceclear-scans
@@ -69,487 +71,305 @@ spec:
             nodeSelector:
               cloud.google.com/gke-nodepool: batch
             containers:
-            - name: broadinstitute-firecloud-ui
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "firecloud-ui"
-              - name: BRANCH
-                value: "develop"
-              - name: REPO
-                value: "/firecloud-ui"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: broadinstitute-firecloud-orchestration
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "firecloud-orchestration"
-              - name: BRANCH
-                value: "develop"
-              - name: REPO
-                value: "/firecloud-orchestration"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: broadinstitute-cromwell
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "cromwell"
-              - name: BRANCH
-                value: "develop"
-              - name: REPO
-                value: "/cromwell"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: broadinstitute-rawls
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "rawls"
-              - name: BRANCH
-                value: "develop"
-              - name: REPO
-                value: "/rawls"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: broadinstitute-leonardo
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "leonardo"
-              - name: BRANCH
-                value: "develop"
-              - name: REPO
-                value: "/leonardo"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: broadinstitute-sam
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "sam"
-              - name: BRANCH
-                value: "develop"
-              - name: REPO
-                value: "/sam"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: humancellatlas-secondary-analysis
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "secondary-analysis"
-              - name: BRANCH
-                value: "master"
-              - name: REPO
-                value: "/secondary-analysis"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "humancellatlas"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: broadinstitute-agora
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "agora"
-              - name: BRANCH
-                value: "develop"
-              - name: REPO
-                value: "/agora"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: broadinstitute-consent-ontology
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "consent-ontology"
-              - name: BRANCH
-                value: "develop"
-              - name: REPO
-                value: "/consent-ontology"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: broadinstitute-consent
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "consent"
-              - name: BRANCH
-                value: "develop"
-              - name: REPO
-                value: "/consent"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: broadinstitute-thurloe
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "thurloe"
-              - name: BRANCH
-                value: "develop"
-              - name: REPO
-                value: "/thurloe"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: broadinstitute-clio
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "clio"
-              - name: BRANCH
-                value: "develop"
-              - name: REPO
-                value: "/clio"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: broadinstitute-single-cell-portal-core
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "single_cell_portal_core"
-              - name: BRANCH
-                value: "development"
-              - name: REPO
-                value: "/single_cell_portal_core"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: databiosphere-saturn-ui
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "saturn-ui"
-              - name: BRANCH
-                value: "dev"
-              - name: REPO
-                value: "/saturn-ui"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "DataBiosphere"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: databiosphere-bond
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "bond"
-              - name: BRANCH
-                value: "develop"
-              - name: REPO
-                value: "/bond"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "DataBiosphere"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: broadinstitute-workbench-tos-function
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "workbench-tos"
-              - name: BRANCH
-                value: "develop"
-              - name: REPO
-                value: "/workbench-tos"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: "/function"
-            - name: databiosphere-calhoun
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "calhoun"
-              - name: BRANCH
-                value: "master"
-              - name: REPO
-                value: "/calhoun"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "DataBiosphere"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: broadinstitute-orsp-pub
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "orsp-pub"
-              - name: BRANCH
-                value: "master"
-              - name: REPO
-                value: "/orsp-pub"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: databiosphere-duos-ui
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "duos-ui"
-              - name: BRANCH
-                value: "develop"
-              - name: REPO
-                value: "/duos-ui"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "DataBiosphere"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: databiosphere-jade-data-repo-ui
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "jade-data-repo-ui"
-              - name: BRANCH
-                value: "develop"
-              - name: REPO
-                value: "/jade-data-repo-ui"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "DataBiosphere"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: databiosphere-jade-data-repo
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "jade-data-repo"
-              - name: BRANCH
-                value: "develop"
-              - name: REPO
-                value: "/jade-data-repo"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "DataBiosphere"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: broadinstitute-depmap
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "depmap"
-              - name: BRANCH
-                value: "master"
-              - name: REPO
-                value: "/depmap"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: databiosphere-transporter
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "transporter"
-              - name: BRANCH
-                value: "master"
-              - name: REPO
-                value: "/transporter"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "DataBiosphere"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: broadinstitute-martha
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "martha"
-              - name: BRANCH
-                value: "dev"
-              - name: REPO
-                value: "/martha"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: databiosphere-job-manager-ui
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "job-manager"
-              - name: BRANCH
-                value: "master"
-              - name: REPO
-                value: "/job-manager"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "DataBiosphere"
-              - name: SCAN_SUBDIR
-                value: "/ui"
-            - name: broadinstitute-carrot
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "carrot"
-              - name: BRANCH
-                value: "develop"
-              - name: REPO
-                value: "/carrot"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: broadinstitute-import-service
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "import-service"
-              - name: BRANCH
-                value: "develop"
-              - name: REPO
-                value: "/import-service"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: ""
+            - name: broadinstitute-firecloud-ui-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-firecloud-ui\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=firecloud-ui\"",
+                "--attribute", "\"BRANCH=develop\"",
+                "--attribute", "\"REPO=broadinstitute/firecloud-ui\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: broadinstitute-firecloud-orchestration-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-firecloud-orchestration\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=firecloud-orchestration\"",
+                "--attribute", "\"BRANCH=develop\"",
+                "--attribute", "\"REPO=broadinstitute/firecloud-orchestration\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: broadinstitute-cromwell-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-cromwell\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=cromwell\"",
+                "--attribute", "\"BRANCH=develop\"",
+                "--attribute", "\"REPO=broadinstitute/cromwell\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: broadinstitute-rawls-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-rawls\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=rawls\"",
+                "--attribute", "\"BRANCH=develop\"",
+                "--attribute", "\"REPO=broadinstitute/rawls\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: broadinstitute-leonardo-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-leonardo\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=leonardo\"",
+                "--attribute", "\"BRANCH=develop\"",
+                "--attribute", "\"REPO=broadinstitute/leonardo\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: broadinstitute-sam-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-sam\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=sam\"",
+                "--attribute", "\"BRANCH=develop\"",
+                "--attribute", "\"REPO=broadinstitute/sam\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: humancellatlas-secondary-analysis-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=humancellatlas-secondary-analysis\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=secondary-analysis\"",
+                "--attribute", "\"BRANCH=master\"",
+                "--attribute", "\"REPO=humancellatlas/secondary-analysis\"",
+                "--attribute", "\"ORG=humancellatlas\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: broadinstitute-agora-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-agora\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=agora\"",
+                "--attribute", "\"BRANCH=develop\"",
+                "--attribute", "\"REPO=broadinstitute/agora\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: broadinstitute-consent-ontology-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-consent-ontology\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=consent-ontology\"",
+                "--attribute", "\"BRANCH=develop\"",
+                "--attribute", "\"REPO=broadinstitute/consent-ontology\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: broadinstitute-consent-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-consent\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=consent\"",
+                "--attribute", "\"BRANCH=develop\"",
+                "--attribute", "\"REPO=broadinstitute/consent\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: broadinstitute-thurloe-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-thurloe\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=thurloe\"",
+                "--attribute", "\"BRANCH=develop\"",
+                "--attribute", "\"REPO=broadinstitute/thurloe\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: broadinstitute-clio-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-clio\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=clio\"",
+                "--attribute", "\"BRANCH=develop\"",
+                "--attribute", "\"REPO=broadinstitute/clio\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: broadinstitute-single-cell-portal-core-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-single-cell-portal-core\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=single_cell_portal_core\"",
+                "--attribute", "\"BRANCH=development\"",
+                "--attribute", "\"REPO=broadinstitute/single_cell_portal_core\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: databiosphere-saturn-ui-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=databiosphere-saturn-ui\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=saturn-ui\"",
+                "--attribute", "\"BRANCH=dev\"",
+                "--attribute", "\"REPO=DataBiosphere/saturn-ui\"",
+                "--attribute", "\"ORG=DataBiosphere\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: databiosphere-bond-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=databiosphere-bond\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=bond\"",
+                "--attribute", "\"BRANCH=develop\"",
+                "--attribute", "\"REPO=DataBiosphere/bond\"",
+                "--attribute", "\"ORG=DataBiosphere\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: broadinstitute-workbench-tos-function-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-workbench-tos-function\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=workbench-tos\"",
+                "--attribute", "\"BRANCH=develop\"",
+                "--attribute", "\"REPO=broadinstitute/workbench-tos\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=/function\""]
+            - name: databiosphere-calhoun-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=databiosphere-calhoun\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=calhoun\"",
+                "--attribute", "\"BRANCH=master\"",
+                "--attribute", "\"REPO=DataBiosphere/calhoun\"",
+                "--attribute", "\"ORG=DataBiosphere\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: broadinstitute-orsp-pub-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-orsp-pub\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=orsp-pub\"",
+                "--attribute", "\"BRANCH=master\"",
+                "--attribute", "\"REPO=broadinstitute/orsp-pub\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: databiosphere-duos-ui-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=databiosphere-duos-ui\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=duos-ui\"",
+                "--attribute", "\"BRANCH=develop\"",
+                "--attribute", "\"REPO=DataBiosphere/duos-ui\"",
+                "--attribute", "\"ORG=DataBiosphere\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: databiosphere-jade-data-repo-ui-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=databiosphere-jade-data-repo-ui\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=jade-data-repo-ui\"",
+                "--attribute", "\"BRANCH=develop\"",
+                "--attribute", "\"REPO=DataBiosphere/jade-data-repo-ui\"",
+                "--attribute", "\"ORG=DataBiosphere\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: databiosphere-jade-data-repo-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=databiosphere-jade-data-repo\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=jade-data-repo\"",
+                "--attribute", "\"BRANCH=develop\"",
+                "--attribute", "\"REPO=DataBiosphere/jade-data-repo\"",
+                "--attribute", "\"ORG=DataBiosphere\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: broadinstitute-depmap-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-depmap\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=depmap\"",
+                "--attribute", "\"BRANCH=master\"",
+                "--attribute", "\"REPO=broadinstitute/depmap\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: databiosphere-transporter-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=databiosphere-transporter\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=transporter\"",
+                "--attribute", "\"BRANCH=master\"",
+                "--attribute", "\"REPO=DataBiosphere/transporter\"",
+                "--attribute", "\"ORG=DataBiosphere\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: broadinstitute-martha-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-martha\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=martha\"",
+                "--attribute", "\"BRANCH=dev\"",
+                "--attribute", "\"REPO=broadinstitute/martha\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: databiosphere-job-manager-ui-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=databiosphere-job-manager-ui\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=job-manager\"",
+                "--attribute", "\"BRANCH=master\"",
+                "--attribute", "\"REPO=DataBiosphere/job-manager\"",
+                "--attribute", "\"ORG=DataBiosphere\"",
+                "--attribute", "\"SUBDIR=/ui\""]
+            - name: broadinstitute-carrot-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-carrot\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=carrot\"",
+                "--attribute", "\"BRANCH=develop\"",
+                "--attribute", "\"REPO=broadinstitute/carrot\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: broadinstitute-import-service-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-import-service\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT=import-service\"",
+                "--attribute", "\"BRANCH=develop\"",
+                "--attribute", "\"REPO=broadinstitute/import-service\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=\""]
             restartPolicy: OnFailure
       backoffLimit: 3
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: ${JOB_CONFIG_MAP}
-  namespace: ${NAMESPACE}
-data:
-  spec: |
-    template:
-      spec:
-        runtimeClassName: gvisor
-        nodeSelector:
-          cloud.google.com/gke-nodepool: batch
-        restartPolicy: OnFailure
-        serviceAccountName: srcclr-kdux-ksa
-        containers:
-          - name: NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['NAME']
-            image: us.gcr.io/dsp-appsec-infra-prod/srcclr_scanner
-            imagePullPolicy: Always
-            env:
-            - name: PROJECT
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['PROJECT']
-            - name: BRANCH
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['BRANCH']
-            - name: REPO
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['REPO']
-            - name: SRCCLR_API_TOKEN_PATH
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['SRCCLR_API_TOKEN_PATH']
-            - name: ORG
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['ORG']
-            - name: SCAN_SUBDIR
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['SUBDIR']
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
@@ -573,69 +393,49 @@ spec:
               cloud.google.com/gke-nodepool: batch
             serviceAccountName: srcclr-kdux-ksa
             containers:
-            - name: broadinstitute-ddp-pepper-apis
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "ddp"
-              - name: BRANCH
-                value: "v1"
-              - name: REPO
-                value: "broadinstitute/ddp"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-kdux-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: "/pepper-apis"
-            - name: broadinstitute-ddp-pepper-angular-ddp-workspace
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "ddp"
-              - name: BRANCH
-                value: "v1"
-              - name: REPO
-                value: "broadinstitute/ddp"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-kdux-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: "/pepper-angular/ddp-workspace"
-            - name: broadinstitute-ddp-mmrf
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "ddp-mmrf"
-              - name: BRANCH
-                value: "qa"
-              - name: REPO
-                value: "broadinstitute/ddp-mmrf"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-kdux-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: ""
-            - name: broadinstitute-ddp-mmrf-frontend
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "ddp-mmrf"
-              - name: BRANCH
-                value: "qa"
-              - name: REPO
-                value: "broadinstitute/ddp-mmrf"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-kdux-api-token"
-              - name: ORG
-                value: "broadinstitute"
-              - name: SCAN_SUBDIR
-                value: "/frontend"
+            - name: broadinstitute-ddp-pepper-apis-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-ddp-pepper-apis\"", 
+                "--attribute", "\"KSA=srcclr-kdux-ksa\"",
+                "--attribute", "\"PROJECT=ddp\"",
+                "--attribute", "\"BRANCH=v1\"",
+                "--attribute", "\"REPO=broadinstitute/ddp\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=/pepper-apis\""]
+            - name: broadinstitute-ddp-pepper-angular-ddp-workspace-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-ddp-pepper-angular-ddp-workspace\"", 
+                "--attribute", "\"KSA=srcclr-kdux-ksa\"",
+                "--attribute", "\"PROJECT=ddp\"",
+                "--attribute", "\"BRANCH=v1\"",
+                "--attribute", "\"REPO=broadinstitute/ddp\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=/pepper-angular/ddp-workspace\""]
+            - name: broadinstitute-ddp-mmrf-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-ddp-mmrf\"", 
+                "--attribute", "\"KSA=srcclr-kdux-ksa\"",
+                "--attribute", "\"PROJECT=ddp-mmrf\"",
+                "--attribute", "\"BRANCH=qa\"",
+                "--attribute", "\"REPO=broadinstitute/ddp-mmrf\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=\""]
+            - name: broadinstitute-ddp-mmrf-frontend-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME=broadinstitute-ddp-mmrf-frontend\"", 
+                "--attribute", "\"KSA=srcclr-kdux-ksa\"",
+                "--attribute", "\"PROJECT=ddp-mmrf\"",
+                "--attribute", "\"BRANCH=qa\"",
+                "--attribute", "\"REPO=broadinstitute/ddp-mmrf\"",
+                "--attribute", "\"ORG=broadinstitute\"",
+                "--attribute", "\"SUBDIR=/frontend\""]
             restartPolicy: OnFailure
       backoffLimit: 3

@@ -162,57 +162,10 @@
                   }]
 %}
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: ${JOB_CONFIG_MAP}
-  namespace: ${NAMESPACE}
-data:
-  spec: |
-    template:
-      spec:
-        runtimeClassName: gvisor
-        nodeSelector:
-          cloud.google.com/gke-nodepool: batch
-        restartPolicy: OnFailure
-        serviceAccountName: srcclr-dsde-ksa
-        containers:
-          - name: NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['NAME']
-            image: us.gcr.io/dsp-appsec-infra-prod/srcclr_scanner
-            imagePullPolicy: Always
-            env:
-            - name: PROJECT
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['PROJECT']
-            - name: BRANCH
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['BRANCH']
-            - name: REPO
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['REPO']
-            - name: SRCCLR_API_TOKEN_PATH
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['SRCCLR_API_TOKEN_PATH']
-            - name: ORG
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['ORG']
-            - name: SCAN_SUBDIR
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['SUBDIR']
----
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: sourceclear-dsde-scans
+  name: sourceclear-dsde-pubsub
   namespace: ${NAMESPACE}
   labels:
     jobgroup: weekly-sourceclear-scans
@@ -237,22 +190,17 @@ spec:
             {%- set org = p["org"] %}
             {%- set subdir = p["subdir"] %}
             {%- set name = org.lower()|replace("_", "-") + "-" + project.lower()|replace("_", "-") + subdir.lower()|replace("/", "-") %}
-            - name: {{ name }}
-              image: us.gcr.io/dsp-appsec-dev/srcclr_scanner
-              imagePullPolicy: Always
-              env:
-              - name: PROJECT
-                value: "{{ project }}"
-              - name: BRANCH
-                value: "{{ branch }}"
-              - name: REPO
-                value: "{{ repo }}/{{ project }}"
-              - name: SRCCLR_API_TOKEN_PATH
-                value: "srcclr-dsde-api-token"
-              - name: ORG
-                value: "{{ org }}"
-              - name: SCAN_SUBDIR
-                value: "{{ subdir }}"
+            - name: {{ name }}-pub
+              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+              command: ["gcloud"]
+              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
+                "--attribute", "\"NAME={{ name }}\"", 
+                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
+                "--attribute", "\"PROJECT={{ project }}\"",
+                "--attribute", "\"BRANCH={{ branch }}\"",
+                "--attribute", "\"REPO={{ org }}/{{ project }}\"",
+                "--attribute", "\"ORG={{ org }}\"",
+                "--attribute", "\"SUBDIR={{ subdir }}\""]
             {%- endfor %}
             restartPolicy: OnFailure
       backoffLimit: 3
