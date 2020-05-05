@@ -25,8 +25,6 @@ data:
           env:
           - name: BQ_DATASET
             value: ${CIS_DATASET}
-          - name: SLACK_TOKEN
-            value: ${SLACK_TOKEN}
           - name: GCP_PROJECT_ID
             valueFrom:
               fieldRef:
