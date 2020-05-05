@@ -175,7 +175,7 @@ def cis_results(project_id):
 
 
 @app.route('/cis_scan/', methods=['POST'])
-@cross_origin(origins=sdarq_host')
+@cross_origin(origins=sdarq_host)
 def cis_scan():
     """
     Scans a specific google project
@@ -228,7 +228,7 @@ def cis_scan():
 
                 return Response(json.dumps({'statusText': 'Doc found!', 'status': 'true'}), status=200, mimetype='application/json')
         else:
-            return Response(json.dumps({'statusText': ' Project does not exist! Please make sure this project is part of the organization. ONLY projects that are part of BROAD INSTITUTE organization can be scanned from CIS tool. ', 'status': 'false', 'statusCode': '404'}), status=200, mimetype='application/json')
+            return Response(json.dumps({'statusText': ' Project does not exist! Please make sure this project is part of BROAD INSTITUTE organization. ONLY projects that are part of BROAD INSTITUTE organization can be scanned from CIS tool. ', 'status': 'false', 'statusCode': '404'}), status=200, mimetype='application/json')
 
 
 if __name__ == "__main__":
