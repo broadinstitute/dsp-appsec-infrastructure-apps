@@ -1,12 +1,16 @@
 FROM python:3.6-jessie
 
-RUN apt update
+RUN apt-get update \
+  && pip install --upgrade pip==20.1 \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-ADD requirements.txt /app/requirements.txt
+COPY requirements.txt /app/requirements.txt
 RUN pip install -r /app/requirements.txt
 
-ADD . /app
+COPY src/* /app/
+RUN ls -al /app/
 
 ENV PORT 8080
 CMD ["gunicorn",  "-b", "0.0.0.0:8080", "app:app"]
