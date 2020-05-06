@@ -3,7 +3,7 @@
 import slack
 
 
-def slacknotify(slack_token, channel, dojo_name, security_champion, product_id, dojo_host):
+def slacknotify(slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url):
     """
     Sends slack notification where: 
         1. No Jira ticket is selected 
@@ -56,7 +56,7 @@ def slacknotify(slack_token, channel, dojo_name, security_champion, product_id, 
                                     "type": "plain_text",
                                     "text": "Defect Dojo"
                                 },
-                                "url": "{0}product/{1}" .format(dojo_host, str(product_id))
+                                "url": "{0}product/{1}" .format(dojo_host_url, str(product_id))
                             }
                         ]
                     }
@@ -66,7 +66,7 @@ def slacknotify(slack_token, channel, dojo_name, security_champion, product_id, 
     )
 
 
-def slacknotify_qa(slack_token, channel, dojo_name, security_champion, product_id, dojo_host):
+def slacknotify_qa(slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url):
     """
     Sends slack notification where: 
         1. No Jira ticket is selected 
@@ -119,7 +119,7 @@ def slacknotify_qa(slack_token, channel, dojo_name, security_champion, product_i
                                     "type": "plain_text",
                                     "text": "Defect Dojo"
                                 },
-                                "url": "{0}product/{1}" .format(dojo_host, str(product_id))
+                                "url": "{0}product/{1}" .format(dojo_host_url, str(product_id))
                             }
                         ]
                     }
@@ -129,7 +129,7 @@ def slacknotify_qa(slack_token, channel, dojo_name, security_champion, product_i
     )
 
 
-def slacknotify_jira(slack_token, channel, dojo_name, security_champion, product_id, dojo_host, jira_instance, project_key_id, jira_ticket):
+def slacknotify_jira(slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket):
     """
     Sends slack notification where: 
         1. Jira ticket is selected 
@@ -183,7 +183,7 @@ def slacknotify_jira(slack_token, channel, dojo_name, security_champion, product
                             "type": "plain_text",
                             "text": "Defect Dojo"
                         },
-                        "url": "{0}product/{1}" .format(dojo_host, str(product_id))
+                        "url": "{0}product/{1}" .format(dojo_host_url, str(product_id))
                     },
                     {
                         "type": "button",
@@ -201,7 +201,7 @@ def slacknotify_jira(slack_token, channel, dojo_name, security_champion, product
     )
 
 
-def slacknotify_jira_qa(slack_token, channel, dojo_name, security_champion, product_id, dojo_host, jira_instance, project_key_id, jira_ticket):
+def slacknotify_jira_qa(slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket):
     """
     Sends slack notification where: 
         1. Jira ticket is selected 
@@ -255,7 +255,7 @@ def slacknotify_jira_qa(slack_token, channel, dojo_name, security_champion, prod
                             "type": "plain_text",
                             "text": "Defect Dojo"
                         },
-                        "url": "{0}product/{1}" .format(dojo_host, str(product_id))
+                        "url": "{0}product/{1}" .format(dojo_host_url, str(product_id))
                     },
                     {
                         "type": "button",
