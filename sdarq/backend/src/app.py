@@ -25,6 +25,7 @@ jira_username = os.getenv('jira_username')
 jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
 sdarq_host = os.getenv('sdarq_host')
+dojo_host_url = os.getenv('dojo_host_url')
 
 # Instantiate the DefectDojo backend wrapper
 dd = wrapper.DefectDojoAPI(dojo_host, dojo_api_key, dojo_user, debug=True)
@@ -109,20 +110,20 @@ def submit():
         for channel in slack_channels_list:
             if channel == '#zap-test':
                 slacknotify.slacknotify_jira_qa(
-                    slack_token, channel, dojo_name, security_champion, product_id, dojo_host, jira_instance, project_key_id, jira_ticket)
+                    slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket)
             else:
                 slacknotify.slacknotify_jira(slack_token, channel, dojo_name, security_champion,
-                                             product_id, dojo_host, jira_instance, project_key_id, jira_ticket)
+                                             product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket)
 
     else:
         # When Jira ticket creation is not selected
         for channel in slack_channels_list:
             if channel == '#zap-test':
                 slacknotify.slacknotify_qa(
-                    slack_token, channel, dojo_name, security_champion, product_id, dojo_host)
+                    slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
             else:
                 slacknotify.slacknotify(
-                    slack_token, channel, dojo_name, security_champion, product_id, dojo_host)
+                    slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
 
          # Set product description
         product_description = dd.set_product(
