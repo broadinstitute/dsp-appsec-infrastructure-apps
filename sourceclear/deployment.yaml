@@ -12,17 +12,14 @@ data:
         nodeSelector:
           cloud.google.com/gke-nodepool: batch
         restartPolicy: OnFailure
-        serviceAccountName: KSA
-            valueFrom:
-                    fieldRef:
-                    fieldPath: metadata.annotations['KSA']
         containers:
-          - name: NAME
+          - name: CONTAINER_NAME
               valueFrom:
                 fieldRef:
-                  fieldPath: metadata.annotations['NAME']
-            image: us.gcr.io/dsp-appsec-infra-prod/srcclr_scanner
+                  fieldPath: metadata.annotations['CONTAINER_NAME']
+            image: ${SOURCECLEAR_IMAGE}
             imagePullPolicy: Always
+            cmd: ["./scan.sh"]
             env:
             - name: PROJECT
               valueFrom:
@@ -36,10 +33,10 @@ data:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.annotations['REPO']
-            - name: SRCCLR_API_TOKEN_PATH
+            - name: WORKSPACE
               valueFrom:
                 fieldRef:
-                  fieldPath: metadata.annotations['SRCCLR_API_TOKEN_PATH']
+                  fieldPath: metadata.annotations['WORKSPACE']
             - name: ORG
               valueFrom:
                 fieldRef:
@@ -52,7 +49,7 @@ data:
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: sourceclear-dsde-pubsub
+  name: sourceclear-pubsub
   namespace: ${NAMESPACE}
   labels:
     jobgroup: weekly-sourceclear-scans
@@ -62,380 +59,16 @@ spec:
     spec:
       template:
         metadata:
-            name: dsde-weekly-sourceclear-scans
-            labels:
-                jobgroup: weekly-sourceclear-scans
-        spec:
-            serviceAccountName: srcclr-dsde-ksa
-            runtimeClassName: gvisor
-            nodeSelector:
-              cloud.google.com/gke-nodepool: batch
-            containers:
-            - name: broadinstitute-firecloud-ui-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-firecloud-ui\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=firecloud-ui\"",
-                "--attribute", "\"BRANCH=develop\"",
-                "--attribute", "\"REPO=broadinstitute/firecloud-ui\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: broadinstitute-firecloud-orchestration-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-firecloud-orchestration\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=firecloud-orchestration\"",
-                "--attribute", "\"BRANCH=develop\"",
-                "--attribute", "\"REPO=broadinstitute/firecloud-orchestration\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: broadinstitute-cromwell-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-cromwell\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=cromwell\"",
-                "--attribute", "\"BRANCH=develop\"",
-                "--attribute", "\"REPO=broadinstitute/cromwell\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: broadinstitute-rawls-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-rawls\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=rawls\"",
-                "--attribute", "\"BRANCH=develop\"",
-                "--attribute", "\"REPO=broadinstitute/rawls\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: broadinstitute-leonardo-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-leonardo\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=leonardo\"",
-                "--attribute", "\"BRANCH=develop\"",
-                "--attribute", "\"REPO=broadinstitute/leonardo\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: broadinstitute-sam-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-sam\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=sam\"",
-                "--attribute", "\"BRANCH=develop\"",
-                "--attribute", "\"REPO=broadinstitute/sam\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: humancellatlas-secondary-analysis-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=humancellatlas-secondary-analysis\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=secondary-analysis\"",
-                "--attribute", "\"BRANCH=master\"",
-                "--attribute", "\"REPO=humancellatlas/secondary-analysis\"",
-                "--attribute", "\"ORG=humancellatlas\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: broadinstitute-agora-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-agora\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=agora\"",
-                "--attribute", "\"BRANCH=develop\"",
-                "--attribute", "\"REPO=broadinstitute/agora\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: broadinstitute-consent-ontology-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-consent-ontology\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=consent-ontology\"",
-                "--attribute", "\"BRANCH=develop\"",
-                "--attribute", "\"REPO=broadinstitute/consent-ontology\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: broadinstitute-consent-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-consent\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=consent\"",
-                "--attribute", "\"BRANCH=develop\"",
-                "--attribute", "\"REPO=broadinstitute/consent\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: broadinstitute-thurloe-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-thurloe\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=thurloe\"",
-                "--attribute", "\"BRANCH=develop\"",
-                "--attribute", "\"REPO=broadinstitute/thurloe\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: broadinstitute-clio-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-clio\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=clio\"",
-                "--attribute", "\"BRANCH=develop\"",
-                "--attribute", "\"REPO=broadinstitute/clio\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: broadinstitute-single-cell-portal-core-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-single-cell-portal-core\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=single_cell_portal_core\"",
-                "--attribute", "\"BRANCH=development\"",
-                "--attribute", "\"REPO=broadinstitute/single_cell_portal_core\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: databiosphere-saturn-ui-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=databiosphere-saturn-ui\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=saturn-ui\"",
-                "--attribute", "\"BRANCH=dev\"",
-                "--attribute", "\"REPO=DataBiosphere/saturn-ui\"",
-                "--attribute", "\"ORG=DataBiosphere\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: databiosphere-bond-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=databiosphere-bond\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=bond\"",
-                "--attribute", "\"BRANCH=develop\"",
-                "--attribute", "\"REPO=DataBiosphere/bond\"",
-                "--attribute", "\"ORG=DataBiosphere\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: broadinstitute-workbench-tos-function-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-workbench-tos-function\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=workbench-tos\"",
-                "--attribute", "\"BRANCH=develop\"",
-                "--attribute", "\"REPO=broadinstitute/workbench-tos\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=/function\""]
-            - name: databiosphere-calhoun-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=databiosphere-calhoun\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=calhoun\"",
-                "--attribute", "\"BRANCH=master\"",
-                "--attribute", "\"REPO=DataBiosphere/calhoun\"",
-                "--attribute", "\"ORG=DataBiosphere\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: broadinstitute-orsp-pub-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-orsp-pub\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=orsp-pub\"",
-                "--attribute", "\"BRANCH=master\"",
-                "--attribute", "\"REPO=broadinstitute/orsp-pub\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: databiosphere-duos-ui-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=databiosphere-duos-ui\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=duos-ui\"",
-                "--attribute", "\"BRANCH=develop\"",
-                "--attribute", "\"REPO=DataBiosphere/duos-ui\"",
-                "--attribute", "\"ORG=DataBiosphere\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: databiosphere-jade-data-repo-ui-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=databiosphere-jade-data-repo-ui\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=jade-data-repo-ui\"",
-                "--attribute", "\"BRANCH=develop\"",
-                "--attribute", "\"REPO=DataBiosphere/jade-data-repo-ui\"",
-                "--attribute", "\"ORG=DataBiosphere\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: databiosphere-jade-data-repo-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=databiosphere-jade-data-repo\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=jade-data-repo\"",
-                "--attribute", "\"BRANCH=develop\"",
-                "--attribute", "\"REPO=DataBiosphere/jade-data-repo\"",
-                "--attribute", "\"ORG=DataBiosphere\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: broadinstitute-depmap-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-depmap\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=depmap\"",
-                "--attribute", "\"BRANCH=master\"",
-                "--attribute", "\"REPO=broadinstitute/depmap\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: databiosphere-transporter-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=databiosphere-transporter\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=transporter\"",
-                "--attribute", "\"BRANCH=master\"",
-                "--attribute", "\"REPO=DataBiosphere/transporter\"",
-                "--attribute", "\"ORG=DataBiosphere\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: broadinstitute-martha-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-martha\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=martha\"",
-                "--attribute", "\"BRANCH=dev\"",
-                "--attribute", "\"REPO=broadinstitute/martha\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: databiosphere-job-manager-ui-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=databiosphere-job-manager-ui\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=job-manager\"",
-                "--attribute", "\"BRANCH=master\"",
-                "--attribute", "\"REPO=DataBiosphere/job-manager\"",
-                "--attribute", "\"ORG=DataBiosphere\"",
-                "--attribute", "\"SUBDIR=/ui\""]
-            - name: broadinstitute-carrot-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-carrot\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=carrot\"",
-                "--attribute", "\"BRANCH=develop\"",
-                "--attribute", "\"REPO=broadinstitute/carrot\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: broadinstitute-import-service-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-import-service\"", 
-                "--attribute", "\"KSA=srcclr-dsde-ksa\"",
-                "--attribute", "\"PROJECT=import-service\"",
-                "--attribute", "\"BRANCH=develop\"",
-                "--attribute", "\"REPO=broadinstitute/import-service\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=\""]
-            restartPolicy: OnFailure
-      backoffLimit: 3
----
-apiVersion: batch/v1beta1
-kind: CronJob
-metadata:
-  name: sourceclear-kdux-scans
-  namespace: ${NAMESPACE}
-  labels:
-    jobgroup: weekly-sourceclear-scans
-spec:
-  schedule: "0 0 * * 0"
-  jobTemplate:
-    spec:
-      template:
-        metadata:
-            name: kdux-weekly-sourceclear-scans
+            name: weekly-sourceclear-scans
             labels:
                 jobgroup: weekly-sourceclear-scans
         spec:
             runtimeClassName: gvisor
             nodeSelector:
               cloud.google.com/gke-nodepool: batch
-            serviceAccountName: srcclr-kdux-ksa
             containers:
-            - name: broadinstitute-ddp-pepper-apis-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-ddp-pepper-apis\"", 
-                "--attribute", "\"KSA=srcclr-kdux-ksa\"",
-                "--attribute", "\"PROJECT=ddp\"",
-                "--attribute", "\"BRANCH=v1\"",
-                "--attribute", "\"REPO=broadinstitute/ddp\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=/pepper-apis\""]
-            - name: broadinstitute-ddp-pepper-angular-ddp-workspace-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-ddp-pepper-angular-ddp-workspace\"", 
-                "--attribute", "\"KSA=srcclr-kdux-ksa\"",
-                "--attribute", "\"PROJECT=ddp\"",
-                "--attribute", "\"BRANCH=v1\"",
-                "--attribute", "\"REPO=broadinstitute/ddp\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=/pepper-angular/ddp-workspace\""]
-            - name: broadinstitute-ddp-mmrf-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-ddp-mmrf\"", 
-                "--attribute", "\"KSA=srcclr-kdux-ksa\"",
-                "--attribute", "\"PROJECT=ddp-mmrf\"",
-                "--attribute", "\"BRANCH=qa\"",
-                "--attribute", "\"REPO=broadinstitute/ddp-mmrf\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=\""]
-            - name: broadinstitute-ddp-mmrf-frontend-pub
-              image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-              command: ["gcloud"]
-              args: ["pubsub", "topics", "publish", "${TOPIC_NAME}", 
-                "--attribute", "\"NAME=broadinstitute-ddp-mmrf-frontend\"", 
-                "--attribute", "\"KSA=srcclr-kdux-ksa\"",
-                "--attribute", "\"PROJECT=ddp-mmrf\"",
-                "--attribute", "\"BRANCH=qa\"",
-                "--attribute", "\"REPO=broadinstitute/ddp-mmrf\"",
-                "--attribute", "\"ORG=broadinstitute\"",
-                "--attribute", "\"SUBDIR=/frontend\""]
+            - name: {{ name }}-pub
+              image: ${SOURCECLEAR_IMAGE}
+              command: ["./publish"]
             restartPolicy: OnFailure
       backoffLimit: 3
