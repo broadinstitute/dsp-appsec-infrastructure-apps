@@ -36,7 +36,6 @@ jira = JIRA(basic_auth=(jira_username, jira_api_token), options={'server': jira_
 
 client = bigquery.Client()
 db = firestore.Client()
-publisher = pubsub_v1.PublisherClient()
 
 @app.route('/health/', methods=['GET'])
 def health():
@@ -195,7 +194,7 @@ def cis_scan():
     all_projects = []
 
     if re.match(pattern, user_project_id):
-                # publisher = pubsub_v1.PublisherClient()
+                publisher = pubsub_v1.PublisherClient()
                 topic_path = publisher.topic_path(project_id, topic_name)
                 if 'slack_channel' in json_data:
                     slack_channel = json_data['slack_channel']
