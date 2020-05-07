@@ -13,7 +13,6 @@ import re
 import slack
 import datetime
 import json
-from google.cloud import resource_manager
 from google.cloud import firestore
 
 # Env variables
@@ -193,9 +192,6 @@ def cis_scan():
     all_projects = []
 
     if re.match(pattern, user_project_id):
-        for p in resource_manager.Client().list_projects():
-            all_projects.append(p.name)
-            if user_project_id in all_projects:
                 publisher = pubsub_v1.PublisherClient()
                 topic_path = publisher.topic_path(project_id, topic_name)
                 if 'slack_channel' in json_data:
@@ -228,9 +224,7 @@ def cis_scan():
                     user_project_id).delete()
 
                 return Response(json.dumps({'statusText': 'Doc found!', 'status': 'true'}), status=200, mimetype='application/json')
-        else:
-            return Response(json.dumps({'statusText': ' Project does not exist! Please make sure this project is part of BROAD INSTITUTE organization. ONLY projects that are part of BROAD INSTITUTE organization can be scanned from CIS tool. ', 'status': 'false', 'statusCode': '404'}), status=200, mimetype='application/json')
-
+        
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 8080)))
