@@ -45,6 +45,6 @@ FROM base
 
 COPY entrypoint.py /
 
-USER nobody
+# USER nobody
 
 ENTRYPOINT [ "/entrypoint.py" ]
