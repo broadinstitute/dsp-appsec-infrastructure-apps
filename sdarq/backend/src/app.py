@@ -34,6 +34,9 @@ app = FlaskAPI(__name__)
 global jira
 jira = JIRA(basic_auth=(jira_username, jira_api_token), options={'server': jira_instance })
 
+client = bigquery.Client()
+db = firestore.Client()
+publisher = pubsub_v1.PublisherClient()
 
 @app.route('/health/', methods=['GET'])
 def health():
@@ -144,7 +147,7 @@ def cis_results(project_id):
     project_id_edited = project_id.strip('-').replace('-', '_')
 
     if re.match(pattern, project_id_edited):
-        client = bigquery.Client()
+        # client = bigquery.Client()
         sql_tables = """
                 SELECT table_name FROM `cis.INFORMATION_SCHEMA.TABLES` WHERE table_name=@corpus
                 """
@@ -192,7 +195,7 @@ def cis_scan():
     all_projects = []
 
     if re.match(pattern, user_project_id):
-                publisher = pubsub_v1.PublisherClient()
+                # publisher = pubsub_v1.PublisherClient()
                 topic_path = publisher.topic_path(project_id, topic_name)
                 if 'slack_channel' in json_data:
                     slack_channel = json_data['slack_channel']
@@ -211,7 +214,7 @@ def cis_scan():
                 # Check if a document exists in Firestore
                 check = False
                 while check is False:
-                    db = firestore.Client()
+                    # db = firestore.Client()
                     doc_ref = db.collection(
                         firestore_collection).document(user_project_id)
                     doc = doc_ref.get()
