@@ -1,13 +1,8 @@
 <div class="jumbotron">
   <div class="container">
-    <div class="row">    
-      <div class="alert alert-warning animated fadeInRight" role="alert" *ngIf="showModal">
-      {{errors.statusText}}
-    </div>
-  </div>
     <br>
     <br>
-    <app-survey  *ngIf="showPage" [json]="json" (submitSurvey)="sendData($event)"></app-survey>
+    <app-survey [json]="json" (submitSurvey)="sendData($event)"></app-survey>
     <br>
     <br>
   </div>
