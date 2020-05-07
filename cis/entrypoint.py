@@ -124,7 +124,7 @@ def firestore_report(table_id, FIRESTORE_COLLECTION):
 
 def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL):
     client = slack.WebClient(SLACK_TOKEN)
-    client.chat_postMessage(
+    response = client.chat_postMessage(
         channel=SLACK_CHANNEL,
         attachments=[{"blocks": [
             {
@@ -148,7 +148,6 @@ def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL):
                 ]
             }], "color": "#0a88ab"}]
     )
-    return ''
 
 
 def project_exists(GCP_PROJECT_ID: str) -> bool:
