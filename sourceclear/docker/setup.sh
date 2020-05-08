@@ -10,8 +10,6 @@ apt-get install -y nodejs \
     git \
     python3-pip
 
-pip3 install --upgrade google-cloud-bigquery google-cloud-pubsub google-cloud-resource-manager
-
 # install yarn
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
@@ -25,3 +23,6 @@ echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/
 curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | apt-key add && \
 apt-get update && \
 apt-get install -y sbt
+
+pip3 install -r requirements.txt
+
