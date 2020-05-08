@@ -22,6 +22,11 @@ flowfish
 
 Fast vulnerability scanner that runs in Google Kubernetes Engine and syncs data into Google Cloud Bigquery
 
+Ways scan can be triggered: 
+        1. GKE Cron -> Source: Bigquery dataset as targets
+        2. GKE cron -> Source: GCP assets as targets
+        3. GKE pubsub -> Source: single target
+        4. On demans -> As part of Sdarq
 
 * Documentation: https://flowfish.readthedocs.io.
 
