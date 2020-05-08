@@ -23,17 +23,11 @@ export class CisScanComponent implements OnInit {
     if (result.slack_channel) {
       this.sendProject.sendCisProject(result).subscribe((data: any) => {
         console.log('Notification sent to slack')
-      },
-        (data) => {
-          console.log('Not sent in slack')
-        });
+      });
     } else {
       this.sendProject.sendCisProject(result).subscribe((data: any) => {
         location.href = location.origin + '/cis/results?project_id=' + result.project_id;
-      },
-        (data) => {
-          console.log('Not sent')
-        });
+      });
     }
   }
 }

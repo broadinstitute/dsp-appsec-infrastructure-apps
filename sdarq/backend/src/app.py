@@ -1,19 +1,19 @@
+
 #!/usr/bin/env python3
 
-from flask import request, make_response, Response
-from flask_api import FlaskAPI
-from flask_cors import CORS, cross_origin
-from google.cloud import bigquery
-from google.cloud import pubsub_v1
-from jira import JIRA
-import slacknotify as slacknotify
-import defectdojo as wrapper
 import os
 import re
-import slack
-import datetime
 import json
+from flask import request, Response
+from flask_api import FlaskAPI
+from flask_cors import cross_origin
+from google.cloud import bigquery
+from google.cloud import pubsub_v1
 from google.cloud import firestore
+from jira import JIRA
+import slacknotify
+import defectdojo as wrapper
+
 
 # Env variables
 dojo_host = os.getenv('dojo_host')
@@ -32,10 +32,12 @@ app = FlaskAPI(__name__)
 
 # Instantiate the Jira backend wrapper
 global jira
-jira = JIRA(basic_auth=(jira_username, jira_api_token), options={'server': jira_instance })
+jira = JIRA(basic_auth=(jira_username, jira_api_token),
+            options={'server': jira_instance})
 
 client = bigquery.Client()
 db = firestore.Client()
+
 
 @app.route('/health/', methods=['GET'])
 def health():
@@ -100,35 +102,33 @@ def submit():
                                             formatted_jira_description),
                                         issuetype={'name': 'Task'})
 
-        # Delete Ticket_Description from json, so it will not be added to DefectDojo product description
+        # Delete Ticket_Description from json
         del json_data['Ticket_Description']
 
         # Set product description
-        product_description = dd.set_product(
-            product_id, description=prepare_dojo_input(json_data))
+        dd.set_product(product_id, description=prepare_dojo_input(json_data))
 
         # Set Slack notification
         for channel in slack_channels_list:
             if channel == '#zap-test':
-                slacknotify.slacknotify_jira_qa(
-                    slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket)
+                slacknotify.slacknotify_jira_qa(slack_token, channel, dojo_name, security_champion,
+                                                product_id, dojo_host_url, jira_instance,
+                                                project_key_id, jira_ticket)
             else:
                 slacknotify.slacknotify_jira(slack_token, channel, dojo_name, security_champion,
-                                             product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket)
+                                             product_id, dojo_host_url, jira_instance,
+                                             project_key_id, jira_ticket)
 
     else:
         # When Jira ticket creation is not selected
         for channel in slack_channels_list:
             if channel == '#zap-test':
-                slacknotify.slacknotify_qa(
-                    slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
+                slacknotify.slacknotify_qa(slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
             else:
-                slacknotify.slacknotify(
-                    slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
+                slacknotify.slacknotify(slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
 
          # Set product description
-        product_description = dd.set_product(
-            product_id, description=prepare_dojo_input(json_data))
+        dd.set_product(product_id, description=prepare_dojo_input(json_data))
     return ''
 
 
@@ -147,7 +147,6 @@ def cis_results(project_id):
     project_id_edited = project_id.strip('-').replace('-', '_')
 
     if re.match(pattern, project_id_edited):
-        # client = bigquery.Client()
         sql_tables = """
                 SELECT table_name FROM `cis.INFORMATION_SCHEMA.TABLES` WHERE table_name=@corpus
                 """
@@ -159,12 +158,12 @@ def cis_results(project_id):
         query_job_table = client.query(sql_tables, job_config=job_config)
         results_table = query_job_table.result()
         tables = [dict(row) for row in query_job_table]
-        json_obj_tables = json.dumps(tables)
+        json.dumps(tables)
         if results_table.total_rows != 0:
             sql = "SELECT * FROM `dsp-appsec-infra-prod.cis.{0}` WHERE id!='5.3'".format(
                 str(project_id_edited))
             query_job = client.query(sql)
-            results = query_job.result()
+            query_job.result()
             records = [dict(row) for row in query_job]
             json_obj = json.dumps(records)
             return json_obj
@@ -192,43 +191,38 @@ def cis_scan():
     message = ""
     message = message.encode("utf-8")
     firestore_collection = 'cis_scans'
-    all_projects = []
+    check = False
 
     if re.match(pattern, user_project_id):
-                publisher = pubsub_v1.PublisherClient()
-                topic_path = publisher.topic_path(project_id, topic_name)
-                if 'slack_channel' in json_data:
-                    slack_channel = json_data['slack_channel']
-                    publisher.publish(topic_path,
-                                    data=message,
-                                    GCP_PROJECT_ID=user_project_id,
-                                    SLACK_CHANNEL=slack_channel,
-                                    RESULTS_URL=results_url,
-                                    FIRESTORE_COLLECTION=firestore_collection)
-                else:
-                    publisher.publish(topic_path,
-                                    data=message,
-                                    GCP_PROJECT_ID=user_project_id,
-                                    FIRESTORE_COLLECTION=firestore_collection)
-
-                # Check if a document exists in Firestore
+        publisher = pubsub_v1.PublisherClient()
+        topic_path = publisher.topic_path(project_id, topic_name)
+        if 'slack_channel' in json_data:
+            slack_channel = json_data['slack_channel']
+            publisher.publish(topic_path,
+                              data=message,
+                              GCP_PROJECT_ID=user_project_id,
+                              SLACK_CHANNEL=slack_channel,
+                              RESULTS_URL=results_url,
+                              FIRESTORE_COLLECTION=firestore_collection)
+        else:
+            publisher.publish(topic_path,
+                              data=message,
+                              GCP_PROJECT_ID=user_project_id,
+                              FIRESTORE_COLLECTION=firestore_collection)
+        user_proj = user_project_id.replace('-', '_')
+        while check is False:
+            doc_ref = db.collection(
+                firestore_collection).document(user_proj)
+            doc = doc_ref.get()
+            if doc.exists:
+                check = True
+            else:
                 check = False
-                while check is False:
-                    # db = firestore.Client()
-                    doc_ref = db.collection(
-                        firestore_collection).document(user_project_id)
-                    doc = doc_ref.get()
-                    if doc.exists:
-                        check = True
-                    else:
-                        check = False
 
-                db.collection(firestore_collection).document(
-                    user_project_id).delete()
+        db.collection(firestore_collection).document(user_proj).delete()
 
-                return Response(json.dumps({'statusText': 'Doc found!', 'status': 'true'}), status=200, mimetype='application/json')
-        
+        return Response(json.dumps({'statusText': 'Doc found!', 'status': 'true'}), status=200, mimetype='application/json')
+    
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 8080)))
-    
