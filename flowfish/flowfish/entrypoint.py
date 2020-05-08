@@ -17,6 +17,69 @@ slack_webhook_url = os.getenv('SLACK_WEBHOOK_URL')
 scan_report = "scan_report.xml"
 
 
+def get_gcp_assets() -> list:
+    """Get a list of gcp assets to scan
+    Returns:
+        list -- [List of targets from gcp]
+    """
+    pass
+
+
+def insert_bigquery_targets():
+    """Load scanning targets from bigquery
+    Returns:
+        list -- [List of targets that must be scanned]
+    """
+    pass
+
+
+def get_bigquery_targets() -> list:
+    """Load scanning targets from bigquery
+    Returns:
+        list -- [List of targets that must be scanned]
+    """
+    pass
+
+
+def load_bigquery_results(json_results) -> None:
+    """Load results to BigQuery
+    Arguments:
+        json_results {json dump} -- [deduplicated json issues]
+    """
+    bq = bigquery.Client()
+    try:
+        table = bq.get_table(bigquery_table)
+    except NotFound:
+        field = bigquery.SchemaField
+        table = bigquery.Table(bigquery_table, schema=[
+            field("CVE", "STRING"),
+            field("CVSS", "STRING"),
+            field("TARGET_DNS", "STRING"),
+        ])
+
+        table = bq.create_table(table)
+
+    rows = []
+
+    data = json.loads(json_results)
+    print(f"Data, {type(data)}")
+
+    for item in data:
+        cve = item
+        cvss = data[item]['cvss']
+        targets = data[item]["targets"]
+        for target_dns in targets:
+            rows.append({
+                "CVE": cve,
+                "CVSS": cvss,
+                "TARGET_DNS": target_dns
+            })
+
+    errors = bq.insert_rows(table, rows)
+    if errors:
+        print(errors)
+
+
 def scan() -> json:
     """
     Runs a scan
@@ -28,7 +91,7 @@ def scan() -> json:
     p = subprocess.run(args, capture_output=True, text=True)
     print(p)
     res = parse_raw(scan_report)
-    load_bigquery(res)
+    load_bigquery_results(res)
 
 
 def parse_raw(raw_output: str) -> json:
@@ -68,45 +131,6 @@ def parse_raw(raw_output: str) -> json:
 
     parsed = (json.dumps(cves, indent=2))
     return parsed
-
-
-def load_bigquery(json_results) -> None:
-    """Load results to BigQuery
-    Arguments:
-        json_results {json dump} -- [deduplicated json issues]
-    """
-    bq = bigquery.Client()
-    try:
-        table = bq.get_table(bigquery_table)
-    except NotFound:
-        field = bigquery.SchemaField
-        table = bigquery.Table(bigquery_table, schema=[
-            field("CVE", "STRING"),
-            field("CVSS", "STRING"),
-            field("TARGET_DNS", "STRING"),
-        ])
-
-        table = bq.create_table(table)
-
-    rows = []
-
-    data = json.loads(json_results)
-    print(f"Data, {type(data)}")
-
-    for item in data:
-        cve = item
-        cvss = data[item]['cvss']
-        targets = data[item]["targets"]
-        for target_dns in targets:
-            rows.append({
-                "CVE": cve,
-                "CVSS": cvss,
-                "TARGET_DNS": target_dns
-            })
-
-    errors = bq.insert_rows(table, rows)
-    if errors:
-        print(errors)
 
 
 def slack_notify(slack_webhook_url: str) -> None:
