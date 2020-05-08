@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e
 apt-get update && \
 apt-get install -y nodejs \
     npm \
