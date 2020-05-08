@@ -17,7 +17,7 @@ export class GetCisScanService {
     const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
-    return this.http.get(this.Url + data, options).pipe(map(res => res)
+    return this.http.post(this.Url, data, options).pipe(map(res => res)
     )
   }
 }
