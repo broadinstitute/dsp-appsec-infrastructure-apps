@@ -1,6 +1,7 @@
 from google.cloud import bigquery
 from google.cloud import resource_manager
 from google.cloud import pubsub_v1
+import os
 
 GCP_PROJECT_ID = os.getenv('GCP_PROJECT_ID')
 JOB_TOPIC = os.getenv('JOB_TOPIC')
@@ -10,8 +11,7 @@ futures = dict()
 def get_repos():
     bquery = bigquery.Client()
 
-    table_id = GCP_PROJECT_ID.replace('-', '_')
-    query_job = bquery.query((f"SELECT * FROM {table_id}.dsp_appsec_scans.sourceclear_repos"))
+    query_job = bquery.query((f"SELECT * FROM {GCP_PROJECT_ID}.dsp_appsec_scans.sourceclear_repos"))
 
     return query_job.result()
 
@@ -31,11 +31,11 @@ def pub_repos(repos):
     topic_path = publisher.topic_path(GCP_PROJECT_ID, JOB_TOPIC)
 
     for row in repos:
-        container_name = u"{}-{}{}".format(row['org'],row['project'],row['subdir']).replace("\", "-")
-        futures.update({data: None})
+        container_name = u"{}-{}{}".format(row['org'],row['project'],row['subdir'].replace("/", "-"))
+        futures.update({container_name: None})
         future = publisher.publish(
             topic_path, 
-            data=container_name.encode("utf-8").
+            data=container_name.encode("utf-8"),
             CONTAINER_NAME=container_name,
             PROJECT=row['project'],
             BRANCH=row['branch'],
@@ -43,9 +43,9 @@ def pub_repos(repos):
             ORG=row['org'],
             SUBDIR=row['subdir']
         )
-        futures[data] = future
+        futures[container_name] = future
         
-        future.add_done_callback(get_callback(future, data))
+        future.add_done_callback(get_callback(future, container_name))
 
 def project_exists(GCP_PROJECT_ID: str) -> bool:
     """
