@@ -225,7 +225,7 @@ def cis_scan():
         db.collection(firestore_collection).document(user_proj).delete()
 
         return Response(json.dumps({'statusText': 'Doc found!', 'status': 'true'}), status=200, mimetype='application/json')
-    return user_project_id
+    return ''
     
 
 if __name__ == "__main__":
