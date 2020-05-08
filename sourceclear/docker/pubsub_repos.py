@@ -3,8 +3,6 @@ from google.cloud import resource_manager
 from google.cloud import pubsub_v1
 
 GCP_PROJECT_ID = os.getenv('GCP_PROJECT_ID')
-BQ_DATASET = os.getenv('BQ_DATASET')
-TABLE_NAME = os.getenv('TABLE_NAME')
 JOB_TOPIC = os.getenv('JOB_TOPIC')
 
 futures = dict()
@@ -13,7 +11,7 @@ def get_repos():
     bquery = bigquery.Client()
 
     table_id = GCP_PROJECT_ID.replace('-', '_')
-    query_job = bquery.query((f"SELECT * FROM {table_id}.{BQ_DATASET}.{TABLE_NAME}"))
+    query_job = bquery.query((f"SELECT * FROM {table_id}.dsp_appsec_scans.sourceclear_repos"))
 
     return query_job.result()
 
