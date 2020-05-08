@@ -25,7 +25,8 @@ export class CisScanComponent implements OnInit {
         console.log('Notification sent to slack')
       });
     } else {
-      this.sendProject.sendCisProject(result).subscribe((data: any) => {
+      this.sendProject.sendCisProject(result).toPromise().then((data: any) => {
+        console.log(data)
         location.href = location.origin + '/cis/results?project_id=' + result.project_id;
       });
     }
