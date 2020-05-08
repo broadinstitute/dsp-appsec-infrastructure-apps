@@ -3,13 +3,10 @@
 import json
 import os
 import subprocess
-import sys
 import xml.etree.ElementTree as etree
 import requests
-from google.cloud import bigquery, firestore, resource_manager
+from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
-from slack import WebClient
-from slack.errors import SlackApiError
 
 
 gcp_project_id = os.getenv('GCP_PROJECT_ID')
@@ -127,6 +124,7 @@ def slack_notify(slack_webhook_url: str) -> None:
     try:
         response = requests.post(slack_webhook_url, data=json.dumps(
             data), headers={'Content-Type': 'application/json'})
+        print(response)
     except Exception as e:
         print(f"Slack notify error: {e}")
 
