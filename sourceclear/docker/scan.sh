@@ -11,8 +11,8 @@ PATH=$PATH:/usr/share/sbt/bin
 
 echo "${SRCCLR_API_TOKEN_PATH}"
 gcloud auth list
-export SRCCLR_API_TOKEN=$(gcloud secrets versions access latest --project="dsp-appsec-dev" --secret="sourceclear-${WORKSPACE}-api-token")
-export GIT_TOKEN=$(gcloud secrets versions access latest --project="dsp-appsec-dev" --secret="github-test")
+export SRCCLR_API_TOKEN=$(gcloud secrets versions access latest --project="dsp-appsec-infra-prod" --secret="sourceclear-${WORKSPACE}-api-token")
+export GIT_TOKEN=$(gcloud secrets versions access latest --project="dsp-appsec-infra-prod" --secret="github-token")
 
 git init $PWD
 git --version
