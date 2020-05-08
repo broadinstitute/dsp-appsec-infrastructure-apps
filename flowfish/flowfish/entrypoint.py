@@ -24,9 +24,9 @@ def scan() -> json:
     # ToDo:  Need to check whether single target or multiple ones
     # through file input
     args = f'''
-        nmap -sV --script nmap-vulners  -oX {scan_report} -sV {targets}
-    '''.split()
+        nmap -sV --script nmap-vulners  -oX {scan_report} -sV {targets}'''.split()
     p = subprocess.run(args, capture_output=True, text=True)
+    print(p)
     res = parse_raw(scan_report)
     load_bigquery(res)
 
