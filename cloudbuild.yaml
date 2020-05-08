@@ -42,9 +42,8 @@ steps:
     gsutil versioning set on "gs://$${TERRAFORM_BUCKET}"
 
 # Pre-pull Kaniko image, used to speed up Docker builds.
-# Pin version until https://github.com/GoogleContainerTools/kaniko/issues/614 is resolved.
 - id: kaniko
-  name: &kaniko gcr.io/kaniko-project/executor:debug-v0.20.0
+  name: &kaniko gcr.io/kaniko-project/executor:debug
   waitFor: ['-']
   entrypoint: 'true'
 
