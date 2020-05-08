@@ -132,9 +132,9 @@ def submit():
     return ''
 
 
-@app.route('/cis_results/<project_id>', methods=['GET'])
+@app.route('/cis_results/', methods=['POST'])
 @cross_origin(origins=sdarq_host)
-def cis_results(project_id):
+def cis_results():
     """
     Get CIS results for a specific google project
     Args:
@@ -142,7 +142,10 @@ def cis_results(project_id):
     Returns:
         json: Security scan results for given project_id
     """
-    project_id = project_id
+    project_id_encoded = request.get_data()
+    print(project_id_encoded)
+    print(project_id_encoded.decode("utf-8"))
+    project_id = project_id_encoded.decode("utf-8")
     pattern = "^[a-z][a-z0-9-_]{4,28}[a-z0-9]$"
     project_id_edited = project_id.strip('-').replace('-', '_')
 
@@ -222,6 +225,7 @@ def cis_scan():
         db.collection(firestore_collection).document(user_proj).delete()
 
         return Response(json.dumps({'statusText': 'Doc found!', 'status': 'true'}), status=200, mimetype='application/json')
+    return ''
     
 
 if __name__ == "__main__":
