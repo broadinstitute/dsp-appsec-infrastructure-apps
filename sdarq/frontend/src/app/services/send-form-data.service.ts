@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {Observable} from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -9,12 +9,13 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 export class SendFormDataService {
 
   private Url = location.origin + '/submit/';
+
   constructor(private http: HttpClient) { }
 
   sendFormData(data): Observable<any> {
     const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
-    return this.http.post(this.Url, data, options) ;
+    return this.http.post(this.Url, data, options);
   }
 }

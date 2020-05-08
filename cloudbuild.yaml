@@ -42,7 +42,7 @@ steps:
   - gsutil mb "gs://$${TERRAFORM_BUCKET}" ;
     gsutil versioning set on "gs://$${TERRAFORM_BUCKET}"
 
-# Pre-pull Kaniko image, used to speed up Docker builds
+# Pre-pull Kaniko image, used to speed up Docker builds.
 - id: kaniko
   name: &kaniko gcr.io/kaniko-project/executor:debug
   waitFor: ['-']
@@ -60,26 +60,15 @@ steps:
       --destination=$${BASTION_IMAGE}
       --cache
 
-# download https://github.com/liamg/tfsec
-- id: tfsec-download
-  name: mirror.gcr.io/library/golang
-  entrypoint: sh
-  dir: terraform
-  args:
-  - -c
-  - go get github.com/liamg/tfsec/cmd/tfsec &&
-    cp /go/bin/tfsec .
-
 # deploy GKE cluster and associated GCP resources
 - id: terraform
   name: hashicorp/terraform
-  waitFor: ['terraform-bucket', 'tfsec-download', 'bastion-image']
+  waitFor: ['terraform-bucket', 'bastion-image']
   entrypoint: sh
   dir: terraform
   args:
   - -c
-  - ./tfsec . &&
-    terraform init
+  - terraform init
       -backend-config "bucket=$${TERRAFORM_BUCKET}" &&
     terraform plan -out=plan.out
       -var "project=${PROJECT_ID}"

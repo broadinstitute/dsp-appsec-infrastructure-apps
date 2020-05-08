@@ -20,6 +20,14 @@ spec:
         backend:
           serviceName: ${SERVICE}
           servicePort: ${BACKEND_PORT}
+      - path: /cis_scan/
+        backend:
+          serviceName: ${SERVICE}
+          servicePort: ${BACKEND_PORT}
+      - path: /cis_results/
+        backend:
+          serviceName: ${SERVICE}
+          servicePort: ${BACKEND_PORT}
 ---
 apiVersion: cloud.google.com/v1beta1
 kind: BackendConfig

@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 
-from google.cloud import bigquery
 import json
 import os
 import subprocess
 import slack
 from google.cloud import resource_manager
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
+from google.cloud import bigquery
+from google.cloud import firestore
+
 
 GCP_PROJECT_ID = os.getenv('GCP_PROJECT_ID')
 BQ_DATASET = os.getenv('BQ_DATASET')
@@ -16,7 +15,6 @@ SLACK_TOKEN = os.getenv('SLACK_TOKEN')
 SLACK_CHANNEL = os.getenv('SLACK_CHANNEL')
 RESULTS_URL = os.getenv('RESULTS_URL')
 FIRESTORE_COLLECTION = os.getenv('FIRESTORE_COLLECTION')
-
 BENCHMARK_PROFILE = 'inspec-gcp-cis-benchmark'
 
 
@@ -25,15 +23,15 @@ def benchmark():
         inspec exec {BENCHMARK_PROFILE} -t gcp:// --reporter json
             --input gcp_project_id={GCP_PROJECT_ID}
     '''.split()
-    p = subprocess.run(args, capture_output=True, text=True)
+    proc = subprocess.run(args, capture_output=True, text=True)
 
     # normal exit codes as documented at
     # https://www.inspec.io/docs/reference/cli
-    if p.returncode not in (0, 100, 101):
-        print(p.stderr)
-        raise subprocess.CalledProcessError(p.returncode, p.args)
+    if proc.returncode not in (0, 100, 101):
+        print(proc.stderr)
+        raise subprocess.CalledProcessError(proc.returncode, proc.args)
 
-    return json.loads(p.stdout)['profiles']
+    return json.loads(proc.stdout)['profiles']
 
 
 def parse_profiles(profiles):
@@ -81,13 +79,13 @@ def parse_profiles(profiles):
     return title, version, rows
 
 
-def load_bigquery(table_desc, version, rows, FIRESTORE_COLLECTION):
+def load_bigquery(table_desc, version, rows):
     if not rows:
         return
 
-    bq = bigquery.Client()
+    bquery = bigquery.Client()
     table_id = GCP_PROJECT_ID.replace('-', '_')
-    table = bq.dataset(BQ_DATASET).table(table_id)
+    table = bquery.dataset(BQ_DATASET).table(table_id)
 
     f = bigquery.SchemaField
     schema = (
@@ -112,16 +110,16 @@ def load_bigquery(table_desc, version, rows, FIRESTORE_COLLECTION):
         },
     )
 
-    job = bq.load_table_from_json(rows, table, job_config=job_config)
-    results = job.result()  # wait for completion
+    job = bquery.load_table_from_json(rows, table, job_config=job_config)
+    job.result()  # wait for completion
     print(f"Loaded {job.output_rows} rows into {BQ_DATASET}.{table_id}")
-    if results.total_rows != 0:  # check if there are table rows
-        cred = credentials.ApplicationDefault()
-        firebase_admin.initialize_app(
-            cred, {'projectId': 'dsp-appsec-infra-prod', })
-        db = firestore.client()
-        doc_ref = db.collection(FIRESTORE_COLLECTION).document(table_id)
-        doc_ref.set({})
+    firestore_report(table_id, FIRESTORE_COLLECTION)
+
+
+def firestore_report(table_id, FIRESTORE_COLLECTION):
+    db_firestore = firestore.Client()
+    doc_ref = db_firestore.collection(FIRESTORE_COLLECTION).document(table_id)
+    doc_ref.set({})
 
 
 def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL):
@@ -148,11 +146,8 @@ def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL):
                         "url": "{0}/cis/results?project_id={1}" .format(str(RESULTS_URL), str(GCP_PROJECT_ID))
                     }
                 ]
-            }
-        ],
-            "color": "#0a88ab"
-        }])
-    return ''
+            }], "color": "#0a88ab"}]
+    )
 
 
 def project_exists(GCP_PROJECT_ID: str) -> bool:
@@ -165,8 +160,8 @@ def project_exists(GCP_PROJECT_ID: str) -> bool:
     """
     result = False
     all_projects = []
-    for p in resource_manager.Client().list_projects():
-        all_projects.append(p.name)
+    for project in resource_manager.Client().list_projects():
+        all_projects.append(project.name)
     if GCP_PROJECT_ID in all_projects:
         result = True
     else:

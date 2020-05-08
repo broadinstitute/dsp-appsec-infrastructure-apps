@@ -1,51 +1,90 @@
-  <h2><span style="font-weight: bolder;">DSP</span> AppSec Portal | New Service Security Requirements</h2>
-  <div class="container">
-    <br>
-    <br>
-  <div class="row">
-  <div class="col-sm text-center">
-  <p>Whether you need tips and suggestions launching a new service, or you want to make sure you are doing the right thing from a security point of view, we've got you covered. </p>
-  <p>To get started please select one of the following options.</p>
-  <h3> <span style="font-weight: bolder;"> T</span>imeline</h3>
-  <img src='../assets/timeline_final.png' style="width: 100%;">
-  <hr>
-</div>
-  </div>
-  <div class="row"> 
-    <div class="col-sm">
-      <div class="border">
-        <div class="text-inside-box">
-          I'm building a new Terra service. I have a clear idea about its implementation, deployment, etc and want to make sure I'm doing the right things from a security perspective.
-        </div>
-      </div>
-    </div>
-    <div class="col-sm">
-      <div class="border">
-        <div class="text-inside-box">
-          I want to build a new service. I'd like some tips and suggestions about architecting this service in Google Cloud Platform, how to do CI/CD, follow security best practices, etc.
-        </div>
-      </div>
-    </div>
-    <div class="col-sm">
-      <div class="border">
-        <div class="text-inside-box">
-          I want to use a third party tool the security posture of which affects one of our internally critical systems. I want to be aware of security-related items that must be considered to determine the risk of. 
-        </div>
-      </div>
-    </div>
-  </div>
-    <div class="row">
-      <div class="col-sm text-center">
-        <button class="btn btn-primary" routerLink="/newService">Get Started</button>
-      </div>
-      <div class="col-sm text-center">
-        <button class="btn btn-primary" routerLink="" disabled>Coming soon...</button>
-      </div>
-      <div class="col-sm text-center">
-        <button class="btn btn-primary" routerLink="" disabled>Coming soon...</button>
-      </div>
-      </div>
+  <div class="jumbotron">
+    <div class="container">
       <div class="row">
-        <br>
+        <p class="lead">Whether you need tips and suggestions launching a new service, or you want to make sure you are
+          doing the right thing from a security point of view, we've got you covered.
+          To get started please select one of the following options.</p>
+      </div>
+      <br>
+      <br>
+      <div class="row">
+        <div class="col-sm">
+          <mdb-card class="">
+            <mdb-card-body>
+              <br>
+              <p>
+                <mdb-icon fas icon="feather" size="3x" class="ml-2" aria-hidden="true" class="center"></mdb-icon>
+              </p>
+              <br>
+              <!--Title-->
+              <mdb-card-title class="text-center">
+                <h4>New service</h4>
+              </mdb-card-title>
+              <br>
+              <!--Text-->
+              <mdb-card-text> I'm building a new Terra service. I have a clear idea about its implementation,
+                deployment,
+                etc and want to make sure I'm doing the right things from a security perspective.
+                <br><br>
+              </mdb-card-text>
+              <br>
+              <div class="text-center">
+                <a href="/newservice" mdbBtn color="primary" mdbWavesEffect>Start</a>
+              </div>
+            </mdb-card-body>
+          </mdb-card>
         </div>
-</div> 
+        <div class="col-sm">
+          <mdb-card class="">
+            <mdb-card-body>
+              <br>
+              <p>
+                <mdb-icon fas icon="bolt" size="3x" class="ml-2" aria-hidden="true" class="center"></mdb-icon>
+              </p>
+              <br>
+              <!--Title-->
+              <mdb-card-title class="text-center">
+                <h4>Scan project</h4>
+              </mdb-card-title>
+              <br>
+              <!--Text-->
+              <mdb-card-text> My team is working with Google Cloud services, and we want to make sure we are using these
+                services in
+                the right way from a security perspective.
+                <br><br>
+              </mdb-card-text>
+              <br>
+              <div class="text-center">
+                <a href="/scan" mdbBtn color="primary" mdbWavesEffect>Start</a>
+              </div>
+            </mdb-card-body>
+          </mdb-card>
+        </div>
+        <div class="col-sm">
+          <mdb-card class="">
+            <mdb-card-body>
+              <!--Title-->
+              <br>
+              <p>
+                <mdb-icon fas icon="bell" size="3x" class="ml-2" aria-hidden="true" class="center"></mdb-icon>
+              </p>
+              <br>
+              <mdb-card-title class="text-center">
+                <h4>Coming soon</h4>
+              </mdb-card-title>
+              <br>
+              <!--Text-->
+              <mdb-card-text> I want to use a third party tool the security posture of which
+                affects one of our internally critical systems. I want to be aware of security-related items that must
+                be considered to determine the risk of.
+              </mdb-card-text>
+              <br>
+              <div class="text-center">
+                <a href="#" mdbBtn color="primary" mdbWavesEffect>Start</a>
+              </div>
+            </mdb-card-body>
+          </mdb-card>
+        </div>
+      </div>
+    </div>
+  </div>

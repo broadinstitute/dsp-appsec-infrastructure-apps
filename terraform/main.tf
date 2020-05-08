@@ -223,6 +223,8 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
     "pubsub.topics.attachSubscription",
     "pubsub.topics.update",
     "pubsub.topics.delete",
+    "pubsub.topics.getIamPolicy",
+    "pubsub.topics.setIamPolicy",
     "pubsub.subscriptions.get",
     "pubsub.subscriptions.create",
     "pubsub.subscriptions.update",
