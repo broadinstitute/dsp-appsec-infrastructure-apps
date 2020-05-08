@@ -69,6 +69,13 @@ spec:
             containers:
             - name: {{ name }}-pub
               image: ${SOURCECLEAR_IMAGE}
-              command: ["./publish"]
+              command: ["python3 pubsub_repos.py"]
+              env:
+              - name: BQ_DATASET
+                value: ${SRCCLR_DATASET}
+              - name: TABLE_NAME
+                value: ${SRCCLR_TABLE}
+              - name: JOB_TOPIC
+                value: ${JOB_TOPIC}
             restartPolicy: OnFailure
       backoffLimit: 3
