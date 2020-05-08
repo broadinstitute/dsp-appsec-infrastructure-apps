@@ -13,65 +13,58 @@ data:
           cloud.google.com/gke-nodepool: batch
         restartPolicy: OnFailure
         containers:
-          - name: CONTAINER_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['CONTAINER_NAME']
-            image: ${SOURCECLEAR_IMAGE}
-            imagePullPolicy: Always
-            cmd: ["./scan.sh"]
-            env:
-            - name: PROJECT
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['PROJECT']
-            - name: BRANCH
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['BRANCH']
-            - name: REPO
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['REPO']
-            - name: WORKSPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['WORKSPACE']
-            - name: ORG
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['ORG']
-            - name: SCAN_SUBDIR
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.annotations['SUBDIR']
+        - name: CONTAINER_NAME
+          valueFrom:
+            fieldRef:
+            fieldPath: metadata.annotations['CONTAINER_NAME']
+          image: ${SOURCECLEAR_IMAGE}
+          cmd: ["./scan.sh"]
+          env:
+          - name: PROJECT
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.annotations['PROJECT']
+          - name: BRANCH
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.annotations['BRANCH']
+          - name: REPO
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.annotations['REPO']
+          - name: WORKSPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.annotations['WORKSPACE']
+          - name: ORG
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.annotations['ORG']
+          - name: SCAN_SUBDIR
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.annotations['SUBDIR']
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: sourceclear-pubsub
   namespace: ${NAMESPACE}
-  labels:
-    jobgroup: weekly-sourceclear-scans
 spec:
   schedule: "0 0 * * 0"
   jobTemplate:
     spec:
       template:
-        metadata:
-            name: weekly-sourceclear-scans
-            labels:
-                jobgroup: weekly-sourceclear-scans
         spec:
-            runtimeClassName: gvisor
-            nodeSelector:
-              cloud.google.com/gke-nodepool: batch
-            containers:
-            - name: {{ name }}-pub
-              image: ${SOURCECLEAR_IMAGE}
-              command: ["python3 pubsub_repos.py"]
-              env:
-              - name: JOB_TOPIC
-                value: ${JOB_TOPIC}
-            restartPolicy: OnFailure
+          runtimeClassName: gvisor
+          nodeSelector:
+            cloud.google.com/gke-nodepool: batch
+          restartPolicy: OnFailure
+          containers:
+          - name: sourceclear-pub
+            image: ${SOURCECLEAR_IMAGE}
+            command: ["python3", "pubsub_repos.py"]
+            env:
+            - name: JOB_TOPIC
+              value: ${JOB_TOPIC}
       backoffLimit: 3
