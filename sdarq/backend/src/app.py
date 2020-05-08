@@ -129,6 +129,7 @@ def submit():
          # Set product description
         product_description = dd.set_product(
             product_id, description=prepare_dojo_input(json_data))
+    return ''
 
 
 @app.route('/cis_results/<project_id>', methods=['GET'])
