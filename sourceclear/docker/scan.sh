@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 # $1 = PROJECT
 # $2 = BRANCH
 # $3 = REPO
