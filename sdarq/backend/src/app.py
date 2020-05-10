@@ -13,6 +13,7 @@ from google.cloud import firestore
 from jira import JIRA
 import slacknotify
 import defectdojo as wrapper
+import time
 
 
 # Env variables
@@ -214,6 +215,7 @@ def cis_scan():
                               data=message,
                               GCP_PROJECT_ID=user_project_id,
                               FIRESTORE_COLLECTION=firestore_collection)
+    time.sleep(80)  
     user_proj = user_project_id.replace('-', '_')
     while check is False:
         doc_ref = db.collection(
