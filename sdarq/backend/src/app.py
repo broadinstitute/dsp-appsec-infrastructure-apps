@@ -48,7 +48,7 @@ def health():
     Returns:
         200 status
     """
-    return ''
+    return 200
 
 
 @app.route('/submit/', methods=['POST'])
@@ -216,14 +216,13 @@ def cis_scan():
                               FIRESTORE_COLLECTION=firestore_collection)
     user_proj = user_project_id.replace('-', '_')
     while check is False:
-        doc_ref = db.collection(
-            firestore_collection).document(user_proj)
+        doc_ref = db.collection(firestore_collection).document(user_proj)
         doc = doc_ref.get()
         if doc.exists:
             check = True
         else:
             check = False
-
+    
     db.collection(firestore_collection).document(user_proj).delete()
 
     return ''
