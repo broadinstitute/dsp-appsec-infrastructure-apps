@@ -36,6 +36,7 @@ jira = JIRA(basic_auth=(jira_username, jira_api_token),
             options={'server': jira_instance})
 
 client = bigquery.Client()
+db = firestore.Client()
 
 
 @app.route('/health/', methods=['GET'])
@@ -214,7 +215,6 @@ def cis_scan():
                               GCP_PROJECT_ID=user_project_id,
                               FIRESTORE_COLLECTION=firestore_collection)
     user_proj = user_project_id.replace('-', '_')
-    db = firestore.Client()
     while check is False:
         doc_ref = db.collection(
             firestore_collection).document(user_proj)
