@@ -27,7 +27,7 @@ jobs:
       env:
         DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
         GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
-      run: |
+    - run: |
         eval "$(ssh-agent -s)"
         ssh-add - <<< "${DEPLOY_KEY}"    
-        cd docs/website && yarn install && GIT_USER=appsec@broadinstituteorg USE_SSH=true yarn run publish-gh-pages
+        cd docs/website && yarn install && USE_SSH=true yarn run publish-gh-pages
