@@ -26,4 +26,4 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: git config --global user.email "appsec@users.noreply.github.com"
     - run: git config --global user.name "appsec@broadinstitute.org"
-    - run: ls -al && cd docs/website && yarn install && GIT_USER=appsec@broadinstituteorg USE_SSH=true yarn run publish-gh-pages
+    - run: ls -al && cd docs/src/website && yarn install && GIT_USER=appsec@broadinstituteorg USE_SSH=true yarn run publish-gh-pages
