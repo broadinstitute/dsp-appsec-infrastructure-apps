@@ -24,6 +24,10 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Install SSH Client 🔑
+      uses: webfactory/ssh-agent@v0.2.0
+      with:
+        ssh-private-key: ${{ secrets.DEPLOY_KEY }}
     - run: git config --global user.email "appsec@users.noreply.github.com"
     - run: git config --global user.name "appsec@broadinstitute.org"
     - run: ls -al && cd docs/src/website && yarn install && GIT_USER=appsec@broadinstitute.org USE_SSH=true yarn run publish-gh-pages
