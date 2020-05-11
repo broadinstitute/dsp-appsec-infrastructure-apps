@@ -25,7 +25,7 @@ const siteConfig = {
   title: 'AppSec Infrastructure Automation', // Title for your website.
   tagline: 'Broad Institute - DSP AppSec Team',
   url: 'https://docs.dsp-appsec.broadinstitute.org', // Your website URL
-  baseUrl: '/', // Base URL for your project */
+  baseUrl: 'https://docs.dsp-appsec.broadinstitute.org', // Base URL for your project */
   // For github.io type URLs, you would set the url and baseUrl like:
   //   url: 'https://facebook.github.io',
   //   baseUrl: '/test-site/',
