@@ -35,7 +35,6 @@ metadata:
   name: ${BACKEND_CONFIG}
   namespace: ${NAMESPACE}
 spec:
-  timeoutSec: 400
   securityPolicy:
     name: ${BROAD_INGRESS_CSP}
 ---
