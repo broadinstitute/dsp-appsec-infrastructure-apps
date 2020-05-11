@@ -86,7 +86,7 @@ def submit():
         return data4
 
     # Create a Jira ticket if user chooses a Jira project
-    slack_channels_list = ['#new-sec-service-req', '#zap-test']
+    slack_channels_list = ['#dspsecurity', '#appsec-internal', '#dsde-qa']
 
     if 'JiraProject' in json_data:
         project_key_id = json_data['JiraProject']
@@ -110,7 +110,7 @@ def submit():
 
         # Set Slack notification
         for channel in slack_channels_list:
-            if channel == '#zap-test':
+            if channel == '#dsde-qa':
                 slacknotify.slacknotify_jira_qa(slack_token, channel, dojo_name, security_champion,
                                                 product_id, dojo_host_url, jira_instance,
                                                 project_key_id, jira_ticket)
@@ -122,7 +122,7 @@ def submit():
     else:
         # When Jira ticket creation is not selected
         for channel in slack_channels_list:
-            if channel == '#zap-test':
+            if channel == '#dsde-qa':
                 slacknotify.slacknotify_qa(
                     slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
             else:

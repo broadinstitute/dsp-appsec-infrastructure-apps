@@ -93,7 +93,7 @@ def slacknotify_qa(slack_token, channel, dojo_name, security_champion, product_i
                         "type": "section",
                         "text": {
                             "type": "mrkdwn",
-                            "text": "@zbedo *New service engagement created* :books:"
+                            "text": "@gary_dlugy *New service engagement created* :books:"
                         }
                     },
                     {
@@ -229,7 +229,7 @@ def slacknotify_jira_qa(slack_token, channel, dojo_name, security_champion, prod
                 "type": "section",
                 "text": {
                       "type": "mrkdwn",
-                      "text": "@zbedo *New service engagement created* :books:"
+                      "text": "@gary_dlugy *New service engagement created* :books:"
                       }
             },
             {
