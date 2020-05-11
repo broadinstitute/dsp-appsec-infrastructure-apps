@@ -24,22 +24,19 @@ const users = [
 const siteConfig = {
   title: 'AppSec Infrastructure Automation', // Title for your website.
   tagline: 'Broad Institute - DSP AppSec Team',
-  url: 'https://docs.dsp-appsec.broadinstitute.org', // Your website URL
-  baseUrl: '/docs', // Base URL for your project */
-  // For github.io type URLs, you would set the url and baseUrl like:
-  //   url: 'https://facebook.github.io',
-  //   baseUrl: '/test-site/',
+  url: 'https://broadinstitute.github.io/', // Your website URL
+  baseUrl: 'dsp-appsec-infrastructure-apps/', // Base URL for your project */
 
   // Used for publishing and more
   // This must match your GitHub repository project name (case-sensitive).
-  projectName: 'dsp-appsec-infrastructure-automation',
+  projectName: 'dsp-appsec-infrastructure-apps',
+
   // GitHub username of the organization or user hosting this project.
   // This is used by the publishing script to determine where your GitHub pages website will be hosted.
   organizationName: 'broadinstitute',
   // For top-level user or org sites, the organization is still the same.
   // e.g., for the https://JoelMarcey.github.io site, it would be set like...
   //   organizationName: 'JoelMarcey'
-
 
 
   // For no header links in the top nav bar -> headerLinks: [],
