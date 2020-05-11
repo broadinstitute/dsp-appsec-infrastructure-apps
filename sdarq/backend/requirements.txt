@@ -10,7 +10,6 @@ slacker
 jira
 gunicorn
 slackclient
-gevent
 google-cloud-bigquery
 google-cloud-firestore
 google-cloud-pubsub

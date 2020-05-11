@@ -13,4 +13,4 @@ COPY src/* /app/
 RUN ls -al /app/
 
 ENV PORT 8080
-CMD ["gunicorn", "--worker-class", "gevent", "--timeout", "300",  "-b", "0.0.0.0:8080", "app:app"]
+CMD ["gunicorn", "--timeout", "300",  "-b", "0.0.0.0:8080", "app:app"]
