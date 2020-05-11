@@ -25,7 +25,7 @@ const siteConfig = {
   title: 'AppSec Infrastructure Automation', // Title for your website.
   tagline: 'Broad Institute - DSP AppSec Team',
   url: 'https://broadinstitute.github.io/', // Your website URL
-  baseUrl: 'dsp-appsec-infrastructure-apps/', // Base URL for your project */
+  baseUrl: '/dsp-appsec-infrastructure-apps/', // Base URL for your project */
 
   // Used for publishing and more
   // This must match your GitHub repository project name (case-sensitive).
