@@ -99,12 +99,12 @@ steps:
       --destination=$${CLOUDSQL_PROXY_IMAGE}
       --cache
 
-# # deploy Burp Enterprise to GKE cluster
-# - id: burp-enterprise
-#   name: *kubectl
-#   waitFor: ['shared']
-#   entrypoint: ./deploy.sh
-#   dir: burp-enterprise
+# deploy Burp Enterprise to GKE cluster
+- id: burp-enterprise
+  name: *kubectl
+  waitFor: ['shared']
+  entrypoint: ./deploy.sh
+  dir: burp-enterprise
 
 # build Batch dispatcher image
 - id: batch-dispatcher-image
