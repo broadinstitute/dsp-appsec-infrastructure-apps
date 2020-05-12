@@ -21,9 +21,6 @@ spec:
       - name: ${SECRET_CONFIG_VOLUME}
         secret:
           secretName: ${SECRET_CONFIG}
-      - name: ${SECRET_LICENSE_VOLUME}
-        secret:
-          secretName: ${SECRET_LICENSE}
       - name: ${LOGBACK_CONFIG_VOLUME}
         configMap:
           name: ${LOGBACK_CONFIG}
@@ -46,12 +43,6 @@ spec:
           cp "${SECRET_CONFIG_PATH}/${SECRET_CONFIG_FILE}" .
           chown burpsuite "${SECRET_CONFIG_FILE}"
 
-          cd "/var/lib/BurpSuiteEnterpriseEdition/.BurpSuiteEnterprise"
-          mkdir -p "enterprise-agent/.java/.userPrefs/burp"
-          cd "enterprise-agent/.java/.userPrefs/burp"
-          cp "${SECRET_LICENSE_PATH}/${SECRET_LICENSE_FILE}" .
-          chown burpsuite "${SECRET_LICENSE_FILE}"
-
           cd /etc/init.d
           ./burpsuiteenterpriseedition_agent start
           ./burpsuiteenterpriseedition_enterpriseserver start
@@ -70,8 +61,6 @@ spec:
         volumeMounts:
         - name: ${SECRET_CONFIG_VOLUME}
           mountPath: ${SECRET_CONFIG_PATH}
-        - name: ${SECRET_LICENSE_VOLUME}
-          mountPath: ${SECRET_LICENSE_PATH}
         - name: ${LOGBACK_CONFIG_VOLUME}
           mountPath: ${LOGBACK_CONFIG_PATH}
         resources:
@@ -79,13 +68,13 @@ spec:
             memory: 2300M
 
       - name: cloudsql-proxy
-        image: gcr.io/cloudsql-docker/gce-proxy
+        # workaround for instance metadata endpoint issue
+        # image: gcr.io/cloudsql-docker/gce-proxy
+        image: ${CLOUDSQL_PROXY_IMAGE}
+        imagePullPolicy: Always
         command:
         - /cloud_sql_proxy
         - -instances=${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:${DB_PORT}
-        securityContext:
-          runAsUser: 2  # non-root user
-          allowPrivilegeEscalation: false
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember

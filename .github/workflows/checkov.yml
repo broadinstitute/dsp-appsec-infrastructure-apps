@@ -1,5 +1,8 @@
 name: Checkov for Terraform
-on: [push]
+on:
+  push:
+    branches:
+      - checkov
 
 jobs:
   checkov-job:

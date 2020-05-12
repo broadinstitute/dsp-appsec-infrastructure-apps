@@ -5,29 +5,40 @@ name: Deploy docs to Github Pages
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches:
+      - master
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [10.x]
-
+  deploy:
+    runs-on: ubuntu-18.04
+    defaults:
+      run:
+        working-directory: docs/src/website
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: SSH client
-      uses: webfactory/ssh-agent@v0.2.0
-      with:
-        ssh-private-key: ${{ secrets.DEPLOY_KEY }}
-    - run: git config --global user.email "appsec@users.noreply.github.com"
-    - run: git config --global user.name "appsec@broadinstitute.org"
-    - run: ls -al && cd docs/src/website && yarn install && GIT_USER=appsec@broadinstitute.org USE_SSH=true yarn run publish-gh-pages
+      - uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+
+      - name: Get yarn cache
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-website-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-website-
+
+      - run: yarn install --frozen-lockfile
+      - run: yarn build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          publish_dir: ./docs/src/website/build/dsp-appsec-infrastructure-apps

@@ -99,12 +99,12 @@ steps:
       --destination=$${CLOUDSQL_PROXY_IMAGE}
       --cache
 
-# # deploy Burp Enterprise to GKE cluster
-# - id: burp-enterprise
-#   name: *kubectl
-#   waitFor: ['shared']
-#   entrypoint: ./deploy.sh
-#   dir: burp-enterprise
+# deploy Burp Enterprise to GKE cluster
+- id: burp-enterprise
+  name: *kubectl
+  waitFor: ['shared']
+  entrypoint: ./deploy.sh
+  dir: burp-enterprise
 
 # build Batch dispatcher image
 - id: batch-dispatcher-image
@@ -172,25 +172,6 @@ steps:
   waitFor: ['shared', 'cloudsql-proxy', 'defectdojo-django-image', 'defectdojo-nginx-image']
   entrypoint: ./deploy.sh
   dir: defectdojo
-
-# build Docs image
-- id: docs-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/docs/src
-      --destination=$${DOCS_IMAGE}
-      --cache
-
-# deploy Docs to GKE cluster
-- id: docs
-  name: *kubectl
-  waitFor: ['shared', 'docs-image']
-  entrypoint: ./deploy.sh
-  dir: docs
 
 # build patched CodeDx image
 - id: codedx-image
