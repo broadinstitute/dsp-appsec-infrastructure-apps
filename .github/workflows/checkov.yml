@@ -1,5 +1,5 @@
 name: Checkov for Terraform
-on: [push]
+on: [] # use [push] to re-enable, once false positive error is resolved
 
 jobs:
   checkov-job:
