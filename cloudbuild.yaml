@@ -9,6 +9,7 @@ options:
   - BASTION_IMAGE=us.gcr.io/${PROJECT_ID}/bastion
   - CLOUDSQL_PROXY_IMAGE=us.gcr.io/${PROJECT_ID}/cloudsql-proxy:workaround
   - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis
+  - SOURCECLEAR_IMAGE=us.gcr.io/${PROJECT_ID}/sourceclear
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
   - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
   - DOCS_IMAGE=us.gcr.io/${PROJECT_ID}/docs:${SHORT_SHA}
@@ -172,25 +173,6 @@ steps:
   entrypoint: ./deploy.sh
   dir: defectdojo
 
-# build Docs image
-- id: docs-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/docs/src
-      --destination=$${DOCS_IMAGE}
-      --cache
-
-# deploy Docs to GKE cluster
-- id: docs
-  name: *kubectl
-  waitFor: ['shared', 'docs-image']
-  entrypoint: ./deploy.sh
-  dir: docs
-
 # build patched CodeDx image
 - id: codedx-image
   name: *kaniko
@@ -268,5 +250,24 @@ steps:
   waitFor: ['shared', 'batch-dispatcher-image']
   entrypoint: ./deploy.sh
   dir: zap
+
+# build Sourceclear Docker image
+- id: sourceclear-image
+  name: *kaniko
+  waitFor: ['kaniko']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/sourceclear/docker
+      --destination=$${SOURCECLEAR_IMAGE}
+      --cache
+
+# deploy sourceclear to GKE cluster
+- id: sourceclear
+  name: *kubectl
+  waitFor: ['shared', 'batch-dispatcher-image']
+  entrypoint: ./deploy.sh
+  dir: sourceclear
 
 timeout: 7200s

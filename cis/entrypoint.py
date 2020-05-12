@@ -131,7 +131,7 @@ def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL):
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Check `{0}` results* :blue_book:" .format(str(GCP_PROJECT_ID))
+                    "text": "Check `{0}` CIS scan results :spiral_note_pad:" .format(str(GCP_PROJECT_ID))
                 }
             },
             {
@@ -146,7 +146,7 @@ def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL):
                         "url": "{0}/cis/results?project_id={1}" .format(str(RESULTS_URL), str(GCP_PROJECT_ID))
                     }
                 ]
-            }], "color": "#0a88ab"}]
+            }], "color": "#0731b0"}]
     )
 
 
@@ -161,7 +161,7 @@ def project_exists(GCP_PROJECT_ID: str) -> bool:
     result = False
     all_projects = []
     for project in resource_manager.Client().list_projects():
-        all_projects.append(project.name)
+        all_projects.append(project.project_id)
     if GCP_PROJECT_ID in all_projects:
         result = True
     else:

@@ -123,9 +123,11 @@ def submit():
         # When Jira ticket creation is not selected
         for channel in slack_channels_list:
             if channel == '#zap-test':
-                slacknotify.slacknotify_qa(slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
+                slacknotify.slacknotify_qa(
+                    slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
             else:
-                slacknotify.slacknotify(slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
+                slacknotify.slacknotify(
+                    slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
 
          # Set product description
         dd.set_product(product_id, description=prepare_dojo_input(json_data))
@@ -188,12 +190,12 @@ def cis_scan():
     json_data = request.get_json()
     user_project_id = json_data['project_id']
     pattern = "^[a-z][a-z0-9-_]{4,28}[a-z0-9]$"
-    results_url = sdarq_host
     topic_name = "cis-scans"
     project_id = "dsp-appsec-infra-prod"
     message = ""
+    results_url = sdarq_host
     message = message.encode("utf-8")
-    firestore_collection = 'cis_scans'
+    firestore_collection = "cis-scans"
     check = False
 
     if re.match(pattern, user_project_id):
@@ -212,21 +214,20 @@ def cis_scan():
                               data=message,
                               GCP_PROJECT_ID=user_project_id,
                               FIRESTORE_COLLECTION=firestore_collection)
-        user_proj = user_project_id.replace('-', '_')
-        while check is False:
-            doc_ref = db.collection(
-                firestore_collection).document(user_proj)
-            doc = doc_ref.get()
-            if doc.exists:
-                check = True
-            else:
-                check = False
+    user_proj = user_project_id.replace('-', '_')
+    while check is False:
+        doc_ref = db.collection(
+            firestore_collection).document(user_proj)
+        doc = doc_ref.get()
+        if doc.exists:
+            check = True
+        else:
+            check = False
 
-        db.collection(firestore_collection).document(user_proj).delete()
+    db.collection(firestore_collection).document(user_proj).delete()
 
-        return Response(json.dumps({'statusText': 'Doc found!', 'status': 'true'}), status=200, mimetype='application/json')
     return ''
-    
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 8080)))
