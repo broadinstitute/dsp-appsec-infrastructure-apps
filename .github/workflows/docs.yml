@@ -41,4 +41,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GH_TOKEN }}
-          publish_dir: ./docs/src/website/build
+          publish_dir: ./docs/src/website/build/dsp-appsec-infrastructure-apps
