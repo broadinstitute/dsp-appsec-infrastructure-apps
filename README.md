@@ -22,7 +22,7 @@ First, it sets up some common infrastructure:
 
 1.  Using [Terraform templates](terraform), it deploys a _regional_ GKE cluster with
 
-    - a dedicated VPC network/subnetwork in `us-east1` region
+    - a dedicated VPC network/subnetwork in `us-east1` region.
 
     - VPC-native networking with
       [alias IPs](https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips),
