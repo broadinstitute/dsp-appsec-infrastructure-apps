@@ -10,7 +10,7 @@ on:
     branches:
       - master
     paths:
-      - '.github/workflows/docs.yml'
+      - '.github/workflows/deploydocs.yml'
       - 'docs/src/website/**'
 
 jobs:
