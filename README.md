@@ -9,7 +9,7 @@ This repository hosts dsp-appsec internal infrastructure. These apps are deploye
 - [Sdarq](sdarq)
 
 
-### Deployment
+### Deployment 
 
 All apps are deployed via Cloud Build, as defined in [cloudbuild.yaml](cloudbuild.yaml).
 
