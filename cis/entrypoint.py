@@ -159,13 +159,13 @@ def project_exists(GCP_PROJECT_ID: str) -> bool:
         True if the project exists, false otherwise
     """
     result = False
-    all_projects = []
-    for project in resource_manager.Client().list_projects():
-        all_projects.append(project.project_id)
-    if GCP_PROJECT_ID in all_projects:
+    result = False
+    try:
+        resource_manager.Client().fetch_project(GCP_PROJECT_ID)
         result = True
-    else:
-        result = False
+    except:
+        return result
+
     return result
 
 
