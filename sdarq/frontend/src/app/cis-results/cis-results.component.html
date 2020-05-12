@@ -27,6 +27,7 @@
   <table class="table table-striped animated fadeIn" *ngIf="showTable">
     <thead>
       <tr>
+        <th scope="col">Level</th>
         <th scope="col">Title</th>
         <th scope="col">Failures</th>
         <th scope="col">Description</th>
@@ -35,6 +36,7 @@
       </tr>
     </thead>
     <tr mdbTableCol *ngFor="let findings of projectFindings">
+      <td style="color:red; font-weight: 400;">{{findings.level}}</td>
       <td>{{findings.title}}</td>
       <td>
         <ul *ngFor="let failuresMessage of findings.failures">
