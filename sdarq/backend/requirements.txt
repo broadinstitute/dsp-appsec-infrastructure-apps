@@ -8,7 +8,7 @@ flask-cors
 virtualenv==16.0.0
 slacker
 jira
-gunicorn
+gunicorn[gevent]
 slackclient
 google-cloud-bigquery
 google-cloud-firestore
