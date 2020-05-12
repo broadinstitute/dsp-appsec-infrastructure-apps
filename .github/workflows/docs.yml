@@ -3,15 +3,10 @@
 
 name: Deploy docs to Github Pages
 
-name: github pages
-
 on:
   push:
     branches:
       - master
-    paths:
-      - '.github/workflows/deploydocs.yml'
-      - 'docs/src/website/**'
 
 jobs:
   deploy:
@@ -25,7 +20,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: '10.x'
 
       - name: Get yarn cache
         id: yarn-cache
@@ -46,4 +41,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GH_TOKEN }}
-          publish_dir: ./website/build
+          publish_dir: ./docs/src/website/build
