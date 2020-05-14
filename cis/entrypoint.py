@@ -8,6 +8,7 @@ This module
 """
 
 import json
+import logging
 import os
 import subprocess
 from typing import List, Any
@@ -21,9 +22,10 @@ BENCHMARK_PROFILE = 'inspec-gcp-cis-benchmark'
 
 def benchmark(project_id: str):
     """
-    Runs Inspec scan with BENCHMARK_PROFILE on project_id,
-    and returns the parsed results
+    Runs Inspec GCP CIS benchmark on `project_id`,
+    and returns the parsed results.
     """
+    logging.info("Running %s for %s", BENCHMARK_PROFILE, project_id)
     proc = subprocess.run([
         'inspec', 'exec', 'inspec-gcp-cis-benchmark',
         '-t', 'gcp://', '--reporter', 'json',
@@ -33,7 +35,7 @@ def benchmark(project_id: str):
     # normal exit codes as documented at
     # https://www.inspec.io/docs/reference/cli
     if proc.returncode not in (0, 100, 101):
-        print(proc.stderr)
+        logging.error(proc.stderr)
         raise subprocess.CalledProcessError(proc.returncode, proc.args)
 
     return project_id, json.loads(proc.stdout)['profiles']
@@ -127,7 +129,8 @@ def load_bigquery(project_id: str, dataset_id: str, table_desc: str, version: st
 
     job = client.load_table_from_json(rows, table, job_config=job_config)
     job.result()  # wait for completion
-    print(f"Loaded {job.output_rows} rows into {dataset_id}.{table_id}")
+    logging.info("Loaded %s rows into %s.%s",
+                 job.output_rows, dataset_id, table_id)
 
     table.description = table_desc
     client.update_table(table, ['description'])
@@ -186,11 +189,14 @@ def validate_project(project_id: str):
 
 def main():
     """
-    Implements the entrypoint
+    Implements the entrypoint.
     """
+    # configure logging
+    logging.basicConfig(level=logging.INFO)
+
     # parse inputs
-    project_id = os.environ['GCP_PROJECT_ID']
-    dataset_id = os.environ['BQ_DATASET']
+    project_id = os.environ['GCP_PROJECT_ID']  # required
+    dataset_id = os.environ['BQ_DATASET']  # required
     slack_token = os.getenv('SLACK_TOKEN')
     slack_channel = os.getenv('SLACK_CHANNEL')
     results_url = os.getenv('RESULTS_URL')
