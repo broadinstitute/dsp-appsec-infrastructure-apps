@@ -104,7 +104,7 @@ def load_bigquery(project_id: str, dataset_id: str, table_desc: str, version: st
         return table_id
 
     client = bigquery.Client()
-    table = client.dataset(dataset_id).table(table_id)
+    table_ref = client.dataset(dataset_id).table(table_id)
 
     f = bigquery.SchemaField
     schema = (
@@ -128,13 +128,13 @@ def load_bigquery(project_id: str, dataset_id: str, table_desc: str, version: st
         },
     )
 
-    job = client.load_table_from_json(rows, table, job_config=job_config)
+    job = client.load_table_from_json(rows, table_ref, job_config=job_config)
     job.result()  # wait for completion
     logging.info("Loaded %s rows into %s.%s",
                  job.output_rows, dataset_id, table_id)
 
     # update table description
-    table = client.get_table(table)
+    table = bigquery.Table(table_ref)
     table.description = table_desc
     client.update_table(table, ['description'])
 
