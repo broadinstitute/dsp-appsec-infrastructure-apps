@@ -85,13 +85,8 @@ resource "google_container_cluster" "cluster" {
   remove_default_node_pool = true
   enable_shielded_nodes    = true
 
-  # use a fixed min version until
-  # 1.16 is available in the REGULAR channel
-  # (which contains fixes for excessive logging)
-  min_master_version = "1.15.11-gke.11"
-
   release_channel {
-    channel = "UNSPECIFIED"
+    channel = "REGULAR"
   }
 
   workload_identity_config {
