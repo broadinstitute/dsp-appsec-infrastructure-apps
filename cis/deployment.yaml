@@ -28,7 +28,7 @@ data:
           - name: SLACK_TOKEN
             valueFrom:
               secretKeyRef:
-                 name: cis-scan
+                 name: ${JOB_SECRET}
                  key: SLACK_TOKEN
           - name: GCP_PROJECT_ID
             valueFrom:
