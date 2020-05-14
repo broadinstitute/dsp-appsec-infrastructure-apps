@@ -1,29 +1,34 @@
 #!/usr/bin/env python3
+"""
+This module
+- scans a GCP project with Inspec GCP CIS Benchmark
+- records results into a BigQuery table
+- optionally notifies a Slack channel about results
+- optionally records completion in a Firestore doc
+"""
 
 import json
 import os
 import subprocess
+from typing import List, Any
 import slack
-from google.cloud import resource_manager
-from google.cloud import bigquery
-from google.cloud import firestore
+
+from google.cloud import bigquery, firestore, resource_manager
 
 
-GCP_PROJECT_ID = os.getenv('GCP_PROJECT_ID')
-BQ_DATASET = os.getenv('BQ_DATASET')
-SLACK_TOKEN = os.getenv('SLACK_TOKEN')
-SLACK_CHANNEL = os.getenv('SLACK_CHANNEL')
-RESULTS_URL = os.getenv('RESULTS_URL')
-FIRESTORE_COLLECTION = os.getenv('FIRESTORE_COLLECTION')
 BENCHMARK_PROFILE = 'inspec-gcp-cis-benchmark'
 
 
-def benchmark():
-    args = f'''
-        inspec exec {BENCHMARK_PROFILE} -t gcp:// --reporter json
-            --input gcp_project_id={GCP_PROJECT_ID}
-    '''.split()
-    proc = subprocess.run(args, capture_output=True, text=True)
+def benchmark(project_id: str):
+    """
+    Runs Inspec scan with BENCHMARK_PROFILE on project_id,
+    and returns the parsed results
+    """
+    proc = subprocess.run([
+        'inspec', 'exec', 'inspec-gcp-cis-benchmark',
+        '-t', 'gcp://', '--reporter', 'json',
+        '--input', f'gcp_project_id={project_id}',
+    ], capture_output=True, text=True, check=False)
 
     # normal exit codes as documented at
     # https://www.inspec.io/docs/reference/cli
@@ -31,47 +36,55 @@ def benchmark():
         print(proc.stderr)
         raise subprocess.CalledProcessError(proc.returncode, proc.args)
 
-    return json.loads(proc.stdout)['profiles']
+    return project_id, json.loads(proc.stdout)['profiles']
 
 
-def parse_profiles(profiles):
+def parse_profiles(project_id: str, profiles):
+    """
+    Parses scan results into a table structure for BigQuery.
+    """
     profile = None
-    for p in profiles:
-        if p['name'] == 'inspec-gcp':
-            version = p['version']
-        elif p['name'] == BENCHMARK_PROFILE:
-            profile = p
+    version: str = ''
+    for prof in profiles:
+        if prof['name'] == 'inspec-gcp':
+            version = prof['version']
+        elif prof['name'] == BENCHMARK_PROFILE:
+            profile = prof
+    if not profile or not version:
+        raise ValueError(
+            'Unable to determine profile or version from scan results')
 
-    title = profile['title']
+    title: str = profile['title']
     rows = []
-    for c in profile['controls']:
+    for ctrl in profile['controls']:
         failures = []
-        for r in c['results']:
-            if r['status'] != 'failed' or 'exception' in r:
+        for res in ctrl['results']:
+            if res['status'] != 'failed' or 'exception' in res:
                 continue
             failures.append(
-                r['code_desc']
-                .replace(f'[{GCP_PROJECT_ID}] ', '', 1)
+                res['code_desc']
+                .replace(f'[{project_id}] ', '', 1)
                 .replace('cmp == nil', 'be empty')
                 .replace('cmp ==', 'equal')
             )
         if not failures:
             continue
 
-        for d in c['descriptions']:
-            if d['label'] != 'rationale':
+        rationale = ''
+        for desc in ctrl['descriptions']:
+            if desc['label'] != 'rationale':
                 continue
-            rationale = d['data']
+            rationale = desc['data']
 
-        tags = c['tags']
-        refs = [ref['url'] for ref in c['refs']]
+        tags = ctrl['tags']
+        refs = [ref['url'] for ref in ctrl['refs']]
 
         rows.append({
             'id': tags['cis_gcp'],
             'level': tags['cis_level'],
-            'title': c['title'],
+            'title': ctrl['title'],
             'failures': failures,
-            'description': c['desc'],
+            'description': ctrl['desc'],
             'rationale': rationale,
             'refs': refs,
         })
@@ -79,13 +92,16 @@ def parse_profiles(profiles):
     return title, version, rows
 
 
-def load_bigquery(table_desc, version, rows):
+def load_bigquery(project_id: str, dataset_id: str, table_desc: str, version: str, rows: List[Any]):
+    """
+    Loads scan results into a BigQuery table.
+    """
     if not rows:
-        return
+        return ''
 
-    bquery = bigquery.Client()
-    table_id = GCP_PROJECT_ID.replace('-', '_')
-    table = bquery.dataset(BQ_DATASET).table(table_id)
+    client = bigquery.Client()
+    table_id = project_id.replace('-', '_')
+    table = client.dataset(dataset_id).table(table_id)
 
     f = bigquery.SchemaField
     schema = (
@@ -105,33 +121,40 @@ def load_bigquery(table_desc, version, rows):
             type_=bigquery.TimePartitioningType.DAY,
         ),
         labels={
-            'gcp-project': GCP_PROJECT_ID,
+            'gcp-project': project_id,
             'inspec-version': version.replace('.', '_'),
         },
     )
 
-    job = bquery.load_table_from_json(rows, table, job_config=job_config)
+    job = client.load_table_from_json(rows, table, job_config=job_config)
     job.result()  # wait for completion
-    print(f"Loaded {job.output_rows} rows into {BQ_DATASET}.{table_id}")
-    firestore_report(table_id, FIRESTORE_COLLECTION)
+    print(f"Loaded {job.output_rows} rows into {dataset_id}.{table_id}")
+
+    return table_id
 
 
-def firestore_report(table_id, FIRESTORE_COLLECTION):
-    db_firestore = firestore.Client()
-    doc_ref = db_firestore.collection(FIRESTORE_COLLECTION).document(table_id)
+def firestore_report(collection_id: str, table_id: str):
+    """
+    Records scan completion into a Firestore document.
+    """
+    client = firestore.Client()
+    doc_ref = client.collection(collection_id).document(table_id)
     doc_ref.set({})
 
 
-def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL):
-    client = slack.WebClient(SLACK_TOKEN)
-    response = client.chat_postMessage(
-        channel=SLACK_CHANNEL,
+def slack_notify(project_id: str, slack_token: str, slack_channel: str, results_url: str):
+    """
+    Posts a notification about results to Slack.
+    """
+    client = slack.WebClient(slack_token)
+    client.chat_postMessage(
+        channel=slack_channel,
         attachments=[{"blocks": [
             {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "Check `{0}` CIS scan results :spiral_note_pad:" .format(str(GCP_PROJECT_ID))
+                    "text": "Check `{0}` CIS scan results :spiral_note_pad:" .format(project_id)
                 }
             },
             {
@@ -143,40 +166,50 @@ def slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL):
                             "type": "plain_text",
                             "text": "Get results"
                         },
-                        "url": "{0}/cis/results?project_id={1}" .format(str(RESULTS_URL), str(GCP_PROJECT_ID))
+                        "url": results_url,
                     }
                 ]
             }], "color": "#0731b0"}]
     )
 
 
-def project_exists(GCP_PROJECT_ID: str) -> bool:
+def validate_project(project_id: str):
     """
-    Function that checks if a project exists in GCP
-    Args:
-        project_id: GCP Project ID
-    Returns:
-        True if the project exists, false otherwise
+    Checks if GCP `project_id` exists via Resource Manager API.
+    Raises a NotFound error if not.
     """
-    result = False
-    result = False
-    try:
-        resource_manager.Client().fetch_project(GCP_PROJECT_ID)
-        result = True
-    except:
-        return result
-
-    return result
+    client = resource_manager.Client()
+    client.fetch_project(project_id)
 
 
 def main():
-    # Only load to bigquery if gcp project exists
-    if project_exists(GCP_PROJECT_ID):
-        load_bigquery(*parse_profiles(benchmark()))
+    """
+    Implements the entrypoint
+    """
+    # parse inputs
+    project_id = os.environ['GCP_PROJECT_ID']
+    dataset_id = os.environ['BQ_DATASET']
+    slack_token = os.getenv('SLACK_TOKEN')
+    slack_channel = os.getenv('SLACK_CHANNEL')
+    results_url = os.getenv('RESULTS_URL')
+    fs_collection = os.getenv('FIRESTORE_COLLECTION')
 
-        # Check env variable set and not empty
-        if os.environ.get('SLACK_CHANNEL') is not None and SLACK_CHANNEL:
-            slack_notify(GCP_PROJECT_ID, SLACK_CHANNEL, RESULTS_URL)
+    # validate inputs
+    validate_project(project_id)
+
+    # scan and load results into BigQuery
+    title, version, rows = parse_profiles(*benchmark(project_id))
+    table_id = load_bigquery(project_id, dataset_id, title, version, rows)
+    if not table_id:
+        return
+
+    # post to Slack if it the channel is specified
+    if slack_token and slack_channel and results_url:
+        slack_notify(project_id, slack_token, slack_channel, results_url)
+
+    # Note: TODO please move this into a try-catch for all the above
+    if fs_collection:
+        firestore_report(fs_collection, table_id)
 
 
 if __name__ == '__main__':

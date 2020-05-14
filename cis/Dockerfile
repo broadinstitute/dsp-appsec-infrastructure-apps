@@ -43,8 +43,7 @@ RUN pip3 install pylint pytest
 
 COPY *.py /
 
-# TODO re-enable
-# RUN pylint /*.py
+RUN pylint /*.py
 RUN pytest /*.py
 
 
