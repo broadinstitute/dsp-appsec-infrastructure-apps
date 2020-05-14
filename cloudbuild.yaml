@@ -192,17 +192,17 @@ steps:
   entrypoint: ./deploy.sh
   dir: codedx
 
-# build SDARQ frontend Docker image
-- id: sdarq-frontend-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/sdarq/frontend
-      --destination=$${SDARQ_FRONTEND_IMAGE}
-      --cache
+# # build SDARQ frontend Docker image
+# - id: sdarq-frontend-image
+#   name: *kaniko
+#   waitFor: ['kaniko']
+#   entrypoint: sh
+#   args:
+#   - -c
+#   - executor
+#       --context=dir:///workspace/sdarq/frontend
+#       --destination=$${SDARQ_FRONTEND_IMAGE}
+#       --cache
 
 # build SDARQ backend Docker image
 - id: sdarq-backend-image
@@ -216,12 +216,12 @@ steps:
       --destination=$${SDARQ_BACKEND_IMAGE}
       --cache
 
-# deploy SDARQ to GKE cluster
-- id: sdarq
-  name: *kubectl
-  waitFor: ['shared', 'sdarq-frontend-image', 'sdarq-backend-image']
-  entrypoint: ./deploy.sh
-  dir: sdarq
+# # deploy SDARQ to GKE cluster
+# - id: sdarq
+#   name: *kubectl
+#   waitFor: ['shared', 'sdarq-frontend-image', 'sdarq-backend-image']
+#   entrypoint: ./deploy.sh
+#   dir: sdarq
 
 # build Cartography Docker image
 - id: cartography-image
