@@ -133,6 +133,8 @@ def load_bigquery(project_id: str, dataset_id: str, table_desc: str, version: st
     logging.info("Loaded %s rows into %s.%s",
                  job.output_rows, dataset_id, table_id)
 
+    # update table description
+    table = client.get_table(table)
     table.description = table_desc
     client.update_table(table, ['description'])
 
