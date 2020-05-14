@@ -115,7 +115,6 @@ def load_bigquery(project_id: str, dataset_id: str, table_desc: str, version: st
     )
     job_config = bigquery.LoadJobConfig(
         schema=schema,
-        destination_table_description=table_desc,
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
         time_partitioning=bigquery.TimePartitioning(
             type_=bigquery.TimePartitioningType.DAY,
@@ -129,6 +128,9 @@ def load_bigquery(project_id: str, dataset_id: str, table_desc: str, version: st
     job = client.load_table_from_json(rows, table, job_config=job_config)
     job.result()  # wait for completion
     print(f"Loaded {job.output_rows} rows into {dataset_id}.{table_id}")
+
+    table.description = table_desc
+    client.update_table(table, ['description'])
 
     return table_id
 
