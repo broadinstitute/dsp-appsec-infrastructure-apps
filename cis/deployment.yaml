@@ -42,10 +42,10 @@ data:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.annotations['SLACK_CHANNEL']
-          - name: RESULTS_URL
+          - name: SLACK_RESULTS_URL
             valueFrom:
               fieldRef:
-                fieldPath: metadata.annotations['RESULTS_URL']
+                fieldPath: metadata.annotations['SLACK_RESULTS_URL']
           resources:
             requests:
               memory: 250M

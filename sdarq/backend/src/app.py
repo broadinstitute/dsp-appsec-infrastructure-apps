@@ -207,7 +207,7 @@ def cis_scan():
                               data=message,
                               GCP_PROJECT_ID=user_project_id,
                               SLACK_CHANNEL=slack_channel,
-                              RESULTS_URL=results_url,
+                              SLACK_RESULTS_URL=results_url,
                               FIRESTORE_COLLECTION=firestore_collection)
         else:
             publisher.publish(topic_path,

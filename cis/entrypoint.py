@@ -200,7 +200,7 @@ def main():
     dataset_id = os.environ['BQ_DATASET']  # required
     slack_token = os.getenv('SLACK_TOKEN')
     slack_channel = os.getenv('SLACK_CHANNEL')
-    results_url = os.getenv('RESULTS_URL')
+    slack_results_url = os.getenv('SLACK_RESULTS_URL')
     fs_collection = os.getenv('FIRESTORE_COLLECTION')
 
     # validate inputs
@@ -210,9 +210,9 @@ def main():
     title, version, rows = parse_profiles(*benchmark(project_id))
     table_id = load_bigquery(project_id, dataset_id, title, version, rows)
 
-    # post to Slack if it the channel is specified
-    if slack_token and slack_channel and results_url:
-        slack_notify(project_id, slack_token, slack_channel, results_url)
+    # post to Slack, if specified
+    if slack_token and slack_channel and slack_results_url:
+        slack_notify(project_id, slack_token, slack_channel, slack_results_url)
 
     # Note: TODO please move this into a try-catch for all the above
     if fs_collection:
