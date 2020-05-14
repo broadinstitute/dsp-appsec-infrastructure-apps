@@ -2,7 +2,7 @@ import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core';
 import * as Survey from 'survey-angular';
 import * as widgets from 'surveyjs-widgets';
 import * as SurveyPDF from 'survey-pdf';
-import 'inputmask/dist/inputmask/phone-codes/phone.js';
+// import 'inputmask/dist/inputmask/phone-codes/phone.js';
 
 widgets.icheck(Survey);
 widgets.select2(Survey);
