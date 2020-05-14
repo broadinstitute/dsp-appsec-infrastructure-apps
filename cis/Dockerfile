@@ -20,7 +20,7 @@ RUN apt-get update && \
     && \
     pip3 install -r requirements.txt \
     && \
-    gem install inspec-bin -qNv "${INSPEC_VERSION}" && \
+    gem install "inspec-bin:${INSPEC_VERSION}" -qN && \
     git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gcp-cis-benchmark.git \
     && \
     apt-get remove -y \
