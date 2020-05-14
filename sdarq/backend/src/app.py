@@ -174,8 +174,8 @@ def cis_results():
             return json_obj
         else:
             notfound = f"""
-            This Google project is not found! Did you make sure to supply the right GCP Project ID? 
-            You can verify the ID of the project you want to scan by running the following command: 
+            This Google project is not found! Did you make sure to supply the right GCP Project ID?
+            You can verify the ID of the project you want to scan by running the following command:
             gcloud config list project --format='value(core.project)'
             """
             return Response(json.dumps({'statusText': notfound}), status=404, mimetype='application/json')
@@ -193,7 +193,7 @@ def cis_scan():
     topic_name = "cis-scans"
     project_id = "dsp-appsec-infra-prod"
     message = ""
-    results_url = sdarq_host
+    results_url = f"{sdarq_host}/cis/results?project_id={user_project_id}"
     message = message.encode("utf-8")
     firestore_collection = "cis-scans"
     check = False
