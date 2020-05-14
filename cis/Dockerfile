@@ -1,7 +1,11 @@
-FROM debian:sid-slim AS base
+ARG USER="inspec"
 
-ENV INSPEC_VERSION=4.18.51 \
-    CHEF_LICENSE=accept-no-persist
+FROM debian:testing-slim AS base
+
+ARG USER
+ARG INSPEC_VERSION="<5"
+
+ENV CHEF_LICENSE="accept-no-persist"
 
 COPY requirements.txt .
 
@@ -16,7 +20,7 @@ RUN apt-get update && \
     && \
     pip3 install -r requirements.txt \
     && \
-    gem install inspec-bin -qN -v "${INSPEC_VERSION}" && \
+    gem install inspec-bin -qNv "${INSPEC_VERSION}" && \
     git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gcp-cis-benchmark.git \
     && \
     apt-get remove -y \
@@ -25,27 +29,31 @@ RUN apt-get update && \
         python3-dev \
         ruby-dev \
     && \
-    apt autoremove -y && \
+    apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/* \
     && \
+    useradd -m "${USER}" && \
     mkdir .inspec && \
-    chown nobody .inspec inspec-gcp-cis-benchmark
+    chown "${USER}" .inspec inspec-gcp-cis-benchmark
 
 
 FROM base AS test
 
-RUN pip3 install  pytest
+RUN pip3 install pylint pytest
 
 COPY *.py /
 
+# TODO re-enable
 # RUN pylint /*.py
 RUN pytest /*.py
 
 
 FROM base
 
+ARG USER
+
 COPY entrypoint.py /
 
-# USER nobody
+USER ${USER}
 
 ENTRYPOINT [ "/entrypoint.py" ]
