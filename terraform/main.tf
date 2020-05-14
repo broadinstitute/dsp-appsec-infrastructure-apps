@@ -67,8 +67,19 @@ resource "google_container_cluster" "cluster" {
 
   network    = google_compute_network.gke.self_link
   subnetwork = google_compute_subnetwork.gke.self_link
-  master_authorized_networks_config {}
   ip_allocation_policy {}
+
+  dynamic "master_authorized_networks_config" {
+    for_each = toset([0])
+    content {
+      dynamic "cidr_blocks" {
+        for_each = toset(var.master_autorized_networks)
+        content {
+          cidr_block = cidr_blocks.value
+        }
+      }
+    }
+  }
 
   initial_node_count       = 1
   remove_default_node_pool = true
