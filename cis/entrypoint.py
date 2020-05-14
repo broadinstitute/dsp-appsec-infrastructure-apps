@@ -98,11 +98,12 @@ def load_bigquery(project_id: str, dataset_id: str, table_desc: str, version: st
     """
     Loads scan results into a BigQuery table.
     """
+    table_id = project_id.replace('-', '_')
+
     if not rows:
-        return ''
+        return table_id
 
     client = bigquery.Client()
-    table_id = project_id.replace('-', '_')
     table = client.dataset(dataset_id).table(table_id)
 
     f = bigquery.SchemaField
@@ -208,8 +209,6 @@ def main():
     # scan and load results into BigQuery
     title, version, rows = parse_profiles(*benchmark(project_id))
     table_id = load_bigquery(project_id, dataset_id, title, version, rows)
-    if not table_id:
-        return
 
     # post to Slack if it the channel is specified
     if slack_token and slack_channel and results_url:
