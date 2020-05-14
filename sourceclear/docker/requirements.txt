@@ -1,3 +1,0 @@
-google-cloud-pubsub==1.4.3
-google-cloud-bigquery==1.24.0
-google-cloud-resource-manager==0.30.1

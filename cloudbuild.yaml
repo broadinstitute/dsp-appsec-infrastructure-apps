@@ -251,23 +251,4 @@ steps:
   entrypoint: ./deploy.sh
   dir: zap
 
-# build Sourceclear Docker image
-- id: sourceclear-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/sourceclear/docker
-      --destination=$${SOURCECLEAR_IMAGE}
-      --cache
-
-# deploy sourceclear to GKE cluster
-- id: sourceclear
-  name: *kubectl
-  waitFor: ['shared', 'batch-dispatcher-image']
-  entrypoint: ./deploy.sh
-  dir: sourceclear
-
 timeout: 7200s
