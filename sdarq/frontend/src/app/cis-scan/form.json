@@ -2,7 +2,7 @@
     "completedHtml": "We will send you a slack notification or redirect you to the results page once the scan job has been completed. \n<br>\nThank you!<br>\nDSP APPSEC TEAM",
     "pages": [
      {
-      "name": "Google Project Cis Scan",
+      "name": "Scan GCP Project",
       "elements": [
        {
         "type": "text",
@@ -38,7 +38,7 @@
         "isRequired": true
        }
       ],
-      "title": "Google Project Cis Scan"
+      "title": "Scan GCP Project"
      }
     ],
     "showCompletedPage": true,
