@@ -21,6 +21,12 @@
     <div class="text-center animated fadeInRight" *ngIf="showModal">
       <a href="/cis" mdbBtn color="primary" mdbWavesEffect>Try Again</a>
     </div>
+    <input
+        type="text"
+        class="form-control"
+        name="searchString"
+        placeholder="Type to search..."
+        [(ngModel)]="searchString" *ngIf="showTable"/>
   </div>
   <br>
   <br>
@@ -35,7 +41,7 @@
         <th scope="col">Refs</th>
       </tr>
     </thead>
-    <tr mdbTableCol *ngFor="let findings of projectFindings">
+    <tr mdbTableCol *ngFor="let findings of projectFindings | filter:searchString">
       <td style="color:red; font-weight: 400;">{{findings.level}}</td>
       <td>{{findings.title}}</td>
       <td>
