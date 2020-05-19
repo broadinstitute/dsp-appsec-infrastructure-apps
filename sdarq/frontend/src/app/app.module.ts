@@ -21,6 +21,7 @@ import { FooterComponent } from './footer/footer.component';
 import { CisResultsComponent } from './cis-results/cis-results.component';
 import { CisScanComponent } from './cis-scan/cis-scan.component';
 import { CisLandingPageComponent } from './cis-landing-page/cis-landing-page.component';
+import { FilterPipe } from './pipes/filter.pipe';
 
 
 @NgModule({
@@ -38,7 +39,8 @@ import { CisLandingPageComponent } from './cis-landing-page/cis-landing-page.com
     FooterComponent,
     CisResultsComponent,
     CisScanComponent,
-    CisLandingPageComponent
+    CisLandingPageComponent,
+    FilterPipe
   ],
   imports: [
     BrowserModule,
@@ -55,6 +57,9 @@ import { CisLandingPageComponent } from './cis-landing-page/cis-landing-page.com
   ],
   bootstrap: [
     AppComponent
+  ],
+  exports: [
+    FilterPipe
   ]
 })
 export class AppModule { }

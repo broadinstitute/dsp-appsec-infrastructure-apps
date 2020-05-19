@@ -21,35 +21,40 @@
     <div class="text-center animated fadeInRight" *ngIf="showModal">
       <a href="/cis" mdbBtn color="primary" mdbWavesEffect>Try Again</a>
     </div>
+    <div class="row">
+      <div class="col"> </div>
+      <div class="col"> </div>
+      <div class="col">
+        <input type="text" class="form-control" name="searchString" placeholder="Search..." [(ngModel)]="searchString"
+          *ngIf="showTable" />
+      </div>
+    </div>
   </div>
   <br>
   <br>
-  <table class="table table-striped animated fadeIn" *ngIf="showTable">
-    <thead>
-      <tr>
-        <th scope="col">Level</th>
-        <th scope="col">Title</th>
-        <th scope="col">Failures</th>
-        <th scope="col">Description</th>
-        <th scope="col">Rationale</th>
-        <th scope="col">Refs</th>
+  <!-- start table  -->
+  <table mdbTable #tableEl="mdbTable" hover="true" striped="true" class="z-depth-1" class="animated fadeIn"
+    *ngIf="showTable">
+    <th *ngFor="let head of headElements" class="mdb-color darken-3 white-text">{{head}}</th>
+    <tbody #row>
+      <tr mdbTableCol *ngFor="let findings of projectFindings | filter:searchString">
+        <td>{{findings.id}}</td>
+        <td>{{findings.level}}</td>
+        <td style="font-weight: 400;">{{findings.title}}</td>
+        <td>
+          <ul *ngFor="let failuresMessage of findings.failures">
+            <li>{{failuresMessage}}</li>
+          </ul>
+        </td>
+        <td>{{findings.description}}</td>
+        <td>{{findings.rationale}}</td>
+        <td>
+          <ul *ngFor="let link of findings.refs">
+            <li><a href="{{link}}" target="_blank">Ref</a></li>
+          </ul>
+        </td>
       </tr>
-    </thead>
-    <tr mdbTableCol *ngFor="let findings of projectFindings">
-      <td style="color:red; font-weight: 400;">{{findings.level}}</td>
-      <td>{{findings.title}}</td>
-      <td>
-        <ul *ngFor="let failuresMessage of findings.failures">
-          <li>{{failuresMessage}}</li>
-        </ul>
-      </td>
-      <td>{{findings.description}}</td>
-      <td>{{findings.rationale}}</td>
-      <td>
-        <ul *ngFor="let link of findings.refs">
-          <li><a href="{{link}}" target="_blank">Ref</a></li>
-        </ul>
-      </td>
-    </tr>
+    </tbody>
   </table>
+  <!-- end table  -->
 </div>
