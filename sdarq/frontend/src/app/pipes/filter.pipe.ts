@@ -12,11 +12,12 @@ export class FilterPipe implements PipeTransform {
         }
         if (searchString) {
             return value.filter(it => {
+                const id = it.id.toString().includes(searchString)
                 const level = it.level.toString().includes(searchString)
                 const title = it.title.toLowerCase().includes(searchString.toLowerCase())
                 const description = it.description.toLowerCase().includes(searchString.toLowerCase())
                 const rationale = it.rationale.toLowerCase().includes(searchString.toLowerCase())
-                return (level + title + description + rationale);
+                return (id + level + title + description + rationale);
             })
         }
     }
