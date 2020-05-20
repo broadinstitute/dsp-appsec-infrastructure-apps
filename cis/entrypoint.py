@@ -12,7 +12,9 @@ import logging
 import os
 import subprocess
 from typing import List, Any
+import datetime
 import slack
+import google.api_core
 
 from google.cloud import bigquery, firestore, resource_manager
 
@@ -184,10 +186,16 @@ def slack_notify(project_id: str, slack_token: str, slack_channel: str, results_
 def validate_project(project_id: str):
     """
     Checks if GCP `project_id` exists via Resource Manager API.
-    Raises a NotFound error if not.
+    Raises a NotFound error if not and writes it to Firestore
     """
     client = resource_manager.Client()
-    client.fetch_project(project_id)
+    try:
+        client.fetch_project(project_id)
+    except google.api_core.exceptions.Forbidden as err:
+        client = firestore.Client()
+        doc_ref = client.collection('cis-errors').document(project_id)
+        doc_ref.set({u'Time': datetime.datetime.now(),
+                     u'Error': u'{}'.format(err)})
 
 
 def main():
