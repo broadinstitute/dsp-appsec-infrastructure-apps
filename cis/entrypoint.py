@@ -7,17 +7,15 @@ This module
 - optionally records completion in a Firestore doc
 """
 
+import datetime
 import json
 import logging
 import os
 import subprocess
-from typing import List, Any
-import datetime
+from typing import Any, List
+
 import slack
-import google.api_core
-
 from google.cloud import bigquery, firestore, resource_manager
-
 
 BENCHMARK_PROFILE = 'inspec-gcp-cis-benchmark'
 
@@ -189,13 +187,7 @@ def validate_project(project_id: str):
     Raises a NotFound error if not and writes it to Firestore
     """
     client = resource_manager.Client()
-    try:
-        client.fetch_project(project_id)
-    except google.api_core.exceptions.Forbidden as err:
-        client = firestore.Client()
-        doc_ref = client.collection('cis-errors').document(project_id)
-        doc_ref.set({u'Time': datetime.datetime.now(),
-                     u'Error': u'{}'.format(err)})
+    client.fetch_project(project_id)
 
 
 def main():
@@ -213,21 +205,28 @@ def main():
     slack_results_url = os.getenv('SLACK_RESULTS_URL')
     fs_collection = os.getenv('FIRESTORE_COLLECTION')
 
-    # validate inputs
-    validate_project(project_id)
+    try:
+        # validate inputs
+        validate_project(project_id)
 
-    # scan and load results into BigQuery
-    title, version, rows = parse_profiles(*benchmark(project_id))
-    table_id = load_bigquery(project_id, dataset_id, title, version, rows)
+        # scan and load results into BigQuery
+        title, version, rows = parse_profiles(*benchmark(project_id))
+        table_id = load_bigquery(project_id, dataset_id, title, version, rows)
 
-    # post to Slack, if specified
-    if slack_token and slack_channel and slack_results_url:
-        slack_notify(project_id, slack_token, slack_channel, slack_results_url)
+        # post to Slack, if specified
+        if slack_token and slack_channel and slack_results_url:
+            slack_notify(project_id, slack_token, slack_channel, slack_results_url)
 
-    # Note: TODO please move this into a try-catch for all the above
-    if fs_collection:
-        firestore_report(fs_collection, table_id)
+        if fs_collection:
+            firestore_report(fs_collection, table_id)
 
+    except (Exception) as error:
+        client = firestore.Client()
+        doc_ref = client.collection(fs_collection).document(project_id)
+        doc_ref.set({u'Time': datetime.datetime.now(),
+                     u'Error': u'{}'.format(error)})
+        print(Exception)
+        raise error
 
 if __name__ == '__main__':
     main()

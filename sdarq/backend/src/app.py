@@ -1,4 +1,12 @@
-
+"""
+This module
+- sends a new service requirements request 
+        - creates a new product in Defect Dojo
+        - optionally creates a Jira Ticket
+        - notifies several Slack channels about service requirements request
+- sends request to scan a GCP project against the CIS Benchmark
+- get results from BigQuery for a scanned GCP project
+"""
 #!/usr/bin/env python3
 
 import os
@@ -13,7 +21,6 @@ from google.cloud import firestore
 from jira import JIRA
 import slacknotify
 import defectdojo as wrapper
-
 
 # Env variables
 dojo_host = os.getenv('dojo_host')
@@ -145,8 +152,6 @@ def cis_results():
         json: Security scan results for given project_id
     """
     project_id_encoded = request.get_data()
-    print(project_id_encoded)
-    print(project_id_encoded.decode("utf-8"))
     project_id = project_id_encoded.decode("utf-8")
     pattern = "^[a-z][a-z0-9-_]{4,28}[a-z0-9]$"
     project_id_edited = project_id.strip('-').replace('-', '_')
@@ -201,6 +206,8 @@ def cis_scan():
     if re.match(pattern, user_project_id):
         publisher = pubsub_v1.PublisherClient()
         topic_path = publisher.topic_path(project_id, topic_name)
+        user_proj = user_project_id.replace('-', '_')
+        doc_refer = db.collection(firestore_collection).document(user_proj)
         if 'slack_channel' in json_data:
             slack_channel = json_data['slack_channel']
             publisher.publish(topic_path,
@@ -214,6 +221,7 @@ def cis_scan():
                               data=message,
                               GCP_PROJECT_ID=user_project_id,
                               FIRESTORE_COLLECTION=firestore_collection)
+
     user_proj = user_project_id.replace('-', '_')
     while check is False:
         doc_ref = db.collection(
@@ -224,9 +232,15 @@ def cis_scan():
         else:
             check = False
 
-    db.collection(firestore_collection).document(user_proj).delete()
-
-    return ''
+    check_dict = doc.to_dict()
+    if bool(check_dict):
+        statusCode = 404
+        textMessage = 'An error occurred during the scan. Please try again.'
+        db.collection(firestore_collection).document(user_proj).delete()
+        return Response(json.dumps({'statusText': textMessage}), status=statusCode, mimetype='application/json')
+    else:
+        db.collection(firestore_collection).document(user_proj).delete()
+        return ''
 
 
 if __name__ == "__main__":
