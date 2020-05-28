@@ -84,6 +84,7 @@ def parse_profiles(project_id: str, profiles):
         rows.append({
             'id': tags['cis_gcp'],
             'level': tags['cis_level'],
+            'impact': ctrl['impact'],
             'title': ctrl['title'],
             'failures': failures,
             'description': ctrl['desc'],
@@ -110,6 +111,7 @@ def load_bigquery(project_id: str, dataset_id: str, table_desc: str, version: st
     schema = (
         f('id', 'STRING', mode='REQUIRED'),
         f('level', 'INTEGER', mode='REQUIRED'),
+        f('impact', 'STRING', mode='REQUIRED'),
         f('title', 'STRING', mode='REQUIRED'),
         f('failures', 'STRING', mode='REPEATED'),
         f('description', 'STRING', mode='REQUIRED'),
