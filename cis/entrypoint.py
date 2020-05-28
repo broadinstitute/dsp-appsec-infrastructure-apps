@@ -84,7 +84,7 @@ def parse_profiles(project_id: str, profiles):
         rows.append({
             'id': tags['cis_gcp'],
             'level': tags['cis_level'],
-            'impact': ctrl['impact'],
+            'impact': str(ctrl['impact']),
             'title': ctrl['title'],
             'failures': failures,
             'description': ctrl['desc'],
