@@ -22,13 +22,14 @@ data:
         containers:
         - name: cis-scan
           image: ${CIS_IMAGE}
+          imagePullPolicy: Always
           env:
           - name: BQ_DATASET
             value: ${CIS_DATASET}
           - name: SLACK_TOKEN
             valueFrom:
               secretKeyRef:
-                 name: cis-scan
+                 name: ${JOB_SECRET}
                  key: SLACK_TOKEN
           - name: GCP_PROJECT_ID
             valueFrom:
@@ -42,10 +43,10 @@ data:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.annotations['SLACK_CHANNEL']
-          - name: RESULTS_URL
+          - name: SLACK_RESULTS_URL
             valueFrom:
               fieldRef:
-                fieldPath: metadata.annotations['RESULTS_URL']
+                fieldPath: metadata.annotations['SLACK_RESULTS_URL']
           resources:
             requests:
               memory: 250M

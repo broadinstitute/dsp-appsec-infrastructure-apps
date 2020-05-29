@@ -86,7 +86,7 @@ def submit():
         return data4
 
     # Create a Jira ticket if user chooses a Jira project
-    slack_channels_list = ['#new-sec-service-req', '#zap-test']
+    slack_channels_list = ['#dspsecurity', '#appsec-internal', '#dsde-qa']
 
     if 'JiraProject' in json_data:
         project_key_id = json_data['JiraProject']
@@ -110,7 +110,7 @@ def submit():
 
         # Set Slack notification
         for channel in slack_channels_list:
-            if channel == '#zap-test':
+            if channel == '#dsde-qa':
                 slacknotify.slacknotify_jira_qa(slack_token, channel, dojo_name, security_champion,
                                                 product_id, dojo_host_url, jira_instance,
                                                 project_key_id, jira_ticket)
@@ -122,10 +122,12 @@ def submit():
     else:
         # When Jira ticket creation is not selected
         for channel in slack_channels_list:
-            if channel == '#zap-test':
-                slacknotify.slacknotify_qa(slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
+            if channel == '#dsde-qa':
+                slacknotify.slacknotify_qa(
+                    slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
             else:
-                slacknotify.slacknotify(slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
+                slacknotify.slacknotify(
+                    slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
 
          # Set product description
         dd.set_product(product_id, description=prepare_dojo_input(json_data))
@@ -163,7 +165,7 @@ def cis_results():
         tables = [dict(row) for row in query_job_table]
         json.dumps(tables)
         if results_table.total_rows != 0:
-            sql = "SELECT * FROM `dsp-appsec-infra-prod.cis.{0}` WHERE id!='5.3'".format(
+            sql = "SELECT * FROM `dsp-appsec-infra-prod.cis.{0}` WHERE id!='5.3' ORDER BY impact DESC".format(
                 str(project_id_edited))
             query_job = client.query(sql)
             query_job.result()
@@ -172,8 +174,8 @@ def cis_results():
             return json_obj
         else:
             notfound = f"""
-            This Google project is not found! Did you make sure to supply the right GCP Project ID? 
-            You can verify the ID of the project you want to scan by running the following command: 
+            This Google project is not found! Did you make sure to supply the right GCP Project ID?
+            You can verify the ID of the project you want to scan by running the following command:
             gcloud config list project --format='value(core.project)'
             """
             return Response(json.dumps({'statusText': notfound}), status=404, mimetype='application/json')
@@ -188,12 +190,12 @@ def cis_scan():
     json_data = request.get_json()
     user_project_id = json_data['project_id']
     pattern = "^[a-z][a-z0-9-_]{4,28}[a-z0-9]$"
-    results_url = sdarq_host
     topic_name = "cis-scans"
     project_id = "dsp-appsec-infra-prod"
     message = ""
+    results_url = f"{sdarq_host}/cis/results?project_id={user_project_id}"
     message = message.encode("utf-8")
-    firestore_collection = 'cis_scans'
+    firestore_collection = "cis-scans"
     check = False
 
     if re.match(pattern, user_project_id):
@@ -205,28 +207,27 @@ def cis_scan():
                               data=message,
                               GCP_PROJECT_ID=user_project_id,
                               SLACK_CHANNEL=slack_channel,
-                              RESULTS_URL=results_url,
+                              SLACK_RESULTS_URL=results_url,
                               FIRESTORE_COLLECTION=firestore_collection)
         else:
             publisher.publish(topic_path,
                               data=message,
                               GCP_PROJECT_ID=user_project_id,
                               FIRESTORE_COLLECTION=firestore_collection)
-        user_proj = user_project_id.replace('-', '_')
-        while check is False:
-            doc_ref = db.collection(
-                firestore_collection).document(user_proj)
-            doc = doc_ref.get()
-            if doc.exists:
-                check = True
-            else:
-                check = False
+    user_proj = user_project_id.replace('-', '_')
+    while check is False:
+        doc_ref = db.collection(
+            firestore_collection).document(user_proj)
+        doc = doc_ref.get()
+        if doc.exists:
+            check = True
+        else:
+            check = False
 
-        db.collection(firestore_collection).document(user_proj).delete()
+    db.collection(firestore_collection).document(user_proj).delete()
 
-        return Response(json.dumps({'statusText': 'Doc found!', 'status': 'true'}), status=200, mimetype='application/json')
     return ''
-    
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 8080)))

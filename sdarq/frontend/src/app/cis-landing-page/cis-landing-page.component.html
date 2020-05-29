@@ -3,9 +3,7 @@
     <br>
     <br>
     <div class="row">
-      <p class="lead">Whether you need scan your Google Cloud project or you want to get results of a previews scan,
-        we've got you covered.
-        To get started please select one of the following options.</p>
+      <p class="lead">To get started please select one of the following options.</p>
     </div>
     <br>
     <br>
@@ -21,15 +19,14 @@
             <br>
             <!--Title-->
             <mdb-card-title>
-              <h4>Scan</h4>
+              <h4>Scan GCP Project </h4>
             </mdb-card-title>
             <br>
             <!--Text-->
-            <mdb-card-text> My team is working with Google Cloud services, and we want to scan our project to make sure
-              you are doing the right thing from a security point of view.
+            <mdb-card-text> I want to assess my GCP project security posture on the Google Cloud against the CIS Benchmark.
             </mdb-card-text>
             <br>
-            <a href="/cis/scan" mdbBtn color="primary" mdbWavesEffect>Start</a>
+            <button routerLink="/cis/scan" mdbBtn type="button" color="primary" mdbWavesEffect>Start</button>
           </mdb-card-body>
         </mdb-card>
       </div>
@@ -47,11 +44,10 @@
             </mdb-card-title>
             <br>
             <!--Text-->
-            <mdb-card-text> My team is working with Google Cloud services, and we want to get latest results of our
-              project scan.
+            <mdb-card-text> I scanned my GCP project and I want to get latest results of this GCP project scan. 
             </mdb-card-text>
             <br>
-            <a href="cis/latest" mdbBtn color="primary" mdbWavesEffect>Start</a>
+            <button routerLink="/cis/latest" mdbBtn type="button" color="primary" mdbWavesEffect>Start</button>
           </mdb-card-body>
         </mdb-card>
       </div>

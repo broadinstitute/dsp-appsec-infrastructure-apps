@@ -55,7 +55,7 @@
 
 .sv_main .sv_body {
   background-color: white;
-  border-top: 1px solid #d0d0d0 !important;
+  border-top: none !important;
 }
 
 .sv_main .sv_progress_bar {

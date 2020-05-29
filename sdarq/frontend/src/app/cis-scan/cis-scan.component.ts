@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import formJson from './form.json';
 import { CisProjectService } from '../services/cis-project.service';
 import { HttpClient } from '@angular/common/http';
+import { QuestionBooleanModel } from 'survey-angular';
 
 
 @Component({
@@ -13,16 +14,27 @@ export class CisScanComponent implements OnInit {
 
   projectFindings: any[];
   data: any[] = [];
-  json = formJson
+  json = formJson;
+  showSpinner: boolean;
+  showModal: boolean;
+  showForm: boolean;
+  showModalError: boolean;
 
   constructor(private sendProject: CisProjectService, private http: HttpClient) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.showModal = false;
+    this.showForm = true;
+    this.showModalError = false;
+  }
 
   sendData(result) {
+    this.showSpinner = true;
     if (result.slack_channel) {
       this.sendProject.sendCisProject(result).subscribe((data: any) => {
-        console.log('Notification sent to slack')
+        this.showModal = true;
+        this.showForm = false;
+        this.showSpinner = false;
       });
     } else {
       this.sendProject.sendCisProject(result).subscribe((data: any) => {

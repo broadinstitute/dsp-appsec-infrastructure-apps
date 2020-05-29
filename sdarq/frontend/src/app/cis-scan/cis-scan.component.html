@@ -1,8 +1,29 @@
 <div class="jumbotron">
   <div class="container">
+    <div class="row">
+      <div class="col"> </div>
+      <div class="colalign-self-center">
+        <div class="spinner-grow text-primary" role="status" *ngIf="showSpinner">
+          <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-primary" role="status" *ngIf="showSpinner">
+          <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-primary" role="status" *ngIf="showSpinner">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+      <div class="col"> </div>
+    </div>
+    <div class="alert alert-warning animated fadeInRight" role="alert" *ngIf="showModal">
+      Notification is sent to slack channel.
+    </div>
+    <div class="alert alert-warning animated fadeInRight" role="alert" *ngIf="showModalError">
+      An error occurred. Please make sure you have provided a project_id which is part of Broad Institute organization.
+    </div>
     <br>
     <br>
-    <app-survey [json]="json" (submitSurvey)="sendData($event)"></app-survey>
+    <app-survey *ngIf="showForm" [json]="json" (submitSurvey)="sendData($event)"></app-survey>
     <br>
     <br>
   </div>
