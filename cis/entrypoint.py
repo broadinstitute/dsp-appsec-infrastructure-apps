@@ -38,7 +38,10 @@ def benchmark(project_id: str):
         logging.error(proc.stderr)
         raise subprocess.CalledProcessError(proc.returncode, proc.args)
 
-    return project_id, json.loads(proc.stdout)['profiles']
+    for out in proc.stdout.splitlines():
+        if out.startswith('{'):
+            return project_id, json.loads(out)['profiles']
+    return None
 
 
 def parse_profiles(project_id: str, profiles):
