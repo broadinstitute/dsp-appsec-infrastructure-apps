@@ -251,4 +251,23 @@ steps:
   entrypoint: ./deploy.sh
   dir: zap
 
+# build flowfish vulnerabilty scanner Docker image
+- id: flowfish-image
+  name: *kaniko
+  waitFor: ['kaniko']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/flowfish
+      --destination=$${FLOWFISH_IMAGE}
+      --cache
+
+# deploy flowfish vulnerability scanner to GKE cluster
+- id: flowfish
+  name: *kubectl
+  waitFor: ['shared', 'flowfish-image', 'batch-dispatcher-image']
+  entrypoint: ./deploy.sh
+  dir: flowfish/gke
+
 timeout: 7200s
