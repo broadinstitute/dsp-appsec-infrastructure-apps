@@ -266,7 +266,7 @@ steps:
 # deploy flowfish vulnerability scanner to GKE cluster
 - id: flowfish
   name: *kubectl
-  waitFor: ['shared', 'flowfish-image', 'batch-dispatcher-image']
+  waitFor: ['shared', 'batch-dispatcher-image', 'flowfish-image']
   entrypoint: ./deploy.sh
   dir: flowfish/gke
 
