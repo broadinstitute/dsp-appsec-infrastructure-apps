@@ -3,7 +3,7 @@
 set -euo pipefail
 
 CWD="${PWD}"
-cd ../shared
+cd ../../shared
 
 export NAMESPACE="flowfish"
 export JOB_TOPIC="${NAMESPACE}-scans"
