@@ -26,7 +26,7 @@ options:
   - JOB_DISPATCHER_ROLE=job-dispatcher
   - GLOBAL_NAMESPACE=global
   - CIS_DATASET=cis
-  - FLOWFISH_VULNERABILITY_DATASET=flowfish
+  - FLOWFISH_DATASET=flowfish
   - DOJO_NAMESPACE=defectdojo
   - DOJO_SERVICE=defectdojo
   - SDARQ_SERVICE_ACCOUNT=sdarq-sa
