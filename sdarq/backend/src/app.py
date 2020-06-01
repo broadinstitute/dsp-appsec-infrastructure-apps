@@ -86,7 +86,7 @@ def submit():
         return data4
 
     # Create a Jira ticket if user chooses a Jira project
-    slack_channels_list = ['#dspsecurity', '#appsec-internal', '#dsde-qa']
+    slack_channels_list = ['#dsp-security', '#appsec-internal', '#dsde-qa']
 
     if 'JiraProject' in json_data:
         project_key_id = json_data['JiraProject']
