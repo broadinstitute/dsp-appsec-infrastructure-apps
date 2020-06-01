@@ -38,7 +38,10 @@ def benchmark(project_id: str):
         logging.error(proc.stderr)
         raise subprocess.CalledProcessError(proc.returncode, proc.args)
 
-    return project_id, json.loads(proc.stdout)['profiles']
+    for out in proc.stdout.splitlines():
+        if out.startswith('{'):
+            return project_id, json.loads(out)['profiles']
+    return None
 
 
 def parse_profiles(project_id: str, profiles):
@@ -79,7 +82,7 @@ def parse_profiles(project_id: str, profiles):
             rationale = desc['data']
 
         tags = ctrl['tags']
-        refs = [ref['url'] for ref in ctrl['refs']]
+        refs = collect_refs(ctrl['refs'], [])
 
         rows.append({
             'id': tags['cis_gcp'],
@@ -93,6 +96,18 @@ def parse_profiles(project_id: str, profiles):
         })
 
     return title, version, rows
+
+
+def collect_refs(refs: list, urls: List[str]):
+    """
+    Recursively collects reference URLs.
+    """
+    for ref in refs:
+        if 'url' in ref:
+            urls.append(ref['url'])
+        if 'ref' in ref and isinstance(ref['ref'], list):
+            collect_refs(ref['ref'], urls)
+    return urls
 
 
 def load_bigquery(project_id: str, dataset_id: str, table_desc: str, version: str, rows: List[Any]):
