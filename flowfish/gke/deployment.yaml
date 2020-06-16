@@ -27,10 +27,10 @@
               - name: BQ_DATASET
                 value: ${FLOWFISH_DATASET}
               - name: SLACK_TOKEN
-              valueFrom:
-                secretKeyRef:
-                    name: ${JOB_SECRET}
-                    key: SLACK_TOKEN
+                valueFrom:
+                  secretKeyRef:
+                      name: ${JOB_SECRET}
+                      key: SLACK_TOKEN
               resources:
                 requests:
                   memory: 250M
