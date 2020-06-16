@@ -25,12 +25,24 @@
               imagePullPolicy: Always
               env:
               - name: BQ_DATASET
-                value: ${FLOWFISH_DATASET}
+                value: ${CIS_DATASET}
               - name: SLACK_TOKEN
                 valueFrom:
                   secretKeyRef:
                       name: ${JOB_SECRET}
                       key: SLACK_TOKEN
+              - name: FIRESTORE_COLLECTION
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.annotations['FIRESTORE_COLLECTION']
+              - name: SLACK_CHANNEL
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.annotations['SLACK_CHANNEL']
+              - name: SLACK_RESULTS_URL
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.annotations['SLACK_RESULTS_URL']
               resources:
                 requests:
                   memory: 250M
