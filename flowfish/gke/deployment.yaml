@@ -60,7 +60,7 @@
       - role: OWNER
         specialGroup: projectOwners
       - role: WRITER
-        userByEmail: ${GCP_SERVICE_ACCOUNT_EMAIL}
+        userByEmail: ${SDARQ_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
     ---
     apiVersion: iam.cnrm.cloud.google.com/v1beta1
     kind: IAMPolicyMember
