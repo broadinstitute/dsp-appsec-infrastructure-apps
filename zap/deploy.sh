@@ -2,15 +2,22 @@
 
 set -euo pipefail
 
-CWD="${PWD}"
-cd ../shared
+export NAMESPACE="zap-report-subscriber"
 
-export NAMESPACE="zap"
-export JOB_TOPIC="${NAMESPACE}-scans"
-export JOB_CONFIG_MAP="${JOB_TOPIC}"
+./kube-apply.py "namespace.yaml"
+export CODEDX_URL = "http://codedx.codedx.svc.cluster.local"
+export PROJECT_NUMBER="${PROJECT_NUMBER}"
+export SECRET_NAME="codedx-api-key"
+export SECRET_VERSION="1"
+export JOB_TOPIC="zap-scans"
+export JOB_SUBSCRIPTION="${JOB_TOPIC}"
+export JOB_DEPLOYMENT="${JOB_TOPIC}-dispatcher"
+export JOB_CONFIG_VOLUME="job-config"
+export JOB_CONFIG_MOUNT_PATH="/job"
+export JOB_SPEC_KEY="spec"
 
-./kube-apply.py \
-  "namespace.yaml" \
-  "${CWD}/deployment.yaml"
+export SERVICE="${JOB_DEPLOYMENT}"
+export SERVICE_ACCOUNT="${SERVICE}"
 
-./batch.sh
+./kube-apply.py "service-account.yaml" \
+    "${CWD}/deployment.yaml"

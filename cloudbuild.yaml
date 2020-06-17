@@ -10,7 +10,7 @@ options:
   - CLOUDSQL_PROXY_IMAGE=us.gcr.io/${PROJECT_ID}/cloudsql-proxy:workaround
   - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis
   - SOURCECLEAR_IMAGE=us.gcr.io/${PROJECT_ID}/sourceclear
-  - REPORT_DISPATCHER_IMAGE=us.gcr.io/${PROJECT_ID}/report-dispatcher
+  - CODEDX_ANALYSIS_IMAGE=us.gcr.io/${PROJECT_ID}/codedx-analysis
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
   - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
   - DOCS_IMAGE=us.gcr.io/${PROJECT_ID}/docs:${SHORT_SHA}
@@ -252,23 +252,23 @@ steps:
   entrypoint: ./deploy.sh
   dir: zap
 
-# build SDARQ frontend Docker image
-- id: report-dispatcher-image
+# build codedx analysis Docker image
+- id: codedx-analysis-image
   name: *kaniko
   waitFor: ['kaniko']
   entrypoint: sh
   args:
   - -c
   - executor
-      --context=dir:///workspace/zap-report-dispatcher
-      --destination=$${REPORT_DISPATCHER_IMAGE}
+      --context=dir:///workspace/codedx/codedx-analysis
+      --destination=$${CODEDX_ANALYSIS_IMAGE}
       --cache
 
-# deploy report dispatcher to GKE cluster
-- id: zap-report-dispatcher
+# deploy codedx analysis to GKE cluster
+- id: codedx-analysis-deployment
   name: *kubectl
-  waitFor: ['shared', 'report-dispatcher-image']
+  waitFor: ['shared', 'codedx-analysis-image']
   entrypoint: ./deploy.sh
-  dir: zap-report-subscriber
+  dir: codedx/codedx-analysis
 
 timeout: 7200s

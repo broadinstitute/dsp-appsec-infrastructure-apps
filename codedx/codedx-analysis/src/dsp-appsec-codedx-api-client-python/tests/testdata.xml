@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report date="0000-00-00T00:00:000"
+        author="python-api-client"
+        generator="codedx"
+        generator-version="3.5.1"
+        version="2.5">
+   <project id="0" name="Test Project"/>
+   <findings>
+      <finding>
+               blah
+      </finding>
+    </findings>
+</report>

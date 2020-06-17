@@ -18,7 +18,7 @@ spec:
         cloud.google.com/gke-nodepool: system
       containers:
       - name: job-dispatcher
-        image: ${REPORT_DISPATCHER_IMAGE}
+        image: ${CODEDX_ANALYSIS_IMAGE}
         env:
         - name: PROJECT_ID
           value: ${PROJECT_ID}
@@ -26,8 +26,6 @@ spec:
           value: ${JOB_SUBSCRIPTION}
         - name: CODEDX_URL
           value: ${CODEDX_URL} 
-        - name: PROJECT_NUMBER
-          value: ${PROJECT_NUMBER}
         - name: SECRET_NAME
           value: ${NAMESPACE}  
         - name: SECRET_NAME

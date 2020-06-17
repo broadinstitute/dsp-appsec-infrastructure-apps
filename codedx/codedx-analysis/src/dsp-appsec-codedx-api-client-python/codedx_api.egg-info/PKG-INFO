@@ -1,0 +1,13 @@
+Metadata-Version: 1.1
+Name: codedx-api
+Version: 0.1
+Summary: CodeDX API Client for Python
+Home-page: https://github.com/broadinstitute/codedx-api-client
+Author: Sarada Symonds
+Author-email: ssymonds@broadinstitute.org
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: TBD
+Classifier: Operating System :: OS Independent
