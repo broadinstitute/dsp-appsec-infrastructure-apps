@@ -260,7 +260,7 @@ steps:
   args:
   - -c
   - executor
-      --context=dir:///workspace/codedx/codedx-analysis
+      --context=dir:///workspace/codedx-analysis
       --destination=$${CODEDX_ANALYSIS_IMAGE}
       --cache
 
@@ -269,6 +269,6 @@ steps:
   name: *kubectl
   waitFor: ['shared', 'codedx-analysis-image']
   entrypoint: ./deploy.sh
-  dir: codedx/codedx-analysis
+  dir: codedx-analysis
 
 timeout: 7200s
