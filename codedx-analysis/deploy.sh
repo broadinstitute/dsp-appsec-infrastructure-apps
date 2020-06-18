@@ -17,7 +17,8 @@ export JOB_SPEC_KEY="spec"
 
 export BUCKET_NAME="zap-vulnerability-reports"
 export BUCKET_NOTIFICATION="${BUCKET_NAME}-notification"
-export BUCKET_ACCESS="${BUCKET_NAME}-access-policy"
+export BUCKET_IAM_POLICY="${BUCKET_NAME}-iam-policy"
+export BUCKET_SA_IAM_POLICY="${BUCKET_NAME}-sa-iam-policy"
 export BUCKET_ACCESS_ENTITY="appsec@broadiinstitute.org"
 
 export SERVICE="${JOB_DEPLOYMENT}"
