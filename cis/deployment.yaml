@@ -116,3 +116,49 @@ spec:
   - role: roles/pubsub.publisher
     members:
     - serviceAccount:${SDARQ_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: automated-cis-scan-cronjob
+  namespace: ${NAMESPACE}
+spec:
+  schedule: "0 0 * * 0"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          runtimeClassName: gvisor
+          nodeSelector:
+            cloud.google.com/gke-nodepool: batch
+          restartPolicy: OnFailure
+          containers:
+          - name: automated-cis-scan
+            image: ${CIS_IMAGE}
+            command: ['python3 scanweekly.py']
+            env:
+              - name: BQ_DATASET
+                valueFrom:
+                  secretKeyRef:
+                    name: ${NAMESPACE}
+                    key: BQ_DATASET
+              - name: SLACK_TOKEN
+                valueFrom:
+                  secretKeyRef:
+                      name: ${NAMESPACE}
+                      key: SLACK_TOKEN
+              - name: SLACK_CHANNEL
+                valueFrom:
+                  secretKeyRef:
+                    name: ${NAMESPACE}
+                    key: SLACK_CHANNEL
+              - name: GCP_PROJECT_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: ${NAMESPACE}
+                    key: GCP_PROJECT_ID
+              - name: TOPIC_NAME
+                valueFrom:
+                  secretKeyRef:
+                    name: ${NAMESPACE}
+                    key: TOPIC_NAME

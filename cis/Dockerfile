@@ -41,10 +41,11 @@ FROM base AS test
 
 RUN pip3 install pylint pytest
 
-COPY *.py /
+COPY entrypoint.py /
+COPY entrypoint_test.py /
 
-RUN pylint /*.py
-RUN pytest /*.py
+RUN pylint /entrypoint.py
+RUN pytest /entrypoint_test.py
 
 
 FROM base
@@ -56,3 +57,10 @@ COPY entrypoint.py /
 USER ${USER}
 
 ENTRYPOINT [ "/entrypoint.py" ]
+
+
+FROM base 
+
+COPY scanweekly.py /
+
+ENTRYPOINT [ "/scanweekly.py" ]
