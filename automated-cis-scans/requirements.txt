@@ -1,5 +1,0 @@
-google-cloud-bigquery
-google-cloud-pubsub
-google-cloud-resource-manager
-google-api-core[grpc]<1.17.0,>=1.14.0
-slackclient
