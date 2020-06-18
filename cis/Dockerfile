@@ -63,4 +63,6 @@ FROM base
 
 COPY scanweekly.py /
 
+USER nobody
+
 ENTRYPOINT [ "/scanweekly.py" ]

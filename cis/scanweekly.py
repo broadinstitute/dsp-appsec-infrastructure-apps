@@ -12,9 +12,9 @@ from google.cloud import bigquery, pubsub_v1
 
 slack_token = os.environ['SLACK_TOKEN']
 slack_channel = os.environ['SLACK_CHANNEL']
-project_id = os.environ['GCP_PROJECT_ID']
-topic_name = os.environ['TOPIC_NAME']
-bq_dataset = os.environ['BQ_DATASET']
+project_id = os.getenv('PROJECT_ID')
+bq_dataset = os.getenv('BQ_DATASET')
+topic_name = os.getenv('JOB_TOPIC')
 
 client = bigquery.Client()
 
@@ -118,14 +118,17 @@ def slack_notify(records: str, slack_token: str, slack_channel: str, user_proj: 
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "*High finding in  `{0}` GCP project* :gcpcloud: :" .format(user_proj.replace('_', '-'))
+                        "text": "* | High finding in  `{0}` GCP project* :gcpcloud: :" .format(user_proj.replace('_', '-'))
                     }
+                },
+                {
+                    "type": "divider"
                 },
                 {
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "*Impact*: `{0}`" .format(str(row['impact']))
+                        "text": "*Impact*: `{0}`" .format(str(float(row['impact'])*10))
 
                     }
                 },
@@ -172,7 +175,7 @@ def main():
     Implements the scanweekly.py
     """
 
-    scan_projects(list_projects())
+    # scan_projects(list_projects())
     find_highs(list_projects())
 
 

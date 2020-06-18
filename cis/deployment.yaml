@@ -123,7 +123,7 @@ metadata:
   name: automated-cis-scan-cronjob
   namespace: ${NAMESPACE}
 spec:
-  schedule: "0 0 * * 0"
+  schedule: "0 7 * * 6"
   jobTemplate:
     spec:
       template:
@@ -138,27 +138,14 @@ spec:
             command: ['python3 scanweekly.py']
             env:
               - name: BQ_DATASET
-                valueFrom:
-                  secretKeyRef:
-                    name: ${NAMESPACE}
-                    key: BQ_DATASET
+                value: ${CIS_DATASET}
               - name: SLACK_TOKEN
                 valueFrom:
                   secretKeyRef:
-                      name: ${NAMESPACE}
+                      name: ${JOB_SECRET}
                       key: SLACK_TOKEN
               - name: SLACK_CHANNEL
                 valueFrom:
                   secretKeyRef:
-                    name: ${NAMESPACE}
+                    name: ${JOB_SECRET}
                     key: SLACK_CHANNEL
-              - name: GCP_PROJECT_ID
-                valueFrom:
-                  secretKeyRef:
-                    name: ${NAMESPACE}
-                    key: GCP_PROJECT_ID
-              - name: TOPIC_NAME
-                valueFrom:
-                  secretKeyRef:
-                    name: ${NAMESPACE}
-                    key: TOPIC_NAME
