@@ -15,6 +15,11 @@ export JOB_CONFIG_VOLUME="job-config"
 export JOB_CONFIG_MOUNT_PATH="/job"
 export JOB_SPEC_KEY="spec"
 
+export BUCKET_NAME="zap-vulnerability-reports"
+export BUCKET_NOTIFICATION="${BUCKET_NAME}-notification"
+export BUCKET_ACCESS="${BUCKET_NAME}-access-policy"
+export BUCKET_ACCESS_ENTITY="appsec@broadiinstitute.org"
+
 export SERVICE="${JOB_DEPLOYMENT}"
 export SERVICE_ACCOUNT="${SERVICE}"
 

@@ -85,3 +85,43 @@ metadata:
 spec:
   topicRef:
     name: ${JOB_TOPIC}
+---
+apiVersion: storage.cnrm.cloud.google.com/v1beta1
+kind: StorageBucket
+metadata:
+  name: ${BUCKET_NAME}
+  namespace: ${NAMESPACE}
+---
+apiVersion: storage.cnrm.cloud.google.com/v1beta1
+kind: StorageNotification
+metadata:
+  name: ${BUCKET_NOTIFICATION}
+  namespace: ${NAMESPACE}
+spec:
+  bucketRef:
+    name: ${BUCKET_NAME}
+  payloadFormat: JSON_API_V1
+  topicRef:
+    name: ${JOB_TOPIC}
+  eventTypes:
+    - "OBJECT_FINALIZE"
+---
+apiVersion: storage.cnrm.cloud.google.com/v1beta1
+kind: StorageBucketAccessControl
+metadata:
+  name: ${BUCKET_ACCESS}
+spec:
+  bucketRef:
+    name: ${BUCKET_NAME}
+  entity: ${BUCKET_ACCESS_ENTITY}
+  role: EDITOR
+---
+apiVersion: storage.cnrm.cloud.google.com/v1beta1
+kind: StorageBucketAccessControl
+metadata:
+  name: ${BUCKET_ACCESS}-sa
+spec:
+  bucketRef:
+    name: ${BUCKET_NAME}
+  entity: ${SERVICE_ACCOUNT}
+  role: READER
