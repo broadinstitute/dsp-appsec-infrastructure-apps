@@ -12,7 +12,6 @@ from google.cloud import bigquery, pubsub_v1
 
 futures = dict()
 
-
 def list_projects():
     """
     Fetch all tables in BigQuery
@@ -182,8 +181,6 @@ def main():
     scan_projects(list_projects(), project_id, topic_name)
 
     find_highs(projects, project_id, bq_dataset, slack_channel, slack_token)
-
-    # slack_notify(records, slack_token, slack_channel, user_proj)
 
 
 if __name__ == '__main__':
