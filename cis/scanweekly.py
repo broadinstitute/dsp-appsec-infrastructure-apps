@@ -175,7 +175,7 @@ def main():
     Implements the scanweekly.py
     """
 
-    # scan_projects(list_projects())
+    scan_projects(list_projects())
     find_highs(list_projects())
 
 
