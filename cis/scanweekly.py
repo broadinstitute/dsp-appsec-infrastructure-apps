@@ -10,14 +10,6 @@ from typing import List, Any
 import slack
 from google.cloud import bigquery, pubsub_v1
 
-slack_token = os.environ['SLACK_TOKEN']
-slack_channel = os.environ['SLACK_CHANNEL']
-project_id = os.getenv('PROJECT_ID')
-bq_dataset = os.getenv('BQ_DATASET')
-topic_name = os.getenv('JOB_TOPIC')
-
-client = bigquery.Client()
-
 futures = dict()
 
 
@@ -29,6 +21,8 @@ def list_projects():
     Returns:
         List of table names in BigQuery
     """
+    client = bigquery.Client()
+
     sql_tables = """
             SELECT table_name FROM `cis.INFORMATION_SCHEMA.TABLES`
             """
@@ -38,21 +32,21 @@ def list_projects():
     return results_table
 
 
-def get_callback(f, data):
+def get_callback(future, data):
     """
     Handle publish failures
     """
-    def callback(f):
+    def callback(future):
         try:
-            print(f.result())
+            print(future.result())
             futures.pop(data)
         except:
-            print("Please handle {} for {}.".format(f.exception(), data))
+            print("Please handle {} for {}.".format(future.exception(), data))
 
     return callback
 
 
-def scan_projects(projects: List[Any]):
+def scan_projects(result_table: List[Any], project_id: str, topic_name: str):
     """
     Scan multiply projects by publishing multiple
     messages to a Pub/Sub topic with an error handler.
@@ -68,7 +62,7 @@ def scan_projects(projects: List[Any]):
     publisher = pubsub_v1.PublisherClient()
     topic_path = publisher.topic_path(project_id, topic_name)
 
-    for row in projects:
+    for row in result_table:
         data = u"{}".format(row['table_name'])
         futures.update({data: None})
         gcp_project_id = row['table_name'].replace('_', '-')
@@ -83,7 +77,7 @@ def scan_projects(projects: List[Any]):
         future.add_done_callback(get_callback(future, data))
 
 
-def find_highs(projects: List[Any]):
+def find_highs(projects: List[Any], project_id: str, bq_dataset: str, slack_channel: str, slack_token: str):
     """
     Find high vulnerabilities from GCP project scan.
 
@@ -95,6 +89,7 @@ def find_highs(projects: List[Any]):
     for row in projects:
         user_proj = row['table_name']
         print(user_proj)
+        client = bigquery.Client()
 
         sql = "SELECT * FROM `{0}.{1}.{2}` WHERE impact>'0.6' ".format(
             str(project_id), str(bq_dataset), str(row['table_name']))
@@ -156,7 +151,8 @@ def slack_notify(records: str, slack_token: str, slack_channel: str, user_proj: 
                     "elements": [
                         {
                             "type": "image",
-                            "image_url": "https://platform.slack-edge.com/img/default_application_icon.png",
+                            "image_url": \
+                            "https://platform.slack-edge.com/img/default_application_icon.png",
                             "alt_text": "slack"
                         },
                         {
@@ -175,8 +171,19 @@ def main():
     Implements the scanweekly.py
     """
 
-    scan_projects(list_projects())
-    find_highs(list_projects())
+    slack_token = os.environ['SLACK_TOKEN']
+    slack_channel = os.environ['SLACK_CHANNEL']
+    project_id = os.getenv('PROJECT_ID')
+    bq_dataset = os.getenv('BQ_DATASET')
+    topic_name = os.getenv('JOB_TOPIC')
+
+    projects = list_projects()
+
+    scan_projects(list_projects(), project_id, topic_name)
+
+    find_highs(projects, project_id, bq_dataset, slack_channel, slack_token)
+
+    # slack_notify(records, slack_token, slack_channel, user_proj)
 
 
 if __name__ == '__main__':
