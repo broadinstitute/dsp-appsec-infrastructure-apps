@@ -20,7 +20,7 @@ import json
 import os
 import time
 from codedx_api import CodeDxAPI
-from google.cloud import pubsub, storage, secretmanager
+from google.cloud import pubsub_v1, storage, secretmanager
 
 project_id = os.environ['PROJECT_ID']
 subscription_name = os.environ['SUBSCRIPTION']
@@ -29,7 +29,7 @@ secret_name = os.environ["SECRET_NAME"]
 secret_version = os.environ["SECRET_VERSION"]
 
 
-subscriber = pubsub.SubscriberClient()
+subscriber = pubsub_v1.SubscriberClient()
 subscription_path = subscriber.subscription_path(
     project_id, subscription_name)
 
