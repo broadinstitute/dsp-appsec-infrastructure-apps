@@ -1,6 +1,4 @@
-FROM python:alpine
-RUN addgroup -S codedx && adduser -S -G codedx codedx
-USER codedx
+FROM python:3.7
 WORKDIR /upload-worker
 COPY src .
 RUN pip install --upgrade -r requirements.txt
