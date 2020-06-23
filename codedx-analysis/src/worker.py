@@ -25,7 +25,8 @@ from google.cloud import pubsub, storage, secretmanager
 project_id = os.environ['PROJECT_ID']
 subscription_name = os.environ['SUBSCRIPTION']
 base_url = os.environ['CODEDX_URL']
-secret_path = "projects/{}/secrets/{}/versions/{}".format(os.environ["PROJECT_NUMBER"], os.environ["SECRET_NAME"], os.environ["SECRET_VERSION"])
+secret_name = os.environ["SECRET_NAME"]
+secret_version = os.environ["SECRET_VERSION"]
 
 
 subscriber = pubsub.SubscriberClient()
@@ -57,6 +58,7 @@ def callback(message):
 
         # Get Codedx API key
         secrets = secretmanager.SecretManagerServiceClient()
+        secret_path = secrets.secret_version_path(project_id, secret_name, secret_version)
         api_key = secrets.access_secret_version(secret_path).payload.data.decode("utf-8")
 
         # Upload Zap report to Codedx

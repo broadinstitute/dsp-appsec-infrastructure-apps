@@ -25,38 +25,14 @@ spec:
         - name: SUBSCRIPTION
           value: ${JOB_SUBSCRIPTION}
         - name: CODEDX_URL
-          value: ${CODEDX_URL} 
-        - name: SECRET_NAME
-          value: ${NAMESPACE}  
+          value: ${CODEDX_URL}
         - name: SECRET_NAME
           value: ${SECRET_NAME}
         - name: SECRET_VERSION
           value: ${SECRET_VERSION}
-        - name: SPEC_PATH
-          value: ${JOB_CONFIG_MOUNT_PATH}/${JOB_SPEC_KEY}
-        volumeMounts:
-        - name: ${JOB_CONFIG_VOLUME}
-          mountPath: ${JOB_CONFIG_MOUNT_PATH}
         resources:
           requests:
             memory: 65M
-      volumes:
-      - name: ${JOB_CONFIG_VOLUME}
-        configMap:
-          name: ${JOB_CONFIG_MAP}
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: ${SERVICE_ACCOUNT}
-  namespace: ${NAMESPACE}
-subjects:
-- kind: ServiceAccount
-  name: ${SERVICE_ACCOUNT}
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: ${JOB_DISPATCHER_ROLE}
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember
