@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 This module
 - lists all projects from BigQuery
@@ -12,7 +13,8 @@ from google.cloud import bigquery, pubsub_v1
 
 futures = dict()
 
-def list_projects():
+
+def list_projects(project_id: str, bq_dataset: str):
     """
     Fetch all tables in BigQuery
     Args:
@@ -22,13 +24,11 @@ def list_projects():
     """
     client = bigquery.Client()
 
-    sql_tables = """
-            SELECT table_name FROM `cis.INFORMATION_SCHEMA.TABLES`
-            """
-    query_job_table = client.query(sql_tables)
-    results_table = query_job_table.result()
+    dataset_id = u"{0}.{1}".format(project_id, bq_dataset)
 
-    return results_table
+    tables = list(client.list_tables(dataset_id))
+
+    return tables
 
 
 def get_callback(future, data):
@@ -45,7 +45,7 @@ def get_callback(future, data):
     return callback
 
 
-def scan_projects(result_table: List[Any], project_id: str, topic_name: str):
+def scan_projects(tables: List[Any], project_id: str, topic_name: str, slack_channel: str):
     """
     Scan multiply projects by publishing multiple
     messages to a Pub/Sub topic with an error handler.
@@ -61,108 +61,19 @@ def scan_projects(result_table: List[Any], project_id: str, topic_name: str):
     publisher = pubsub_v1.PublisherClient()
     topic_path = publisher.topic_path(project_id, topic_name)
 
-    for row in result_table:
-        data = u"{}".format(row['table_name'])
-        futures.update({data: None})
-        gcp_project_id = row['table_name'].replace('_', '-')
+    for table in tables:
+        data = u"{}".format(table.table_id)
+        gcp_project_id = str(table.table_id).replace('_', '-')
         # When a message is published, the client returns a future.
         future = publisher.publish(
             topic_path,
             data=message,
-            GCP_PROJECT_ID=gcp_project_id
+            GCP_PROJECT_ID=gcp_project_id,
+            SLACK_CHANNEL=slack_channel
         )
         futures[data] = future
         # Publish failures shall be handled in the callback function.
         future.add_done_callback(get_callback(future, data))
-
-
-def find_highs(projects: List[Any], project_id: str, bq_dataset: str, slack_channel: str, slack_token: str):
-    """
-    Find high vulnerabilities from GCP project scan.
-
-    Args:
-       List of projects to be scanned
-    Returns:
-        None
-    """
-    for row in projects:
-        user_proj = row['table_name']
-        print(user_proj)
-        client = bigquery.Client()
-
-        sql = "SELECT * FROM `{0}.{1}.{2}` WHERE impact>'0.6' ".format(
-            str(project_id), str(bq_dataset), str(row['table_name']))
-        query_job = client.query(sql)
-        query_job.result()
-        records = [dict(row) for row in query_job]
-        slack_notify(records, slack_token, slack_channel, user_proj)
-
-
-def slack_notify(records: str, slack_token: str, slack_channel: str, user_proj: str):
-    """
-    Post notifications in Slack
-    about high findings
-    """
-    client = slack.WebClient(slack_token)
-    for row in records:
-        client.chat_postMessage(
-            channel=slack_channel,
-            attachments=[{"blocks": [
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "* | High finding in  `{0}` GCP project* :gcpcloud: :" .format(user_proj.replace('_', '-'))
-                    }
-                },
-                {
-                    "type": "divider"
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*Impact*: `{0}`" .format(str(float(row['impact'])*10))
-
-                    }
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*Title*: `{0}`" .format(row['title'])
-
-                    }
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*Description* `{0}`" .format(row['description'])
-
-                    }
-                },
-                {
-                    "type": "divider"
-                },
-                {
-                    "type": "context",
-                    "elements": [
-                        {
-                            "type": "image",
-                            "image_url": \
-                            "https://platform.slack-edge.com/img/default_application_icon.png",
-                            "alt_text": "slack"
-                        },
-                        {
-                            "type": "mrkdwn",
-                            "text": "*GCP* Project Weekly Scan"
-                        }
-                    ]
-                }
-            ],
-                          "color": "#C31818"}]
-        )
 
 
 def main():
@@ -170,17 +81,14 @@ def main():
     Implements the scanweekly.py
     """
 
-    slack_token = os.environ['SLACK_TOKEN']
+    bq_dataset = os.environ['BQ_DATASET']
     slack_channel = os.environ['SLACK_CHANNEL']
-    project_id = os.getenv('PROJECT_ID')
-    bq_dataset = os.getenv('BQ_DATASET')
-    topic_name = os.getenv('JOB_TOPIC')
+    project_id = os.environ['PROJECT_ID']
+    topic_name = os.environ['JOB_TOPIC']
 
-    projects = list_projects()
+    tables = list_projects(project_id, bq_dataset)
 
-    scan_projects(list_projects(), project_id, topic_name)
-
-    find_highs(projects, project_id, bq_dataset, slack_channel, slack_token)
+    scan_projects(tables, project_id, topic_name, slack_channel)
 
 
 if __name__ == '__main__':

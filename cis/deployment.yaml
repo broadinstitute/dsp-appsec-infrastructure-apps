@@ -135,15 +135,10 @@ spec:
           containers:
           - name: automated-cis-scan
             image: ${CIS_IMAGE}
-            command: ['python3 scanweekly.py']
+            command: ['scanweekly.py']
             env:
               - name: BQ_DATASET
                 value: ${CIS_DATASET}
-              - name: SLACK_TOKEN
-                valueFrom:
-                  secretKeyRef:
-                      name: ${JOB_SECRET}
-                      key: SLACK_TOKEN
               - name: SLACK_CHANNEL
                 valueFrom:
                   secretKeyRef:
