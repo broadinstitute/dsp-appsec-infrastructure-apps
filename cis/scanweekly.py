@@ -16,9 +16,9 @@ futures = dict()
 
 def list_projects(project_id: str, bq_dataset: str):
     """
-    Fetch all tables in BigQuery
+    Fetch all tables in a BigQuery dataset using BQ API
     Args:
-       None
+       Google Project ID, Dataset
     Returns:
         List of table names in BigQuery
     """
