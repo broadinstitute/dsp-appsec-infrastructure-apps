@@ -198,6 +198,91 @@ def slack_notify(project_id: str, slack_token: str, slack_channel: str, results_
     )
 
 
+def find_highs(gcp_project: str, project_id: str, dataset_id: str, slack_channel: str, slack_token: str):
+    """
+    Find high vulnerabilities from GCP project scan.
+
+    Args:
+       List of projects to be scanned
+    Returns:
+        None
+    """
+    table_id = project_id.replace('-', '_')
+    client = bigquery.Client()
+
+    sql = f"SELECT * FROM `{project_id}.{dataset_id}.{table_id}` WHERE impact>'0.6'"
+    query_job = client.query(sql)
+    records = [dict(row) for row in query_job]
+    slack_notify_high(records, slack_token, slack_channel, project_id)
+
+
+def slack_notify_high(records: str, slack_token: str, slack_channel: str, project_id: str):
+    """
+    Post notifications in Slack
+    about high findings
+    """
+    client = slack.WebClient(slack_token)
+    for row in records:
+        client.chat_postMessage(
+            channel=slack_channel,
+            attachments=[{"blocks": [
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "* | High finding in  `{0}` GCP project* :gcpcloud: :" .format(project_id)
+                    }
+                },
+                {
+                    "type": "divider"
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Impact*: `{0}`" .format(str(float(row['impact'])*10))
+
+                    }
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Title*: `{0}`" .format(row['title'])
+
+                    }
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*Description* `{0}`" .format(row['description'])
+
+                    }
+                },
+                {
+                    "type": "divider"
+                },
+                {
+                    "type": "context",
+                    "elements": [
+                        {
+                            "type": "image",
+                            "image_url":
+                            "https://platform.slack-edge.com/img/default_application_icon.png",
+                            "alt_text": "slack"
+                        },
+                        {
+                            "type": "mrkdwn",
+                            "text": "*GCP* Project Weekly Scan"
+                        }
+                    ]
+                }
+            ],
+                "color": "#C31818"}]
+        )
+
+
 def validate_project(project_id: str):
     """
     Checks if GCP `project_id` exists via Resource Manager API.
@@ -215,6 +300,7 @@ def main():
     logging.basicConfig(level=logging.INFO)
 
     # parse inputs
+    gcp_project_id = os.environ['PROJECT_ID'] # bigquery project id 
     project_id = os.environ['GCP_PROJECT_ID']  # required
     dataset_id = os.environ['BQ_DATASET']  # required
     slack_token = os.getenv('SLACK_TOKEN')
@@ -232,6 +318,7 @@ def main():
     # post to Slack, if specified
     if slack_token and slack_channel and slack_results_url:
         slack_notify(project_id, slack_token, slack_channel, slack_results_url)
+        find_highs(gcp_project_id, project_id, dataset_id, slack_channel, slack_token)
 
     # Note: TODO please move this into a try-catch for all the above
     if fs_collection:
