@@ -13,6 +13,7 @@ from google.cloud import firestore
 from jira import JIRA
 import slacknotify
 import defectdojo as wrapper
+import github_action_trigger
 
 
 # Env variables
@@ -20,6 +21,7 @@ dojo_host = os.getenv('dojo_host')
 dojo_user = os.getenv('dojo_user')
 dojo_api_key = os.getenv('dojo_api_key')
 slack_token = os.getenv('slack_token')
+github_token = os.getenv('github_token')
 jira_username = os.getenv('jira_username')
 jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
@@ -131,6 +133,9 @@ def submit():
 
          # Set product description
         dd.set_product(product_id, description=prepare_dojo_input(json_data))
+
+    github_action_trigger(github_token, "broadinstitute", "dsp-appsec-terra-services-inventory", "update-inventory", json_data)
+
     return ''
 
 
