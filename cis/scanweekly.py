@@ -8,7 +8,6 @@ This module
 """
 import os
 from typing import List, Any
-import slack
 from google.cloud import bigquery, pubsub_v1
 
 futures = dict()

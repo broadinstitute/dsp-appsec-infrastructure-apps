@@ -279,7 +279,7 @@ def slack_notify_high(records: str, slack_token: str, slack_channel: str, projec
                     ]
                 }
             ],
-                "color": "#C31818"}]
+                          "color": "#C31818"}]
         )
 
 
@@ -300,7 +300,7 @@ def main():
     logging.basicConfig(level=logging.INFO)
 
     # parse inputs
-    gcp_project_id = os.environ['PROJECT_ID'] # bigquery project id 
+    gcp_project_id = os.environ['PROJECT_ID'] # bigquery project id
     project_id = os.environ['GCP_PROJECT_ID']  # required
     dataset_id = os.environ['BQ_DATASET']  # required
     slack_token = os.getenv('SLACK_TOKEN')
