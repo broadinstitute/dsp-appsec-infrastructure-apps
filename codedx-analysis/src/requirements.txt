@@ -1,5 +1,5 @@
 
-dsp-appsec-codedx-api-client-python/
+git+https://github.com/broadinstitute/dsp-appsec-codedx-api-client-python.git@b0bea14ef9f39df4e3abfb187ac7d2478ef8c865
 google-api-core==1.21.0
 google-auth==1.18.0
 google-auth-httplib2==0.0.3
