@@ -148,7 +148,7 @@ def cis_results():
     print(project_id_encoded)
     print(project_id_encoded.decode("utf-8"))
     project_id = project_id_encoded.decode("utf-8")
-    pattern = "^[a-z][a-z0-9-_]{4,28}[a-z0-9]$"
+    pattern = "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
     project_id_edited = project_id.strip('-').replace('-', '_')
 
     if re.match(pattern, project_id_edited):
@@ -189,7 +189,7 @@ def cis_scan():
     """
     json_data = request.get_json()
     user_project_id = json_data['project_id']
-    pattern = "^[a-z][a-z0-9-_]{4,28}[a-z0-9]$"
+    pattern = "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
     topic_name = "cis-scans"
     project_id = "dsp-appsec-infra-prod"
     message = ""

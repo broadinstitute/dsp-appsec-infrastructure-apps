@@ -6,7 +6,7 @@ FROM alpine AS patch
 COPY --from=nginx /etc/nginx/nginx.conf .
 COPY nginx.patch .
 
-RUN patch -p1 < nginx.patch
+RUN apk add patch && patch -p1 < nginx.patch
 
 
 FROM nginx
