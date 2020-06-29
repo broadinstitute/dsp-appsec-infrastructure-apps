@@ -10,8 +10,8 @@ def github_repo_dispatcher(github_token, github_org, github_repo, github_event, 
     Args:
         github_token: Github token to trigger workflow
         github_org: Github repo organization
-        repo: Github repo name 
-        event: Workflow event to trigger
+        github_repo: Github repo name 
+        github_event: Workflow event to trigger
         json_data: Service data from sdarq
 
     Returns:
