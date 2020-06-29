@@ -13,7 +13,7 @@ from google.cloud import firestore
 from jira import JIRA
 import slacknotify
 import defectdojo as wrapper
-import github_repo_dispatcher
+from github_repo_dispatcher import github_repo_dispatcher
 
 
 # Env variables

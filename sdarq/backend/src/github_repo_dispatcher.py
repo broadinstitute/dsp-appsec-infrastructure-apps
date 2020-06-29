@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
-import requests 
-import csv, io
+import requests
 import json
 
 def github_repo_dispatcher(github_token, github_org, github_repo, github_event, json_data):
-    """
-    Triggers a Github Action Workflow
+    """Triggers a Github Action Workflow
 
     Args:
         github_token: Github token to trigger workflow
         github_org: Github repo organization
-        github_repo: Github repo name 
+        github_repo: Github repo name
         github_event: Workflow event to trigger
         json_data: Service data from sdarq
 
@@ -29,8 +27,8 @@ def github_repo_dispatcher(github_token, github_org, github_repo, github_event, 
     }
 
     data = {
-        "event_type": github_event, 
+        "event_type": github_event,
         "client_payload": client_payload
     }
 
-    response = requests.post(url = endpoint, data = json.dumps(data), headers = headers)
+    requests.post(url = endpoint, data = json.dumps(data), headers = headers)
