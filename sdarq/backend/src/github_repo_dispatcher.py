@@ -15,7 +15,6 @@ def github_repo_dispatcher(github_token, github_org, github_repo, github_event, 
     Returns:
         Triggers Github action
     """
-
     endpoint = "https://api.github.com/repos/{}/{}/dispatches".format(github_org, github_repo)
     headers = {
         "Accept": "application/vnd.github.everest-preview+json",
