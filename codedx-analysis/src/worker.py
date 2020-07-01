@@ -18,7 +18,6 @@
 
 import json
 import os
-import time
 from codedx_api import CodeDxAPI
 from google.cloud import pubsub_v1, storage
 
