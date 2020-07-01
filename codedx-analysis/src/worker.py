@@ -20,14 +20,12 @@ import json
 import os
 import time
 from codedx_api import CodeDxAPI
-from google.cloud import pubsub_v1, storage, secretmanager
+from google.cloud import pubsub_v1, storage
 
+codedx_api_key = os.environ['codedx_api_key']
 project_id = os.environ['PROJECT_ID']
 subscription_name = os.environ['SUBSCRIPTION']
 base_url = os.environ['CODEDX_URL']
-secret_name = os.environ["SECRET_NAME"]
-secret_version = os.environ["SECRET_VERSION"]
-
 
 subscriber = pubsub_v1.SubscriberClient()
 subscription_path = subscriber.subscription_path(
@@ -56,13 +54,8 @@ def callback(message):
         blob = bucket.blob(source_blob_name)
         blob.download_to_filename(file_name)
 
-        # Get Codedx API key
-        secrets = secretmanager.SecretManagerServiceClient()
-        secret_path = secrets.secret_version_path(project_id, secret_name, secret_version)
-        api_key = secrets.access_secret_version(secret_path).payload.data.decode("utf-8")
-
         # Upload Zap report to Codedx
-        cdx = CodeDxAPI.CodeDx(base_url, api_key)
+        cdx = CodeDxAPI.CodeDx(base_url, codedx_api_key)
         cdx.update_projects()
         if project not in list(cdx.projects):
             cdx.create_project(project)
@@ -73,7 +66,9 @@ def callback(message):
         print('Something wrong happened: {}'.format(e.args))
 
 
-subscriber.subscribe(subscription_path, callback=callback)
-print('Waiting for messages on {}'.format(subscription_path))
-while True:
-    time.sleep(60)
+def main():
+    streaming_pull = subscriber.subscribe(subscription_path, callback=callback)
+    streaming_pull.result()
+
+if __name__ == '__main__':
+    main()

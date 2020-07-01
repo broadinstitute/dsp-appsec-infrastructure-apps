@@ -8,6 +8,7 @@ export NAMESPACE="codedx-analysis"
 export CODEDX_URL = "http://codedx.codedx.svc.cluster.local"
 export SECRET_NAME="codedx-api-key"
 export SECRET_VERSION="1"
+export JOB_DEPLOYMENT="${NAMESPACE}"
 export JOB_TOPIC="${NAMESPACE}"
 export JOB_SUBSCRIPTION="${JOB_TOPIC}"
 
@@ -18,6 +19,8 @@ export BUCKET_SA_IAM_POLICY="${BUCKET_NAME}-sa-iam-policy"
 
 export SERVICE="${JOB_DEPLOYMENT}"
 export SERVICE_ACCOUNT="${SERVICE}"
+
+export CODEDX_ANALYSIS_SECRET="codedx-anaylsis"
 
 ./kube-apply.py "service-account.yaml" \
     "${CWD}/deployment.yaml"

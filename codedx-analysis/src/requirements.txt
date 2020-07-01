@@ -6,7 +6,6 @@ google-auth-httplib2==0.0.3
 google-cloud==0.34.0
 google-cloud-core==0.28.1
 google-cloud-pubsub==1.6.0
-google-cloud-secret-manager==1.0.0
 google-cloud-storage==1.13.0
 google-resumable-media==0.5.1
 googleapis-common-protos==1.52.0
