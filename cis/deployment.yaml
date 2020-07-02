@@ -137,10 +137,12 @@ spec:
             image: ${CIS_IMAGE}
             command: ['scanweekly.py']
             env:
+              - name: PROJECT_ID
+                value: ${PROJECT_ID}
               - name: BQ_DATASET
                 value: ${CIS_DATASET}
-              - name: SLACK_CHANNEL
+              - name: SLACK_CHANNEL_WEEKLY_REPORT
                 valueFrom:
                   secretKeyRef:
                     name: ${JOB_SECRET}
-                    key: SLACK_CHANNEL
+                    key: SLACK_CHANNEL_WEEKLY_REPORT

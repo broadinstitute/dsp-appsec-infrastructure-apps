@@ -198,7 +198,7 @@ def slack_notify(project_id: str, slack_token: str, slack_channel: str, results_
     )
 
 
-def find_highs(gcp_project: str, project_id: str, dataset_id: str, slack_channel: str, slack_token: str):
+def find_highs(bigquery_project_id: str, project_id: str, dataset_id: str, slack_channel: str, slack_token: str):
     """
     Find high vulnerabilities from GCP project scan.
 
@@ -210,7 +210,7 @@ def find_highs(gcp_project: str, project_id: str, dataset_id: str, slack_channel
     table_id = project_id.replace('-', '_')
     client = bigquery.Client()
 
-    sql = f"SELECT * FROM `{project_id}.{dataset_id}.{table_id}` WHERE impact>'0.6'"
+    sql = f"SELECT * FROM `{bigquery_project_id}.{dataset_id}.{table_id}` WHERE impact>'0.6'"
     query_job = client.query(sql)
     records = [dict(row) for row in query_job]
     slack_notify_high(records, slack_token, slack_channel, project_id)
@@ -300,11 +300,11 @@ def main():
     logging.basicConfig(level=logging.INFO)
 
     # parse inputs
-    gcp_project_id = os.environ['PROJECT_ID'] # bigquery project id
-    project_id = os.environ['GCP_PROJECT_ID']  # required
+    bigquery_project_id = os.environ['PROJECT_ID'] # BigQuery project id
+    project_id = os.environ['GCP_PROJECT_ID']  # project id for scanning
     dataset_id = os.environ['BQ_DATASET']  # required
     slack_token = os.getenv('SLACK_TOKEN')
-    slack_channel = os.getenv('SLACK_CHANNEL')
+    slack_channel = os.getenv('SLACK_CHANNEL') # slack channel if provided from user
     slack_results_url = os.getenv('SLACK_RESULTS_URL')
     fs_collection = os.getenv('FIRESTORE_COLLECTION')
 
@@ -318,7 +318,7 @@ def main():
     # post to Slack, if specified
     if slack_token and slack_channel and slack_results_url:
         slack_notify(project_id, slack_token, slack_channel, slack_results_url)
-        find_highs(gcp_project_id, project_id, dataset_id, slack_channel, slack_token)
+        find_highs(bigquery_project_id, project_id, dataset_id, slack_channel, slack_token)
 
     # Note: TODO please move this into a try-catch for all the above
     if fs_collection:

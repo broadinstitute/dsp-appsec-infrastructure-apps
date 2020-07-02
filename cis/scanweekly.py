@@ -44,7 +44,7 @@ def get_callback(future, data):
     return callback
 
 
-def scan_projects(tables: List[Any], project_id: str, topic_name: str, slack_channel: str):
+def scan_projects(tables: List[Any], project_id: str, topic_name: str, slack_channel_weekly_report: str):
     """
     Scan multiply projects by publishing multiple
     messages to a Pub/Sub topic with an error handler.
@@ -68,7 +68,7 @@ def scan_projects(tables: List[Any], project_id: str, topic_name: str, slack_cha
             topic_path,
             data=message,
             GCP_PROJECT_ID=gcp_project_id,
-            SLACK_CHANNEL=slack_channel
+            SLACK_CHANNEL=slack_channel_weekly_report
         )
         futures[data] = future
         # Publish failures shall be handled in the callback function.
@@ -81,13 +81,13 @@ def main():
     """
 
     bq_dataset = os.environ['BQ_DATASET']
-    slack_channel = os.environ['SLACK_CHANNEL']
+    slack_channel_weekly_report = os.environ['SLACK_CHANNEL_WEEKLY_REPORT']
     project_id = os.environ['PROJECT_ID']
     topic_name = os.environ['JOB_TOPIC']
 
     tables = list_projects(project_id, bq_dataset)
 
-    scan_projects(tables, project_id, topic_name, slack_channel)
+    scan_projects(tables, project_id, topic_name, slack_channel_weekly_report)
 
 
 if __name__ == '__main__':
