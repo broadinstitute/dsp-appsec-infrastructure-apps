@@ -219,7 +219,7 @@ def find_highs(rows: List[Any], slack_channel: str, slack_token: str, target_pro
         slack_notify_high(records, slack_token, slack_channel, target_project_id)
 
 
-def slack_notify_high(records: str, slack_token: str, slack_channel: str, target_project_id:str):
+def slack_notify_high(records: str, slack_token: str, slack_channel: str, target_project_id: str):
     """
     Post notifications in Slack
     about high findings
