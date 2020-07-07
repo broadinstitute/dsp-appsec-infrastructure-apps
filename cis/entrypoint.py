@@ -20,16 +20,16 @@ from google.cloud import bigquery, firestore, resource_manager
 BENCHMARK_PROFILE = 'inspec-gcp-cis-benchmark'
 
 
-def benchmark(project_id: str):
+def benchmark(target_project_id: str):
     """
-    Runs Inspec GCP CIS benchmark on `project_id`,
+    Runs Inspec GCP CIS benchmark on `target_project_id`,
     and returns the parsed results.
     """
-    logging.info("Running %s for %s", BENCHMARK_PROFILE, project_id)
+    logging.info("Running %s for %s", BENCHMARK_PROFILE, target_project_id)
     proc = subprocess.run([
         'inspec', 'exec', 'inspec-gcp-cis-benchmark',
         '-t', 'gcp://', '--reporter', 'json',
-        '--input', f'gcp_project_id={project_id}',
+        '--input', f'gcp_project_id={target_project_id}',
     ], capture_output=True, text=True, check=False)
 
     # normal exit codes as documented at
@@ -40,11 +40,11 @@ def benchmark(project_id: str):
 
     for out in proc.stdout.splitlines():
         if out.startswith('{'):
-            return project_id, json.loads(out)['profiles']
+            return target_project_id, json.loads(out)['profiles']
     return None
 
 
-def parse_profiles(project_id: str, profiles):
+def parse_profiles(target_project_id: str, profiles):
     """
     Parses scan results into a table structure for BigQuery.
     """
@@ -68,7 +68,7 @@ def parse_profiles(project_id: str, profiles):
                 continue
             failures.append(
                 res['code_desc']
-                .replace(f'[{project_id}] ', '', 1)
+                .replace(f'[{target_project_id}] ', '', 1)
                 .replace('cmp == nil', 'be empty')
                 .replace('cmp ==', 'equal')
             )
@@ -110,11 +110,11 @@ def collect_refs(refs: list, urls: List[str]):
     return urls
 
 
-def load_bigquery(project_id: str, dataset_id: str, table_desc: str, version: str, rows: List[Any]):
+def load_bigquery(target_project_id: str, dataset_id: str, table_desc: str, version: str, rows: List[Any]):
     """
     Loads scan results into a BigQuery table.
     """
-    table_id = project_id.replace('-', '_')
+    table_id = target_project_id.replace('-', '_')
 
     if not rows:
         return table_id
@@ -140,7 +140,7 @@ def load_bigquery(project_id: str, dataset_id: str, table_desc: str, version: st
             type_=bigquery.TimePartitioningType.DAY,
         ),
         labels={
-            'gcp-project': project_id,
+            'gcp-project': target_project_id,
             'inspec-version': version.replace('.', '_'),
         },
     )
@@ -167,7 +167,7 @@ def firestore_report(collection_id: str, table_id: str):
     doc_ref.set({})
 
 
-def slack_notify(project_id: str, slack_token: str, slack_channel: str, results_url: str):
+def slack_notify(target_project_id: str, slack_token: str, slack_channel: str, results_url: str):
     """
     Posts a notification about results to Slack.
     """
@@ -179,7 +179,7 @@ def slack_notify(project_id: str, slack_token: str, slack_channel: str, results_
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "Check `{0}` CIS scan results :spiral_note_pad:" .format(project_id)
+                    "text": "Check `{0}` CIS scan results :spiral_note_pad:" .format(target_project_id)
                 }
             },
             {
@@ -198,7 +198,7 @@ def slack_notify(project_id: str, slack_token: str, slack_channel: str, results_
     )
 
 
-def find_highs(bigquery_project_id: str, project_id: str, dataset_id: str, slack_channel: str, slack_token: str):
+def find_highs(dataset_project_id: str, target_project_id: str, dataset_id: str, slack_channel: str, slack_token: str):
     """
     Find high vulnerabilities from GCP project scan.
 
@@ -207,16 +207,16 @@ def find_highs(bigquery_project_id: str, project_id: str, dataset_id: str, slack
     Returns:
         None
     """
-    table_id = project_id.replace('-', '_')
+    table_id = target_project_id.replace('-', '_')
     client = bigquery.Client()
 
-    sql = f"SELECT * FROM `{bigquery_project_id}.{dataset_id}.{table_id}` WHERE impact>'0.6'"
+    sql = f"SELECT * FROM `{dataset_project_id}.{dataset_id}.{table_id}` WHERE impact>'0.6'"
     query_job = client.query(sql)
     records = [dict(row) for row in query_job]
-    slack_notify_high(records, slack_token, slack_channel, project_id)
+    slack_notify_high(records, slack_token, slack_channel, target_project_id)
 
 
-def slack_notify_high(records: str, slack_token: str, slack_channel: str, project_id: str):
+def slack_notify_high(records: str, slack_token: str, slack_channel: str, target_project_id: str):
     """
     Post notifications in Slack
     about high findings
@@ -230,7 +230,7 @@ def slack_notify_high(records: str, slack_token: str, slack_channel: str, projec
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "* | High finding in  `{0}` GCP project* :gcpcloud: :" .format(project_id)
+                        "text": "* | High finding in  `{0}` GCP project* :gcpcloud: :" .format(target_project_id)
                     }
                 },
                 {
@@ -283,13 +283,13 @@ def slack_notify_high(records: str, slack_token: str, slack_channel: str, projec
         )
 
 
-def validate_project(project_id: str):
+def validate_project(target_project_id: str):
     """
     Checks if GCP `project_id` exists via Resource Manager API.
     Raises a NotFound error if not.
     """
     client = resource_manager.Client()
-    client.fetch_project(project_id)
+    client.fetch_project(target_project_id)
 
 
 def main():
@@ -300,8 +300,8 @@ def main():
     logging.basicConfig(level=logging.INFO)
 
     # parse inputs
-    bigquery_project_id = os.environ['PROJECT_ID'] # BigQuery project id
-    project_id = os.environ['GCP_PROJECT_ID']  # project id for scanning
+    dataset_project_id = os.environ['DATASET_PROJECT_ID']
+    target_project_id = os.environ['TARGET_PROJECT_ID']
     dataset_id = os.environ['BQ_DATASET']  # required
     slack_token = os.getenv('SLACK_TOKEN')
     slack_channel = os.getenv('SLACK_CHANNEL') # slack channel if provided from user
@@ -309,16 +309,16 @@ def main():
     fs_collection = os.getenv('FIRESTORE_COLLECTION')
 
     # validate inputs
-    validate_project(project_id)
+    validate_project(target_project_id)
 
     # scan and load results into BigQuery
-    title, version, rows = parse_profiles(*benchmark(project_id))
-    table_id = load_bigquery(project_id, dataset_id, title, version, rows)
+    title, version, rows = parse_profiles(*benchmark(target_project_id))
+    table_id = load_bigquery(target_project_id, dataset_id, title, version, rows)
 
     # post to Slack, if specified
     if slack_token and slack_channel and slack_results_url:
-        slack_notify(project_id, slack_token, slack_channel, slack_results_url)
-        find_highs(bigquery_project_id, project_id, dataset_id, slack_channel, slack_token)
+        slack_notify(target_project_id, slack_token, slack_channel, slack_results_url)
+        find_highs(dataset_project_id, target_project_id, dataset_id, slack_channel, slack_token)
 
     # Note: TODO please move this into a try-catch for all the above
     if fs_collection:

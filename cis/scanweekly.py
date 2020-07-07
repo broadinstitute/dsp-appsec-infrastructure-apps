@@ -13,7 +13,7 @@ from google.cloud import bigquery, pubsub_v1
 futures = dict()
 
 
-def list_projects(project_id: str, bq_dataset: str):
+def list_projects(dataset_project_id: str, bq_dataset: str):
     """
     Fetch all tables in a BigQuery dataset using BQ API
     Args:
@@ -23,7 +23,7 @@ def list_projects(project_id: str, bq_dataset: str):
     """
     client = bigquery.Client()
 
-    dataset_id = u"{0}.{1}".format(project_id, bq_dataset)
+    dataset_id = u"{0}.{1}".format(dataset_project_id, bq_dataset)
 
     tables = list(client.list_tables(dataset_id))
 
@@ -44,7 +44,7 @@ def get_callback(future, data):
     return callback
 
 
-def scan_projects(tables: List[Any], project_id: str, topic_name: str, slack_channel_weekly_report: str):
+def scan_projects(tables: List[Any], dataset_project_id: str, topic_name: str, slack_channel_weekly_report: str):
     """
     Scan multiply projects by publishing multiple
     messages to a Pub/Sub topic with an error handler.
@@ -58,7 +58,7 @@ def scan_projects(tables: List[Any], project_id: str, topic_name: str, slack_cha
     message = message.encode("utf-8")
 
     publisher = pubsub_v1.PublisherClient()
-    topic_path = publisher.topic_path(project_id, topic_name)
+    topic_path = publisher.topic_path(dataset_project_id, topic_name)
 
     for table in tables:
         data = u"{}".format(table.table_id)
@@ -82,12 +82,12 @@ def main():
 
     bq_dataset = os.environ['BQ_DATASET']
     slack_channel_weekly_report = os.environ['SLACK_CHANNEL_WEEKLY_REPORT']
-    project_id = os.environ['PROJECT_ID']
+    dataset_project_id = os.environ['DATASET_PROJECT_ID']
     topic_name = os.environ['JOB_TOPIC']
 
-    tables = list_projects(project_id, bq_dataset)
+    tables = list_projects(dataset_project_id, bq_dataset)
 
-    scan_projects(tables, project_id, topic_name, slack_channel_weekly_report)
+    scan_projects(tables, dataset_project_id, topic_name, slack_channel_weekly_report)
 
 
 if __name__ == '__main__':

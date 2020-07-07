@@ -31,7 +31,7 @@ data:
               secretKeyRef:
                  name: ${JOB_SECRET}
                  key: SLACK_TOKEN
-          - name: GCP_PROJECT_ID
+          - name: TARGET_PROJECT_ID
             valueFrom:
               fieldRef:
                 fieldPath: metadata.annotations['GCP_PROJECT_ID']
@@ -137,7 +137,7 @@ spec:
             image: ${CIS_IMAGE}
             command: ['scanweekly.py']
             env:
-              - name: PROJECT_ID
+              - name: DATASET_PROJECT_ID
                 value: ${PROJECT_ID}
               - name: BQ_DATASET
                 value: ${CIS_DATASET}
