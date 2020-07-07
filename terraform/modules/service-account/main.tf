@@ -4,9 +4,9 @@ resource "google_service_account" "sa" {
 }
 
 resource "google_project_iam_member" "role_member" {
-  for_each = toset(var.roles)
+  count = length(var.roles)
 
-  role   = each.key
+  role   = var.roles[count.index]
   member = "serviceAccount:${google_service_account.sa.email}"
 }
 
