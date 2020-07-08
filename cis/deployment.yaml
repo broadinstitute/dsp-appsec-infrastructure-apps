@@ -141,6 +141,8 @@ spec:
                 value: ${PROJECT_ID}
               - name: BQ_DATASET
                 value: ${CIS_DATASET}
+              - name: JOB_TOPIC
+                value: ${JOB_TOPIC}
               - name: SLACK_CHANNEL_WEEKLY_REPORT
                 valueFrom:
                   secretKeyRef:
