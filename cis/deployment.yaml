@@ -133,7 +133,7 @@ spec:
             cloud.google.com/gke-nodepool: batch
           restartPolicy: OnFailure
           containers:
-          - name: automated-cis-scan
+          - name: cis-scan
             image: ${CIS_IMAGE}
             command: ['scanweekly.py']
             env:
