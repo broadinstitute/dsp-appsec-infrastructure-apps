@@ -135,7 +135,7 @@ spec:
           containers:
           - name: cis-scan
             image: ${CIS_IMAGE}
-            command: ['python3', 'scanweekly.py']
+            command: ['python3', '/scanweekly.py']
             env:
               - name: DATASET_PROJECT_ID
                 value: ${PROJECT_ID}
