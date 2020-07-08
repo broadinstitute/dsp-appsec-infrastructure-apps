@@ -69,8 +69,11 @@ resource "google_container_cluster" "cluster" {
   subnetwork = google_compute_subnetwork.gke.self_link
 
   ip_allocation_policy {
-    cluster_ipv4_cidr_block  = ""
-    services_ipv4_cidr_block = ""
+    # hard-coding these until
+    # https://github.com/terraform-providers/terraform-provider-google/issues/6761
+    # is fixed
+    cluster_ipv4_cidr_block  = "10.24.0.0/14"
+    services_ipv4_cidr_block = "10.219.0.0/20"
   }
 
   dynamic "master_authorized_networks_config" {
