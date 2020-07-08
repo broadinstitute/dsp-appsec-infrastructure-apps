@@ -1,5 +1,6 @@
 substitutions:
   _ORG_VIEWER_SA_EMAIL: '' # replace in Cloud Build UI
+  _DNS_DOMAIN: '' # replace with DNS domain name
 
 options:
   machineType: N1_HIGHCPU_8
@@ -17,7 +18,7 @@ options:
   - SDARQ_FRONTEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-frontend:${SHORT_SHA}
   - SDARQ_BACKEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-backend:${SHORT_SHA}
   - CARTOGRAPHY_IMAGE=us.gcr.io/${PROJECT_ID}/cartography
-  - DNS_DOMAIN=dsp-appsec.broadinstitute.org
+  - DNS_DOMAIN=${_DNS_DOMAIN}
   - DNS_ZONE=dsp-appsec
   - TERRAFORM_BUCKET=${PROJECT_ID}-terraform
   - BROAD_INGRESS_CSP=broad-ingress
