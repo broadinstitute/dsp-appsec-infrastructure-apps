@@ -2,4 +2,5 @@ google-api-core[grpc] < 2.0.0dev
 google-cloud-bigquery
 google-cloud-firestore
 google-cloud-resource-manager
+google-cloud-pubsub
 slackclient
