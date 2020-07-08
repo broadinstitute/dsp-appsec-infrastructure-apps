@@ -60,6 +60,8 @@ def scan_projects(tables: List[Any], dataset_project_id: str, topic_name: str, s
     publisher = pubsub_v1.PublisherClient()
     topic_path = publisher.topic_path(dataset_project_id, topic_name)
 
+    formatted_slack_channel = f"#{slack_channel_weekly_report}"
+
     for table in tables:
         data = u"{}".format(table.table_id)
         gcp_project_id = str(table.table_id).replace('_', '-')
@@ -68,7 +70,7 @@ def scan_projects(tables: List[Any], dataset_project_id: str, topic_name: str, s
             topic_path,
             data=message,
             GCP_PROJECT_ID=gcp_project_id,
-            SLACK_CHANNEL=slack_channel_weekly_report
+            SLACK_CHANNEL=formatted_slack_channel
         )
         futures[data] = future
         # Publish failures shall be handled in the callback function.
