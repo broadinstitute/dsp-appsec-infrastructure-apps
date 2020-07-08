@@ -67,7 +67,11 @@ resource "google_container_cluster" "cluster" {
 
   network    = google_compute_network.gke.self_link
   subnetwork = google_compute_subnetwork.gke.self_link
-  ip_allocation_policy {}
+
+  ip_allocation_policy {
+    cluster_ipv4_cidr_block  = ""
+    services_ipv4_cidr_block = ""
+  }
 
   dynamic "master_authorized_networks_config" {
     for_each = toset([0])
