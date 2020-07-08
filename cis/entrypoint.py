@@ -209,9 +209,9 @@ def find_highs(rows: List[Any], slack_channel: str, slack_token: str, target_pro
     """
     records = []
     for row in rows:
-        if str(row['impact']) > '0.6':
+        if float(row['impact']) > 0.6:
             records.append({
-                'impact': str(row['impact']),
+                'impact': row['impact'],
                 'title': row['title'],
                 'description': row['description']
             })
