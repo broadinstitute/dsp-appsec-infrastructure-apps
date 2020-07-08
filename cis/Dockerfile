@@ -52,7 +52,7 @@ FROM base
 
 ARG USER
 
-COPY entrypoint.py /
+COPY entrypoint.py scanweekly.py /
 
 USER ${USER}
 
