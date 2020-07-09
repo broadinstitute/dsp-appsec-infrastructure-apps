@@ -59,6 +59,7 @@ def scan_projects(tables: List[Any], dataset_project_id: str, topic_name: str, s
 
     publisher = pubsub_v1.PublisherClient()
     topic_path = publisher.topic_path(dataset_project_id, topic_name)
+    print(topic_path)
 
     formatted_slack_channel = f"#{slack_channel_weekly_report}"
 
