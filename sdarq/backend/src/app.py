@@ -244,7 +244,7 @@ def cis_scan():
     check_dict = doc.to_dict()
     if bool(check_dict):
         statusCode = 404
-        textMessage = 'An error occurred during the scan. Please try again.'
+        textMessage = check_dict['Error']
         db.collection(firestore_collection).document(user_proj).delete()
         return Response(json.dumps({'statusText': textMessage}), status=statusCode, mimetype='application/json')
     else:
