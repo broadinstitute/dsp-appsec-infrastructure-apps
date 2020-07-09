@@ -128,6 +128,7 @@ spec:
     spec:
       template:
         spec:
+          serviceAccountName: ${K8S_SERVICE_ACCOUNT}
           runtimeClassName: gvisor
           nodeSelector:
             cloud.google.com/gke-nodepool: batch
