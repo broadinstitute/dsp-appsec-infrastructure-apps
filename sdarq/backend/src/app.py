@@ -21,12 +21,17 @@ from google.cloud import firestore
 from jira import JIRA
 import slacknotify
 import defectdojo as wrapper
+from github_repo_dispatcher import github_repo_dispatcher
 
 # Env variables
 dojo_host = os.getenv('dojo_host')
 dojo_user = os.getenv('dojo_user')
 dojo_api_key = os.getenv('dojo_api_key')
 slack_token = os.getenv('slack_token')
+github_token = os.getenv('github_token', None)
+github_org = os.getenv('github_org', None)
+github_repo = os.getenv('github_repo', None)
+github_event = os.getenv('github_event', "sdarq")
 jira_username = os.getenv('jira_username')
 jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
@@ -93,7 +98,7 @@ def submit():
         return data4
 
     # Create a Jira ticket if user chooses a Jira project
-    slack_channels_list = ['#dspsecurity', '#appsec-internal', '#dsde-qa']
+    slack_channels_list = ['#dsp-security', '#appsec-internal', '#dsde-qa']
 
     if 'JiraProject' in json_data:
         project_key_id = json_data['JiraProject']
@@ -138,6 +143,10 @@ def submit():
 
          # Set product description
         dd.set_product(product_id, description=prepare_dojo_input(json_data))
+
+    if github_token and github_org and github_repo:
+        github_repo_dispatcher(github_token, github_org, github_repo, github_event, json_data)
+
     return ''
 
 
@@ -153,7 +162,7 @@ def cis_results():
     """
     project_id_encoded = request.get_data()
     project_id = project_id_encoded.decode("utf-8")
-    pattern = "^[a-z][a-z0-9-_]{4,28}[a-z0-9]$"
+    pattern = "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
     project_id_edited = project_id.strip('-').replace('-', '_')
 
     if re.match(pattern, project_id_edited):
@@ -170,7 +179,7 @@ def cis_results():
         tables = [dict(row) for row in query_job_table]
         json.dumps(tables)
         if results_table.total_rows != 0:
-            sql = "SELECT * FROM `dsp-appsec-infra-prod.cis.{0}` WHERE id!='5.3'".format(
+            sql = "SELECT * FROM `dsp-appsec-infra-prod.cis.{0}` WHERE id!='5.3' ORDER BY impact DESC".format(
                 str(project_id_edited))
             query_job = client.query(sql)
             query_job.result()
@@ -194,7 +203,7 @@ def cis_scan():
     """
     json_data = request.get_json()
     user_project_id = json_data['project_id']
-    pattern = "^[a-z][a-z0-9-_]{4,28}[a-z0-9]$"
+    pattern = "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
     topic_name = "cis-scans"
     project_id = "dsp-appsec-infra-prod"
     message = ""
