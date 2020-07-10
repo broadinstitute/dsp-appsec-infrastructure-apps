@@ -122,7 +122,7 @@ module "system_node_pool" {
   service_account = module.node_sa.email
 
   initial_node_count = 2
-  machine_type       = "e2-micro"
+  machine_type       = "e2-small"
 }
 
 # This pool will be used for the application Pods,
