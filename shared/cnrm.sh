@@ -17,7 +17,7 @@ wait_init && exit 0
 cd "$(mktemp -d)"
 
 # download CNRM configs
-gsutil cat "gs://cnrm/1.7.2/release-bundle.tar.gz" | tar xzf -
+gsutil cat "gs://cnrm/latest/release-bundle.tar.gz" | tar xzf -
 cd "install-bundle-workload-identity"
 
 # apply the configs and wait for initialization
