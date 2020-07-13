@@ -1,9 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: ${DEPLOYMENT}
+  name: ${STATEFUL_SET}
   namespace: ${NAMESPACE}
 spec:
+  serviceName: ${SERVICE}
   selector:
     matchLabels:
       service: ${SERVICE}

@@ -15,7 +15,7 @@ export NAMESPACE="burp-enterprise"
 
 export SERVICE="${NAMESPACE}"
 
-export DEPLOYMENT="${SERVICE}"
+export STATEFUL_SET="${SERVICE}"
 export SERVICE_ACCOUNT="${NAMESPACE}"
 export SERVICE_DISK="${SERVICE}"
 export SERVICE_VOLUME="${SERVICE}"
