@@ -57,7 +57,7 @@ export BACKEND_CONFIG="${SERVICE}"
 export SERVICE_PORT="http"
 export TARGET_PORT="http"
 
-export BURP_VERSION="2020.4"
+export BURP_VERSION="2020.6"
 
 ./volume.sh
 
