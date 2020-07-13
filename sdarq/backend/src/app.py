@@ -1,6 +1,6 @@
 """
 This module
-- sends a new service requirements request 
+- sends a new service requirements request
         - creates a new product in Defect Dojo
         - optionally creates a Jira Ticket
         - notifies several Slack channels about service requirements request
@@ -12,6 +12,7 @@ This module
 import os
 import re
 import json
+import time
 from flask import request, Response
 from flask_api import FlaskAPI
 from flask_cors import cross_origin
@@ -145,13 +146,14 @@ def submit():
         dd.set_product(product_id, description=prepare_dojo_input(json_data))
 
     if github_token and github_org and github_repo:
-        github_repo_dispatcher(github_token, github_org, github_repo, github_event, json_data)
+        github_repo_dispatcher(github_token, github_org,
+                               github_repo, github_event, json_data)
 
     return ''
 
 
 @app.route('/cis_results/', methods=['POST'])
-@cross_origin(origins=sdarq_host)
+@cross_origin(origins=sdarq)
 def cis_results():
     """
     Get CIS results for a specific google project
@@ -196,7 +198,7 @@ def cis_results():
 
 
 @app.route('/cis_scan/', methods=['POST'])
-@cross_origin(origins=sdarq_host)
+@cross_origin(origins=sdarq)
 def cis_scan():
     """
     Scans a specific google project
@@ -216,7 +218,7 @@ def cis_scan():
         publisher = pubsub_v1.PublisherClient()
         topic_path = publisher.topic_path(project_id, topic_name)
         user_proj = user_project_id.replace('-', '_')
-        doc_refer = db.collection(firestore_collection).document(user_proj)
+        db.collection(firestore_collection).document(user_proj)
         if 'slack_channel' in json_data:
             slack_channel = json_data['slack_channel']
             publisher.publish(topic_path,
@@ -236,17 +238,20 @@ def cis_scan():
         doc_ref = db.collection(
             firestore_collection).document(user_proj)
         doc = doc_ref.get()
+        time.sleep(60)
         if doc.exists:
             check = True
+            print(check)
         else:
             check = False
-
+            print(check)
+        
     check_dict = doc.to_dict()
     if bool(check_dict):
-        statusCode = 404
-        textMessage = check_dict['Error']
+        status_code = 404
+        text_message = check_dict['Error']
         db.collection(firestore_collection).document(user_proj).delete()
-        return Response(json.dumps({'statusText': textMessage}), status=statusCode, mimetype='application/json')
+        return Response(json.dumps({'statusText': text_message}), status=status_code, mimetype='application/json')
     else:
         db.collection(firestore_collection).document(user_proj).delete()
         return ''
