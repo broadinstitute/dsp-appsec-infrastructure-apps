@@ -5,3 +5,6 @@
 
 echo "Checking nmap version..."
 nmap -v
+
+echo "Running vulnerability scan on given target..."
+python3 entrypoint.py
