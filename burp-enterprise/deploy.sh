@@ -15,8 +15,10 @@ export NAMESPACE="burp-enterprise"
 
 export SERVICE="${NAMESPACE}"
 
-export SERVICE_ACCOUNT="${NAMESPACE}"
 export DEPLOYMENT="${SERVICE}"
+export SERVICE_ACCOUNT="${NAMESPACE}"
+export SERVICE_DISK="${SERVICE}"
+export SERVICE_VOLUME="${SERVICE}"
 
 export LOGBACK_CONFIG="${SERVICE}-logback"
 export LOGBACK_CONFIG_VOLUME="${LOGBACK_CONFIG}"
@@ -56,6 +58,8 @@ export SERVICE_PORT="http"
 export TARGET_PORT="http"
 
 export BURP_VERSION="2020.4"
+
+./volume.sh
 
 ./kube-apply.py \
   "service-account.yaml" \

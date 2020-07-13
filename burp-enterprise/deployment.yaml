@@ -18,6 +18,9 @@ spec:
         cloud.google.com/gke-nodepool: apps
 
       volumes:
+      - name: ${SERVICE_VOLUME}
+        persistentVolumeClaim:
+          claimName: ${SERVICE_VOLUME}
       - name: ${SECRET_CONFIG_VOLUME}
         secret:
           secretName: ${SECRET_CONFIG}
@@ -33,6 +36,8 @@ spec:
         args:
         - |
           set -e
+
+          sleep infinity
 
           cd /usr/local/burpsuite_enterprise
           sed -i 's|\(logback.configurationFile=\)[^ ]*|\1${LOGBACK_CONFIG_PATH}/${LOGBACK_CONFIG_FILE}|' */component.sh
@@ -59,6 +64,8 @@ spec:
           timeoutSeconds: 10
           initialDelaySeconds: 60
         volumeMounts:
+        - name: ${SERVICE_VOLUME}
+          mountPath: /usr/local/burpsuite_enterprise
         - name: ${SECRET_CONFIG_VOLUME}
           mountPath: ${SECRET_CONFIG_PATH}
         - name: ${LOGBACK_CONFIG_VOLUME}
