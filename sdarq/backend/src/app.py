@@ -153,7 +153,7 @@ def submit():
 
 
 @app.route('/cis_results/', methods=['POST'])
-@cross_origin(origins=sdarq)
+@cross_origin(origins=sdarq_host)
 def cis_results():
     """
     Get CIS results for a specific google project
@@ -198,7 +198,7 @@ def cis_results():
 
 
 @app.route('/cis_scan/', methods=['POST'])
-@cross_origin(origins=sdarq)
+@cross_origin(origins=sdarq_host)
 def cis_scan():
     """
     Scans a specific google project
@@ -209,7 +209,7 @@ def cis_scan():
     topic_name = "cis-scans"
     project_id = "dsp-appsec-infra-prod"
     message = ""
-    results_url = f"{sdarq_host}/cis/results?project_id={user_project_id}"
+    results_url = f"{sdarq_host}cis/results?project_id={user_project_id}"
     message = message.encode("utf-8")
     firestore_collection = "cis-scans"
     check = False
@@ -241,11 +241,9 @@ def cis_scan():
         time.sleep(60)
         if doc.exists:
             check = True
-            print(check)
         else:
             check = False
-            print(check)
-        
+
     check_dict = doc.to_dict()
     if bool(check_dict):
         status_code = 404
