@@ -10,7 +10,8 @@ from google.cloud.exceptions import NotFound
 
 
 gcp_project_id = os.getenv('GCP_PROJECT_ID')
-targets = os.getenv('TARGET')
+# scanning_target = os.getenv('SCANNING_TARGET')
+scanning_target = "example.com"
 bigquery_table = os.getenv('BQ_TABLE')
 bigquery_dataset = os.getenv('BQ_DATASET')
 slack_webhook_url = os.getenv('SLACK_WEBHOOK_URL')
@@ -26,9 +27,7 @@ def get_gcp_assets() -> list:
 
 
 def insert_bigquery_targets():
-    """Load scanning targets from bigquery
-    Returns:
-        list -- [List of targets that must be scanned]
+    """Insert scanning targets into bigquery    
     """
     pass
 
@@ -36,7 +35,7 @@ def insert_bigquery_targets():
 def get_bigquery_targets() -> list:
     """Load scanning targets from bigquery
     Returns:
-        list -- [List of targets that must be scanned]
+        list -- [List of targets that will be scanned]
     """
     pass
 
@@ -84,10 +83,9 @@ def scan() -> json:
     """
     Runs a scan
     """
-    # ToDo:  Need to check whether single target or multiple ones
-    # through file input
+    # ToDo:  Need to check whether single target or multiple ones through file input
     args = f'''
-        nmap -sV --script nmap-vulners  -oX {scan_report} -sV {targets}'''.split()
+        nmap -sV --script nmap-vulners  -oX {scan_report} -sV {scanning_target}'''.split()
     p = subprocess.run(args, capture_output=True, text=True)
     print(p)
     res = parse_raw(scan_report)
