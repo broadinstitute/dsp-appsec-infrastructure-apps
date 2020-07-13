@@ -26,8 +26,7 @@ export LOGBACK_CONFIG_PATH="/logback"
 export LOGBACK_CONFIG_FILE="logback.xml"
 export LOGBACK_LOG_FILE="/tmp/burp.log"
 
-export SECRET_CONFIG="${SERVICE}"
-export SECRET_CONFIG_VOLUME="${SECRET_CONFIG}"
+export SECRET_CONFIG_VOLUME="${SERVICE}-config"
 export SECRET_CONFIG_PATH="/config"
 export SECRET_CONFIG_FILE="enterprise-server.config"
 
