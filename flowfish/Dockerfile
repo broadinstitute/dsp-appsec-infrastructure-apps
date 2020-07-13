@@ -1,7 +1,7 @@
 FROM python:3.7-alpine
 
 COPY requirements.txt .
-COPY flowfish/scan.sh / 
+COPY flowfish/scan.sh flowfish/entrypoint.py / 
 
 RUN apk add --no-cache \
         build-base \
