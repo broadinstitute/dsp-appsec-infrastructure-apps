@@ -38,8 +38,6 @@ spec:
         - |
           set -e
 
-          sleep infinity
-
           cd /usr/local/burpsuite_enterprise
           sed -i 's|\(logback.configurationFile=\)[^ ]*|\1${LOGBACK_CONFIG_PATH}/${LOGBACK_CONFIG_FILE}|' */component.sh
           mkfifo "${LOGBACK_LOG_FILE}"
