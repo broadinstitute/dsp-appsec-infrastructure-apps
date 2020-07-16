@@ -31,7 +31,7 @@ data:
               secretKeyRef:
                  name: ${JOB_SECRET}
                  key: SLACK_TOKEN
-          - name: GCP_PROJECT_ID
+          - name: TARGET_PROJECT_ID
             valueFrom:
               fieldRef:
                 fieldPath: metadata.annotations['GCP_PROJECT_ID']
@@ -116,3 +116,42 @@ spec:
   - role: roles/pubsub.publisher
     members:
     - serviceAccount:${SDARQ_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
+    - serviceAccount:${GCP_SERVICE_ACCOUNT_EMAIL}
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: automated-cis-scan-cronjob
+  namespace: ${NAMESPACE}
+spec:
+  schedule: "0 7 * * 6"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: ${K8S_SERVICE_ACCOUNT}
+          runtimeClassName: gvisor
+          nodeSelector:
+            cloud.google.com/gke-nodepool: batch
+          restartPolicy: OnFailure
+          containers:
+          - name: cis-scan
+            image: ${CIS_IMAGE}
+            command: ['python3', '/scanweekly.py']
+            env:
+              - name: DATASET_PROJECT_ID
+                value: ${PROJECT_ID}
+              - name: BQ_DATASET
+                value: ${CIS_DATASET}
+              - name: JOB_TOPIC
+                value: ${JOB_TOPIC}
+              - name: SLACK_CHANNEL_WEEKLY_REPORT
+                valueFrom:
+                  secretKeyRef:
+                    name: ${JOB_SECRET}
+                    key: SLACK_CHANNEL_WEEKLY_REPORT
+              - name: SDARQ_HOST
+                valueFrom:
+                  secretKeyRef:
+                    name: ${JOB_SECRET}
+                    key: SDARQ_HOST
