@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+CWD="${PWD}"
+cd ../shared
+
 export NAMESPACE="codedx-analysis"
 
 ./kube-apply.py "namespace.yaml"
