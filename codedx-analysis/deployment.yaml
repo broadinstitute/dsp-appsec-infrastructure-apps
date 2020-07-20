@@ -80,16 +80,3 @@ spec:
     name: ${JOB_TOPIC}
   eventTypes:
     - "OBJECT_FINALIZE"
----
-apiVersion: iam.cnrm.cloud.google.com/v1beta1
-kind: IAMPolicyMember
-metadata:
-  name: ${BUCKET_SA_IAM_POLICY}
-  namespace: ${NAMESPACE}
-spec:
-  member: serviceAccount:${SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
-  role: roles/storage.reader
-  resourceRef:
-    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
-    kind: StorageBucket
-    name: ${BUCKET_NAME}
