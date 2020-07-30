@@ -43,6 +43,7 @@ spec:
           mkfifo "${LOGBACK_LOG_FILE}"
           chown burpsuite "${LOGBACK_LOG_FILE}"
 
+          ls -al enterpriseServer
           cd enterpriseServer/*
           cp "${SECRET_CONFIG_PATH}/${SECRET_CONFIG_FILE}" .
           chown burpsuite "${SECRET_CONFIG_FILE}"
