@@ -39,12 +39,11 @@ spec:
           set -e
 
           cd /usr/local/burpsuite_enterprise
-          ls -al
           sed -i 's|\(logback.configurationFile=\)[^ ]*|\1${LOGBACK_CONFIG_PATH}/${LOGBACK_CONFIG_FILE}|' */component.sh
           mkfifo "${LOGBACK_LOG_FILE}"
           chown burpsuite "${LOGBACK_LOG_FILE}"
 
-          cd enterpriseServer/20*
+          cd enterpriseServer/*
           cp "${SECRET_CONFIG_PATH}/${SECRET_CONFIG_FILE}" .
           chown burpsuite "${SECRET_CONFIG_FILE}"
 
