@@ -15,7 +15,7 @@ export JOB_DEPLOYMENT="${NAMESPACE}"
 export JOB_TOPIC="${NAMESPACE}"
 export JOB_SUBSCRIPTION="${JOB_TOPIC}"
 
-export BUCKET_NAME="${PROJECT_ID}-zap-vulnerability-reports"
+export BUCKET_NAME="${PROJECT_ID}-zap-vuln-reports"
 export BUCKET_NOTIFICATION="${BUCKET_NAME}-notification"
 export BUCKET_IAM_POLICY="${BUCKET_NAME}-iam-policy"
 export BUCKET_SA_IAM_POLICY="${BUCKET_NAME}-sa-iam-policy"
