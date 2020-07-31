@@ -243,7 +243,8 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
     "storage.buckets.get",
     "storage.buckets.create",
     "storage.buckets.update",
-    "storage.buckets.delete"
+    "storage.buckets.delete",
+    "storage.objects.list"
   ]
 }
 
