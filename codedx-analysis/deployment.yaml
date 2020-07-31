@@ -67,6 +67,8 @@ kind: StorageBucket
 metadata:
   name: ${BUCKET_NAME}
   namespace: ${NAMESPACE}
+  annotations:
+    cnrm.cloud.google.com/deletion-policy: abandon
 ---
 apiVersion: storage.cnrm.cloud.google.com/v1beta1
 kind: StorageNotification
