@@ -34,24 +34,24 @@ spec:
           requests:
             memory: 65M
 ---
-apiVersion: iam.cnrm.cloud.google.com/v1beta1
-kind: IAMPolicyMember
-metadata:
-  name: ${SERVICE_ACCOUNT}-sa-pubsub-policy
-  namespace: ${NAMESPACE}
-spec:
-  member: serviceAccount:${SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
-  role: roles/pubsub.subscriber
-  resourceRef:
-    apiVersion: pubsub.cnrm.cloud.google.com/v1beta1
-    kind: PubSubSubscription
-    name: ${JOB_SUBSCRIPTION}
----
 apiVersion: pubsub.cnrm.cloud.google.com/v1beta1
 kind: PubSubTopic
 metadata:
   name: ${JOB_TOPIC}
   namespace: ${NAMESPACE}
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: ${JOB_TOPIC}-publisher-policy
+  namespace: ${NAMESPACE}
+spec:
+  member: serviceAccount:service-${PROJECT_NUMBER}@gs-project-accounts.iam.gserviceaccount.com
+  role: roles/pubsub.publisher
+  resourceRef:
+    apiVersion: pubsub.cnrm.cloud.google.com/v1beta1
+    kind: PubSubTopic
+    name: ${JOB_TOPIC}
 ---
 apiVersion: pubsub.cnrm.cloud.google.com/v1beta1
 kind: PubSubSubscription
@@ -61,6 +61,19 @@ metadata:
 spec:
   topicRef:
     name: ${JOB_TOPIC}
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: ${JOB_SUBSCRIPTION}-subscriber-policy
+  namespace: ${NAMESPACE}
+spec:
+  member: serviceAccount:${SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
+  role: roles/pubsub.subscriber
+  resourceRef:
+    apiVersion: pubsub.cnrm.cloud.google.com/v1beta1
+    kind: PubSubSubscription
+    name: ${JOB_SUBSCRIPTION}
 ---
 apiVersion: storage.cnrm.cloud.google.com/v1beta1
 kind: StorageBucket

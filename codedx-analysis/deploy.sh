@@ -5,6 +5,11 @@ set -euo pipefail
 CWD="${PWD}"
 cd ../shared
 
+PROJECT_NUMBER=$(
+    gcloud projects describe "${PROJECT_ID}" --format 'value(projectNumber)'
+)
+export PROJECT_NUMBER
+
 export NAMESPACE="codedx-analysis"
 
 ./kube-apply.py "namespace.yaml"
