@@ -80,6 +80,6 @@ spec:
     name: ${BUCKET_NAME}
   payloadFormat: JSON_API_V1
   topicRef:
-    name: ${JOB_TOPIC}
+    external: //pubsub.googleapis.com/projects/${PROJECT_ID}/topics/${JOB_TOPIC}
   eventTypes:
-    - "OBJECT_FINALIZE"
+  - OBJECT_FINALIZE
