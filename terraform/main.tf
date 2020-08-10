@@ -14,6 +14,11 @@ provider "google-beta" {
   region  = var.region
 }
 
+resource "google_project_service" "project" {
+  service = "firestore.googleapis.com"
+  disable_on_destroy = false
+}
+
 ### VPC
 
 resource "google_compute_network" "gke" {
