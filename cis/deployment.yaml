@@ -116,6 +116,7 @@ spec:
   - role: roles/pubsub.publisher
     members:
     - serviceAccount:${SDARQ_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
+    - serviceAccount:${GCP_SERVICE_ACCOUNT_EMAIL}
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
@@ -128,6 +129,7 @@ spec:
     spec:
       template:
         spec:
+          serviceAccountName: ${K8S_SERVICE_ACCOUNT}
           runtimeClassName: gvisor
           nodeSelector:
             cloud.google.com/gke-nodepool: batch
@@ -148,3 +150,8 @@ spec:
                   secretKeyRef:
                     name: ${JOB_SECRET}
                     key: SLACK_CHANNEL_WEEKLY_REPORT
+              - name: SDARQ_HOST
+                valueFrom:
+                  secretKeyRef:
+                    name: ${JOB_SECRET}
+                    key: SDARQ_HOST

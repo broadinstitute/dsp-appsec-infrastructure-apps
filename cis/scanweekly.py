@@ -44,7 +44,7 @@ def get_callback(future, data):
     return callback
 
 
-def scan_projects(tables: List[Any], dataset_project_id: str, topic_name: str, slack_channel_weekly_report: str):
+def scan_projects(tables: List[Any], dataset_project_id: str, topic_name: str, slack_channel_weekly_report: str, sdarq_host: str):
     """
     Scan multiply projects by publishing multiple
     messages to a Pub/Sub topic with an error handler.
@@ -65,11 +65,13 @@ def scan_projects(tables: List[Any], dataset_project_id: str, topic_name: str, s
     for table in tables:
         data = u"{}".format(table.table_id)
         gcp_project_id = str(table.table_id).replace('_', '-')
+        results_url = f"{sdarq_host}/cis/results?project_id={gcp_project_id}"
         # When a message is published, the client returns a future.
         future = publisher.publish(
             topic_path,
             data=message,
             GCP_PROJECT_ID=gcp_project_id,
+            SLACK_RESULTS_URL=results_url,
             SLACK_CHANNEL=formatted_slack_channel
         )
         futures[data] = future
@@ -86,10 +88,11 @@ def main():
     slack_channel_weekly_report = os.environ['SLACK_CHANNEL_WEEKLY_REPORT']
     dataset_project_id = os.environ['DATASET_PROJECT_ID']
     topic_name = os.environ['JOB_TOPIC']
+    sdarq_host = os.environ['SDARQ_HOST']
 
     tables = list_projects(dataset_project_id, bq_dataset)
 
-    scan_projects(tables, dataset_project_id, topic_name, slack_channel_weekly_report)
+    scan_projects(tables, dataset_project_id, topic_name, slack_channel_weekly_report, sdarq_host)
 
 
 if __name__ == '__main__':

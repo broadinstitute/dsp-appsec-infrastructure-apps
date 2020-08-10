@@ -1,5 +1,8 @@
 substitutions:
-  _ORG_VIEWER_SA_EMAIL: '' # replace in Cloud Build UI
+  # replace these values in Cloud Build UI
+  _ORG_VIEWER_SA_EMAIL: '' # email of an existing Service Account with Org Viewer role
+  _DNS_DOMAIN: '' # fully-resolved DNS domain name (e.g. appsec.example.org)
+  _DNS_ZONE: '' # DNS zone name to be created/updated (e.g. appsec)
 
 options:
   machineType: N1_HIGHCPU_8
@@ -17,8 +20,8 @@ options:
   - SDARQ_FRONTEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-frontend:${SHORT_SHA}
   - SDARQ_BACKEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-backend:${SHORT_SHA}
   - CARTOGRAPHY_IMAGE=us.gcr.io/${PROJECT_ID}/cartography
-  - DNS_DOMAIN=dsp-appsec.broadinstitute.org
-  - DNS_ZONE=dsp-appsec
+  - DNS_DOMAIN=${_DNS_DOMAIN}
+  - DNS_ZONE=${_DNS_ZONE}
   - TERRAFORM_BUCKET=${PROJECT_ID}-terraform
   - BROAD_INGRESS_CSP=broad-ingress
   - DISK_SNAPSHOT_POLICY=appsec-apps-disk-snapshot-policy

@@ -47,10 +47,10 @@ resource "google_container_registry" "gcr" {
 }
 
 resource "google_storage_bucket_iam_member" "gcr_viewers" {
-  for_each = toset([
-    "serviceAccount:${module.node_sa.email}",
-    "serviceAccount:${module.bastion_host_sa.email}",
-  ])
+  for_each = {
+    node_sa         = "serviceAccount:${module.node_sa.email}"
+    bastion_host_sa = "serviceAccount:${module.bastion_host_sa.email}"
+  }
   bucket = google_container_registry.gcr.id
   role   = "roles/storage.objectViewer"
   member = each.value
@@ -65,8 +65,9 @@ resource "google_container_cluster" "cluster" {
   location       = var.region
   node_locations = var.zones
 
-  network    = google_compute_network.gke.self_link
-  subnetwork = google_compute_subnetwork.gke.self_link
+  network         = google_compute_network.gke.self_link
+  subnetwork      = google_compute_subnetwork.gke.self_link
+  networking_mode = "VPC_NATIVE"
   ip_allocation_policy {}
 
   dynamic "master_authorized_networks_config" {
@@ -120,7 +121,7 @@ module "system_node_pool" {
   cluster         = google_container_cluster.cluster.name
   service_account = module.node_sa.email
 
-  initial_node_count = 1
+  initial_node_count = 2
   machine_type       = "e2-small"
 }
 
