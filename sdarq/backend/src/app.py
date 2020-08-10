@@ -15,6 +15,7 @@ import json
 import time
 import threading
 
+from typing import List
 from flask import request, Response
 from flask_api import FlaskAPI
 from flask_cors import cross_origin
@@ -238,25 +239,30 @@ def cis_scan():
 
     callback_done = threading.Event()
 
-    def on_snapshot(doc_snapshot: firestore.DocumentSnapshot, _changes, _read_time):
-        if doc_snapshot.exists():
-            callback_done.set()
+    def on_snapshot(doc_snapshots: List[firestore.DocumentSnapshot], _changes, _read_time):
+        for doc in doc_snapshots:
+            if doc.exists:
+                print('exists')
+                callback_done.set()
+                return
 
     user_proj = user_project_id.replace('-', '_')
     doc_ref = db.collection(firestore_collection).document(user_proj)
+    doc_ref.delete()
     doc_watch = doc_ref.on_snapshot(on_snapshot)
     callback_done.wait(timeout=360)
     doc_watch.unsubscribe()
     doc = doc_ref.get()
 
     check_dict = doc.to_dict()
-    if bool(check_dict):
+    print(check_dict)
+    if check_dict:
         status_code = 404
         text_message = check_dict['Error']
-        db.collection(firestore_collection).document(user_proj).delete()
+        doc_ref.delete()
         return Response(json.dumps({'statusText': text_message}), status=status_code, mimetype='application/json')
     else:
-        db.collection(firestore_collection).document(user_proj).delete()
+        doc_ref.delete()
         return ''
 
 
