@@ -13,6 +13,8 @@ import os
 import re
 import json
 import time
+import threading
+
 from flask import request, Response
 from flask_api import FlaskAPI
 from flask_cors import cross_origin
@@ -20,6 +22,7 @@ from google.cloud import bigquery
 from google.cloud import pubsub_v1
 from google.cloud import firestore
 from jira import JIRA
+
 import slacknotify
 import defectdojo as wrapper
 from github_repo_dispatcher import github_repo_dispatcher
@@ -233,16 +236,18 @@ def cis_scan():
                               GCP_PROJECT_ID=user_project_id,
                               FIRESTORE_COLLECTION=firestore_collection)
 
+    callback_done = threading.Event()
+
+    def on_snapshot(doc_snapshot: firestore.DocumentSnapshot, _changes, _read_time):
+        if doc_snapshot.exists():
+            callback_done.set()
+
     user_proj = user_project_id.replace('-', '_')
-    while check is False:
-        doc_ref = db.collection(
-            firestore_collection).document(user_proj)
-        doc = doc_ref.get()
-        time.sleep(60)
-        if doc.exists:
-            check = True
-        else:
-            check = False
+    doc_ref = db.collection(firestore_collection).document(user_proj)
+    doc_watch = doc_ref.on_snapshot(on_snapshot)
+    callback_done.wait(timeout=360)
+    doc_watch.unsubscribe()
+    doc = doc_ref.get()
 
     check_dict = doc.to_dict()
     if bool(check_dict):
