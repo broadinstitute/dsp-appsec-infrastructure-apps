@@ -216,7 +216,6 @@ def cis_scan():
     results_url = f"{sdarq_host}cis/results?project_id={user_project_id}"
     message = message.encode("utf-8")
     firestore_collection = "cis-scans"
-    check = False
 
     if re.match(pattern, user_project_id):
         publisher = pubsub_v1.PublisherClient()
@@ -242,7 +241,6 @@ def cis_scan():
     def on_snapshot(doc_snapshots: List[firestore.DocumentSnapshot], _changes, _read_time):
         for doc in doc_snapshots:
             if doc.exists:
-                print('exists')
                 callback_done.set()
                 return
 
@@ -250,7 +248,7 @@ def cis_scan():
     doc_ref = db.collection(firestore_collection).document(user_proj)
     doc_ref.delete()
     doc_watch = doc_ref.on_snapshot(on_snapshot)
-    callback_done.wait(timeout=360)
+    callback_done.wait(timeout=3600)
     doc_watch.unsubscribe()
     doc = doc_ref.get()
 
