@@ -15,11 +15,11 @@
       </div>
       <div class="col"> </div>
     </div>
-    <div class="alert alert-warning animated fadeInRight" role="alert" *ngIf="showModal">
+    <div class="alert alert-success animated fadeInRight" role="alert" *ngIf="showModal">
       Notification is sent to slack channel.
     </div>
-    <div class="alert alert-warning animated fadeInRight" role="alert" *ngIf="showModalError">
-      An error occurred. Please make sure you have provided a project_id which is part of Broad Institute organization.
+    <div class="alert alert-danger animated fadeInRight" role="alert" *ngIf="showModalError">
+      {{showModalError.error.statusText}}
     </div>
     <br>
     <br>

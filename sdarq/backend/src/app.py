@@ -1,9 +1,21 @@
-
+"""
+This module
+- sends a new service requirements request
+        - creates a new product in Defect Dojo
+        - optionally creates a Jira Ticket
+        - notifies several Slack channels about service requirements request
+- sends request to scan a GCP project against the CIS Benchmark
+- get results from BigQuery for a scanned GCP project
+"""
 #!/usr/bin/env python3
 
 import os
 import re
 import json
+import time
+import threading
+
+from typing import List
 from flask import request, Response
 from flask_api import FlaskAPI
 from flask_cors import cross_origin
@@ -11,10 +23,10 @@ from google.cloud import bigquery
 from google.cloud import pubsub_v1
 from google.cloud import firestore
 from jira import JIRA
+
 import slacknotify
 import defectdojo as wrapper
 from github_repo_dispatcher import github_repo_dispatcher
-
 
 # Env variables
 dojo_host = os.getenv('dojo_host')
@@ -138,7 +150,8 @@ def submit():
         dd.set_product(product_id, description=prepare_dojo_input(json_data))
 
     if github_token and github_org and github_repo:
-        github_repo_dispatcher(github_token, github_org, github_repo, github_event, json_data)
+        github_repo_dispatcher(github_token, github_org,
+                               github_repo, github_event, json_data)
 
     return ''
 
@@ -154,8 +167,6 @@ def cis_results():
         json: Security scan results for given project_id
     """
     project_id_encoded = request.get_data()
-    print(project_id_encoded)
-    print(project_id_encoded.decode("utf-8"))
     project_id = project_id_encoded.decode("utf-8")
     pattern = "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
     project_id_edited = project_id.strip('-').replace('-', '_')
@@ -202,14 +213,15 @@ def cis_scan():
     topic_name = "cis-scans"
     project_id = "dsp-appsec-infra-prod"
     message = ""
-    results_url = f"{sdarq_host}/cis/results?project_id={user_project_id}"
+    results_url = f"{sdarq_host}cis/results?project_id={user_project_id}"
     message = message.encode("utf-8")
     firestore_collection = "cis-scans"
-    check = False
 
     if re.match(pattern, user_project_id):
         publisher = pubsub_v1.PublisherClient()
         topic_path = publisher.topic_path(project_id, topic_name)
+        user_proj = user_project_id.replace('-', '_')
+        db.collection(firestore_collection).document(user_proj)
         if 'slack_channel' in json_data:
             slack_channel = json_data['slack_channel']
             publisher.publish(topic_path,
@@ -223,19 +235,33 @@ def cis_scan():
                               data=message,
                               GCP_PROJECT_ID=user_project_id,
                               FIRESTORE_COLLECTION=firestore_collection)
+
+    callback_done = threading.Event()
+
+    def on_snapshot(doc_snapshots: List[firestore.DocumentSnapshot], _changes, _read_time):
+        for doc in doc_snapshots:
+            if doc.exists:
+                callback_done.set()
+                return
+
     user_proj = user_project_id.replace('-', '_')
-    while check is False:
-        doc_ref = db.collection(
-            firestore_collection).document(user_proj)
-        doc = doc_ref.get()
-        if doc.exists:
-            check = True
-        else:
-            check = False
+    doc_ref = db.collection(firestore_collection).document(user_proj)
+    doc_ref.delete()
+    doc_watch = doc_ref.on_snapshot(on_snapshot)
+    callback_done.wait(timeout=3600)
+    doc_watch.unsubscribe()
+    doc = doc_ref.get()
 
-    db.collection(firestore_collection).document(user_proj).delete()
-
-    return ''
+    check_dict = doc.to_dict()
+    print(check_dict)
+    if check_dict:
+        status_code = 404
+        text_message = check_dict['Error']
+        doc_ref.delete()
+        return Response(json.dumps({'statusText': text_message}), status=status_code, mimetype='application/json')
+    else:
+        doc_ref.delete()
+        return ''
 
 
 if __name__ == "__main__":
