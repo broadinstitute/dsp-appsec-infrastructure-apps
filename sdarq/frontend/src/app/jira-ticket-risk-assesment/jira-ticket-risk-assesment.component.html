@@ -1,0 +1,23 @@
+<div class="jumbotron">
+  <div class="container">
+    <div class="row">
+      <div class="col"> </div>
+      <div class="colalign-self-center">
+        <div class="spinner-grow text-primary" role="status" *ngIf="showSpinner">
+          <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-primary" role="status" *ngIf="showSpinner">
+          <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-primary" role="status" *ngIf="showSpinner">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+      <div class="col"> </div>
+    </div>
+    <div class="alert alert-dark animated fadeInRight" role="alert" *ngIf="showModal">
+      Jira Security Impact Assessment Result: <strong>{{risk.Risk}}</strong>
+    </div>
+    <app-survey *ngIf="showForm" [json]="json" (submitSurvey)="sendData($event)"></app-survey>
+  </div>
+</div>
