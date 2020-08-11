@@ -12,7 +12,6 @@ This module
 import os
 import re
 import json
-import time
 import threading
 
 from typing import List
@@ -262,6 +261,36 @@ def cis_scan():
     else:
         doc_ref.delete()
         return ''
+
+
+@app.route('/jira_ticket_risk_assesment/', methods=['POST'])
+@cross_origin(origins=sdarq_host)
+def jira_ticket_risk_assesment():
+    """
+    Calculates security risk for a Jira Ticket
+    Args:
+        Json data provided from user
+    Returns:
+        Security risk
+    """
+    json_data = request.get_json()
+
+    likehood = (float(json_data['Skill level'])+float(json_data['Motive'])+float(json_data['Opportunity'])+float(json_data['Size'])+float(
+        json_data['Ease of discovery'])+float(json_data['Ease of exploit'])+float(json_data['Awareness'])+float(json_data['Intrusion detection']))/8
+    impact = (float(json_data['Confidentiality'])+float(json_data['Integrity'])+float(json_data['Availability'])+float(json_data['Accountability'])+float(
+        json_data['Financial damage'])+float(json_data['Non-compliance'])+float(json_data['Privacy violation'])+float(json_data['Reputation damage']))/8
+    risk = likehood*impact
+
+    if risk < 18.0:
+        value = "Low"
+        return json.dumps({'Risk': value})
+    elif risk > 18.0 and risk < 36.0:
+        value = "Medium"
+        return json.dumps({'Risk': value})
+    else:
+        risk > 36.0
+        value = "High"
+        return json.dumps({'Risk': value})
 
 
 if __name__ == "__main__":
