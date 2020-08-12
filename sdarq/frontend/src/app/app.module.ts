@@ -15,6 +15,7 @@ import { CisComponent } from './cis/cis.component';
 import { CisProjectService } from './services/cis-project.service';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { NavbarComponent } from './navbar/navbar.component';
+import { CVSSPageComponent } from './cvsspage/cvsspage.component';
 import { ScanpageComponent } from './scanpage/scanpage.component';
 import { GetCisScanService } from './services/get-cis-scan.service';
 import { FooterComponent } from './footer/footer.component';
@@ -35,6 +36,7 @@ import { FilterPipe } from './pipes/filter.pipe';
     HomepageComponent,
     CisComponent,
     NavbarComponent,
+    CVSSPageComponent,
     ScanpageComponent,
     FooterComponent,
     CisResultsComponent,
