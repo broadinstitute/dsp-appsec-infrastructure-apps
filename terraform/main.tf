@@ -209,6 +209,10 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
     "compute.globalAddresses.setLabels",
     "compute.globalAddresses.delete",
     "compute.regionOperations.get",
+    "compute.resourcePolicies.get",
+    "compute.resourcePolicies.list",
+    "compute.resourcePolicies.create",
+    "compute.resourcePolicies.use",
     "compute.securityPolicies.get",
     "compute.securityPolicies.create",
     "compute.securityPolicies.update",
@@ -218,10 +222,6 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
     "dns.managedZones.get",
     "dns.managedZones.create",
     "dns.managedZones.update",
-    "compute.resourcePolicies.get",
-    "compute.resourcePolicies.list",
-    "compute.resourcePolicies.create",
-    "compute.resourcePolicies.use",
     "dns.resourceRecordSets.list",
     "dns.resourceRecordSets.create",
     "dns.resourceRecordSets.update",
@@ -248,6 +248,7 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
     "pubsub.subscriptions.setIamPolicy",
     "resourcemanager.projects.getIamPolicy",
     "resourcemanager.projects.setIamPolicy",
+    "secretmanager.secrets.list",
   ]
 }
 
