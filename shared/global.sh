@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+# parse global vars from Terraform
+export $(xargs < .env)
+
 # get cluster credentials
 gcloud container clusters get-credentials --region "${region}" "${cluster}"
 
@@ -9,5 +12,7 @@ gcloud container clusters get-credentials --region "${region}" "${cluster}"
 export NAMESPACE="${GLOBAL_NAMESPACE}"
 
 ./kube-apply.py \
+  "configconnector.yaml" \
   "namespace.yaml" \
+  "configconnectorcontext.yaml" \
   "global.yaml"
