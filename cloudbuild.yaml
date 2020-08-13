@@ -77,6 +77,7 @@ steps:
       -var "project=${PROJECT_ID}"
       -var "region=$${REGION}"
       -var "zones=[\"$${ZONE_1}\",\"$${ZONE_2}\"]"
+      -var "global_namespace=$${GLOBAL_NAMESPACE}"
       -var "bastion_image=$${BASTION_IMAGE}" &&
     terraform apply plan.out &&
     terraform output | tr -d " " > ../shared/.env

@@ -10,8 +10,8 @@ spec:
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember
 metadata:
-  name: cnrm-ksa-gsa
-  namespace: ${NAMESPACE}
+  name: cnrm-${NAMESPACE}
+  namespace: ${GLOBAL_NAMESPACE}
 spec:
   member: serviceAccount:${PROJECT_ID}.svc.id.goog[cnrm-system/cnrm-controller-manager-${NAMESPACE}]
   role: roles/iam.workloadIdentityUser

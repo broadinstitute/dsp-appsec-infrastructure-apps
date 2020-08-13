@@ -15,7 +15,7 @@ provider "google-beta" {
 }
 
 resource "google_project_service" "project" {
-  service = "firestore.googleapis.com"
+  service            = "firestore.googleapis.com"
   disable_on_destroy = false
 }
 
@@ -249,6 +249,12 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
     "resourcemanager.projects.getIamPolicy",
     "resourcemanager.projects.setIamPolicy",
   ]
+}
+
+resource "google_service_account_iam_member" "cnrm_sa_ksa_binding" {
+  service_account_id = module.cnrm_sa.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "serviceAccount:${var.project}.svc.id.goog[cnrm-system/cnrm-controller-manager-${var.global_namespace}]"
 }
 
 ### Outputs
