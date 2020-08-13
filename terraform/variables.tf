@@ -53,6 +53,11 @@ variable "master_autorized_networks" {
   description = "Networks allowed to access GKE master"
 }
 
+variable "global_namespace" {
+  type        = string
+  description = "Global namespace for GKE"
+}
+
 variable "bastion_image" {
   type        = string
   description = "Docker image name for bastion SOCKS proxy"
