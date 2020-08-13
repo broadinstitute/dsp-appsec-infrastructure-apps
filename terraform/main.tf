@@ -129,7 +129,7 @@ module "system_node_pool" {
   cluster         = google_container_cluster.cluster.name
   service_account = module.node_sa.email
 
-  initial_node_count = 2
+  initial_node_count = 3
   machine_type       = "e2-small"
 }
 
