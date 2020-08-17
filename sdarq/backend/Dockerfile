@@ -1,7 +1,7 @@
 FROM python:3.6-jessie
 
 RUN apt-get update \
-  && pip install --upgrade pip==20.1.1 \
+  && pip install --upgrade pip==20.2.2 \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
