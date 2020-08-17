@@ -13,7 +13,7 @@ spec:
       labels:
         deployment: ${JOB_DEPLOYMENT}
     spec:
-      serviceAccountName: ${SERVICE_ACCOUNT}
+      serviceAccountName: ${SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
       runtimeClassName: gvisor
       nodeSelector:
         cloud.google.com/gke-nodepool: apps
