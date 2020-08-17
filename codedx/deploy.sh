@@ -4,12 +4,15 @@ set -euo pipefail
 
 CWD="${PWD}"
 cd ../shared
+export $(xargs < .env)
 
 # Create namespace
 
 export NAMESPACE="codedx"
 
-./kube-apply.py "namespace.yaml"
+./kube-apply.py \
+  "namespace.yaml" \
+  "configconnectorcontext.yaml"
 
 # Generate secrets
 

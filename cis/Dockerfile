@@ -43,7 +43,7 @@ RUN pip3 install pylint pytest
 
 COPY *.py /
 
-RUN pylint --disable=W0702,W0613,E0611,C0301,E1101 /*.py
+RUN pylint --disable=W0702,W0613,E0611,C0301,E1101,R0913 /*.py
 
 RUN pytest /entrypoint_test.py
 

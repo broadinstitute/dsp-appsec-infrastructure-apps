@@ -4,6 +4,7 @@ set -euo pipefail
 
 CWD="${PWD}"
 cd ../shared
+export $(xargs < .env)
 
 export NAMESPACE="docs"
 export DEPLOYMENT="${NAMESPACE}"
@@ -20,6 +21,7 @@ export TARGET_PORT="http"
 
 ./kube-apply.py \
   "namespace.yaml" \
+  "configconnectorcontext.yaml" \
   "${CWD}/deployment.yaml"
 
 ./host.sh

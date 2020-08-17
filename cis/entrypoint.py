@@ -11,11 +11,10 @@ import json
 import logging
 import os
 import subprocess
-from typing import List, Any
+from typing import Any, List
+
 import slack
-
 from google.cloud import bigquery, firestore, resource_manager
-
 
 BENCHMARK_PROFILE = 'inspec-gcp-cis-benchmark'
 
@@ -110,14 +109,13 @@ def collect_refs(refs: list, urls: List[str]):
     return urls
 
 
-def load_bigquery(target_project_id: str, dataset_id: str, table_desc: str, version: str, rows: List[Any]):
+def load_bigquery(target_project_id: str, dataset_id: str, table_id: str,
+                  table_desc: str, version: str, rows: List[Any]):
     """
     Loads scan results into a BigQuery table.
     """
-    table_id = target_project_id.replace('-', '_')
-
     if not rows:
-        return table_id
+        return
 
     client = bigquery.Client()
     table_ref = client.dataset(dataset_id).table(table_id)
@@ -154,17 +152,6 @@ def load_bigquery(target_project_id: str, dataset_id: str, table_desc: str, vers
     table = bigquery.Table(table_ref)
     table.description = table_desc
     client.update_table(table, ['description'])
-
-    return table_id
-
-
-def firestore_report(collection_id: str, table_id: str):
-    """
-    Records scan completion into a Firestore document.
-    """
-    client = firestore.Client()
-    doc_ref = client.collection(collection_id).document(table_id)
-    doc_ref.set({})
 
 
 def slack_notify(target_project_id: str, slack_token: str, slack_channel: str, results_url: str):
@@ -216,10 +203,11 @@ def find_highs(rows: List[Any], slack_channel: str, slack_token: str, target_pro
                 'description': row['description']
             })
     if records:
-        slack_notify_high(records, slack_token, slack_channel, target_project_id)
+        slack_notify_high(records, slack_token,
+                          slack_channel, target_project_id)
 
 
-def slack_notify_high(records: str, slack_token: str, slack_channel: str, target_project_id: str):
+def slack_notify_high(records: List[Any], slack_token: str, slack_channel: str, target_project_id: str):
     """
     Post notifications in Slack
     about high findings
@@ -281,8 +269,7 @@ def slack_notify_high(records: str, slack_token: str, slack_channel: str, target
                         }
                     ]
                 }
-            ],
-                          "color": "#C31818"}]
+            ], "color": "#C31818"}]
         )
 
 
@@ -303,28 +290,45 @@ def main():
     logging.basicConfig(level=logging.INFO)
 
     # parse inputs
-    target_project_id = os.environ['TARGET_PROJECT_ID'] # required
+    target_project_id = os.environ['TARGET_PROJECT_ID']  # required
     dataset_id = os.environ['BQ_DATASET']  # required
     slack_token = os.getenv('SLACK_TOKEN')
-    slack_channel = os.getenv('SLACK_CHANNEL') # slack channel if provided from user
+    # slack channel if provided from user
+    slack_channel = os.getenv('SLACK_CHANNEL')
     slack_results_url = os.getenv('SLACK_RESULTS_URL')
     fs_collection = os.getenv('FIRESTORE_COLLECTION')
 
-    # validate inputs
-    validate_project(target_project_id)
+    try:
+        # define table_id and Firestore doc_ref for reporting success/errors
+        table_id = target_project_id.replace('-', '_')
+        if fs_collection:
+            doc_ref = firestore.Client().collection(fs_collection).document(table_id)
 
-    # scan and load results into BigQuery
-    title, version, rows = parse_profiles(*benchmark(target_project_id))
-    table_id = load_bigquery(target_project_id, dataset_id, title, version, rows)
+        # validate inputs
+        validate_project(target_project_id)
 
-    # post to Slack, if specified
-    if slack_token and slack_channel and slack_results_url:
-        slack_notify(target_project_id, slack_token, slack_channel, slack_results_url)
-        find_highs(rows, slack_channel, slack_token, target_project_id)
+        # scan and load results into BigQuery
+        title, version, rows = parse_profiles(*benchmark(target_project_id))
+        load_bigquery(target_project_id, dataset_id,
+                      table_id, title, version, rows)
 
-    # Note: TODO please move this into a try-catch for all the above
-    if fs_collection:
-        firestore_report(fs_collection, table_id)
+        # post to Slack, if specified
+        if slack_token and slack_channel and slack_results_url:
+            slack_notify(target_project_id, slack_token,
+                         slack_channel, slack_results_url)
+            find_highs(rows, slack_channel, slack_token, target_project_id)
+        # create Firestore document, if specified
+
+        if fs_collection:
+            doc_ref.set({})
+
+    # writes an error in Firestore document if an exception occurs
+    except (Exception) as error:
+        if fs_collection:
+            doc_ref.set({u'Error': u'{}'.format(error)})
+
+        print(Exception)
+        raise error
 
 
 if __name__ == '__main__':

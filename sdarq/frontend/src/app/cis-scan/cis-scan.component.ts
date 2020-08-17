@@ -35,10 +35,22 @@ export class CisScanComponent implements OnInit {
         this.showModal = true;
         this.showForm = false;
         this.showSpinner = false;
+      },
+      (data) => {
+        this.showModal = false;
+        this.showModalError = data;
+        this.showForm = false;
+        this.showSpinner = false;
       });
     } else {
       this.sendProject.sendCisProject(result).subscribe((data: any) => {
         location.href = location.origin + '/cis/results?project_id=' + result.project_id;
+      },
+      (data) => {
+        this.showModal = false;
+        this.showModalError = data;
+        this.showForm = false;
+        this.showSpinner = false;
       });
     }
   }

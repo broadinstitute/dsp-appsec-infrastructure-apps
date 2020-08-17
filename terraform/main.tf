@@ -14,6 +14,11 @@ provider "google-beta" {
   region  = var.region
 }
 
+resource "google_project_service" "project" {
+  service            = "firestore.googleapis.com"
+  disable_on_destroy = false
+}
+
 ### VPC
 
 resource "google_compute_network" "gke" {
@@ -47,10 +52,10 @@ resource "google_container_registry" "gcr" {
 }
 
 resource "google_storage_bucket_iam_member" "gcr_viewers" {
-  for_each = toset([
-    "serviceAccount:${module.node_sa.email}",
-    "serviceAccount:${module.bastion_host_sa.email}",
-  ])
+  for_each = {
+    node_sa         = "serviceAccount:${module.node_sa.email}"
+    bastion_host_sa = "serviceAccount:${module.bastion_host_sa.email}"
+  }
   bucket = google_container_registry.gcr.id
   role   = "roles/storage.objectViewer"
   member = each.value
@@ -65,8 +70,9 @@ resource "google_container_cluster" "cluster" {
   location       = var.region
   node_locations = var.zones
 
-  network    = google_compute_network.gke.self_link
-  subnetwork = google_compute_subnetwork.gke.self_link
+  network         = google_compute_network.gke.self_link
+  subnetwork      = google_compute_subnetwork.gke.self_link
+  networking_mode = "VPC_NATIVE"
   ip_allocation_policy {}
 
   dynamic "master_authorized_networks_config" {
@@ -101,6 +107,9 @@ resource "google_container_cluster" "cluster" {
     network_policy_config {
       disabled = false
     }
+    config_connector_config {
+      enabled = true
+    }
     istio_config {
       disabled = true
     }
@@ -120,7 +129,7 @@ module "system_node_pool" {
   cluster         = google_container_cluster.cluster.name
   service_account = module.node_sa.email
 
-  initial_node_count = 1
+  initial_node_count = 3
   machine_type       = "e2-small"
 }
 
@@ -200,6 +209,10 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
     "compute.globalAddresses.setLabels",
     "compute.globalAddresses.delete",
     "compute.regionOperations.get",
+    "compute.resourcePolicies.get",
+    "compute.resourcePolicies.list",
+    "compute.resourcePolicies.create",
+    "compute.resourcePolicies.use",
     "compute.securityPolicies.get",
     "compute.securityPolicies.create",
     "compute.securityPolicies.update",
@@ -209,10 +222,6 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
     "dns.managedZones.get",
     "dns.managedZones.create",
     "dns.managedZones.update",
-    "compute.resourcePolicies.get",
-    "compute.resourcePolicies.list",
-    "compute.resourcePolicies.create",
-    "compute.resourcePolicies.use",
     "dns.resourceRecordSets.list",
     "dns.resourceRecordSets.create",
     "dns.resourceRecordSets.update",
@@ -224,6 +233,7 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
     "iam.serviceAccounts.delete",
     "iam.serviceAccounts.getIamPolicy",
     "iam.serviceAccounts.setIamPolicy",
+    "monitoring.timeSeries.create",
     "pubsub.topics.get",
     "pubsub.topics.create",
     "pubsub.topics.attachSubscription",
@@ -245,7 +255,7 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
 resource "google_service_account_iam_member" "cnrm_sa_ksa_binding" {
   service_account_id = module.cnrm_sa.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "serviceAccount:${var.project}.svc.id.goog[cnrm-system/cnrm-controller-manager]"
+  member             = "serviceAccount:${var.project}.svc.id.goog[cnrm-system/cnrm-controller-manager-${var.global_namespace}]"
 }
 
 ### Outputs

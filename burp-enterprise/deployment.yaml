@@ -1,9 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: ${DEPLOYMENT}
+  name: ${STATEFUL_SET}
   namespace: ${NAMESPACE}
 spec:
+  serviceName: ${SERVICE}
   selector:
     matchLabels:
       service: ${SERVICE}
@@ -18,6 +19,9 @@ spec:
         cloud.google.com/gke-nodepool: apps
 
       volumes:
+      - name: ${SERVICE_VOLUME}
+        persistentVolumeClaim:
+          claimName: ${SERVICE_VOLUME}
       - name: ${SECRET_CONFIG_VOLUME}
         secret:
           secretName: ${SECRET_CONFIG}
@@ -27,7 +31,7 @@ spec:
 
       containers:
       - name: burp-enterprise
-        image: us.gcr.io/${PROJECT_ID}/burp-enterprise:${BURP_VERSION}
+        image: us.gcr.io/${PROJECT_ID}/burp-enterprise
         imagePullPolicy: Always
         command: ['bash', '-c']
         args:
@@ -39,7 +43,7 @@ spec:
           mkfifo "${LOGBACK_LOG_FILE}"
           chown burpsuite "${LOGBACK_LOG_FILE}"
 
-          cd "enterpriseServer/${BURP_VERSION}"
+          cd enterpriseServer/*/
           cp "${SECRET_CONFIG_PATH}/${SECRET_CONFIG_FILE}" .
           chown burpsuite "${SECRET_CONFIG_FILE}"
 
@@ -59,6 +63,12 @@ spec:
           timeoutSeconds: 10
           initialDelaySeconds: 60
         volumeMounts:
+        - name: ${SERVICE_VOLUME}
+          subPath: usr/local/burpsuite_enterprise
+          mountPath: /usr/local/burpsuite_enterprise
+        - name: ${SERVICE_VOLUME}
+          subPath: var/lib/BurpSuiteEnterpriseEdition
+          mountPath: /var/lib/BurpSuiteEnterpriseEdition
         - name: ${SECRET_CONFIG_VOLUME}
           mountPath: ${SECRET_CONFIG_PATH}
         - name: ${LOGBACK_CONFIG_VOLUME}
