@@ -4,6 +4,7 @@ set -euo pipefail
 
 CWD="${PWD}"
 cd ../shared
+export $(xargs < .env)
 
 export NAMESPACE="cis"
 export JOB_TOPIC="${NAMESPACE}-scans"
@@ -13,6 +14,7 @@ export K8S_SERVICE_ACCOUNT="${JOB_CONFIG_MAP}"
 
 ./kube-apply.py \
   "namespace.yaml" \
+  "configconnectorcontext.yaml" \
   "${CWD}/deployment.yaml"
 
 ./batch.sh

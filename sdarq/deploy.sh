@@ -4,6 +4,7 @@ set -euo pipefail
 
 CWD="${PWD}"
 cd ../shared
+export $(xargs < .env)
 
 export NAMESPACE="sdarq"
 export DEPLOYMENT="${NAMESPACE}"
@@ -25,6 +26,7 @@ export BACKEND_PORT="backend"
 
 ./kube-apply.py \
   "namespace.yaml" \
+  "configconnectorcontext.yaml" \
   "service-account.yaml" \
   "${CWD}/deployment.yaml"
 
