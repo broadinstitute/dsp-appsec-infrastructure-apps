@@ -78,18 +78,16 @@ steps:
       -var "project=${PROJECT_ID}"
       -var "region=$${REGION}"
       -var "zones=[\"$${ZONE_1}\",\"$${ZONE_2}\"]"
+      -var "global_namespace=$${GLOBAL_NAMESPACE}"
       -var "bastion_image=$${BASTION_IMAGE}" &&
     terraform apply plan.out &&
-    terraform output | tr -d " " > ../.env
+    terraform output | tr -d " " > ../shared/.env
 
 # set up Config Connector and other shared GKE resources
 - id: shared
   name: &kubectl gcr.io/cloud-builders/kubectl
-  entrypoint: sh
+  entrypoint: ./global.sh
   dir: shared
-  args:
-  - -c
-  - export $(xargs < ../.env) && ./global.sh
 
 # workaround for instance metadata endpoint in CloudSQL proxy
 - id: cloudsql-proxy

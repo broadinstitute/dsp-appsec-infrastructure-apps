@@ -14,4 +14,4 @@ google-cloud-bigquery
 google-cloud-firestore
 google-cloud-pubsub
 google-cloud-resource-manager
-google-api-core[grpc]<1.17.0,>=1.14.0
+google-api-core[grpc]>=1.14.0
