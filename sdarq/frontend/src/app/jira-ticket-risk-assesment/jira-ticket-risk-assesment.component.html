@@ -1,32 +1,7 @@
 <div class="jumbotron">
   <div class="container">
     <div class="row">
-      <div class="col"> </div>
-      <div class="colalign-self-center">
-        <div class="spinner-grow text-primary" role="status" *ngIf="showSpinner">
-          <span class="sr-only">Loading...</span>
-        </div>
-        <div class="spinner-grow text-primary" role="status" *ngIf="showSpinner">
-          <span class="sr-only">Loading...</span>
-        </div>
-        <div class="spinner-grow text-primary" role="status" *ngIf="showSpinner">
-          <span class="sr-only">Loading...</span>
-        </div>
-      </div>
-      <div class="col"> </div>
+      <app-survey [json]="json" (submitSurvey)="sendData($event)"></app-survey>
     </div>
-    <div class="alert alert-info animated fadeInRight" role="alert" *ngIf="showModal_low">
-      Jira Security Impact Assessment Result: 
-      <br> <strong>{{risk.Risk}}</strong>
-    </div>
-    <div class="alert alert-warning animated fadeInRight" role="alert" *ngIf="showModal_medium">
-      Jira Security Impact Assessment Result: 
-      <br> <strong>{{risk.Risk}}</strong>
-    </div>
-    <div class="alert alert-danger animated fadeInRight" role="alert" *ngIf="showModal_high">
-      Jira Security Impact Assessment Result: 
-      <br> <strong>{{risk.Risk}}</strong>
-    </div>
-    <app-survey *ngIf="showForm" [json]="json" (submitSurvey)="sendData($event)"></app-survey>
   </div>
 </div>
