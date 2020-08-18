@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { SendJiraRiskDataService } from '../services/send-jira-risk-data.service';
 import { HttpClient } from '@angular/common/http';
 import formJson from './form.json';
 
@@ -11,7 +10,7 @@ import formJson from './form.json';
 })
 export class JiraTicketRiskAssesmentComponent implements OnInit {
 
-  constructor(private sendJiraForm: SendJiraRiskDataService, private http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void { }
 
