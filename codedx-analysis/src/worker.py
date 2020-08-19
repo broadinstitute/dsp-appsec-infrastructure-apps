@@ -51,6 +51,15 @@ def callback(message):
 
 
 def main():
+    print("SUBSCRIPTION NAME: {}".format(subscription_name))
+    print("SUBSCRIPTION PROJECT: {}".format(project_id))
+    print("SUBSCRIPTION PATH: {}".format(subscription_path))
+
+    try:
+        for element in subscriber.list_subscriptions(project_id):
+            print(element)
+    except:
+        pass
     streaming_pull = subscriber.subscribe(subscription_path, callback=callback)
     streaming_pull.result()
 
