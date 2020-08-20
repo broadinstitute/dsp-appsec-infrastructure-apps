@@ -45,7 +45,6 @@ def callback(message):
             cdx.create_project(project)
         res = cdx.analyze(project, file_name)
         print(res)
-
     except Exception as e:
         print('Something wrong happened: {}'.format(e.args))
 
@@ -54,14 +53,18 @@ def main():
     print("SUBSCRIPTION NAME: {}".format(subscription_name))
     print("SUBSCRIPTION PROJECT: {}".format(project_id))
     print("SUBSCRIPTION PATH: {}".format(subscription_path))
-
-    try:
-        for element in subscriber.list_subscriptions(project_id):
-            print(element)
-    except:
-        pass
+    
     streaming_pull = subscriber.subscribe(subscription_path, callback=callback)
-    streaming_pull.result()
+    print("Listening for messages on {}..\n".format(subscription_path))
+
+    with subscriber:
+        try:
+            # When `timeout` is not set, result() will block indefinitely,
+            # unless an exception is encountered first.
+            streaming_pull.result()
+        except TimeoutError:
+            streaming_pull.cancel()
+    
 
 if __name__ == '__main__':
     main()
