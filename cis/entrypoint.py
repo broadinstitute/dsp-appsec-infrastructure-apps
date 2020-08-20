@@ -175,7 +175,7 @@ def slack_notify(target_project_id: str, slack_token: str, slack_channel: str, r
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "Check `{0}` CIS scan results :spiral_note_pad:" .format(target_project_id)
+                    "text": f"Check `{target_project_id}` CIS scan results :spiral_note_pad:",
                 }
             },
             {
@@ -216,7 +216,8 @@ def find_highs(rows: List[Any], slack_channel: str, slack_token: str, target_pro
                           slack_channel, target_project_id)
 
 
-def slack_notify_high(records: List[Any], slack_token: str, slack_channel: str, target_project_id: str):
+def slack_notify_high(records: List[Any], slack_token: str,
+                      slack_channel: str, target_project_id: str):
     """
     Post notifications in Slack
     about high findings
@@ -230,7 +231,8 @@ def slack_notify_high(records: List[Any], slack_token: str, slack_channel: str, 
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "* | High finding in  `{0}` GCP project* :gcpcloud: :" .format(target_project_id)
+                        "text":
+                            f"* | High finding in `{target_project_id}` GCP project* :gcpcloud: :",
                     }
                 },
                 {
@@ -240,7 +242,7 @@ def slack_notify_high(records: List[Any], slack_token: str, slack_channel: str, 
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "*Impact*: `{0}`" .format(str(float(row['impact'])*10))
+                        "text": f"*Impact*: `{float(row['impact'])*10}`",
 
                     }
                 },
@@ -248,7 +250,7 @@ def slack_notify_high(records: List[Any], slack_token: str, slack_channel: str, 
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "*Title*: `{0}`" .format(row['title'])
+                        "text": f"*Title*: `{row['title']}`",
 
                     }
                 },
@@ -256,7 +258,7 @@ def slack_notify_high(records: List[Any], slack_token: str, slack_channel: str, 
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "*Description* `{0}`" .format(row['description'])
+                        "text": f"*Description* `{row['description']}`",
 
                     }
                 },
