@@ -287,3 +287,9 @@ ul.stepper li.completed a .circle {
   background-color: #dc0014 !important;
   border-color: #dc0315 !important;
 }
+
+.alert-success {
+  color: #ffffff !important;
+  background-color: #61b72b !important;
+  border-color: #61b72c !important;
+}
