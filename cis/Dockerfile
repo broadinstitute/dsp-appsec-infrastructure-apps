@@ -20,7 +20,8 @@ RUN apt-get update && \
     pip3 install -r requirements.txt \
     && \
     gem install inspec-bin -qN && \
-    git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gcp-cis-benchmark.git \
+    git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gcp-cis-benchmark.git && \
+    git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gke-cis-benchmark.git \
     && \
     apt-get remove -y \
         build-essential \
@@ -33,7 +34,7 @@ RUN apt-get update && \
     && \
     useradd -m "${USER}" && \
     mkdir .inspec && \
-    chown "${USER}" .inspec inspec-gcp-cis-benchmark
+    chown "${USER}" .inspec inspec-*-cis-benchmark
 
 
 FROM base AS test

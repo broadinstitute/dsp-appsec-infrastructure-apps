@@ -10,23 +10,27 @@ This module
 import json
 import logging
 import os
+import re
 import subprocess
 from typing import Any, List
 
 import slack
 from google.cloud import bigquery, firestore, resource_manager
 
-BENCHMARK_PROFILE = 'inspec-gcp-cis-benchmark'
+BENCHMARK_PROFILES = (
+    'inspec-gcp-cis-benchmark',
+    'inspec-gke-cis-benchmark',
+)
 
 
-def benchmark(target_project_id: str):
+def benchmark(target_project_id: str, profile: str):
     """
-    Runs Inspec GCP CIS benchmark on `target_project_id`,
-    and returns the parsed results.
+    Runs a Google Cloud Inspec CIS benchmark profile
+    on `target_project_id`, and returns the parsed results.
     """
-    logging.info("Running %s for %s", BENCHMARK_PROFILE, target_project_id)
+    logging.info("Running %s for %s", profile, target_project_id)
     proc = subprocess.run([
-        'inspec', 'exec', 'inspec-gcp-cis-benchmark',
+        'inspec', 'exec', profile,
         '-t', 'gcp://', '--reporter', 'json',
         '--input', f'gcp_project_id={target_project_id}',
     ], capture_output=True, text=True, check=False)
@@ -39,62 +43,68 @@ def benchmark(target_project_id: str):
 
     for out in proc.stdout.splitlines():
         if out.startswith('{'):
-            return target_project_id, json.loads(out)['profiles']
+            return json.loads(out)['profiles']
     return None
+
+
+def benchmarks(target_project_id: str):
+    """
+    Runs GCP and GKE benchmarks on `target_project_id`,
+    and returns the parsed results.
+    """
+    profiles = []
+    for profile in BENCHMARK_PROFILES:
+        profiles.extend(benchmark(target_project_id, profile))
+    return target_project_id, profiles
 
 
 def parse_profiles(target_project_id: str, profiles):
     """
     Parses scan results into a table structure for BigQuery.
     """
-    profile = None
-    version: str = ''
-    for prof in profiles:
-        if prof['name'] == 'inspec-gcp':
-            version = prof['version']
-        elif prof['name'] == BENCHMARK_PROFILE:
-            profile = prof
-    if not profile or not version:
-        raise ValueError(
-            'Unable to determine profile or version from scan results')
-
-    title: str = profile['title']
-    rows = []
-    for ctrl in profile['controls']:
-        failures = []
-        for res in ctrl['results']:
-            if res['status'] != 'failed' or 'exception' in res:
-                continue
-            failures.append(
-                res['code_desc']
-                .replace(f'[{target_project_id}] ', '', 1)
-                .replace('cmp == nil', 'be empty')
-                .replace('cmp ==', 'equal')
-            )
-        if not failures:
+    rows: List[Any] = []
+    titles: List[str] = []
+    for profile in profiles:
+        if profile['name'] not in BENCHMARK_PROFILES:
             continue
 
-        rationale = ''
-        for desc in ctrl['descriptions']:
-            if desc['label'] != 'rationale':
+        titles.append(profile['title'])
+        for ctrl in profile['controls']:
+            failures = []
+            for res in ctrl['results']:
+                if res['status'] != 'failed' or 'exception' in res:
+                    continue
+                failures.append(
+                    re.sub(f'\\[{target_project_id}( , )?(.*) ?\\] ',
+                           r'\2', res['code_desc'])
+                    .replace('cmp == nil', 'be empty')
+                    .replace('cmp ==', 'equal')
+                )
+            if not failures:
                 continue
-            rationale = desc['data']
 
-        tags = ctrl['tags']
-        refs = collect_refs(ctrl['refs'], [])
+            rationale = ''
+            for desc in ctrl['descriptions']:
+                if desc['label'] != 'rationale':
+                    continue
+                rationale = desc['data']
 
-        rows.append({
-            'id': tags['cis_gcp'],
-            'level': tags['cis_level'],
-            'impact': str(ctrl['impact']),
-            'title': ctrl['title'],
-            'failures': failures,
-            'description': ctrl['desc'],
-            'rationale': rationale,
-            'refs': refs,
-        })
+            tags = ctrl['tags']
+            tag_id = '_'.join(profile['name'].split('-')[2:0:-1])
+            refs = collect_refs(ctrl['refs'], [])
 
-    return title, version, rows
+            rows.append({
+                'id': tags[tag_id],
+                'level': tags['cis_level'],
+                'impact': str(ctrl['impact']),
+                'title': ctrl['title'],
+                'failures': failures,
+                'description': ctrl['desc'],
+                'rationale': rationale,
+                'refs': refs,
+            })
+
+    return '; '.join(titles), rows
 
 
 def collect_refs(refs: list, urls: List[str]):
@@ -110,7 +120,7 @@ def collect_refs(refs: list, urls: List[str]):
 
 
 def load_bigquery(target_project_id: str, dataset_id: str, table_id: str,
-                  table_desc: str, version: str, rows: List[Any]):
+                  table_desc: str, rows: List[Any]):
     """
     Loads scan results into a BigQuery table.
     """
@@ -139,7 +149,6 @@ def load_bigquery(target_project_id: str, dataset_id: str, table_id: str,
         ),
         labels={
             'gcp-project': target_project_id,
-            'inspec-version': version.replace('.', '_'),
         },
     )
 
@@ -308,9 +317,8 @@ def main():
         validate_project(target_project_id)
 
         # scan and load results into BigQuery
-        title, version, rows = parse_profiles(*benchmark(target_project_id))
-        load_bigquery(target_project_id, dataset_id,
-                      table_id, title, version, rows)
+        title, rows = parse_profiles(*benchmarks(target_project_id))
+        load_bigquery(target_project_id, dataset_id, table_id, title, rows)
 
         # post to Slack, if specified
         if slack_token and slack_channel and slack_results_url:
