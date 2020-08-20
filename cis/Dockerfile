@@ -3,7 +3,6 @@ ARG USER="inspec"
 FROM debian:testing-slim AS base
 
 ARG USER
-ARG INSPEC_VERSION="<5"
 
 ENV CHEF_LICENSE="accept-no-persist"
 
@@ -20,7 +19,7 @@ RUN apt-get update && \
     && \
     pip3 install -r requirements.txt \
     && \
-    gem install "inspec-bin:${INSPEC_VERSION}" -qN && \
+    gem install inspec-bin -qN && \
     git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gcp-cis-benchmark.git \
     && \
     apt-get remove -y \
