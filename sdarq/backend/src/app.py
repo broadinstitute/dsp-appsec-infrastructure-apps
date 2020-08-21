@@ -12,7 +12,6 @@ This module
 import os
 import re
 import json
-import time
 import threading
 
 from typing import List
