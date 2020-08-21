@@ -15,13 +15,13 @@ spec:
     spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
       # runtimeClassName: gvisor
+      tolerations:
+      - key: sandbox.gke.io/runtime
+        operator: Equal
+        value: gvisor
+        effect: NoSchedule
       nodeSelector:
         cloud.google.com/gke-nodepool: apps
-        tolerations:
-        - key: sandbox.gke.io/runtime
-          operator: Equal
-          value: gvisor
-          effect: NoSchedule
       containers:
       - name: codedx-analysis
         image: ${CODEDX_ANALYSIS_IMAGE}
