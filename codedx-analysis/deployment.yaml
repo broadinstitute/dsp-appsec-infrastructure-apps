@@ -17,6 +17,11 @@ spec:
       # runtimeClassName: gvisor
       nodeSelector:
         cloud.google.com/gke-nodepool: apps
+        tolerations:
+        - key: sandbox.gke.io/runtime
+          operator: Equal
+          value: gvisor
+          effect: NoSchedule
       containers:
       - name: codedx-analysis
         image: ${CODEDX_ANALYSIS_IMAGE}
