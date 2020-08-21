@@ -32,7 +32,7 @@ export BUCKET_SA_IAM_POLICY="${BUCKET_NAME}-sa-iam-policy"
 export SERVICE="${JOB_DEPLOYMENT}"
 export SERVICE_ACCOUNT="${SERVICE}"
 
-export CODEDX_ANALYSIS_SECRET="codedx-anaylsis"
+export CODEDX_ANALYSIS_SECRET="${NAMESPACE}"
 
 ./kube-apply.py "service-account.yaml" \
     "${CWD}/deployment.yaml"
