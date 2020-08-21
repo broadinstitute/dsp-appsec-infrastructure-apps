@@ -14,7 +14,7 @@ spec:
         deployment: ${JOB_DEPLOYMENT}
     spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
-      runtimeClassName: gvisor
+      # runtimeClassName: gvisor
       nodeSelector:
         cloud.google.com/gke-nodepool: apps
       containers:
