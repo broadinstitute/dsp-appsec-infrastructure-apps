@@ -64,7 +64,7 @@ def health():
     """
     Check health for ingress
     Args:
-        nformatted_jira_description
+        None
     Returns:
         200 status
     """
