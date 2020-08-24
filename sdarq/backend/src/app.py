@@ -214,7 +214,7 @@ def cis_scan():
     user_project_id = json_data['project_id']
     pattern = "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
     message = ""
-    results_url = f"{sdarq_host}cis/results?project_id={user_project_id}"
+    results_url = f"{sdarq_host}/cis/results?project_id={user_project_id}"
     message = message.encode("utf-8")
 
     if re.match(pattern, user_project_id):
