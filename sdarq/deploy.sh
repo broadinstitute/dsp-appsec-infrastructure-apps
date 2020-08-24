@@ -20,6 +20,7 @@ export BACKEND_CONFIG="${SERVICE}"
 
 export SDARQ_CONFIG="${SERVICE}"
 export SDARQ_SECRET="sdarq"
+export JOB_TOPIC="cis-scans"
 
 export FRONTEND_PORT="frontend"
 export BACKEND_PORT="backend"
