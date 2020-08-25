@@ -42,7 +42,9 @@ def callback(message):
         print("Uploading to codedx...")
         print(base_url)
         cdx = CodeDxAPI.CodeDx(base_url, codedx_api_key)
+        print("updating projects....")
         cdx.update_projects()
+        print("create project {} if it doesn't exist....".format(project))
         if project not in list(cdx.projects):
             cdx.create_project(project)
         res = cdx.analyze(project, file_name)
