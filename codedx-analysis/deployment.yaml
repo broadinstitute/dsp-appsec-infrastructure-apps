@@ -20,7 +20,6 @@ spec:
       containers:
       - name: codedx-analysis
         image: ${CODEDX_ANALYSIS_IMAGE}
-        imagePullPolicy: Always
         envFrom:
           - secretRef:
               name: ${CODEDX_ANALYSIS_SECRET}
