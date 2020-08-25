@@ -40,6 +40,7 @@ def callback(message):
 
         # Upload Zap report to Codedx
         print("Uploading to codedx...")
+        print(base_url)
         cdx = CodeDxAPI.CodeDx(base_url, codedx_api_key)
         cdx.update_projects()
         if project not in list(cdx.projects):
