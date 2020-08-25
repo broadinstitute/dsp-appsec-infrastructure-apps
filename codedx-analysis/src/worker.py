@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Pull subscriber
 
 import json
@@ -11,9 +11,6 @@ project_id = os.environ['PROJECT_ID']
 subscription_name = os.environ['SUBSCRIPTION']
 base_url = os.environ['CODEDX_URL']
 
-subscriber = pubsub_v1.SubscriberClient()
-subscription_path = subscriber.subscription_path(
-    project_id, subscription_name)
 
 def callback(message):
     print('Callback started...')
@@ -50,10 +47,14 @@ def callback(message):
 
 
 def main():
+    subscriber = pubsub_v1.SubscriberClient()
+    subscription_path = subscriber.subscription_path(
+        project_id, subscription_name)
+
     print("SUBSCRIPTION NAME: {}".format(subscription_name))
     print("SUBSCRIPTION PROJECT: {}".format(project_id))
     print("SUBSCRIPTION PATH: {}".format(subscription_path))
-    
+
     streaming_pull = subscriber.subscribe(subscription_path, callback=callback)
     print("Listening for messages on {}..\n".format(subscription_path))
 
@@ -64,7 +65,7 @@ def main():
             streaming_pull.result()
         except TimeoutError:
             streaming_pull.cancel()
-    
+
 
 if __name__ == '__main__':
     main()
