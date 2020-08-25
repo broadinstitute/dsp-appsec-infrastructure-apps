@@ -24,18 +24,22 @@ def callback(message):
         obj_path = object_metadata['name']
         print('Process file: {}'.format(obj_path))
 
+        print("Getting metadata...")
+        print(object_metadata)
         bucket_name = object_metadata["bucket"]
         source_blob_name = object_metadata["name"]
         file_name = source_blob_name.split("/")[-1]
         project = object_metadata["metadata"]["project"]
 
         # Download file
+        print("Downloading from bucket...")
         storage_client = storage.Client()
         bucket = storage_client.bucket(bucket_name)
         blob = bucket.blob(source_blob_name)
         blob.download_to_filename(file_name)
 
         # Upload Zap report to Codedx
+        print("Uploading to codedx...")
         cdx = CodeDxAPI.CodeDx(base_url, codedx_api_key)
         cdx.update_projects()
         if project not in list(cdx.projects):
