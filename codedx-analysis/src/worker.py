@@ -9,7 +9,7 @@ from google.cloud import pubsub_v1, storage
 codedx_api_key = os.environ['codedx_api_key']
 project_id = os.environ['PROJECT_ID']
 subscription_name = os.environ['SUBSCRIPTION']
-base_url = os.environ['CODEDX_URL']
+base_url = "{}/codedx".format(os.environ['CODEDX_URL'])
 
 
 def callback(message):
