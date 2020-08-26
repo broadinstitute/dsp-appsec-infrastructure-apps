@@ -29,6 +29,8 @@ options:
   - JOB_DISPATCHER_ROLE=job-dispatcher
   - GLOBAL_NAMESPACE=global
   - CIS_DATASET=cis
+  - CODEDX_NAMESPACE=codedx
+  - CODEDX_SERVICE=codedx
   - DOJO_NAMESPACE=defectdojo
   - DOJO_SERVICE=defectdojo
   - SDARQ_SERVICE_ACCOUNT=sdarq-sa

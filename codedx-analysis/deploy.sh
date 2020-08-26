@@ -17,7 +17,6 @@ export NAMESPACE="codedx-analysis"
     "namespace.yaml" \
     "configconnectorcontext.yaml"
 
-export CODEDX_URL="http://codedx.codedx.svc.cluster.local"
 export SECRET_NAME="codedx-api-key"
 export SECRET_VERSION="1"
 export JOB_DEPLOYMENT="${NAMESPACE}"
@@ -33,6 +32,7 @@ export SERVICE="${JOB_DEPLOYMENT}"
 export SERVICE_ACCOUNT="${SERVICE}"
 
 export CODEDX_ANALYSIS_SECRET="${NAMESPACE}"
+export CODEDX_URL="http://${CODEDX_NAMESPACE}.${CODEDX_SERVICE}.svc.cluster.local"
 
 ./kube-apply.py "service-account.yaml" \
     "${CWD}/deployment.yaml"
