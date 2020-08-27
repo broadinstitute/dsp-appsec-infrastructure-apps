@@ -24,12 +24,13 @@ def callback(message):
         object_metadata = json.loads(data)
         obj_path = object_metadata['name']
         obj_link = object_metadata['mediaLink']
-        slack_text = "New vulnerability report detected in GCS bucket: {}".format(obj_link)
+        slack_text = "New vulnerability report detected in GCS bucket: \
+                    https://console.cloud.google.com/storage/browser/{}/{}".format(bucket, obj_path)
         response = webhook.send(text=slack_text)
 
         print(object_metadata)
         bucket_name = object_metadata["bucket"]
-        source_blob_name = object_metadata["name"]
+        source_blob_name = obj_path
         file_name = source_blob_name.split("/")[-1]
         project = object_metadata["metadata"]["project"]
 
