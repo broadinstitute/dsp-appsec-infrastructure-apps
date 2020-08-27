@@ -11,7 +11,7 @@ codedx_api_key = os.environ['codedx_api_key']
 project_id = os.environ['PROJECT_ID']
 subscription_name = os.environ['SUBSCRIPTION']
 base_url = os.environ['CODEDX_URL']
-slack_url = os.environ[SLACK_WEBHOOK_URL]
+slack_url = os.environ['slack_webhook']
 
 def callback(message):
     webhook = WebhookClient(slack_url)
