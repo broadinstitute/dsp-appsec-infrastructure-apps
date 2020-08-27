@@ -18,6 +18,7 @@ def callback(message):
     try:
         data = message.data.decode('utf-8')
         attributes = message.attributes
+        print(message)
         message.ack()
         if attributes['eventType'] != 'OBJECT_FINALIZE':
             return
