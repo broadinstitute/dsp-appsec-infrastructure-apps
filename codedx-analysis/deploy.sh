@@ -32,7 +32,7 @@ export SERVICE="${JOB_DEPLOYMENT}"
 export SERVICE_ACCOUNT="${SERVICE}"
 
 export CODEDX_ANALYSIS_SECRET="${NAMESPACE}"
-export CODEDX_URL="http://${CODEDX_NAMESPACE}.${CODEDX_SERVICE}.svc.cluster.local"
+export CODEDX_URL="http://${CODEDX_NAMESPACE}.${CODEDX_SERVICE}.svc.cluster.local/codedx"
 
 ./kube-apply.py "service-account.yaml" \
     "${CWD}/deployment.yaml"

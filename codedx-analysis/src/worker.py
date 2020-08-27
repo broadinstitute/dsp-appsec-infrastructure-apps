@@ -5,15 +5,16 @@ import json
 import os
 from codedx_api import CodeDxAPI
 from google.cloud import pubsub_v1, storage
+from slack import WebhookClient
 
 codedx_api_key = os.environ['codedx_api_key']
 project_id = os.environ['PROJECT_ID']
 subscription_name = os.environ['SUBSCRIPTION']
-base_url = "{}/codedx".format(os.environ['CODEDX_URL'])
-
+base_url = os.environ['CODEDX_URL']
+slack_url = os.environ[SLACK_WEBHOOK_URL]
 
 def callback(message):
-    print('Callback started...')
+    webhook = WebhookClient(slack_url)
     try:
         data = message.data.decode('utf-8')
         attributes = message.attributes
@@ -22,9 +23,10 @@ def callback(message):
             return
         object_metadata = json.loads(data)
         obj_path = object_metadata['name']
-        print('Process file: {}'.format(obj_path))
+        obj_link = object_metadata['selfLink']
+        slack_text = "New vulnerability report detected in GCS bucket: {}".format(obj_link)
+        response = webhook.send(text=slack_text)
 
-        print("Getting metadata...")
         print(object_metadata)
         bucket_name = object_metadata["bucket"]
         source_blob_name = object_metadata["name"]
@@ -32,25 +34,23 @@ def callback(message):
         project = object_metadata["metadata"]["project"]
 
         # Download file
-        print("Downloading from bucket...")
         storage_client = storage.Client()
         bucket = storage_client.bucket(bucket_name)
         blob = bucket.blob(source_blob_name)
         blob.download_to_filename(file_name)
 
         # Upload Zap report to Codedx
-        print("Uploading to codedx...")
         print(base_url)
         cdx = CodeDxAPI.CodeDx(base_url, codedx_api_key)
-        print("updating projects....")
         cdx.update_projects()
-        print("create project {} if it doesn't exist....".format(project))
         if project not in list(cdx.projects):
             cdx.create_project(project)
         res = cdx.analyze(project, file_name)
         print(res)
     except Exception as e:
-        print('Something wrong happened: {}'.format(e.args))
+        print('Error uploading reports to CodeDx: {}'.format(e.args))
+        slack_text = "@here Error uploading vulnerability report to Codedx."
+        response = webhook.send(text=slack_text)
 
 
 def main():
@@ -58,12 +58,7 @@ def main():
     subscription_path = subscriber.subscription_path(
         project_id, subscription_name)
 
-    print("SUBSCRIPTION NAME: {}".format(subscription_name))
-    print("SUBSCRIPTION PROJECT: {}".format(project_id))
-    print("SUBSCRIPTION PATH: {}".format(subscription_path))
-
     streaming_pull = subscriber.subscribe(subscription_path, callback=callback)
-    print("Listening for messages on {}..\n".format(subscription_path))
 
     with subscriber:
         try:
