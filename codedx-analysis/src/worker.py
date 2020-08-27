@@ -39,7 +39,7 @@ def callback(message):
         print("LAST ANALYSIS CREATED")
         prev_analysis = parser.parse(analysis[-1]["creationTime"])
         print(prev_analysis)
-        now = datetime.now('CVT')
+        now = datetime.now(tz.utc)
         print("CURRENT TIME")
         print(now)
         if (now - prev_analysis).total_seconds() < 5.0:
