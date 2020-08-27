@@ -23,7 +23,7 @@ def callback(message):
             return
         object_metadata = json.loads(data)
         obj_path = object_metadata['name']
-        obj_link = object_metadata['selfLink']
+        obj_link = object_metadata['mediaLink']
         slack_text = "New vulnerability report detected in GCS bucket: {}".format(obj_link)
         response = webhook.send(text=slack_text)
 
