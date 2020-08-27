@@ -23,13 +23,11 @@ def callback(message):
             return
         object_metadata = json.loads(data)
         obj_path = object_metadata['name']
-        obj_link = object_metadata['mediaLink']
+        bucket_name = object_metadata['bucket']
         slack_text = "New vulnerability report detected in GCS bucket: \
-                    https://console.cloud.google.com/storage/browser/{}/{}".format(bucket, obj_path)
+                    https://console.cloud.google.com/storage/browser/{}/{}".format(bucket_name, obj_path)
         response = webhook.send(text=slack_text)
 
-        print(object_metadata)
-        bucket_name = object_metadata["bucket"]
         source_blob_name = obj_path
         file_name = source_blob_name.split("/")[-1]
         project = object_metadata["metadata"]["project"]
@@ -41,13 +39,11 @@ def callback(message):
         blob.download_to_filename(file_name)
 
         # Upload Zap report to Codedx
-        print(base_url)
         cdx = CodeDxAPI.CodeDx(base_url, codedx_api_key)
         cdx.update_projects()
         if project not in list(cdx.projects):
             cdx.create_project(project)
         res = cdx.analyze(project, file_name)
-        print(res)
     except Exception as e:
         print('Error uploading reports to CodeDx: {}'.format(e.args))
         slack_text = "@here Error uploading vulnerability report to Codedx."
