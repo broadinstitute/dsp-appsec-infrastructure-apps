@@ -34,9 +34,14 @@ def callback(message):
 
         cdx = CodeDxAPI.CodeDx(base_url, codedx_api_key)
         analysis = cdx.get_all_analysis(project)
+        print("GETTING ANALYSIS")
         print(analysis)
+        print("LAST ANALYSIS CREATED")
         prev_analysis = parser.parse(analysis[-1]["creationTime"])
-        now = datetime.now(tz.tzlocal())
+        print(prev_analysis)
+        now = datetime.now('CVT')
+        print("CURRENT TIME")
+        print(now)
         if (now - prev_analysis).total_seconds() < 5.0:
             return
         
