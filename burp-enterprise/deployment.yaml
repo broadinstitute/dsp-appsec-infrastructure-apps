@@ -114,7 +114,7 @@ spec:
     backupConfiguration:
       enabled: true
     ipConfiguration:
-        requireSsl: true
+      requireSsl: true
 ---
 apiVersion: sql.cnrm.cloud.google.com/v1beta1
 kind: SQLDatabase
