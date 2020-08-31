@@ -59,6 +59,7 @@ metadata:
   name: ${JOB_SUBSCRIPTION}
   namespace: ${NAMESPACE}
 spec:
+  ackDeadlineSeconds: 30
   topicRef:
     name: ${JOB_TOPIC}
 ---
