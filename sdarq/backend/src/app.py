@@ -188,8 +188,8 @@ def cis_results():
         tables = [dict(row) for row in query_job_table]
         json.dumps(tables)
         if results_table.total_rows != 0:
-            sql = "SELECT * FROM `dsp-appsec-infra-prod.cis.{0}` WHERE id!='5.3' ORDER BY impact DESC".format(
-                str(project_id_edited))
+            sql = "SELECT * FROM `{0}.cis.{1}` WHERE id!='5.3' ORDER BY impact DESC".format(str(pubsub_project_id),
+                                                                                            str(project_id_edited))
             query_job = client.query(sql)
             query_job.result()
             records = [dict(row) for row in query_job]
