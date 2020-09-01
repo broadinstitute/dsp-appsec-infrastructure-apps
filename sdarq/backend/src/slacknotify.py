@@ -56,7 +56,7 @@ def slacknotify(slack_token, channel, dojo_name, security_champion, product_id, 
                                     "type": "plain_text",
                                     "text": "Defect Dojo"
                                 },
-                                "url": "{0}product/{1}" .format(dojo_host_url, str(product_id))
+                                "url": "{0}/product/{1}" .format(dojo_host_url, str(product_id))
                             }
                         ]
                     }
@@ -119,7 +119,7 @@ def slacknotify_qa(slack_token, channel, dojo_name, security_champion, product_i
                                     "type": "plain_text",
                                     "text": "Defect Dojo"
                                 },
-                                "url": "{0}product/{1}" .format(dojo_host_url, str(product_id))
+                                "url": "{0}/product/{1}" .format(dojo_host_url, str(product_id))
                             }
                         ]
                     }
@@ -183,7 +183,7 @@ def slacknotify_jira(slack_token, channel, dojo_name, security_champion, product
                             "type": "plain_text",
                             "text": "Defect Dojo"
                         },
-                        "url": "{0}product/{1}" .format(dojo_host_url, str(product_id))
+                        "url": "{0}/product/{1}" .format(dojo_host_url, str(product_id))
                     },
                     {
                         "type": "button",
@@ -255,7 +255,7 @@ def slacknotify_jira_qa(slack_token, channel, dojo_name, security_champion, prod
                             "type": "plain_text",
                             "text": "Defect Dojo"
                         },
-                        "url": "{0}product/{1}" .format(dojo_host_url, str(product_id))
+                        "url": "{0}/product/{1}" .format(dojo_host_url, str(product_id))
                     },
                     {
                         "type": "button",

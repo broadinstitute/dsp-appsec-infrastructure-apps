@@ -22,6 +22,7 @@ import { CisResultsComponent } from './cis-results/cis-results.component';
 import { CisScanComponent } from './cis-scan/cis-scan.component';
 import { CisLandingPageComponent } from './cis-landing-page/cis-landing-page.component';
 import { FilterPipe } from './pipes/filter.pipe';
+import { JiraTicketRiskAssesmentComponent } from './jira-ticket-risk-assesment/jira-ticket-risk-assesment.component';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { FilterPipe } from './pipes/filter.pipe';
     CisResultsComponent,
     CisScanComponent,
     CisLandingPageComponent,
-    FilterPipe
+    FilterPipe,
+    JiraTicketRiskAssesmentComponent
   ],
   imports: [
     BrowserModule,
@@ -54,7 +56,7 @@ import { FilterPipe } from './pipes/filter.pipe';
     SendFormDataService,
     CisProjectService,
     GetCisScanService
-  ],
+    ],
   bootstrap: [
     AppComponent
   ],
