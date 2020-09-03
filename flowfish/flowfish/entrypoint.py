@@ -4,7 +4,7 @@ import json
 import os
 import subprocess
 import sys
-import xml.etree.ElementTree as etree
+import defusedxml.ElementTree as etree
 import requests
 from google.cloud import bigquery, firestore, resource_manager
 from google.cloud.exceptions import NotFound
