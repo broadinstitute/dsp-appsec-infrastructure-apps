@@ -187,39 +187,6 @@ spec:
       enabled: true
     ipConfiguration:
       requireSsl: true
-      ipv4Enabled: false
-      privateNetworkRef:
-        name: appsec-apps
----
-apiVersion: compute.cnrm.cloud.google.com/v1beta1
-kind: ComputeAddress
-metadata:
-  name: ${SQL_INSTANCE}
-spec:
-  addressType: INTERNAL
-  location: global
-  purpose: VPC_PEERING
-  prefixLength: 16
-  networkRef:
-    name: appsec-apps
----
-apiVersion: compute.cnrm.cloud.google.com/v1beta1
-kind: ComputeNetwork
-metadata:
-  name: ${SQL_INSTANCE}
-spec:
-  autoCreateSubnetworks: false
----
-apiVersion: servicenetworking.cnrm.cloud.google.com/v1beta1
-kind: ServiceNetworkingConnection
-metadata:
-  name: ${SQL_INSTANCE}
-spec:
-  networkRef:
-    name: appsec-apps
-  reservedPeeringRanges:
-    - name: appsec-apps
-  service: servicenetworking.googleapis.com
 ---
 apiVersion: sql.cnrm.cloud.google.com/v1beta1
 kind: SQLUser
