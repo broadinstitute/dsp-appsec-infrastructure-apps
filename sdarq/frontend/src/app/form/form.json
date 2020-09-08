@@ -411,7 +411,7 @@
          },
          {
           "value": "An on-call playbook for the service, linked it into the main on-call documentation",
-          "text": " We have created an on-call playbook for your service, linked it into the main on-call documentation?"
+          "text": " We have created an on-call playbook for your service, linked it into the main on-call documentation"
          }
         ]
        }
