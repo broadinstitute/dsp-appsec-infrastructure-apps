@@ -186,12 +186,10 @@ spec:
     backupConfiguration:
       enabled: true
     ipConfiguration:
-      requireSsl: true
+      requireSsl: false
       ipv4Enabled: false
-      privateNetwork: projects/${PROJECT_ID}/global/networks/appsec-apps
       privateNetworkRef:
-        name: appsec-apps
-        
+        external: appsec-apps
 ---
 apiVersion: sql.cnrm.cloud.google.com/v1beta1
 kind: SQLUser
