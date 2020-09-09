@@ -186,8 +186,8 @@ spec:
     backupConfiguration:
       enabled: true
     ipConfiguration:
-      requireSsl: false
-      ipv4Enabled: false
+      requireSsl: true
+      ipv4Enabled: true
       privateNetworkRef:
         external: appsec-apps
 ---
