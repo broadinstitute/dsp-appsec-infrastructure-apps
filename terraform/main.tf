@@ -32,18 +32,33 @@ resource "google_compute_subnetwork" "gke" {
   ip_cidr_range = "10.2.0.0/16"
 }
 
-resource "google_compute_global_address" "sql" {
-  name          = "${var.cluster_name}-sql"
+
+resource "google_compute_global_address" "mysql" {
+  name          = "${var.cluster_name}-mysql"
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
-  prefix_length = 28
+  prefix_length = 24
   network       = google_compute_network.gke.id
 }
 
-resource "google_service_networking_connection" "sql" {
+resource "google_compute_global_address" "postgres" {
+  name          = "${var.cluster_name}-postgres"
+  purpose       = "VPC_PEERING"
+  address_type  = "INTERNAL"
+  prefix_length = 24
+  network       = google_compute_network.gke.id
+}
+
+resource "google_service_networking_connection" "mysql" {
   network                 = google_compute_network.gke.id
   service                 = "servicenetworking.googleapis.com"
-  reserved_peering_ranges = [google_compute_global_address.sql.name]
+  reserved_peering_ranges = [google_compute_global_address.mysql.name]
+}
+
+resource "google_service_networking_connection" "postgres" {
+  network                 = google_compute_network.gke.id
+  service                 = "servicenetworking.googleapis.com"
+  reserved_peering_ranges = [google_compute_global_address.postgres.name]
 }
 
 ### GKE cluster node Service Account
@@ -287,5 +302,5 @@ output "cnrm_sa" {
 }
 
 output "sql_network" {
-  value = google_service_networking_connection.sql.network
+  value = google_compute_network.gke.id
 }
