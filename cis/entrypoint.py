@@ -32,7 +32,7 @@ def benchmark(target_project_id: str, profile: str):
     logging.info("Running %s for %s", profile, target_project_id)
     proc = subprocess.run([
         'inspec', 'exec', profile,
-        '-t', 'gcp://', '--reporter', 'json',
+        '-t', 'gcp://', '--reporter', 'cli:/dev/stderr', 'json',
         '--input', f'gcp_project_id={target_project_id}',
     ], stdout=subprocess.PIPE, stderr=sys.stderr, text=True, check=False)
 
