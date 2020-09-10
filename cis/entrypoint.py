@@ -12,6 +12,7 @@ import logging
 import os
 import re
 import subprocess
+import sys
 from typing import Any, List
 
 import slack
@@ -33,12 +34,11 @@ def benchmark(target_project_id: str, profile: str):
         'inspec', 'exec', profile,
         '-t', 'gcp://', '--reporter', 'json',
         '--input', f'gcp_project_id={target_project_id}',
-    ], capture_output=True, text=True, check=False)
+    ], stdout=subprocess.PIPE, stderr=sys.stderr, text=True, check=False)
 
     # normal exit codes as documented at
     # https://www.inspec.io/docs/reference/cli
     if proc.returncode not in (0, 100, 101):
-        logging.error(proc.stderr)
         raise subprocess.CalledProcessError(proc.returncode, proc.args)
 
     for out in proc.stdout.splitlines():
