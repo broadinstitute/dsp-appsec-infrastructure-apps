@@ -8,6 +8,9 @@ from google.cloud import pubsub_v1, storage
 from slack import WebhookClient
 from dateutil import tz, parser
 from datetime import datetime
+from cachetools import TTLCache
+
+cache = TTLCache(maxsize=100, ttl=3600)
 
 codedx_api_key = os.environ['codedx_api_key']
 project_id = os.environ['PROJECT_ID']
@@ -24,7 +27,12 @@ def callback(message):
         message.ack()
         if attributes['eventType'] != 'OBJECT_FINALIZE':
             return
+
         object_metadata = json.loads(data)
+        message_id = object_metadata['messageId']
+        if message_id in cache:
+            return
+        cache[message_id] = True
         obj_path = object_metadata['name']
         bucket_name = object_metadata['bucket']
 
@@ -33,17 +41,6 @@ def callback(message):
         project = object_metadata["metadata"]["project"]
 
         cdx = CodeDxAPI.CodeDx(base_url, codedx_api_key)
-        analysis = cdx.get_all_analysis(project)
-        print("GETTING ANALYSIS")
-        print(analysis)
-        print("LAST ANALYSIS CREATED")
-        prev_analysis = parser.parse(analysis[-1]["creationTime"])
-        print(prev_analysis)
-        now = datetime.now(tz.UTC)
-        print("CURRENT TIME")
-        print(now)
-        if (now - prev_analysis).total_seconds() < 5.0:
-            return
         
         slack_text = "New vulnerability report detected in GCS bucket: \
             https://console.cloud.google.com/storage/browser/{}/{}".format(bucket_name, obj_path)
@@ -62,7 +59,7 @@ def callback(message):
         res = cdx.analyze(project, file_name)
     except Exception as e:
         print('Error uploading reports to CodeDx: {}'.format(e.args))
-        slack_text = "@here Error uploading vulnerability report to Codedx."
+        slack_text = "Error uploading vulnerability report to Codedx."
         response = webhook.send(text=slack_text)
 
 
