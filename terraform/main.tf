@@ -29,7 +29,7 @@ resource "google_compute_network" "gke" {
 resource "google_compute_subnetwork" "gke" {
   name          = var.cluster_name
   network       = google_compute_network.gke.self_link
-  ip_cidr_range = "10.2.0.0/16"
+  ip_cidr_range = "10.2.0.0/24"
 }
 
 resource "google_compute_global_address" "sql" {
