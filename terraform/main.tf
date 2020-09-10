@@ -29,14 +29,14 @@ resource "google_compute_network" "gke" {
 resource "google_compute_subnetwork" "gke" {
   name          = var.cluster_name
   network       = google_compute_network.gke.self_link
-  ip_cidr_range = "10.2.0.0/24"
+  ip_cidr_range = "10.2.0.0/16"
 }
 
 resource "google_compute_global_address" "sql" {
   name          = "${var.cluster_name}-sql"
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
-  prefix_length = 24
+  prefix_length = 28
   network       = google_compute_network.gke.id
 }
 
