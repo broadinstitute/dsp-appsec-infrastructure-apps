@@ -187,9 +187,9 @@ spec:
       enabled: true
     ipConfiguration:
       requireSsl: true
-      ipv4Enabled: false 
+      ipv4Enabled: false
       privateNetworkRef:
-        external: projects/${PROJECT_ID}/global/networks/appsec-apps
+        external: ${sql_network}
 ---
 apiVersion: sql.cnrm.cloud.google.com/v1beta1
 kind: SQLUser
