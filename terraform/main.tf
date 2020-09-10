@@ -14,8 +14,13 @@ provider "google-beta" {
   region  = var.region
 }
 
-resource "google_project_service" "project" {
+resource "google_project_service" "firestore" {
   service            = "firestore.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "servicenetworking" {
+  service            = "servicenetworking.googleapis.com"
   disable_on_destroy = false
 }
 
@@ -49,16 +54,18 @@ resource "google_compute_global_address" "postgres" {
   network       = google_compute_network.gke.id
 }
 
-resource "google_service_networking_connection" "mysql" {
-  network                 = google_compute_network.gke.id
-  service                 = "servicenetworking.googleapis.com"
-  reserved_peering_ranges = [google_compute_global_address.mysql.name]
-}
+resource "google_service_networking_connection" "sql" {
+  network = google_compute_network.gke.id
+  service = "servicenetworking.googleapis.com"
 
-resource "google_service_networking_connection" "postgres" {
-  network                 = google_compute_network.gke.id
-  service                 = "servicenetworking.googleapis.com"
-  reserved_peering_ranges = [google_compute_global_address.postgres.name]
+  reserved_peering_ranges = [
+    google_compute_global_address.mysql.name,
+    google_compute_global_address.postgres.name,
+  ]
+
+  depends_on = [
+    google_project_service.servicenetworking,
+  ]
 }
 
 ### GKE cluster node Service Account
@@ -302,5 +309,5 @@ output "cnrm_sa" {
 }
 
 output "sql_network" {
-  value = google_compute_network.gke.id
+  value = google_service_networking_connection.sql.network
 }
