@@ -32,7 +32,7 @@ def benchmark(target_project_id: str, profile: str):
     logging.info("Running %s for %s", profile, target_project_id)
     proc = subprocess.run([
         'inspec', 'exec', profile,
-        '-t', 'gcp://', '--reporter', 'cli:/dev/stderr', 'json',
+        '-t', 'gcp://', '--reporter', 'json',
         '--input', f'gcp_project_id={target_project_id}',
     ], stdout=subprocess.PIPE, stderr=sys.stderr, text=True, check=False)
 
@@ -72,7 +72,10 @@ def parse_profiles(target_project_id: str, profiles):
         for ctrl in profile['controls']:
             failures = []
             for res in ctrl['results']:
-                if res['status'] != 'failed' or 'exception' in res:
+                if 'exception' in res:
+                    logging.error(res['code_desc'] + ': ' + res['message'])
+                    continue
+                if res['status'] != 'failed':
                     continue
                 failures.append(
                     re.sub(f'\\[{target_project_id}( , )?(.*) ?\\] ',
@@ -333,8 +336,6 @@ def main():
     except (Exception) as error:
         if fs_collection:
             doc_ref.set({u'Error': u'{}'.format(error)})
-
-        print(Exception)
         raise error
 
 
