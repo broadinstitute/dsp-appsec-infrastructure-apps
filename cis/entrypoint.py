@@ -124,9 +124,6 @@ def load_bigquery(target_project_id: str, dataset_id: str, table_id: str,
     """
     Loads scan results into a BigQuery table.
     """
-    if not rows:
-        return
-
     client = bigquery.Client()
     table_ref = client.dataset(dataset_id).table(table_id)
 
