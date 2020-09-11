@@ -12,6 +12,7 @@ import logging
 import os
 import re
 import subprocess
+import sys
 from typing import Any, List
 
 import slack
@@ -33,12 +34,11 @@ def benchmark(target_project_id: str, profile: str):
         'inspec', 'exec', profile,
         '-t', 'gcp://', '--reporter', 'json',
         '--input', f'gcp_project_id={target_project_id}',
-    ], capture_output=True, text=True, check=False)
+    ], stdout=subprocess.PIPE, stderr=sys.stderr, text=True, check=False)
 
     # normal exit codes as documented at
     # https://www.inspec.io/docs/reference/cli
     if proc.returncode not in (0, 100, 101):
-        logging.error(proc.stderr)
         raise subprocess.CalledProcessError(proc.returncode, proc.args)
 
     for out in proc.stdout.splitlines():
@@ -72,7 +72,10 @@ def parse_profiles(target_project_id: str, profiles):
         for ctrl in profile['controls']:
             failures = []
             for res in ctrl['results']:
-                if res['status'] != 'failed' or 'exception' in res:
+                if 'exception' in res:
+                    logging.error(res['code_desc'] + ': ' + res['message'])
+                    continue
+                if res['status'] != 'failed':
                     continue
                 failures.append(
                     re.sub(f'\\[{target_project_id}( , )?(.*) ?\\] ',
@@ -124,9 +127,6 @@ def load_bigquery(target_project_id: str, dataset_id: str, table_id: str,
     """
     Loads scan results into a BigQuery table.
     """
-    if not rows:
-        return
-
     client = bigquery.Client()
     table_ref = client.dataset(dataset_id).table(table_id)
 
@@ -336,8 +336,6 @@ def main():
     except (Exception) as error:
         if fs_collection:
             doc_ref.set({u'Error': u'{}'.format(error)})
-
-        print(Exception)
         raise error
 
 

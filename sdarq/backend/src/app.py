@@ -41,6 +41,10 @@ jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
 sdarq_host = os.getenv('sdarq_host')
 dojo_host_url = os.getenv('dojo_host_url')
+firestore_collection = os.getenv('firestore_collection')
+topic_name = os.environ['JOB_TOPIC']
+pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
+
 
 # Instantiate the DefectDojo backend wrapper
 dd = wrapper.DefectDojoAPI(dojo_host, dojo_api_key, dojo_user, debug=True)
@@ -60,7 +64,7 @@ def health():
     """
     Check health for ingress
     Args:
-        nformatted_jira_description
+        None
     Returns:
         200 status
     """
@@ -184,8 +188,8 @@ def cis_results():
         tables = [dict(row) for row in query_job_table]
         json.dumps(tables)
         if results_table.total_rows != 0:
-            sql = "SELECT * FROM `dsp-appsec-infra-prod.cis.{0}` WHERE id!='5.3' ORDER BY impact DESC".format(
-                str(project_id_edited))
+            sql = "SELECT * FROM `{0}.cis.{1}` WHERE id!='5.3' ORDER BY impact DESC".format(str(pubsub_project_id),
+                                                                                            str(project_id_edited))
             query_job = client.query(sql)
             query_job.result()
             records = [dict(row) for row in query_job]
@@ -209,16 +213,13 @@ def cis_scan():
     json_data = request.get_json()
     user_project_id = json_data['project_id']
     pattern = "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
-    topic_name = "cis-scans"
-    project_id = "dsp-appsec-infra-prod"
     message = ""
-    results_url = f"{sdarq_host}cis/results?project_id={user_project_id}"
+    results_url = f"{sdarq_host}/cis/results?project_id={user_project_id}"
     message = message.encode("utf-8")
-    firestore_collection = "cis-scans"
 
     if re.match(pattern, user_project_id):
         publisher = pubsub_v1.PublisherClient()
-        topic_path = publisher.topic_path(project_id, topic_name)
+        topic_path = publisher.topic_path(pubsub_project_id, topic_name)
         user_proj = user_project_id.replace('-', '_')
         db.collection(firestore_collection).document(user_proj)
         if 'slack_channel' in json_data:
@@ -264,4 +265,4 @@ def cis_scan():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 8080)))
+    app.run(host='127.0.0.1', port=int(os.getenv('PORT', 8080)))

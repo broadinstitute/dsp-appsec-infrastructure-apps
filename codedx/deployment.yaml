@@ -96,6 +96,11 @@ spec:
     tier: db-custom-1-3840
     backupConfiguration:
       enabled: true
+    ipConfiguration:
+      requireSsl: true
+      ipv4Enabled: false
+      privateNetworkRef:
+        external: ${sql_network}
 ---
 apiVersion: sql.cnrm.cloud.google.com/v1beta1
 kind: SQLDatabase

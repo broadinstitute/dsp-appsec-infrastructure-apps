@@ -42,6 +42,11 @@ spec:
             name: ${SDARQ_SECRET}
         - configMapRef:
             name: ${SDARQ_CONFIG}
+        env:
+          - name: PUBSUB_PROJECT_ID
+            value: ${PROJECT_ID}
+          - name: JOB_TOPIC
+            value: ${JOB_TOPIC}
         readinessProbe:
           httpGet:
             path: /health/

@@ -7,7 +7,7 @@ and submits a Kubernetes Job for each message.
 import logging as log
 
 from copy import deepcopy
-from hashlib import md5
+from hashlib import sha256
 from os import environ
 from threading import Thread
 from typing import Callable, Dict
@@ -50,7 +50,7 @@ def get_pubsub_callback(subscription: str,
         """
         try:
             job_name = subscription + '-' + \
-                md5(msg.message_id.encode('utf-8')).hexdigest()
+                sha256(msg.message_id.encode('utf-8')).hexdigest()[:16]
             job_inputs = msg.attributes
             log.info('Submitting job %s with input(s) %s',
                      job_name, job_inputs)
