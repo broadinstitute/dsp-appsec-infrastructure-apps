@@ -17,14 +17,12 @@ project_id = os.environ['PROJECT_ID']
 subscription_name = os.environ['SUBSCRIPTION']
 base_url = os.environ['CODEDX_URL']
 slack_url = os.environ['slack_webhook']
+webhook = WebhookClient(slack_url)
 
 def callback(message):
-    webhook = WebhookClient(slack_url)
     try:
         data = message.data.decode('utf-8')
         attributes = message.attributes
-        print(message)
-        message.ack()
         
         if attributes['eventType'] != 'OBJECT_FINALIZE':
             return
@@ -59,6 +57,7 @@ def callback(message):
         if project not in list(cdx.projects):
             cdx.create_project(project)
         res = cdx.analyze(project, file_name)
+        message.ack()
     except Exception as e:
         print('Error uploading reports to CodeDx: {}'.format(e.args))
         slack_text = "Error uploading vulnerability report to Codedx."
@@ -77,8 +76,9 @@ def main():
             # When `timeout` is not set, result() will block indefinitely,
             # unless an exception is encountered first.
             streaming_pull.result()
-        except TimeoutError:
+        except TimeoutError as error:
             streaming_pull.cancel()
+            raise error
 
 
 if __name__ == '__main__':

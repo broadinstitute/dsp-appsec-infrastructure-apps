@@ -17,8 +17,6 @@ export NAMESPACE="codedx-analysis"
     "namespace.yaml" \
     "configconnectorcontext.yaml"
 
-export SECRET_NAME="codedx-api-key"
-export SECRET_VERSION="1"
 export JOB_DEPLOYMENT="${NAMESPACE}"
 export JOB_TOPIC="${NAMESPACE}"
 export JOB_SUBSCRIPTION="${JOB_TOPIC}"
