@@ -8,7 +8,7 @@ export $(xargs < .env)
 
 # Create namespace
 
-export NAMESPACE="codedx"
+export NAMESPACE="${CODEDX_NAMESPACE}"
 
 ./kube-apply.py \
   "namespace.yaml" \
@@ -16,7 +16,7 @@ export NAMESPACE="codedx"
 
 # Generate secrets
 
-export SERVICE="${NAMESPACE}"
+export SERVICE="${CODEDX_SERVICE}"
 export SERVICE_SECRET="${SERVICE}"
 
 ./gen-secret.sh "${SERVICE_SECRET}" \

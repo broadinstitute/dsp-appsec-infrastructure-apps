@@ -13,6 +13,7 @@ options:
   - CLOUDSQL_PROXY_IMAGE=us.gcr.io/${PROJECT_ID}/cloudsql-proxy:workaround
   - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis
   - SOURCECLEAR_IMAGE=us.gcr.io/${PROJECT_ID}/sourceclear
+  - CODEDX_ANALYSIS_IMAGE=us.gcr.io/${PROJECT_ID}/codedx-analysis:${SHORT_SHA}
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
   - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
   - DOCS_IMAGE=us.gcr.io/${PROJECT_ID}/docs:${SHORT_SHA}
@@ -28,6 +29,8 @@ options:
   - JOB_DISPATCHER_ROLE=job-dispatcher
   - GLOBAL_NAMESPACE=global
   - CIS_DATASET=cis
+  - CODEDX_NAMESPACE=codedx
+  - CODEDX_SERVICE=codedx
   - DOJO_NAMESPACE=defectdojo
   - DOJO_SERVICE=defectdojo
   - SDARQ_SERVICE_ACCOUNT=sdarq-sa
@@ -251,5 +254,24 @@ steps:
   waitFor: ['shared', 'batch-dispatcher-image']
   entrypoint: ./deploy.sh
   dir: zap
+
+# build codedx analysis Docker image
+- id: codedx-analysis-image
+  name: *kaniko
+  waitFor: ['kaniko']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/codedx-analysis
+      --destination=$${CODEDX_ANALYSIS_IMAGE}
+      --cache
+
+# deploy codedx analysis to GKE cluster
+- id: codedx-analysis-deployment
+  name: *kubectl
+  waitFor: ['shared', 'codedx-analysis-image']
+  entrypoint: ./deploy.sh
+  dir: codedx-analysis
 
 timeout: 7200s
