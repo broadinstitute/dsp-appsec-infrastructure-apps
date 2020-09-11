@@ -97,3 +97,16 @@ spec:
     external: //pubsub.googleapis.com/projects/${PROJECT_ID}/topics/${JOB_TOPIC}
   eventTypes:
   - OBJECT_FINALIZE
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: ${BUCKET_NAME}-policy
+  namespace: ${NAMESPACE}
+spec:
+  member: serviceAccount:${SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
+  role: roles/storage.objectViewer
+  resourceRef:
+    apiVersion: pubsub.cnrm.cloud.google.com/v1beta1
+    kind: StorageBucket
+    name: ${BUCKET_NAME}
