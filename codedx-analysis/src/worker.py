@@ -25,13 +25,15 @@ def callback(message):
         attributes = message.attributes
         print(message)
         message.ack()
+        
         if attributes['eventType'] != 'OBJECT_FINALIZE':
             return
-
-        object_metadata = json.loads(data)
-        message_id = object_metadata['messageId']
+        
+        message_id = attributes['objectId']
         if message_id in cache:
             return
+        
+        object_metadata = json.loads(data)
         cache[message_id] = True
         obj_path = object_metadata['name']
         bucket_name = object_metadata['bucket']
