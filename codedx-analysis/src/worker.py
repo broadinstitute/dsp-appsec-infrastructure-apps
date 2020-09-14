@@ -23,6 +23,7 @@ def callback(message):
     try:
         data = message.data.decode('utf-8')
         attributes = message.attributes
+        message.ack()
         
         if attributes['eventType'] != 'OBJECT_FINALIZE':
             return
@@ -57,7 +58,7 @@ def callback(message):
         if project not in list(cdx.projects):
             cdx.create_project(project)
         res = cdx.analyze(project, file_name)
-        message.ack()
+        
     except Exception as e:
         print('Error uploading reports to CodeDx: {}'.format(e.args))
         slack_text = "Error uploading vulnerability report to Codedx."
