@@ -24,6 +24,12 @@ resource "google_project_service" "servicenetworking" {
   disable_on_destroy = false
 }
 
+data "google_project" "project" {}
+
+locals {
+  cloudbuild_sa = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
+}
+
 ### VPC
 
 resource "google_compute_network" "gke" {
@@ -79,6 +85,12 @@ module "node_sa" {
     "roles/monitoring.metricWriter",
     "roles/monitoring.viewer",
   ]
+}
+
+resource "google_service_account_iam_member" "node_sa_cloudbuild" {
+  service_account_id = module.node_sa.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = local.cloudbuild_sa
 }
 
 ### Google Container Registry
