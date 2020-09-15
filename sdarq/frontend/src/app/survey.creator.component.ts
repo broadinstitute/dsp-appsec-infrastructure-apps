@@ -3,7 +3,7 @@ import * as SurveyKo from 'survey-knockout';
 import * as SurveyCreator from 'survey-creator';
 import * as widgets from 'surveyjs-widgets';
 
-import 'inputmask/dist/inputmask/phone-codes/phone.js';
+// import 'inputmask/dist/inputmask/phone-codes/phone.js';
 
 widgets.icheck(SurveyKo);
 widgets.select2(SurveyKo);
