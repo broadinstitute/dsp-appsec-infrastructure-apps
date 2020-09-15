@@ -162,6 +162,10 @@ resource "google_container_cluster" "cluster" {
       disabled = true
     }
   }
+
+  depends_on = [
+    google_service_account_iam_member.node_sa_cloudbuild,
+  ]
 }
 
 # This pool will be used for kube-system, Knative and
