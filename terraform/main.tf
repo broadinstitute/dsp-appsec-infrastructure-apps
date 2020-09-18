@@ -24,6 +24,12 @@ resource "google_project_service" "servicenetworking" {
   disable_on_destroy = false
 }
 
+data "google_project" "project" {}
+
+locals {
+  cloudbuild_sa = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
+}
+
 ### VPC
 
 resource "google_compute_network" "gke" {
@@ -79,6 +85,12 @@ module "node_sa" {
     "roles/monitoring.metricWriter",
     "roles/monitoring.viewer",
   ]
+}
+
+resource "google_service_account_iam_member" "node_sa_cloudbuild" {
+  service_account_id = module.node_sa.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = local.cloudbuild_sa
 }
 
 ### Google Container Registry
@@ -150,6 +162,10 @@ resource "google_container_cluster" "cluster" {
       disabled = true
     }
   }
+
+  depends_on = [
+    google_service_account_iam_member.node_sa_cloudbuild,
+  ]
 }
 
 # This pool will be used for kube-system, Knative and
@@ -196,6 +212,7 @@ module "batch_node_pool" {
   cluster         = google_container_cluster.cluster.name
   service_account = module.node_sa.email
 
+  machine_type   = "n1-highmem-4"
   min_node_count = 0
   max_node_count = var.max_batch_node_count
 

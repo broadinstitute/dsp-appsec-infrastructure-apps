@@ -53,6 +53,30 @@
   }
 }
 
+@-webkit-keyframes fadeInRight {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateX(20px);
+  }
+
+  100% {
+    opacity: 1;
+    -webkit-transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 .sv_main .sv_body {
   background-color: white;
   border-top: none !important;
@@ -72,6 +96,25 @@
   animation: fadein 0.6s;
 }
 
+.fadeIn {
+  -webkit-animation: fadein 0.6s;
+  -moz-animation: fadein 0.6s;
+  -ms-animation: fadein 0.6s;
+  -o-animation: fadein 0.6s;
+  animation: fadein 0.6s;
+}
+
+.fadeInRight {
+  -webkit-animation-name: fadeInRight;
+  animation-name: fadeInRight;
+}
+
+.animated {
+  -webkit-animation-duration: 0.7s;
+  animation-duration: 0.7s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
 
 .sv_main input[type="button"],
 .sv_main button {
@@ -251,7 +294,7 @@ ul.stepper li.completed a .circle {
   border-radius: 0.125rem;
   box-shadow: none !important;
   overflow: hidden;
-  height: 100vh;
+  height: 85vh;
   overflow: scroll;
   margin-bottom: 0px;
 }

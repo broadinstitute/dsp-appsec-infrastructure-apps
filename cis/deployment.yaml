@@ -49,7 +49,7 @@ data:
                 fieldPath: metadata.annotations['SLACK_RESULTS_URL']
           resources:
             requests:
-              memory: 250M
+              memory: 2Gi
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -115,7 +115,7 @@ spec:
   bindings:
   - role: roles/pubsub.publisher
     members:
-    - serviceAccount:${SDARQ_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com 
+    - serviceAccount:${SDARQ_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
     - serviceAccount:${GCP_SERVICE_ACCOUNT_EMAIL}
 ---
 apiVersion: batch/v1beta1
