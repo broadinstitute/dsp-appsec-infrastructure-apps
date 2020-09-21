@@ -304,7 +304,8 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
     "resourcemanager.projects.setIamPolicy",
     "storage.buckets.get",
     "storage.buckets.create",
-    "storage.buckets.update"
+    "storage.buckets.update",
+    "storage.buckets.getIamPolicy"
   ]
 }
 
