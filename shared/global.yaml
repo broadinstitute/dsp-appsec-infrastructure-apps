@@ -16,19 +16,13 @@ spec:
         - 69.173.127.128/26
         - 69.173.127.0/25
         - 69.173.127.240/28
-  - action: allow
-    priority: 2
-    match:
-      versionedExpr: SRC_IPS_V1
-      config:
-        srcIpRanges:
         - 69.173.127.224/30
         - 69.173.127.230/31
         - 69.173.120.0/22
         - 69.173.127.228/32
         - 69.173.126.0/24
   - action: allow
-    priority: 3
+    priority: 2
     match:
       versionedExpr: SRC_IPS_V1
       config:
