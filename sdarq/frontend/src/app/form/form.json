@@ -206,13 +206,16 @@
         "visibleIf": "{Runtime protection in your stack} = \"Yes\"",
         "title": "Choose what's applicable:",
         "choices": [
-         "We are behind orchestration layer",
          {
-          "value": "We are using TCell RASP functionality",
-          "text": "We are using TCell RASP "
+          "value": "We are behind orchestration layer",
+          "text": "We are behind orchestration layer"
          },
          {
-          "value": "We are using Apache/Nginx procy",
+          "value": "We are using TCell RASP functionality",
+          "text": "We are using TCell RASP functionality"
+         },
+         {
+          "value": "We are using Apache/Nginx proxy",
           "text": "We are using Apache/Nginx proxy"
          }
         ]
