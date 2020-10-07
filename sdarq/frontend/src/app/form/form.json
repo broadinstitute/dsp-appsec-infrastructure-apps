@@ -194,7 +194,7 @@
        {
         "type": "radiogroup",
         "name": "Runtime protection in your stack",
-        "title": "Do you have some sort of runtime protection in your stack?",
+        "title": "Do you have runtime protection in your stack?",
         "choices": [
          "Yes",
          "No"
@@ -202,12 +202,20 @@
        },
        {
         "type": "radiogroup",
-        "name": "Apache proxy with Tcell installed or are behind Orch",
+        "name": "Stack protection",
         "visibleIf": "{Runtime protection in your stack} = \"Yes\"",
-        "title": "Are you using apache proxy with Tcell installed or are behind Orch?",
+        "title": "Choose what's applicable:",
         "choices": [
-         "Yes",
-         "No"
+         "We are behind orchestration layer",
+         {
+          "value": "We are using TCell RASP functionality",
+          "text": "We are using TCell RASP "
+         },
+         {
+          "value": "We are using Apache/Nginx procy",
+          "text": "We are using Apache/Nginx proxy"
+         },
+         "We are using TCell WAF"
         ]
        },
        {
@@ -480,8 +488,8 @@
        {
         "type": "html",
         "name": "Alert-RuntimeProtection",
-        "visibleIf": "{Apache proxy with Tcell installed or are behind Orch} = \"No\"  or {Runtime protection in your stack} = \"No\"",
-        "html": "<div class=\"highs\">Please make sure your service is using apache proxy with Tcell or is behind orchestration layer.</div>"
+        "visibleIf": "{Stack protection} empty or {Runtime protection in your stack} = 'No'",
+        "html": "<div class=\"highs\">Please make sure your service is using Tcell Rapid functionalities or is behind the orchestration layer to add some runtime protection in your stack. RASP in the app is preferred over WAF/Apache proxy. Ask appsec team if you need more clarification on this.</div>"
        },
        {
         "type": "html",
@@ -726,8 +734,8 @@
           "visibleIf": "{Security tools} notcontains \"Codacy\""
          },
          {
-          "value": "Please make sure your service is using apache proxy with Tcell or is behind orchestration layer.",
-          "visibleIf": "{Apache proxy with Tcell installed or are behind Orch} = \"No\"  or {Runtime protection in your stack} = \"No\""
+          "value": "Please make sure your service is using Tcell Rapid functionalities or is behind the orchestration layer to add some runtime protection in your stack. RASP in the app is preferred over WAF/Apache proxy. Ask appsec team if you need more clarification on this.",
+          "visibleIf": "{Stack protection} empty or {Runtime protection in your stack} = 'No'"
          },
          {
           "value": "Reach out to DevOps team about certificates for non-*.dsde-.broadinstitute.org URL.",
