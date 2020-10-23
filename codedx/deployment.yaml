@@ -49,7 +49,7 @@ spec:
           containerPort: 8080
         readinessProbe:
           httpGet:
-            path: /codedx/login
+            path: /codedx/license
             port: ${TARGET_PORT}
           timeoutSeconds: 10
           initialDelaySeconds: 360
