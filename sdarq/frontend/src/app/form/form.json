@@ -184,7 +184,7 @@
                 {
                     "type": "radiogroup",
                     "name": "Runtime protection in your stack",
-                    "title": "Do you have runtime protection in your stack?",
+                    "title": "Do you have runtime application self-protection in your stack?",
                     "choices": [
                         "Yes",
                         "No"
