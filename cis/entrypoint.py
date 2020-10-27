@@ -19,8 +19,9 @@ import slack
 from google.cloud import bigquery, firestore, resource_manager
 
 BENCHMARK_PROFILES = (
-    'inspec-gcp-cis-benchmark',
-    'inspec-gke-cis-benchmark',
+    'inspec-gke-cis-ssh',
+    'inspec-gke-cis-gcp',
+    'inspec-gke-cis-k8s'
 )
 
 
