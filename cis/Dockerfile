@@ -21,7 +21,9 @@ RUN apt-get update && \
     && \
     gem install inspec-bin -qN && \
     git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gcp-cis-benchmark.git && \
-    git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gke-cis-benchmark.git \
+    git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gke-cis-benchmark.git && \
+    mv inspec-gke-cis-benchmark/inspec-gke-cis-gcp . && \
+    mv inspec-gke-cis-benchmark/inspec-gke-cis-k8s . \
     && \
     apt-get remove -y \
         build-essential \
@@ -34,7 +36,7 @@ RUN apt-get update && \
     && \
     useradd -m "${USER}" && \
     mkdir .inspec && \
-    chown "${USER}" .inspec inspec-*-cis-benchmark
+    chown "${USER}" .inspec inspec-*-cis-*
 
 
 FROM base AS test
