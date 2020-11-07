@@ -13,14 +13,15 @@ import os
 import re
 import subprocess
 import sys
-from typing import Any, List
+from typing import Any, List, Set
 
 import slack
 from google.cloud import bigquery, firestore, resource_manager
 
 BENCHMARK_PROFILES = (
     'inspec-gcp-cis-benchmark',
-    'inspec-gke-cis-benchmark',
+    'inspec-gke-cis-gcp',
+    'inspec-gke-cis-k8s',
 )
 
 
@@ -63,12 +64,12 @@ def parse_profiles(target_project_id: str, profiles):
     Parses scan results into a table structure for BigQuery.
     """
     rows: List[Any] = []
-    titles: List[str] = []
+    titles: Set[str] = set()
     for profile in profiles:
         if profile['name'] not in BENCHMARK_PROFILES:
             continue
 
-        titles.append(profile['title'])
+        titles.add(profile['title'])
         for ctrl in profile['controls']:
             failures = []
             for res in ctrl['results']:
