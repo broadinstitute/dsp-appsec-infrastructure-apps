@@ -44,6 +44,7 @@ dojo_host_url = os.getenv('dojo_host_url')
 firestore_collection = os.getenv('firestore_collection')
 topic_name = os.environ['JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
+appsec_jira_board = os.getenv['appsec_jira_board']
 
 
 # Instantiate the DefectDojo backend wrapper
@@ -55,7 +56,7 @@ global jira
 jira = JIRA(basic_auth=(jira_username, jira_api_token),
             options={'server': jira_instance})
 
-client = bigquery.Client()
+# client = bigquery.Client()
 db = firestore.Client()
 
 
@@ -77,7 +78,7 @@ def submit():
     """
     Send new product to DefectDojo
     Args:
-        nformatted_jira_description
+        formatted_jira_description
     Returns:
         200 status
     """
@@ -105,9 +106,21 @@ def submit():
 
         return data4
 
-    # Create a Jira ticket if user chooses a Jira project
-    slack_channels_list = ['#dsp-security', '#appsec-internal', '#dsde-qa']
+    # Create a Jira ticket for Threat Model in Appsec team board
+    architecture_diagram = json_data['Architecture Diagram'] 
+    github_url = json_data['Github URL'] 
+    appsec_jira_ticket_description = github_url + '\n' + architecture_diagram
+    appsec_jira_ticket_summury = 'Threat Model request ' + dojo_name
 
+    jira_ticket_appsec = jira.create_issue(project=appsec_jira_board,
+                                        summary=appsec_jira_ticket_summury,
+                                        description=str(
+                                            appsec_jira_ticket_description),
+                                        issuetype={'name': 'Task'})
+
+    # Create a Jira ticket if user chooses a Jira project
+    slack_channels_list = ['#zap-test']
+    
     if 'JiraProject' in json_data:
         project_key_id = json_data['JiraProject']
         jira_description = json.dumps(
@@ -130,7 +143,7 @@ def submit():
 
         # Set Slack notification
         for channel in slack_channels_list:
-            if channel == '#dsde-qa':
+            if channel == '#zap-test':
                 slacknotify.slacknotify_jira_qa(slack_token, channel, dojo_name, security_champion,
                                                 product_id, dojo_host_url, jira_instance,
                                                 project_key_id, jira_ticket)
@@ -142,7 +155,7 @@ def submit():
     else:
         # When Jira ticket creation is not selected
         for channel in slack_channels_list:
-            if channel == '#dsde-qa':
+            if channel == '#zap-test':
                 slacknotify.slacknotify_qa(
                     slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
             else:
