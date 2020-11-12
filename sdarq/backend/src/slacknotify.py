@@ -271,3 +271,64 @@ def slacknotify_jira_qa(slack_token, channel, dojo_name, security_champion, prod
             "color": "#0a88ab"
         }]
     )
+
+
+def slacknotify_threat_model(slack_token, channel, security_champion, request_type, project_name,  jira_instance, jira_ticket_appsec, appsec_jira_board):
+    """
+    Sends slack notification there is a request for threat model
+
+    Args:
+        slack_token: Slack token 
+        channel: Slack channel name
+        security_champion: Security champion name
+        request_type: Create or update threat model
+        project_name: Project name
+        jira_instance:  Jira Cloud instance
+        jira_ticket: Jira ticket path 
+        appsec_jira_board: Jira appsec project key id 
+
+    Returns:
+        Sends slack notification
+    """
+    client = slack.WebClient(slack_token)
+    response = client.chat_postMessage(
+        channel=channel,
+        attachments=[{"blocks": [
+            {
+                "type": "section",
+                "text": {
+                      "type": "mrkdwn",
+                      "text": "*{0}*" .format(str(request_type))
+                      }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Project:* {0} " .format(str(project_name))
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Security champion:* {0} " .format(str(security_champion))
+                }
+            },
+            {
+                "type": "actions",
+                "elements": [
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Jira Ticket"
+                        },
+                        "url": "{0}/projects/{1}/issues/{2}" .format(jira_instance, str(appsec_jira_board), str(jira_ticket_appsec))
+                    }
+                ]
+            }
+        ],
+            "color": "#0a88ab"
+        }]
+    )

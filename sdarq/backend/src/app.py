@@ -107,20 +107,20 @@ def submit():
         return data4
 
     # Create a Jira ticket for Threat Model in Appsec team board
-    architecture_diagram = json_data['Architecture Diagram'] 
-    github_url = json_data['Github URL'] 
+    architecture_diagram = json_data['Architecture Diagram']
+    github_url = json_data['Github URL']
     appsec_jira_ticket_description = github_url + '\n' + architecture_diagram
     appsec_jira_ticket_summury = 'Threat Model request ' + dojo_name
 
     jira_ticket_appsec = jira.create_issue(project=appsec_jira_board,
-                                        summary=appsec_jira_ticket_summury,
-                                        description=str(
-                                            appsec_jira_ticket_description),
-                                        issuetype={'name': 'Task'})
+                                           summary=appsec_jira_ticket_summury,
+                                           description=str(
+                                               appsec_jira_ticket_description),
+                                           issuetype={'name': 'Task'})
 
     # Create a Jira ticket if user chooses a Jira project
     slack_channels_list = ['#zap-test']
-    
+
     if 'JiraProject' in json_data:
         project_key_id = json_data['JiraProject']
         jira_description = json.dumps(
@@ -275,6 +275,38 @@ def cis_scan():
     else:
         doc_ref.delete()
         return ''
+
+
+@app.route('/request_tm/', methods=['POST'])
+@cross_origin(origins=sdarq_host)
+def request_tm():
+    """
+    Creates a request for threat model for a specific service
+    Creates a Jira ticket and notifies team in Slack
+    Args:
+        JSON data supplied by user
+    """
+    user_data = request.get_json()
+    security_champion = user_data['Eng']
+    request_type = user_data['Type']
+    project_name = user_data['Name']
+
+    appsec_jira_ticket_summury = user_data['Type'] + user_data['Name']
+    appsec_jira_ticket_description = user_data['Diagram'] + \
+        user_data['Document'] + user_data['Github']
+
+    jira_ticket_appsec = jira.create_issue(project=appsec_jira_board,
+                                           summary=appsec_jira_ticket_summury,
+                                           description=str(
+                                               appsec_jira_ticket_description),
+                                           issuetype={'name': 'Task'})
+
+    slack_channels_list = ['#zap-test']
+    for channel in slack_channels_list:
+        slacknotify.slacknotify_threat_model(slack_token, channel, security_champion,
+                                             request_type, project_name, jira_instance, jira_ticket_appsec, appsec_jira_board)
+
+    return ''
 
 
 if __name__ == "__main__":

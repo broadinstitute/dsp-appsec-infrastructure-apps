@@ -1,50 +1,46 @@
 {
-    "pages": [
-     {
-      "name": "Threat Model",
-      "elements": [
-       {
-        "type": "text",
-        "name": "Name",
-        "title": "Name of service"
-       },
-       {
-        "type": "text",
-        "name": "Github",
-        "title": "Github link"
-       },
-       {
-        "type": "text",
-        "name": "Diagram",
-        "title": "Architecture diagram"
-       },
-       {
-        "type": "text",
-        "name": "Document",
-        "title": "Architecture doc"
-       },
-       {
-        "type": "dropdown",
-        "name": "Type",
-        "title": "Choose ",
-        "choices": [
-         {
-          "value": "Build threat model",
-          "text": "First time threat model request"
-         },
-         {
-          "value": "Update threat model",
-          "text": "Update existing threat model"
-         }
+    "pages": [{
+        "name": "Threat Model",
+        "elements": [{
+                "type": "text",
+                "name": "Name",
+                "title": "Name of service"
+            },
+            {
+                "type": "text",
+                "name": "Github",
+                "title": "Github link"
+            },
+            {
+                "type": "text",
+                "name": "Diagram",
+                "title": "Architecture diagram"
+            },
+            {
+                "type": "text",
+                "name": "Document",
+                "title": "Architecture doc"
+            },
+            {
+                "type": "dropdown",
+                "name": "Type",
+                "title": "Choose ",
+                "choices": [{
+                        "value": "Build threat model",
+                        "text": "First time threat model request"
+                    },
+                    {
+                        "value": "Update threat model",
+                        "text": "Update existing threat model"
+                    }
+                ]
+            },
+            {
+                "type": "text",
+                "name": "Eng",
+                "title": "Security Champion"
+            }
         ]
-       },
-       {
-        "type": "text",
-        "name": "Eng",
-        "title": "Security Champion"
-       }
-      ]
-     }
-    ],
+    }],
     "showQuestionNumbers": "off"
-   }
+}
