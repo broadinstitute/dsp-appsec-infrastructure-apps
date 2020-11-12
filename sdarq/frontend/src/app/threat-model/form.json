@@ -1,0 +1,56 @@
+{
+    "pages": [
+     {
+      "name": "Threat Model",
+      "elements": [
+       {
+        "type": "text",
+        "name": "Name",
+        "title": "Name of service"
+       },
+       {
+        "type": "text",
+        "name": "Github",
+        "title": "Github link"
+       },
+       {
+        "type": "text",
+        "name": "Diagram",
+        "title": "Architecture diagram"
+       },
+       {
+        "type": "text",
+        "name": "Document",
+        "title": "Architecture doc"
+       },
+       {
+        "type": "dropdown",
+        "name": "Type",
+        "title": "Choose ",
+        "choices": [
+         {
+          "value": "item1",
+          "text": "First time request for threat model"
+         },
+         {
+          "value": "item2",
+          "text": "Edit existing threat model"
+         }
+        ]
+       },
+       {
+        "type": "text",
+        "name": "TM_folder",
+        "visibleIf": "{Type} = 'item2'",
+        "title": "Link to threat model folder link in github repo"
+       },
+       {
+        "type": "text",
+        "name": "Eng",
+        "title": "Security Champion"
+       }
+      ]
+     }
+    ],
+    "showQuestionNumbers": "off"
+   }
