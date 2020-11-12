@@ -56,7 +56,7 @@ global jira
 jira = JIRA(basic_auth=(jira_username, jira_api_token),
             options={'server': jira_instance})
 
-# client = bigquery.Client()
+client = bigquery.Client()
 db = firestore.Client()
 
 
