@@ -29,20 +29,14 @@
         "title": "Choose ",
         "choices": [
          {
-          "value": "item1",
-          "text": "First time request for threat model"
+          "value": "Build threat model",
+          "text": "First time threat model request"
          },
          {
-          "value": "item2",
-          "text": "Edit existing threat model"
+          "value": "Update threat model",
+          "text": "Update existing threat model"
          }
         ]
-       },
-       {
-        "type": "text",
-        "name": "TM_folder",
-        "visibleIf": "{Type} = 'item2'",
-        "title": "Link to threat model folder link in github repo"
        },
        {
         "type": "text",
