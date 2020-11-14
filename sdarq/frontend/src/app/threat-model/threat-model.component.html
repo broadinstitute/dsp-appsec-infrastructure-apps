@@ -1,5 +1,37 @@
 <div class="jumbotron">
   <div class="container">
-    <app-survey [json]="json" (submitSurvey)="sendData($event)"></app-survey>
+    <div class="row">
+      <div class="col-sm">
+        <h5>Threat modeling is an approach for analyzing the security of an application. It is a structured approach
+          that enables you to identify, quantify, and address the security risks associated with an application.
+        </h5> <br><br>
+
+        <h5>What? </h5>
+        <p>
+          <li>A repeatable process to find and address all threats to your product </li>
+        </p>
+        <br>
+        <h5>Why? </h5>
+        <p>
+          <li>Because attackers think differently</li>
+          <li>Find problems when there’s time to fix them </li>
+          <li>Security Development Lifecycle (SDL) requirement </li>
+          <li>Deliver more secure products</li>
+        </p>
+        <br>
+        <h5>When? </h5>
+        <p>
+          <li>The earlier you start, the more time to plan and fix </li>
+          <li>Worst case is for when you’re trying to ship: Find problems, make ugly scope and schedule choices, revisit
+            those features soon</li>
+        </p>
+        <br>
+        <p>Please fill this form to request a new threat model or edit an existing one for your service.</p>
+      </div>
+      <div class="col-sm">
+        <app-survey [json]="json" (submitSurvey)="sendData($event)"></app-survey>
+      </div>
+    </div>
+
   </div>
 </div>

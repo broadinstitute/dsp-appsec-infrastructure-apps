@@ -44,7 +44,7 @@ dojo_host_url = os.getenv('dojo_host_url')
 firestore_collection = os.getenv('firestore_collection')
 topic_name = os.environ['JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
-appsec_jira_board = os.getenv['appsec_jira_board']
+# appsec_jira_board = os.getenv['appsec_jira_board']
 
 
 # Instantiate the DefectDojo backend wrapper
@@ -78,7 +78,7 @@ def submit():
     """
     Send new product to DefectDojo
     Args:
-        formatted_jira_description
+        nformatted_jira_description
     Returns:
         200 status
     """
@@ -112,15 +112,13 @@ def submit():
     appsec_jira_ticket_description = github_url + '\n' + architecture_diagram
     appsec_jira_ticket_summury = 'Threat Model request ' + dojo_name
 
-    jira_ticket_appsec = jira.create_issue(project=appsec_jira_board,
+    jira_ticket_appsec = jira.create_issue(project='ATP',
                                            summary=appsec_jira_ticket_summury,
                                            description=str(
                                                appsec_jira_ticket_description),
                                            issuetype={'name': 'Task'})
 
     # Create a Jira ticket if user chooses a Jira project
-    slack_channels_list = ['#zap-test']
-
     if 'JiraProject' in json_data:
         project_key_id = json_data['JiraProject']
         jira_description = json.dumps(
@@ -142,28 +140,21 @@ def submit():
         dd.set_product(product_id, description=prepare_dojo_input(json_data))
 
         # Set Slack notification
+        slack_channels_list = ['#zap-test']
         for channel in slack_channels_list:
-            if channel == '#zap-test':
-                slacknotify.slacknotify_jira_qa(slack_token, channel, dojo_name, security_champion,
-                                                product_id, dojo_host_url, jira_instance,
-                                                project_key_id, jira_ticket)
-            else:
-                slacknotify.slacknotify_jira(slack_token, channel, dojo_name, security_champion,
-                                             product_id, dojo_host_url, jira_instance,
-                                             project_key_id, jira_ticket)
+            slacknotify.slacknotify_jira(slack_token, channel, dojo_name, security_champion,
+                                         product_id, dojo_host_url, jira_instance,
+                                         project_key_id, jira_ticket)
 
     else:
-        # When Jira ticket creation is not selected
-        for channel in slack_channels_list:
-            if channel == '#zap-test':
-                slacknotify.slacknotify_qa(
-                    slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
-            else:
-                slacknotify.slacknotify(
-                    slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
-
-         # Set product description
+        # Set product description
         dd.set_product(product_id, description=prepare_dojo_input(json_data))
+
+        # When Jira ticket creation is not selected
+        slack_channels_list = ['#zap-test']
+        for channel in slack_channels_list:
+            slacknotify.slacknotify(
+                slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
 
     if github_token and github_org and github_repo:
         github_repo_dispatcher(github_token, github_org,
@@ -292,10 +283,10 @@ def request_tm():
     project_name = user_data['Name']
 
     appsec_jira_ticket_summury = user_data['Type'] + user_data['Name']
-    appsec_jira_ticket_description = user_data['Diagram'] + \
-        user_data['Document'] + user_data['Github']
+    appsec_jira_ticket_description = user_data['Diagram'] + '\n' + \
+        user_data['Document'] + '\n' + user_data['Github']
 
-    jira_ticket_appsec = jira.create_issue(project=appsec_jira_board,
+    jira_ticket_appsec = jira.create_issue(project="ATP",
                                            summary=appsec_jira_ticket_summury,
                                            description=str(
                                                appsec_jira_ticket_description),
@@ -304,7 +295,7 @@ def request_tm():
     slack_channels_list = ['#zap-test']
     for channel in slack_channels_list:
         slacknotify.slacknotify_threat_model(slack_token, channel, security_champion,
-                                             request_type, project_name, jira_instance, jira_ticket_appsec, appsec_jira_board)
+                                             request_type, project_name, jira_instance, jira_ticket_appsec, "ATP")
 
     return ''
 

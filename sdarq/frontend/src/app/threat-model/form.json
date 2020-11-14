@@ -1,46 +1,58 @@
 {
-    "pages": [{
-        "name": "Threat Model",
-        "elements": [{
-                "type": "text",
-                "name": "Name",
-                "title": "Name of service"
-            },
-            {
-                "type": "text",
-                "name": "Github",
-                "title": "Github link"
-            },
-            {
-                "type": "text",
-                "name": "Diagram",
-                "title": "Architecture diagram"
-            },
-            {
-                "type": "text",
-                "name": "Document",
-                "title": "Architecture doc"
-            },
-            {
-                "type": "dropdown",
-                "name": "Type",
-                "title": "Choose ",
-                "choices": [{
-                        "value": "Build threat model",
-                        "text": "First time threat model request"
-                    },
-                    {
-                        "value": "Update threat model",
-                        "text": "Update existing threat model"
-                    }
-                ]
-            },
-            {
-                "type": "text",
-                "name": "Eng",
-                "title": "Security Champion"
-            }
+    "pages": [
+     {
+      "name": "page1",
+      "elements": [
+       {
+        "type": "dropdown",
+        "name": "Type",
+        "title": "Choose your request",
+        "isRequired": true,
+        "choices": [
+         {
+          "value": "First time threat model ",
+          "text": "First time threat model"
+         },
+         {
+          "value": "Edit existing threat model ",
+          "text": "Edit existing threat model"
+         }
         ]
-    }],
-    "showQuestionNumbers": "off"
-}
+       },
+       {
+        "type": "text",
+        "name": "Name",
+        "title": "Service name",
+        "isRequired": true
+       },
+       {
+        "type": "text",
+        "name": "Github",
+        "title": "Github link",
+        "isRequired": true
+       },
+       {
+        "type": "text",
+        "name": "Diagram",
+        "title": "Architecture diagram",
+        "isRequired": true
+       },
+       {
+        "type": "text",
+        "name": "Document",
+        "title": "Architecture document",
+        "isRequired": true
+       },
+       {
+        "type": "text",
+        "name": "Eng",
+        "title": "Security Champion",
+        "isRequired": true
+       }
+      ]
+     }
+    ],
+    "showCompletedPage": true,
+    "showQuestionNumbers": "off",
+    "completedHtml": "<p><h3>Thank you!</h3><br><h5>Appsec team will review your request!</h5></p>"
+   }
