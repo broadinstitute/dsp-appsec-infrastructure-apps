@@ -254,6 +254,10 @@ input,
   border-radius: 6px;
 }
 
+.sv_main.sv_default_css .sv_select_wrapper::before {
+  background-color: rgb(38 76 178) !important; 
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 13px !important;
