@@ -59,7 +59,7 @@ def slacknotify(slack_token, channel, dojo_name, security_champion, product_id, 
                         ]
             }
         ],
-            "color": "#0a88ab"
+            "color": "#1D10D8"
         }]
     )
 
@@ -131,7 +131,7 @@ def slacknotify_jira(slack_token, channel, dojo_name, security_champion, product
                 ]
             }
         ],
-            "color": "#0a88ab"
+            "color": "#1D10D8"
         }]
     )
 
@@ -192,6 +192,6 @@ def slacknotify_threat_model(slack_token, channel, security_champion, request_ty
                 ]
             }
         ],
-            "color": "#0a88ab"
+            "color": "#1D10D8"
         }]
     )
