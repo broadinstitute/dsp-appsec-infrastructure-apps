@@ -295,7 +295,7 @@ def request_tm():
     slack_channels_list = ['#zap-test']
     for channel in slack_channels_list:
         slacknotify.slacknotify_threat_model(slack_token, channel, security_champion,
-                                             request_type, project_name, jira_instance, jira_ticket_appsec, "ATP")
+                                             request_type, project_name, jira_instance, jira_ticket_appsec, appsec_jira_board)
 
     return ''
 
