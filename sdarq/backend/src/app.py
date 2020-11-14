@@ -44,7 +44,7 @@ dojo_host_url = os.getenv('dojo_host_url')
 firestore_collection = os.getenv('firestore_collection')
 topic_name = os.environ['JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
-# appsec_jira_board = os.getenv['appsec_jira_board']
+appsec_jira_board = os.getenv['appsec_jira_board']
 
 
 # Instantiate the DefectDojo backend wrapper
@@ -112,7 +112,7 @@ def submit():
     appsec_jira_ticket_description = github_url + '\n' + architecture_diagram
     appsec_jira_ticket_summury = 'Threat Model request ' + dojo_name
 
-    jira_ticket_appsec = jira.create_issue(project='ATP',
+    jira_ticket_appsec = jira.create_issue(project=appsec_jira_board,
                                            summary=appsec_jira_ticket_summury,
                                            description=str(
                                                appsec_jira_ticket_description),
@@ -286,7 +286,7 @@ def request_tm():
     appsec_jira_ticket_description = user_data['Diagram'] + '\n' + \
         user_data['Document'] + '\n' + user_data['Github']
 
-    jira_ticket_appsec = jira.create_issue(project="ATP",
+    jira_ticket_appsec = jira.create_issue(project=appsec_jira_board,
                                            summary=appsec_jira_ticket_summury,
                                            description=str(
                                                appsec_jira_ticket_description),
