@@ -44,6 +44,7 @@ dojo_host_url = os.getenv('dojo_host_url')
 firestore_collection = os.getenv('firestore_collection')
 topic_name = os.environ['JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
+appsec_jira_board = os.getenv['appsec_jira_board']
 
 
 # Instantiate the DefectDojo backend wrapper
@@ -105,9 +106,19 @@ def submit():
 
         return data4
 
-    # Create a Jira ticket if user chooses a Jira project
-    slack_channels_list = ['#dsp-security', '#appsec-internal', '#dsde-qa']
+    # Create a Jira ticket for Threat Model in Appsec team board
+    architecture_diagram = json_data['Architecture Diagram']
+    github_url = json_data['Github URL']
+    appsec_jira_ticket_description = github_url + '\n' + architecture_diagram
+    appsec_jira_ticket_summury = 'Threat Model request ' + dojo_name
 
+    jira_ticket_appsec = jira.create_issue(project=appsec_jira_board,
+                                           summary=appsec_jira_ticket_summury,
+                                           description=str(
+                                               appsec_jira_ticket_description),
+                                           issuetype={'name': 'Task'})
+
+    # Create a Jira ticket if user chooses a Jira project
     if 'JiraProject' in json_data:
         project_key_id = json_data['JiraProject']
         jira_description = json.dumps(
@@ -129,28 +140,21 @@ def submit():
         dd.set_product(product_id, description=prepare_dojo_input(json_data))
 
         # Set Slack notification
+        slack_channels_list = ['#dsp-security', '#appsec-internal']
         for channel in slack_channels_list:
-            if channel == '#dsde-qa':
-                slacknotify.slacknotify_jira_qa(slack_token, channel, dojo_name, security_champion,
-                                                product_id, dojo_host_url, jira_instance,
-                                                project_key_id, jira_ticket)
-            else:
-                slacknotify.slacknotify_jira(slack_token, channel, dojo_name, security_champion,
-                                             product_id, dojo_host_url, jira_instance,
-                                             project_key_id, jira_ticket)
+            slacknotify.slacknotify_jira(slack_token, channel, dojo_name, security_champion,
+                                         product_id, dojo_host_url, jira_instance,
+                                         project_key_id, jira_ticket)
 
     else:
-        # When Jira ticket creation is not selected
-        for channel in slack_channels_list:
-            if channel == '#dsde-qa':
-                slacknotify.slacknotify_qa(
-                    slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
-            else:
-                slacknotify.slacknotify(
-                    slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
-
-         # Set product description
+        # Set product description
         dd.set_product(product_id, description=prepare_dojo_input(json_data))
+
+        # When Jira ticket creation is not selected
+        slack_channels_list = ['#dsp-security', '#appsec-internal']
+        for channel in slack_channels_list:
+            slacknotify.slacknotify(
+                slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
 
     if github_token and github_org and github_repo:
         github_repo_dispatcher(github_token, github_org,
@@ -262,6 +266,38 @@ def cis_scan():
     else:
         doc_ref.delete()
         return ''
+
+
+@app.route('/request_tm/', methods=['POST'])
+@cross_origin(origins=sdarq_host)
+def request_tm():
+    """
+    Creates a request for threat model for a specific service
+    Creates a Jira ticket and notifies team in Slack
+    Args:
+        JSON data supplied by user
+    """
+    user_data = request.get_json()
+    security_champion = user_data['Eng']
+    request_type = user_data['Type']
+    project_name = user_data['Name']
+
+    appsec_jira_ticket_summury = user_data['Type'] + user_data['Name']
+    appsec_jira_ticket_description = user_data['Diagram'] + '\n' + \
+        user_data['Document'] + '\n' + user_data['Github']
+
+    jira_ticket_appsec = jira.create_issue(project=appsec_jira_board,
+                                           summary=appsec_jira_ticket_summury,
+                                           description=str(
+                                               appsec_jira_ticket_description),
+                                           issuetype={'name': 'Task'})
+
+    slack_channels_list = ['#dsp-security', '#appsec-internal']
+    for channel in slack_channels_list:
+        slacknotify.slacknotify_threat_model(slack_token, channel, security_champion,
+                                             request_type, project_name, jira_instance, jira_ticket_appsec, appsec_jira_board)
+
+    return ''
 
 
 if __name__ == "__main__":

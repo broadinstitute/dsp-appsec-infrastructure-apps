@@ -28,6 +28,10 @@ spec:
         backend:
           serviceName: ${SERVICE}
           servicePort: ${BACKEND_PORT}
+      - path: /request_tm/
+        backend:
+          serviceName: ${SERVICE}
+          servicePort: ${BACKEND_PORT}
 ---
 apiVersion: cloud.google.com/v1beta1
 kind: BackendConfig

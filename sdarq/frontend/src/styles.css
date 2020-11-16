@@ -235,13 +235,13 @@ label {
 }
 
 .saveResponses {
-  background-color: #5885d0 !important;
+  background-color: #2752b7 !important;
   font-weight: lighter !important;
   line-height: 3em !important;
-  letter-spacing: .07em !important;
   min-width: 100px;
   margin: 0 0 0 44.5%;
   color: white;
+  border: 0px;
   border-radius: 7px !important;
 }
 
@@ -252,6 +252,10 @@ input,
 .sv_main .sv_container .sv_body .sv_p_root .sv_q select,
 .sv_main .sv_container .sv_body .sv_p_root .sv_q textarea {
   border-radius: 6px;
+}
+
+.sv_main.sv_default_css .sv_select_wrapper::before {
+  background-color: rgb(38 76 178) !important; 
 }
 
 body {
