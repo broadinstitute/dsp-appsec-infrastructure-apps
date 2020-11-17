@@ -76,9 +76,11 @@ def health():
 @cross_origin(origins=sdarq_host)
 def submit():
     """
-    Send new product to DefectDojo
+    Send new product to DefectDojo,
+    create Jira ticket in teams board (optional),
+    create Jira ticket in appsec team board for TM
     Args:
-        nformatted_jira_description
+        formatted_jira_description
     Returns:
         200 status
     """
