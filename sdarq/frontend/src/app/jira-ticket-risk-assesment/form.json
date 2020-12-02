@@ -60,7 +60,11 @@
         "choices": [
          {
           "value": "item1",
-          "text": "Changing or adding an API endpoint that takes uncontrolled/direct user input or process XML files"
+          "text": "Changing or adding an API endpoint that takes uncontrolled/direct user input"
+         },
+         {
+          "value": "item6",
+          "text": "Changing or adding an API endpoint that process XML files"
          },
          {
           "value": "item2",
@@ -77,6 +81,70 @@
          {
           "value": "item5",
           "text": "Other"
+         }
+        ]
+       },
+       {
+        "type": "radiogroup",
+        "name": "validated_input",
+        "visibleIf": "{product_terra} = ['item1']",
+        "title": "Is user input validated? ",
+        "choices": [
+         {
+          "value": "item1",
+          "text": "Yes"
+         },
+         {
+          "value": "item2",
+          "text": "No"
+         }
+        ]
+       },
+       {
+        "type": "radiogroup",
+        "name": "parameterized_queries",
+        "visibleIf": "{validated_input} = 'item1' and {product_terra} = ['item1']",
+        "title": "Are you using parameterized queries? ",
+        "choices": [
+         {
+          "value": "item1",
+          "text": "Yes or N/A"
+         },
+         {
+          "value": "item2",
+          "text": "No"
+         }
+        ]
+       },
+       {
+        "type": "radiogroup",
+        "name": "unicode_encoding",
+        "visibleIf": "{parameterized_queries} = 'item1' and {validated_input} = 'item1' and {product_terra} = ['item1']",
+        "title": "Are you implementing policies to prevent bypass unicode encoding?",
+        "choices": [
+         {
+          "value": "item1",
+          "text": "Yes"
+         },
+         {
+          "value": "item2",
+          "text": "No"
+         }
+        ]
+       },
+       {
+        "type": "radiogroup",
+        "name": "sanitized_input",
+        "visibleIf": "{unicode_encoding} = 'item1' and {parameterized_queries} = 'item1' and {validated_input} = 'item1'",
+        "title": "Is user input sanitized?",
+        "choices": [
+         {
+          "value": "item1",
+          "text": "Yes"
+         },
+         {
+          "value": "item2",
+          "text": "No"
          }
         ]
        },
@@ -199,14 +267,14 @@
        {
         "type": "html",
         "name": "risk_high",
-        "visibleIf": "({infrastructure_gcp} anyof ['item1', 'item2']  and {high_level} = 'item1') or ({high_level} = 'item2' and {product_terra} anyof ['item1', 'item2', 'item3', 'item4']) or ({high_level} = 'item2' and {privacy_security_features} = 'item1') or ({high_level} = 'item2' and {consume_url} = 'item1') or ({high_level} = 'item2' and {serialization_deserialization} = 'item1') or ({high_level} = 'item2' and {confidentiality} = 'item1') or ({high_level} = 'item2' and {integrity} = 'item1')",
+        "visibleIf": "{infrastructure_gcp} anyof ['item1', 'item2'] and {high_level} = 'item1' or {high_level} = 'item2' and {product_terra} anyof ['item2', 'item3', 'item4', 'item6'] or {high_level} = 'item2' and {privacy_security_features} = 'item1' or {high_level} = 'item2' and {consume_url} = 'item1' or {high_level} = 'item2' and {serialization_deserialization} = 'item1' or {high_level} = 'item2' and {confidentiality} = 'item1' or {high_level} = 'item2' and {integrity} = 'item1' or {high_level} = 'item2' and {product_terra} = ['item1'] and {unicode_encoding} = 'item2' or {high_level} = 'item2' and {product_terra} = ['item1'] and {validated_input} = 'item2' or {high_level} = 'item2' and {product_terra} = ['item1'] and {parameterized_queries} = 'item2' or {high_level} = 'item2' and {product_terra} = ['item1'] and {sanitized_input} = 'item2'",
         "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nPlease reach out to appsec@broadinstitute.org or tag someone from the DSP Appsec team in the Jira ticket.\n</div>"
        },
        {
         "type": "html",
         "name": "risk_medium",
         "visible": false,
-        "visibleIf": "{infrastructure_gcp} = ['item3'] and {high_level} = 'item1'",
+        "visibleIf": "{infrastructure_gcp} = ['item3'] and {high_level} = 'item1' or {high_level} = 'item2' and {product_terra} = ['item1'] and {sanitized_input} = 'item1' and {parameterized_queries} = 'item1' and {unicode_encoding} = 'item1' and {validated_input} = 'item1'",
         "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\nPlease reach out to appsec@broadinstitute.org or tag someone from the DSP Appsec team in the Jira ticket.\n</div>"
        },
        {

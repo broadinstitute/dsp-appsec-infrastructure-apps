@@ -10,6 +10,7 @@ import { CisResultsComponent } from './cis-results/cis-results.component';
 import { CisScanComponent } from './cis-scan/cis-scan.component';
 import { CisLandingPageComponent } from './cis-landing-page/cis-landing-page.component';
 import { JiraTicketRiskAssesmentComponent } from './jira-ticket-risk-assesment/jira-ticket-risk-assesment.component';
+import { ThreatModelComponent} from './threat-model/threat-model.component'
 
 
 const routes: Routes = [
@@ -22,7 +23,8 @@ const routes: Routes = [
   { path: 'cis/results', component: CisResultsComponent },
   { path: 'cis/scan', component: CisScanComponent },
   { path: 'cis', component: CisLandingPageComponent },
-  { path: 'jira-ticket-risk-assesment', component: JiraTicketRiskAssesmentComponent }
+  { path: 'jira-ticket-risk-assesment', component: JiraTicketRiskAssesmentComponent },
+  { path: 'threat-model/request', component: ThreatModelComponent }
 ];
 
 @NgModule({

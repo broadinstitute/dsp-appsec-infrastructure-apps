@@ -43,7 +43,8 @@ spec:
           mkfifo "${LOGBACK_LOG_FILE}"
           chown burpsuite "${LOGBACK_LOG_FILE}"
 
-          cd enterpriseServer/*/
+          cd enterpriseServer
+          cd $(ls | sort -t. -k1,1n -k2n | tail -1)
           cp "${SECRET_CONFIG_PATH}/${SECRET_CONFIG_FILE}" .
           chown burpsuite "${SECRET_CONFIG_FILE}"
 
