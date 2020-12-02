@@ -297,9 +297,8 @@ ul.stepper li.completed a .circle {
 .jumbotron {
   border-radius: 0.125rem;
   box-shadow: none !important;
-  overflow: hidden;
-  height: 85vh;
-  overflow: scroll;
+  height: 85.5vh;
+  overflow: auto;
   margin-bottom: 0px;
 }
 
