@@ -143,39 +143,39 @@ steps:
   env:
   - GCP_SERVICE_ACCOUNT_EMAIL=${_ORG_VIEWER_SA_EMAIL}
 
-# build patched DefectDojo Django image,
-# using Kaniko to speed up builds
-- id: defectdojo-django-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/defectdojo
-      --dockerfile=Dockerfile.django
-      --destination=$${DD_DJANGO_IMAGE}
-      --cache
+# # build patched DefectDojo Django image,
+# # using Kaniko to speed up builds
+# - id: defectdojo-django-image
+#   name: *kaniko
+#   waitFor: ['kaniko']
+#   entrypoint: sh
+#   args:
+#   - -c
+#   - executor
+#       --context=dir:///workspace/defectdojo
+#       --dockerfile=Dockerfile.django
+#       --destination=$${DD_DJANGO_IMAGE}
+#       --cache
 
-# build patched DefectDojo Nginx image
-- id: defectdojo-nginx-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/defectdojo
-      --dockerfile=Dockerfile.nginx
-      --destination=$${DD_NGINX_IMAGE}
-      --cache
+# # build patched DefectDojo Nginx image
+# - id: defectdojo-nginx-image
+#   name: *kaniko
+#   waitFor: ['kaniko']
+#   entrypoint: sh
+#   args:
+#   - -c
+#   - executor
+#       --context=dir:///workspace/defectdojo
+#       --dockerfile=Dockerfile.nginx
+#       --destination=$${DD_NGINX_IMAGE}
+#       --cache
 
-# deploy DefectDojo to GKE cluster
-- id: defectdojo
-  name: *kubectl
-  waitFor: ['shared', 'cloudsql-proxy', 'defectdojo-django-image', 'defectdojo-nginx-image']
-  entrypoint: ./deploy.sh
-  dir: defectdojo
+# # deploy DefectDojo to GKE cluster
+# - id: defectdojo
+#   name: *kubectl
+#   waitFor: ['shared', 'cloudsql-proxy', 'defectdojo-django-image', 'defectdojo-nginx-image']
+#   entrypoint: ./deploy.sh
+#   dir: defectdojo
 
 # build patched CodeDx image
 - id: codedx-image
