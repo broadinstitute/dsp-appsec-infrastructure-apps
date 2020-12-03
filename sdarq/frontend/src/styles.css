@@ -300,7 +300,8 @@ ul.stepper li.completed a .circle {
   height: 85.5vh;
   overflow: auto;
   margin-bottom: 0px;
-}
+} 
+
 
 .navbar.navbar-dark .breadcrumb .nav-item.active>.nav-link,
 .navbar.navbar-dark .navbar-nav .nav-item.active>.nav-link {
