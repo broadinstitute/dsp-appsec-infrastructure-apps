@@ -584,99 +584,137 @@
                     "name": "JiraProject",
                     "title": "Choose Jira project to create ticket",
                     "choices": [{
-                            "value": "ATP",
-                            "text": "APPSEC-TEST-PROJECT"
-                        },
-                        {
-                            "value": "LR",
-                            "text": "Long Reads"
-                        },
-                        "QA",
-                        {
-                            "value": "CA",
-                            "text": "Cloud Integrations"
-                        },
-                        {
-                            "value": "SAN",
-                            "text": "SANDBOX"
-                        },
-                        {
-                            "value": "PROD",
-                            "text": "PRODUCTION"
-                        },
-                        {
-                            "value": "UM",
-                            "text": "User Metrics"
-                        },
-                        "PERF",
-                        {
-                            "value": "SN",
-                            "text": "SAND-NG"
-                        },
-                        {
-                            "value": "SUP",
-                            "text": "SUPPORT"
-                        },
-                        {
-                            "value": "SATURN",
-                            "text": "Terra UI"
-                        },
-                        {
-                            "value": "TR",
-                            "text": "TERRA ROADMAP"
-                        },
-                        {
-                            "value": "IA",
-                            "text": "Interactive Analysis"
-                        },
-                        {
-                            "value": "JS",
-                            "text": "Jira Support"
-                        },
-                        {
-                            "value": "BA",
-                            "text": "Cromwell Engine"
-                        },
-                        {
-                            "value": "DO",
-                            "text": "DevOps"
-                        },
-                        {
-                            "value": "UXNEXTGEN",
-                            "text": "UX-NextGen"
-                        },
-                        {
-                            "value": "DR",
-                            "text": "Data-repo"
-                        },
-                        {
-                            "value": "NP",
-                            "text": "New Project"
-                        },
-                        {
-                            "value": "HDT",
-                            "text": "Hackathon Deployment Tool"
-                        },
-                        {
-                            "value": "DSPUX",
-                            "text": "DSP UX"
-                        },
-                        {
-                            "value": "AS",
-                            "text": "App Services"
-                        },
-                        {
-                            "value": "WA",
-                            "text": "Workflow Analysis"
-                        },
-                        {
-                            "value": "LRP",
-                            "text": "Long Read Pipelines"
-                        },
-                        {
-                            "value": "DFE",
-                            "text": "DSP Field Engineering"
-                        }
+                        "value": "DDO",
+                        "text": "AP-DevOps"
+                    },
+                    {
+                        "value": "ATP",
+                        "text": "APPSEC-TEST-PROJECT"
+                    },
+                    {
+                        "value": "BT",
+                        "text": "Batch: Tasks"
+                    },
+                    {
+                        "value": "BW",
+                        "text": "Batch: Workflows"
+                    },
+                    {
+                        "value": "CDA",
+                        "text": "Cancer Data Aggregator"
+                    },
+                    {
+                        "value": "CA",
+                        "text": "Cloud Integration"
+                    },
+                    {
+                        "value": "CROM",
+                        "text": "Cromwell"
+                    },
+                    {
+                        "value": "DUOS",
+                        "text": "Data Usage Oversight System"
+                    },
+                    {
+                        "value": "DR",
+                        "text": "Data-repo"
+                    },
+                    {
+                        "value": "DSEC",
+                        "text": "DSP Appsec"
+                    },
+                    {
+                        "value": "DCOMP",
+                        "text": "DSP Compliance"
+                    },
+                    {
+                        "value": "DFE",
+                        "text": "DSP Field Engineering"
+                    },
+                    {
+                        "value": "DPO",
+                        "text": "DSP Privacy Operations"
+                    },
+                    {
+                        "value": "DSO",
+                        "text": "DSP Security Operations"
+                    },
+                    {
+                        "value": "DSPUX",
+                        "text": "DSP UX"
+                    },
+                    {
+                        "value": "GH",
+                        "text": "Green Hornet"
+                    },
+                    {
+                        "value": "IA",
+                        "text": "Interactive Analysis"
+                    },
+                    {
+                        "value": "JS",
+                        "text": "Jira Support"
+                    },
+                    {
+                        "value": "AS",
+                        "text": "App Services"
+                    },
+                    {
+                        "value": "LRP",
+                        "text": "Long Read Pipelines"
+                    },
+                    {
+                        "value": "LR",
+                        "text": "Long Read"
+                    },
+                    {
+                        "value": "PF",
+                        "text": "Platform Foundation"
+                    },
+                    {
+                        "value": "SN",
+                        "text": "SAND-NG"
+                    },
+                    {
+                        "value": "QA",
+                        "text": "QA"
+                    },
+                    {
+                        "value": "SAN",
+                        "text": "SANDBOX"
+                    },
+                    {
+                        "value": "SCP",
+                        "text": "Single Cell Portal"
+                    },
+                    {
+                        "value": "TR",
+                        "text": "TERRA ROADMAP"
+                    },
+                    {
+                        "value": "SATURN",
+                        "text": "Terra UI"
+                    },
+                    {
+                        "value": "UM",
+                        "text": "User Metrics"
+                    },
+                    {
+                        "value": "UXNEXTGEN",
+                        "text": "UX-NextGen"
+                    },
+                    {
+                        "value": "BA",
+                        "text": "Cromwell Engine"
+                    },
+                    {
+                        "value": "DO",
+                        "text": "DevOps"
+                    },
+                    {
+                        "value": "WA",
+                        "text": "Workflow Analysis"
+                    }
                     ]
                 },
                 {
