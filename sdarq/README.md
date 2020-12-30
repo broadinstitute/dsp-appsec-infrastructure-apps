@@ -36,4 +36,5 @@ To run locally SDARQ backend, go to `backend/src` folder of SDARQ
 Run `python3 app.py` , it will run in the port 8080 of your localhost
 
 
-If you have questions, please reach out appsec team. 
+### Questions
+If you have questions, please reach out to appsec team. 
