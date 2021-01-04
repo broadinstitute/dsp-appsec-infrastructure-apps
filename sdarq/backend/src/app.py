@@ -12,6 +12,7 @@ This module
 import os
 import re
 import json
+import logging
 import threading
 
 from typing import List
@@ -92,6 +93,7 @@ def submit():
     product_type = 1
     product = dd.create_product(
         dojo_name, "Initial Engagement Placeholder", product_type)
+    logging.info("Product created: %s", dojo_name)
 
     if product.success:
         product_id = product.id()
@@ -119,6 +121,7 @@ def submit():
                                            description=str(
                                                appsec_jira_ticket_description),
                                            issuetype={'name': 'Task'})
+    logging.info("Jira ticket in appsec board created")
 
     # Create a Jira ticket if user chooses a Jira project
     if 'JiraProject' in json_data:
@@ -134,6 +137,7 @@ def submit():
                                         description=str(
                                             formatted_jira_description),
                                         issuetype={'name': 'Task'})
+        logging.info("Jira ticket in %s board created", project_key_id)
 
         # Delete Ticket_Description from json
         del json_data['Ticket_Description']
@@ -179,6 +183,8 @@ def cis_results():
     project_id = project_id_encoded.decode("utf-8")
     pattern = "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
     project_id_edited = project_id.strip('-').replace('-', '_')
+
+    logging.info("Request to read CIS scanner results for project %s ", project_id_edited)
 
     if re.match(pattern, project_id_edited):
         sql_tables = """
@@ -227,6 +233,7 @@ def cis_scan():
         publisher = pubsub_v1.PublisherClient()
         topic_path = publisher.topic_path(pubsub_project_id, topic_name)
         user_proj = user_project_id.replace('-', '_')
+        logging.info("Request to assess security posture for project %s ", user_proj)
         db.collection(firestore_collection).document(user_proj)
         if 'slack_channel' in json_data:
             slack_channel = json_data['slack_channel']
@@ -288,11 +295,14 @@ def request_tm():
     appsec_jira_ticket_description = user_data['Diagram'] + '\n' + \
         user_data['Document'] + '\n' + user_data['Github']
 
+    logging.info("Request for threat model for project %s ", project_name)
+
     jira_ticket_appsec = jira.create_issue(project="DSEC",
                                            summary=appsec_jira_ticket_summury,
                                            description=str(
                                                appsec_jira_ticket_description),
                                            issuetype={'name': 'Task'})
+    logging.info("Jira ticket in appsec board for project %s threat model", project_name)
 
     slack_channels_list = ['#dsp-security', '#appsec-internal']
     for channel in slack_channels_list:
