@@ -11,10 +11,12 @@ import { CisScanComponent } from './cis-scan/cis-scan.component';
 import { CisLandingPageComponent } from './cis-landing-page/cis-landing-page.component';
 import { JiraTicketRiskAssesmentComponent } from './jira-ticket-risk-assesment/jira-ticket-risk-assesment.component';
 import { ThreatModelComponent} from './threat-model/threat-model.component'
+import { AboutPageComponent } from './about-page/about-page.component'
 
 
 const routes: Routes = [
   { path: '', component: HomepageComponent },
+  { path: 'about', component: AboutPageComponent },
   { path: 'newservice', component: MainpageComponent },
   { path: 'questionnaire', component: FormComponent },
   { path: 'notdspquestionnaire', component: NonDSPformComponent },

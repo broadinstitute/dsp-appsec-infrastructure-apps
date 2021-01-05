@@ -24,7 +24,8 @@ import { CisLandingPageComponent } from './cis-landing-page/cis-landing-page.com
 import { FilterPipe } from './pipes/filter.pipe';
 import { JiraTicketRiskAssesmentComponent } from './jira-ticket-risk-assesment/jira-ticket-risk-assesment.component';
 import { ThreatModelComponent } from './threat-model/threat-model.component';
-import { RequestTmService} from './services/request-tm.service'
+import { RequestTmService} from './services/request-tm.service';
+import { AboutPageComponent } from './about-page/about-page.component'
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { RequestTmService} from './services/request-tm.service'
     CisLandingPageComponent,
     FilterPipe,
     JiraTicketRiskAssesmentComponent,
-    ThreatModelComponent
+    ThreatModelComponent,
+    AboutPageComponent
   ],
   imports: [
     BrowserModule,
