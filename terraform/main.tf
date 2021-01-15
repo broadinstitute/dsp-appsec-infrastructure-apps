@@ -318,6 +318,7 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
     "iam.serviceAccounts.delete",
     "iam.serviceAccounts.getIamPolicy",
     "iam.serviceAccounts.setIamPolicy",
+    "monitoring.metricDescriptors.list",
     "monitoring.timeSeries.create",
     "pubsub.topics.get",
     "pubsub.topics.create",
