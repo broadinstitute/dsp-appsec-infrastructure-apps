@@ -93,6 +93,14 @@ resource "google_service_account_iam_member" "node_sa_cloudbuild" {
   member             = local.cloudbuild_sa
 }
 
+data "google_compute_default_service_account" "default" {}
+
+resource "google_service_account_iam_member" "compute_sa_cloudbuild" {
+  service_account_id = data.google_compute_default_service_account.default.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = local.cloudbuild_sa
+}
+
 ### Google Container Registry
 
 resource "google_container_registry" "gcr" {
@@ -171,6 +179,7 @@ resource "google_container_cluster" "cluster" {
 
   depends_on = [
     google_service_account_iam_member.node_sa_cloudbuild,
+    google_service_account_iam_member.compute_sa_cloudbuild,
   ]
 }
 
