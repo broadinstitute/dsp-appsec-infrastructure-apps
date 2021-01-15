@@ -38,11 +38,11 @@ resource "google_compute_network" "gke" {
 }
 
 resource "google_compute_subnetwork" "gke" {
-  name          = var.cluster_name
-  network       = google_compute_network.gke.self_link
-  ip_cidr_range = "10.2.0.0/16"
+  name                     = var.cluster_name
+  network                  = google_compute_network.gke.self_link
+  ip_cidr_range            = var.node_cidr
+  private_ip_google_access = true
 }
-
 
 resource "google_compute_global_address" "mysql" {
   name          = "${var.cluster_name}-mysql"
@@ -122,6 +122,12 @@ resource "google_container_cluster" "cluster" {
   subnetwork      = google_compute_subnetwork.gke.self_link
   networking_mode = "VPC_NATIVE"
   ip_allocation_policy {}
+
+  private_cluster_config {
+    enable_private_nodes    = true
+    enable_private_endpoint = false
+    master_ipv4_cidr_block  = var.master_cidr
+  }
 
   dynamic "master_authorized_networks_config" {
     for_each = toset([0])
