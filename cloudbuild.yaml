@@ -37,8 +37,6 @@ options:
   - REGION=us-east1
   - ZONE_1=us-east1-b
   - ZONE_2=us-east1-c
-  - PROXY_HOST=kubectl-proxy
-  - PROXY_PORT=8080
 
 steps:
 # prepare GCS backend for Terraform
@@ -92,11 +90,15 @@ steps:
   name: gcr.io/cloud-builders/docker
   entrypoint: sh
   dir: shared
+  env:
+  - proxy_host=kubectl-proxy
+  - proxy_port=8080
   args:
   - -c
   - export $(xargs < .env) &&
-    docker run -d --net cloudbuild --name "$${PROXY_HOST}" gcr.io/cloud-builders/gcloud compute start-iap-tunnel
-      "${bastion_instance}" 1080 --local-host-port "0.0.0.0:$${PROXY_PORT}" --zone "${bastion_zone}" &&
+    docker run -d --net cloudbuild --name "${proxy_host}" gcr.io/cloud-builders/gcloud compute start-iap-tunnel
+      "${bastion_instance}" 1080 --local-host-port "0.0.0.0:${proxy_port}" --zone "${bastion_zone}" &&
+    echo "https_proxy=socks5://${proxy_host}:${proxy_port}" >> .env &&
     sleep 5
 
 # set up Config Connector and other shared GKE resources
