@@ -20,6 +20,7 @@ apiVersion: networking.gke.io/v1beta1
 kind: FrontendConfig
 metadata:
   name: ${FRONTEND_CONFIG}
+  namespace: ${NAMESPACE}
 spec:
   redirectToHttps:
     enabled: true
