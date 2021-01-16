@@ -94,7 +94,7 @@ steps:
   args:
   - -c
   - export $(xargs < .env) &&
-    docker run --net cloudbuild --name "${KUBECTL_PROXY}" gcr.io/cloud-builders/gcloud compute \
+    docker run --net cloudbuild --name "${KUBECTL_PROXY}" gcr.io/cloud-builders/gcloud compute
       start-iap-tunnel "${bastion_instance}" 1080 --local-host-port 0.0.0.0:8080 --zone "${bastion_zone}" &&
     sleep 5
 
