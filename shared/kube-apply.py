@@ -18,7 +18,7 @@ for name in sys.argv[1:]:
                 'Undefined variable(s) in {}: {}'.format(name, undefined)
             )
         subprocess.run(
-            ['kubectl', 'apply', '-f', '-'],
+            ['kubectl', 'apply', '--request-timeout=1m', '-f', '-'],
             input=template.encode(),
             stdout=sys.stdout,
             stderr=sys.stderr,
