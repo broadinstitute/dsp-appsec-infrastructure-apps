@@ -14,9 +14,8 @@ for name in sys.argv[1:]:
                 'Undefined variable(s) in {}: {}'.format(name, undefined)
             )
 
-        proxy_host = os.environ["PROXY_HOST"]
-        proxy_port = os.environ["PROXY_PORT"]
-        https_proxy = f"socks5://{proxy_host}:{proxy_port}"
+        https_proxy = "socks5://" + \
+            os.environ["PROXY_HOST"] + ":" + os.environ["PROXY_PORT"]
         env = dict(os.environ, https_proxy=https_proxy)
 
         subprocess.run(
