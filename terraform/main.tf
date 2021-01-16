@@ -38,11 +38,11 @@ resource "google_compute_network" "gke" {
 }
 
 resource "google_compute_subnetwork" "gke" {
-  name          = var.cluster_name
-  network       = google_compute_network.gke.self_link
-  ip_cidr_range = "10.2.0.0/16"
+  name                     = var.cluster_name
+  network                  = google_compute_network.gke.self_link
+  ip_cidr_range            = var.node_cidr
+  private_ip_google_access = true
 }
-
 
 resource "google_compute_global_address" "mysql" {
   name          = "${var.cluster_name}-mysql"
@@ -74,6 +74,23 @@ resource "google_service_networking_connection" "sql" {
   ]
 }
 
+resource "google_compute_router" "gke" {
+  name    = var.cluster_name
+  network = google_compute_network.gke.id
+}
+
+resource "google_compute_router_nat" "gke" {
+  name                               = var.cluster_name
+  router                             = google_compute_router.gke.name
+  nat_ip_allocate_option             = "AUTO_ONLY"
+  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+
+  log_config {
+    enable = true
+    filter = "ALL"
+  }
+}
+
 ### GKE cluster node Service Account
 
 module "node_sa" {
@@ -89,6 +106,14 @@ module "node_sa" {
 
 resource "google_service_account_iam_member" "node_sa_cloudbuild" {
   service_account_id = module.node_sa.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = local.cloudbuild_sa
+}
+
+data "google_compute_default_service_account" "default" {}
+
+resource "google_service_account_iam_member" "compute_sa_cloudbuild" {
+  service_account_id = data.google_compute_default_service_account.default.name
   role               = "roles/iam.serviceAccountUser"
   member             = local.cloudbuild_sa
 }
@@ -122,6 +147,12 @@ resource "google_container_cluster" "cluster" {
   subnetwork      = google_compute_subnetwork.gke.self_link
   networking_mode = "VPC_NATIVE"
   ip_allocation_policy {}
+
+  private_cluster_config {
+    enable_private_nodes    = true
+    enable_private_endpoint = false
+    master_ipv4_cidr_block  = var.master_cidr
+  }
 
   dynamic "master_authorized_networks_config" {
     for_each = toset([0])
@@ -165,6 +196,7 @@ resource "google_container_cluster" "cluster" {
 
   depends_on = [
     google_service_account_iam_member.node_sa_cloudbuild,
+    google_service_account_iam_member.compute_sa_cloudbuild,
   ]
 }
 
@@ -286,6 +318,7 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
     "iam.serviceAccounts.delete",
     "iam.serviceAccounts.getIamPolicy",
     "iam.serviceAccounts.setIamPolicy",
+    "monitoring.metricDescriptors.list",
     "monitoring.timeSeries.create",
     "pubsub.topics.get",
     "pubsub.topics.create",
