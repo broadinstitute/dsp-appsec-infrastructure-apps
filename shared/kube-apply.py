@@ -13,10 +13,17 @@ for name in sys.argv[1:]:
             raise Exception(
                 'Undefined variable(s) in {}: {}'.format(name, undefined)
             )
+
+        proxy_host = os.environ["KUBECTL_PROXY_HOST"]
+        proxy_port = os.environ["KUBECTL_PROXY_PORT"]
+        https_proxy = f"socks5://{proxy_host}:{proxy_port}"
+        env = dict(os.environ, https_proxy=https_proxy)
+
         subprocess.run(
             ['kubectl', 'apply', '-f', '-'],
-            env=dict(os.environ, HTTPS_PROXY=os.environ["KUBECTL_PROXY"]),
             input=template.encode(),
             stdout=sys.stdout,
             stderr=sys.stderr,
-        ).check_returncode()
+            env=env,
+            check=True,
+        )
