@@ -15,6 +15,7 @@ for name in sys.argv[1:]:
             )
         subprocess.run(
             ['kubectl', 'apply', '-f', '-'],
+            env=dict(os.environ, HTTPS_PROXY=os.environ["KUBECTL_PROXY"]),
             input=template.encode(),
             stdout=sys.stdout,
             stderr=sys.stderr,

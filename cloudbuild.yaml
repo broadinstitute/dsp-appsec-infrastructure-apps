@@ -37,6 +37,7 @@ options:
   - REGION=us-east1
   - ZONE_1=us-east1-b
   - ZONE_2=us-east1-c
+  - KUBECTL_PROXY=kubectl-proxy
 
 steps:
 # prepare GCS backend for Terraform
@@ -84,6 +85,17 @@ steps:
       -var "bastion_image=$${BASTION_IMAGE}" &&
     terraform apply plan.out &&
     terraform output | tr -d " " > ../shared/.env
+
+# set up proxy for GKE master
+- id: kubectl-proxy
+  name: gcr.io/cloud-builders/docker
+  entrypoint: sh
+  args:
+  - -c
+  - export $(xargs < .env) &&
+    docker run -d --net cloudbuild --name "${KUBECTL_PROXY}" gcr.io/cloud-builders/gcloud compute \
+      start-iap-tunnel "${bastion_instance}" 1080 --local-host-port 0.0.0.0:8080 --zone "${bastion_zone}" &&
+    sleep 5
 
 # set up Config Connector and other shared GKE resources
 - id: shared
