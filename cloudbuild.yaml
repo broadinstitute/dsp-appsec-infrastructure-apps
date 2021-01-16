@@ -90,7 +90,7 @@ steps:
 - id: kubectl-proxy
   name: gcr.io/cloud-builders/docker
   entrypoint: sh
-  dir: terraform
+  dir: shared
   args:
   - -c
   - export $(xargs < .env) &&
