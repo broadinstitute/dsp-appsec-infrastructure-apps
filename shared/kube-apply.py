@@ -14,8 +14,8 @@ for name in sys.argv[1:]:
                 'Undefined variable(s) in {}: {}'.format(name, undefined)
             )
 
-        proxy_host = os.environ["KUBECTL_PROXY_HOST"]
-        proxy_port = os.environ["KUBECTL_PROXY_PORT"]
+        proxy_host = os.environ["PROXY_HOST"]
+        proxy_port = os.environ["PROXY_PORT"]
         https_proxy = f"socks5://{proxy_host}:{proxy_port}"
         env = dict(os.environ, https_proxy=https_proxy)
 
