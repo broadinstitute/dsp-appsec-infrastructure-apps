@@ -46,6 +46,7 @@ export DNS_HOSTNAME="${NAMESPACE}.${DNS_DOMAIN}"
 
 export INGRESS="${SERVICE}"
 export MANAGED_CERT="${SERVICE}"
+export FRONTEND_CONFIG="${SERVICE}"
 export BACKEND_CONFIG="${SERVICE}"
 export HTTP_PORT="http"
 export BOLT_PORT="bolt"
