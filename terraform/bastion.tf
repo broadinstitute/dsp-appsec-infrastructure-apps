@@ -79,6 +79,12 @@ module "bastion_host_sa" {
   ]
 }
 
+resource "google_service_account_iam_member" "bastion_host_sa_cloudbuild" {
+  service_account_id = module.bastion_host_sa.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = local.cloudbuild_sa
+}
+
 resource "google_service_account" "bastion_client" {
   account_id   = "${local.bastion_name}-client"
   display_name = "Bastion client for ${var.cluster_name} cluster"
