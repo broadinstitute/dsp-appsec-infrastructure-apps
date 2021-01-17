@@ -236,12 +236,12 @@ steps:
       --destination=$${SDARQ_BACKEND_IMAGE}
       --cache
 
-# # deploy SDARQ to GKE cluster
-# - id: sdarq
-#   name: *kubectl
-#   waitFor: ['shared', 'sdarq-frontend-image', 'sdarq-backend-image']
-#   entrypoint: ./deploy.sh
-#   dir: sdarq
+# deploy SDARQ to GKE cluster
+- id: sdarq
+  name: *kubectl
+  waitFor: ['shared', 'sdarq-frontend-image', 'sdarq-backend-image']
+  entrypoint: ./deploy.sh
+  dir: sdarq
 
 # build Cartography Docker image
 - id: cartography-image
