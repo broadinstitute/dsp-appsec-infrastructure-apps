@@ -216,21 +216,21 @@ steps:
 
 ### Services
 
-# set up proxy for GKE master
-- id: kubectl-proxy
-  name: gcr.io/cloud-builders/docker
-  entrypoint: sh
-  dir: shared
-  env:
-  - proxy_host=kubectl-proxy
-  - proxy_port=8080
-  args:
-  - -c
-  - export $(xargs < .env) &&
-    docker run -d --net cloudbuild --name "${proxy_host}" gcr.io/cloud-builders/gcloud compute start-iap-tunnel
-      "${bastion_instance}" "$${BASTION_PORT}" --local-host-port "0.0.0.0:${proxy_port}" --zone "${bastion_zone}" &&
-    echo "https_proxy=socks5://${proxy_host}:${proxy_port}" >> .env &&
-    sleep 5
+# # set up proxy for GKE master
+# - id: kubectl-proxy
+#   name: gcr.io/cloud-builders/docker
+#   entrypoint: sh
+#   dir: shared
+#   env:
+#   - proxy_host=kubectl-proxy
+#   - proxy_port=8080
+#   args:
+#   - -c
+#   - export $(xargs < .env) &&
+#     docker run -d --net cloudbuild --name "${proxy_host}" gcr.io/cloud-builders/gcloud compute start-iap-tunnel
+#       "${bastion_instance}" "$${BASTION_PORT}" --local-host-port "0.0.0.0:${proxy_port}" --zone "${bastion_zone}" &&
+#     echo "https_proxy=socks5://${proxy_host}:${proxy_port}" >> .env &&
+#     sleep 5
 
 # set up Config Connector and other shared GKE resources
 - id: shared

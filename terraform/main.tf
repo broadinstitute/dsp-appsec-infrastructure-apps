@@ -26,8 +26,13 @@ resource "google_project_service" "servicenetworking" {
 
 data "google_project" "project" {}
 
+data "http" "cloudbuild-ip" {
+  url = "https://ipinfo.io/ip"
+}
+
 locals {
-  cloudbuild_sa = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
+  cloudbuild_sa   = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
+  cloudbuild_cidr = "${data.http.cloudbuild-ip.body}/32"
 }
 
 ### VPC
@@ -78,10 +83,6 @@ resource "google_service_networking_connection" "sql" {
 
 resource "google_compute_address" "nat" {
   name = var.cluster_name
-}
-
-locals {
-  nat_cidr = "${google_compute_address.nat.address}/32"
 }
 
 resource "google_compute_router" "gke" {
@@ -171,7 +172,7 @@ resource "google_container_cluster" "cluster" {
       dynamic "cidr_blocks" {
         for_each = toset(concat(
           var.master_autorized_networks,
-          [local.nat_cidr],
+          [local.cloudbuild_cidr],
         ))
         content {
           cidr_block = cidr_blocks.value
@@ -382,5 +383,5 @@ output "sql_network" {
 }
 
 output "nat_cidr" {
-  value = local.nat_cidr
+  value = "${google_compute_address.nat.address}/32"
 }
