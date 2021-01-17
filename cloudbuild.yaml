@@ -11,7 +11,6 @@ options:
   - BATCH_DISPATCHER_IMAGE=us.gcr.io/${PROJECT_ID}/batch-dispatcher:${SHORT_SHA}
   - BASTION_IMAGE=us.gcr.io/${PROJECT_ID}/bastion
   - BASTION_PORT=1080
-  - CLOUDSQL_PROXY_IMAGE=gcr.io/cloudsql-docker/gce-proxy # us.gcr.io/${PROJECT_ID}/cloudsql-proxy:workaround
   - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis
   - SOURCECLEAR_IMAGE=us.gcr.io/${PROJECT_ID}/sourceclear
   - CODEDX_ANALYSIS_IMAGE=us.gcr.io/${PROJECT_ID}/codedx-analysis:${SHORT_SHA}
@@ -70,19 +69,6 @@ steps:
       --context=dir:///workspace/batch
       --destination=$${BATCH_DISPATCHER_IMAGE}
       --cache
-
-# # workaround for instance metadata endpoint in CloudSQL proxy
-# -
-#  id: cloudsql-proxy
-#   name: *kaniko
-#   waitFor: ['kaniko']
-#   entrypoint: sh
-#   args:
-#   - -c
-#   - executor
-#       --context=dir:///workspace/cloudsql-proxy
-#       --destination=$${CLOUDSQL_PROXY_IMAGE}
-#       --cache
 
 # build Cartography Docker image
 - id: cartography-image
@@ -216,22 +202,6 @@ steps:
     terraform output | tr -d " " > ../shared/.env
 
 ### Services
-
-# # set up proxy for GKE master
-# - id: kubectl-proxy
-#   name: gcr.io/cloud-builders/docker
-#   entrypoint: sh
-#   dir: shared
-#   env:
-#   - proxy_host=kubectl-proxy
-#   - proxy_port=8080
-#   args:
-#   - -c
-#   - export $(xargs < .env) &&
-#     docker run -d --net cloudbuild --name "${proxy_host}" gcr.io/cloud-builders/gcloud compute start-iap-tunnel
-#       "${bastion_instance}" "$${BASTION_PORT}" --local-host-port "0.0.0.0:${proxy_port}" --zone "${bastion_zone}" &&
-#     echo "https_proxy=socks5://${proxy_host}:${proxy_port}" >> .env &&
-#     sleep 5
 
 # set up Config Connector and other shared GKE resources
 - id: shared
