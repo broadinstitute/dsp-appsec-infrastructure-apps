@@ -103,6 +103,10 @@ resource "google_compute_router_nat" "gke" {
   }
 }
 
+locals {
+  nat_cidr = "${google_compute_address.nat.address}/32"
+}
+
 ### GKE cluster node Service Account
 
 module "node_sa" {
@@ -172,7 +176,7 @@ resource "google_container_cluster" "cluster" {
       dynamic "cidr_blocks" {
         for_each = toset(concat(
           var.master_autorized_networks,
-          [local.cloudbuild_cidr],
+          [local.cloudbuild_cidr, local.nat_cidr],
         ))
         content {
           cidr_block = cidr_blocks.value
@@ -383,5 +387,5 @@ output "sql_network" {
 }
 
 output "nat_cidr" {
-  value = "${google_compute_address.nat.address}/32"
+  value = local.nat_cidr
 }
