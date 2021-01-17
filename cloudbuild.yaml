@@ -119,12 +119,12 @@ steps:
       --destination=$${CLOUDSQL_PROXY_IMAGE}
       --cache
 
-# deploy Burp Enterprise to GKE cluster
-- id: burp-enterprise
-  name: *kubectl
-  waitFor: ['shared']
-  entrypoint: ./deploy.sh
-  dir: burp-enterprise
+# # deploy Burp Enterprise to GKE cluster
+# - id: burp-enterprise
+#   name: *kubectl
+#   waitFor: ['shared']
+#   entrypoint: ./deploy.sh
+#   dir: burp-enterprise
 
 # build Batch dispatcher image
 - id: batch-dispatcher-image
@@ -150,14 +150,14 @@ steps:
       --destination=$${CIS_IMAGE}
       --cache
 
-# deploy CIS scanner resources
-- id: cis
-  name: *kubectl
-  waitFor: ['shared', 'batch-dispatcher-image', 'cis-image']
-  entrypoint: ./deploy.sh
-  dir: cis
-  env:
-  - GCP_SERVICE_ACCOUNT_EMAIL=${_ORG_VIEWER_SA_EMAIL}
+# # deploy CIS scanner resources
+# - id: cis
+#   name: *kubectl
+#   waitFor: ['shared', 'batch-dispatcher-image', 'cis-image']
+#   entrypoint: ./deploy.sh
+#   dir: cis
+#   env:
+#   - GCP_SERVICE_ACCOUNT_EMAIL=${_ORG_VIEWER_SA_EMAIL}
 
 # build patched DefectDojo Django image,
 # using Kaniko to speed up builds
@@ -205,12 +205,12 @@ steps:
       --destination=$${CODEDX_IMAGE}
       --cache
 
-# deploy CodeDx to GKE cluster
-- id: codedx
-  name: *kubectl
-  waitFor: ['shared', 'cloudsql-proxy', 'codedx-image']
-  entrypoint: ./deploy.sh
-  dir: codedx
+# # deploy CodeDx to GKE cluster
+# - id: codedx
+#   name: *kubectl
+#   waitFor: ['shared', 'cloudsql-proxy', 'codedx-image']
+#   entrypoint: ./deploy.sh
+#   dir: codedx
 
 # build SDARQ frontend Docker image
 - id: sdarq-frontend-image
@@ -236,12 +236,12 @@ steps:
       --destination=$${SDARQ_BACKEND_IMAGE}
       --cache
 
-# deploy SDARQ to GKE cluster
-- id: sdarq
-  name: *kubectl
-  waitFor: ['shared', 'sdarq-frontend-image', 'sdarq-backend-image']
-  entrypoint: ./deploy.sh
-  dir: sdarq
+# # deploy SDARQ to GKE cluster
+# - id: sdarq
+#   name: *kubectl
+#   waitFor: ['shared', 'sdarq-frontend-image', 'sdarq-backend-image']
+#   entrypoint: ./deploy.sh
+#   dir: sdarq
 
 # build Cartography Docker image
 - id: cartography-image
@@ -255,14 +255,14 @@ steps:
       --destination=$${CARTOGRAPHY_IMAGE}
       --cache
 
-# deploy SecExplorer to GKE cluster
-- id: secexplorer
-  name: *kubectl
-  waitFor: ['shared', 'cartography-image']
-  entrypoint: ./deploy.sh
-  dir: secexplorer
-  env:
-  - GCP_SERVICE_ACCOUNT_EMAIL=${_ORG_VIEWER_SA_EMAIL}
+# # deploy SecExplorer to GKE cluster
+# - id: secexplorer
+#   name: *kubectl
+#   waitFor: ['shared', 'cartography-image']
+#   entrypoint: ./deploy.sh
+#   dir: secexplorer
+#   env:
+#   - GCP_SERVICE_ACCOUNT_EMAIL=${_ORG_VIEWER_SA_EMAIL}
 
 # deploy Zap to GKE cluster
 - id: zap
