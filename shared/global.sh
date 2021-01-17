@@ -6,7 +6,7 @@ set -euo pipefail
 export $(xargs < .env)
 
 # get cluster credentials
-https_proxy= gcloud container clusters get-credentials --region "${region}" "${cluster}"
+https_proxy='' gcloud container clusters get-credentials --region "${region}" "${cluster}"
 
 # deploy global resources using Config Connector
 export NAMESPACE="${GLOBAL_NAMESPACE}"
