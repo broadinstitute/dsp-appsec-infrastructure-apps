@@ -84,6 +84,18 @@ steps:
 #       --destination=$${CLOUDSQL_PROXY_IMAGE}
 #       --cache
 
+# build Cartography Docker image
+- id: cartography-image
+  name: *kaniko
+  waitFor: ['kaniko']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/secexplorer
+      --destination=$${CARTOGRAPHY_IMAGE}
+      --cache
+
 # build CIS Docker image
 - id: cis-image
   name: *kaniko
@@ -159,18 +171,6 @@ steps:
       --destination=$${SDARQ_BACKEND_IMAGE}
       --cache
 
-# build Cartography Docker image
-- id: cartography-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/secexplorer
-      --destination=$${CARTOGRAPHY_IMAGE}
-      --cache
-
 # build codedx analysis Docker image
 - id: codedx-analysis-image
   name: *kaniko
@@ -188,6 +188,7 @@ steps:
 # prepare GCS backend for Terraform
 - id: terraform-bucket
   name: gcr.io/cloud-builders/gsutil
+  waitFor: ['-']
   entrypoint: sh
   args:
   - -c
@@ -247,6 +248,7 @@ steps:
 # deploy CIS scanner resources
 - id: cis
   name: *kubectl
+  waitFor: ['shared', 'batch-dispatcher-image', 'cis-image']
   entrypoint: ./deploy.sh
   dir: cis
   env:
@@ -255,38 +257,44 @@ steps:
 # deploy CodeDx to GKE cluster
 - id: codedx
   name: *kubectl
+  waitFor: ['shared', 'codedx-image']
   entrypoint: ./deploy.sh
   dir: codedx
 
 # deploy DefectDojo to GKE cluster
 - id: defectdojo
   name: *kubectl
+  waitFor: ['shared', 'defectdojo-django-image', 'defectdojo-nginx-image']
   entrypoint: ./deploy.sh
   dir: defectdojo
 
 # deploy SDARQ to GKE cluster
 - id: sdarq
   name: *kubectl
+  waitFor: ['shared', 'sdarq-backend-image', 'sdarq-frontend-image']
   entrypoint: ./deploy.sh
   dir: sdarq
 
 # deploy SecExplorer to GKE cluster
 - id: secexplorer
   name: *kubectl
+  waitFor: ['shared', 'cartography-image']
   entrypoint: ./deploy.sh
   dir: secexplorer
   env:
   - GCP_SERVICE_ACCOUNT_EMAIL=${_ORG_VIEWER_SA_EMAIL}
 
 # deploy codedx analysis to GKE cluster
-- id: codedx-analysis-deployment
+- id: codedx-analysis
   name: *kubectl
+  waitFor: ['shared', 'codedx-analysis-image']
   entrypoint: ./deploy.sh
   dir: codedx-analysis
 
 # deploy Zap to GKE cluster
 - id: zap
   name: *kubectl
+  waitFor: ['shared', 'batch-dispatcher-image']
   entrypoint: ./deploy.sh
   dir: zap
 
