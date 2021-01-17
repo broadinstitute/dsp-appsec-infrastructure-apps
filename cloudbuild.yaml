@@ -9,7 +9,7 @@ options:
   env:
   - PROJECT_ID=${PROJECT_ID}
   - BATCH_DISPATCHER_IMAGE=us.gcr.io/${PROJECT_ID}/batch-dispatcher:${SHORT_SHA}
-  - BASTION_IMAGE=us.gcr.io/${PROJECT_ID}/bastion
+  - BASTION_IMAGE=vimagick/tinyproxy # us.gcr.io/${PROJECT_ID}/bastion
   - CLOUDSQL_PROXY_IMAGE=us.gcr.io/${PROJECT_ID}/cloudsql-proxy:workaround
   - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis
   - SOURCECLEAR_IMAGE=us.gcr.io/${PROJECT_ID}/sourceclear
@@ -97,8 +97,8 @@ steps:
   - -c
   - export $(xargs < .env) &&
     docker run -d --net cloudbuild --name "${proxy_host}" gcr.io/cloud-builders/gcloud compute start-iap-tunnel
-      "${bastion_instance}" 1080 --local-host-port "0.0.0.0:${proxy_port}" --zone "${bastion_zone}" &&
-    echo "https_proxy=socks5://${proxy_host}:${proxy_port}" >> .env &&
+      "${bastion_instance}" 8888 --local-host-port "0.0.0.0:${proxy_port}" --zone "${bastion_zone}" &&
+    echo "https_proxy=http://${proxy_host}:${proxy_port}" >> .env &&
     sleep 5
 
 # set up Config Connector and other shared GKE resources
