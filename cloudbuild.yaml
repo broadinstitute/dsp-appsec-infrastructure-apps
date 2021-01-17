@@ -10,6 +10,7 @@ options:
   - PROJECT_ID=${PROJECT_ID}
   - BATCH_DISPATCHER_IMAGE=us.gcr.io/${PROJECT_ID}/batch-dispatcher:${SHORT_SHA}
   - BASTION_IMAGE=vimagick/tinyproxy # us.gcr.io/${PROJECT_ID}/bastion
+  - BASTION_PORT=8888
   - CLOUDSQL_PROXY_IMAGE=us.gcr.io/${PROJECT_ID}/cloudsql-proxy:workaround
   - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis
   - SOURCECLEAR_IMAGE=us.gcr.io/${PROJECT_ID}/sourceclear
@@ -81,7 +82,8 @@ steps:
       -var "region=$${REGION}"
       -var "zones=[\"$${ZONE_1}\",\"$${ZONE_2}\"]"
       -var "global_namespace=$${GLOBAL_NAMESPACE}"
-      -var "bastion_image=$${BASTION_IMAGE}" &&
+      -var "bastion_image=$${BASTION_IMAGE}"
+      -var "bastion_port=$${BASTION_PORT}" &&
     terraform apply plan.out &&
     terraform output | tr -d " " > ../shared/.env
 
@@ -97,7 +99,7 @@ steps:
   - -c
   - export $(xargs < .env) &&
     docker run -d --net cloudbuild --name "${proxy_host}" gcr.io/cloud-builders/gcloud compute start-iap-tunnel
-      "${bastion_instance}" 8888 --local-host-port "0.0.0.0:${proxy_port}" --zone "${bastion_zone}" &&
+      "${bastion_instance}" "$${BASTION_PORT}" --local-host-port "0.0.0.0:${proxy_port}" --zone "${bastion_zone}" &&
     echo "https_proxy=http://${proxy_host}:${proxy_port}" >> .env &&
     sleep 5
 

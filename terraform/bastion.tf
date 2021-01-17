@@ -52,6 +52,10 @@ resource "google_compute_instance" "bastion" {
   }
 
   tags = local.bastion_tags
+
+  depends_on = [
+    google_service_account_iam_member.bastion_host_sa_cloudbuild,
+  ]
 }
 
 resource "google_compute_firewall" "bastion" {
@@ -66,7 +70,7 @@ resource "google_compute_firewall" "bastion" {
 
   allow {
     protocol = "tcp"
-    ports    = ["1080", "8888", "22"]
+    ports    = ["1080", var.bastion_port, "22"]
   }
 }
 
