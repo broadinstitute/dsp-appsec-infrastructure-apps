@@ -255,14 +255,14 @@ steps:
       --destination=$${CARTOGRAPHY_IMAGE}
       --cache
 
-# # deploy SecExplorer to GKE cluster
-# - id: secexplorer
-#   name: *kubectl
-#   waitFor: ['shared', 'cartography-image']
-#   entrypoint: ./deploy.sh
-#   dir: secexplorer
-#   env:
-#   - GCP_SERVICE_ACCOUNT_EMAIL=${_ORG_VIEWER_SA_EMAIL}
+# deploy SecExplorer to GKE cluster
+- id: secexplorer
+  name: *kubectl
+  waitFor: ['shared', 'cartography-image']
+  entrypoint: ./deploy.sh
+  dir: secexplorer
+  env:
+  - GCP_SERVICE_ACCOUNT_EMAIL=${_ORG_VIEWER_SA_EMAIL}
 
 # deploy Zap to GKE cluster
 - id: zap
