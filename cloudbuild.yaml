@@ -48,6 +48,18 @@ steps:
   waitFor: ['-']
   entrypoint: 'true'
 
+# build bastion proxy Docker image
+- id: bastion-image
+  name: *kaniko
+  waitFor: ['kaniko']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/bastion
+      --destination=$${BASTION_IMAGE}
+      --cache
+
 # build Batch dispatcher image
 - id: batch-dispatcher-image
   name: *kaniko
@@ -183,18 +195,6 @@ steps:
   - gsutil mb "gs://$${TERRAFORM_BUCKET}" ;
     gsutil versioning set on "gs://$${TERRAFORM_BUCKET}"
 
-# build bastion proxy Docker image
-- id: bastion-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/bastion
-      --destination=$${BASTION_IMAGE}
-      --cache
-
 # deploy GKE cluster and associated GCP resources
 - id: terraform
   name: hashicorp/terraform
@@ -230,7 +230,7 @@ steps:
   - export $(xargs < .env) &&
     docker run -d --net cloudbuild --name "${proxy_host}" gcr.io/cloud-builders/gcloud compute start-iap-tunnel
       "${bastion_instance}" "$${BASTION_PORT}" --local-host-port "0.0.0.0:${proxy_port}" --zone "${bastion_zone}" &&
-    echo "https_proxy=http://${proxy_host}:${proxy_port}" >> .env &&
+    echo "https_proxy=socks5://${proxy_host}:${proxy_port}" >> .env &&
     sleep 5
 
 # set up Config Connector and other shared GKE resources
