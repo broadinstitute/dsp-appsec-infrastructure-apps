@@ -26,8 +26,13 @@ resource "google_project_service" "servicenetworking" {
 
 data "google_project" "project" {}
 
+data "http" "cloudbuild-ip" {
+  url = "https://ipinfo.io/ip"
+}
+
 locals {
-  cloudbuild_sa = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
+  cloudbuild_sa   = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
+  cloudbuild_cidr = "${data.http.cloudbuild-ip.body}/32"
 }
 
 ### VPC
@@ -74,6 +79,12 @@ resource "google_service_networking_connection" "sql" {
   ]
 }
 
+### NAT
+
+resource "google_compute_address" "nat" {
+  name = var.cluster_name
+}
+
 resource "google_compute_router" "gke" {
   name    = var.cluster_name
   network = google_compute_network.gke.id
@@ -82,13 +93,18 @@ resource "google_compute_router" "gke" {
 resource "google_compute_router_nat" "gke" {
   name                               = var.cluster_name
   router                             = google_compute_router.gke.name
-  nat_ip_allocate_option             = "AUTO_ONLY"
+  nat_ips                            = [google_compute_address.nat.self_link]
+  nat_ip_allocate_option             = "MANUAL_ONLY"
   source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
 
   log_config {
     enable = true
     filter = "ALL"
   }
+}
+
+locals {
+  nat_cidr = "${google_compute_address.nat.address}/32"
 }
 
 ### GKE cluster node Service Account
@@ -158,7 +174,10 @@ resource "google_container_cluster" "cluster" {
     for_each = toset([0])
     content {
       dynamic "cidr_blocks" {
-        for_each = toset(var.master_autorized_networks)
+        for_each = toset(concat(
+          var.master_autorized_networks,
+          [local.cloudbuild_cidr, local.nat_cidr],
+        ))
         content {
           cidr_block = cidr_blocks.value
         }
@@ -365,4 +384,8 @@ output "cnrm_sa" {
 
 output "sql_network" {
   value = google_service_networking_connection.sql.network
+}
+
+output "nat_cidr" {
+  value = local.nat_cidr
 }

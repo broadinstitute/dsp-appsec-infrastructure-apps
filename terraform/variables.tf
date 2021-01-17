@@ -71,5 +71,10 @@ variable "global_namespace" {
 
 variable "bastion_image" {
   type        = string
-  description = "Docker image name for bastion SOCKS proxy"
+  description = "Docker image name for bastion proxy"
+}
+
+variable "bastion_port" {
+  type        = number
+  description = "Port for bastion proxy"
 }
