@@ -7,7 +7,7 @@ cd ../shared
 export $(xargs < .env)
 
 PROJECT_NUMBER=$(
-    gcloud projects describe "${PROJECT_ID}" --format 'value(projectNumber)'
+    https_proxy='' gcloud projects describe "${PROJECT_ID}" --format 'value(projectNumber)'
 )
 export PROJECT_NUMBER
 
