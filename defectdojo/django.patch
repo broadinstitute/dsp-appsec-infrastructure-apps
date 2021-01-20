@@ -1,7 +1,7 @@
 --- a/entrypoint-initializer.sh
 +++ b/entrypoint-initializer.sh
-@@ -60,4 +60,12 @@ EOD
-   python3 manage.py loaddata initial_surveys
+@@ -109,4 +109,12 @@
+
    python3 manage.py installwatson
    exec python3 manage.py buildwatson
 +else

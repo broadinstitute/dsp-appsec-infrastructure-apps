@@ -53,6 +53,17 @@ variable "master_autorized_networks" {
   description = "Networks allowed to access GKE master"
 }
 
+variable "master_cidr" {
+  type        = string
+  default     = "172.16.0.32/28"
+  description = "CIDR for the cluster master"
+}
+variable "node_cidr" {
+  type        = string
+  default     = "10.2.0.0/16"
+  description = "CIDR for the cluster nodes"
+}
+
 variable "global_namespace" {
   type        = string
   description = "Global namespace for GKE"
@@ -60,5 +71,10 @@ variable "global_namespace" {
 
 variable "bastion_image" {
   type        = string
-  description = "Docker image name for bastion SOCKS proxy"
+  description = "Docker image name for bastion proxy"
+}
+
+variable "bastion_port" {
+  type        = number
+  description = "Port for bastion proxy"
 }
