@@ -20,11 +20,10 @@ export class CisResultsComponent implements OnInit {
   showSpinner: boolean;
   errors: any[];
   showTable: boolean;
-  // items: any[]
 
   headElements = ['Id', 'Level', 'CVSS', 'Title', 'Failures', 'Description', 'Rationale', 'Refs'];
 
-  constructor(private getProjectScan: GetCisScanService, private router: ActivatedRoute, private csvService :CsvDataService) { }
+  constructor(private getProjectScan: GetCisScanService, private router: ActivatedRoute, private csvService: CsvDataService ) { }
 
   ngOnInit() {
     this.showSpinner = true;
@@ -35,7 +34,7 @@ export class CisResultsComponent implements OnInit {
   }
 
   saveAsCSV(projectFindings) {
-      this.csvService.exportToCsv('cis-finding.csv', this.projectFindings);  
+    this.csvService.exportToCsv('cis-finding.csv', this.projectFindings);
   }
 
 
@@ -43,7 +42,7 @@ export class CisResultsComponent implements OnInit {
     this.getProjectScan.getCisScan(this.value).subscribe((data: any) => {
       this.projectFindings = data;
       this.showSpinner = false;
-      this.showTable = true; 
+      this.showTable = true;
     },
       (data) => {
         this.showModal = true;
