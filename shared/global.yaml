@@ -31,7 +31,7 @@ spec:
         - 69.173.64.0/19
         - 69.173.127.192/27
         - 69.173.124.0/23
-        - ${bastion_ip}
+        - ${nat_cidr}
   - action: deny(403)
     priority: 2147483647
     match:

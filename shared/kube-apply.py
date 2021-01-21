@@ -18,4 +18,5 @@ for name in sys.argv[1:]:
             input=template.encode(),
             stdout=sys.stdout,
             stderr=sys.stderr,
-        ).check_returncode()
+            check=True,
+        )

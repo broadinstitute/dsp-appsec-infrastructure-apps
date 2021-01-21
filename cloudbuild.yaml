@@ -10,7 +10,7 @@ options:
   - PROJECT_ID=${PROJECT_ID}
   - BATCH_DISPATCHER_IMAGE=us.gcr.io/${PROJECT_ID}/batch-dispatcher:${SHORT_SHA}
   - BASTION_IMAGE=us.gcr.io/${PROJECT_ID}/bastion
-  - CLOUDSQL_PROXY_IMAGE=us.gcr.io/${PROJECT_ID}/cloudsql-proxy:workaround
+  - BASTION_PORT=1080
   - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis
   - SOURCECLEAR_IMAGE=us.gcr.io/${PROJECT_ID}/sourceclear
   - CODEDX_ANALYSIS_IMAGE=us.gcr.io/${PROJECT_ID}/codedx-analysis:${SHORT_SHA}
@@ -39,19 +39,11 @@ options:
   - ZONE_2=us-east1-c
 
 steps:
-# prepare GCS backend for Terraform
-- id: terraform-bucket
-  name: gcr.io/cloud-builders/gsutil
-  entrypoint: sh
-  args:
-  - -c
-  - gsutil mb "gs://$${TERRAFORM_BUCKET}" ;
-    gsutil versioning set on "gs://$${TERRAFORM_BUCKET}"
+### Docker images
 
 # Pre-pull Kaniko image, used to speed up Docker builds.
 - id: kaniko
   name: &kaniko gcr.io/kaniko-project/executor:debug
-  waitFor: ['-']
   entrypoint: 'true'
 
 # build bastion proxy Docker image
@@ -66,50 +58,6 @@ steps:
       --destination=$${BASTION_IMAGE}
       --cache
 
-# deploy GKE cluster and associated GCP resources
-- id: terraform
-  name: hashicorp/terraform
-  waitFor: ['terraform-bucket', 'bastion-image']
-  entrypoint: sh
-  dir: terraform
-  args:
-  - -c
-  - terraform init
-      -backend-config "bucket=$${TERRAFORM_BUCKET}" &&
-    terraform plan -out=plan.out
-      -var "project=${PROJECT_ID}"
-      -var "region=$${REGION}"
-      -var "zones=[\"$${ZONE_1}\",\"$${ZONE_2}\"]"
-      -var "global_namespace=$${GLOBAL_NAMESPACE}"
-      -var "bastion_image=$${BASTION_IMAGE}" &&
-    terraform apply plan.out &&
-    terraform output | tr -d " " > ../shared/.env
-
-# set up Config Connector and other shared GKE resources
-- id: shared
-  name: &kubectl gcr.io/cloud-builders/kubectl
-  entrypoint: ./global.sh
-  dir: shared
-
-# workaround for instance metadata endpoint in CloudSQL proxy
-- id: cloudsql-proxy
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/cloudsql-proxy
-      --destination=$${CLOUDSQL_PROXY_IMAGE}
-      --cache
-
-# deploy Burp Enterprise to GKE cluster
-- id: burp-enterprise
-  name: *kubectl
-  waitFor: ['shared']
-  entrypoint: ./deploy.sh
-  dir: burp-enterprise
-
 # build Batch dispatcher image
 - id: batch-dispatcher-image
   name: *kaniko
@@ -120,6 +68,18 @@ steps:
   - executor
       --context=dir:///workspace/batch
       --destination=$${BATCH_DISPATCHER_IMAGE}
+      --cache
+
+# build Cartography Docker image
+- id: cartography-image
+  name: *kaniko
+  waitFor: ['kaniko']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/secexplorer
+      --destination=$${CARTOGRAPHY_IMAGE}
       --cache
 
 # build CIS Docker image
@@ -134,14 +94,17 @@ steps:
       --destination=$${CIS_IMAGE}
       --cache
 
-# deploy CIS scanner resources
-- id: cis
-  name: *kubectl
-  waitFor: ['shared', 'batch-dispatcher-image', 'cis-image']
-  entrypoint: ./deploy.sh
-  dir: cis
-  env:
-  - GCP_SERVICE_ACCOUNT_EMAIL=${_ORG_VIEWER_SA_EMAIL}
+# build patched CodeDx image
+- id: codedx-image
+  name: *kaniko
+  waitFor: ['kaniko']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/codedx
+      --destination=$${CODEDX_IMAGE}
+      --cache
 
 # build patched DefectDojo Django image,
 # using Kaniko to speed up builds
@@ -170,32 +133,6 @@ steps:
       --destination=$${DD_NGINX_IMAGE}
       --cache
 
-# deploy DefectDojo to GKE cluster
-- id: defectdojo
-  name: *kubectl
-  waitFor: ['shared', 'cloudsql-proxy', 'defectdojo-django-image', 'defectdojo-nginx-image']
-  entrypoint: ./deploy.sh
-  dir: defectdojo
-
-# build patched CodeDx image
-- id: codedx-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/codedx
-      --destination=$${CODEDX_IMAGE}
-      --cache
-
-# deploy CodeDx to GKE cluster
-- id: codedx
-  name: *kubectl
-  waitFor: ['shared', 'cloudsql-proxy', 'codedx-image']
-  entrypoint: ./deploy.sh
-  dir: codedx
-
 # build SDARQ frontend Docker image
 - id: sdarq-frontend-image
   name: *kaniko
@@ -220,41 +157,6 @@ steps:
       --destination=$${SDARQ_BACKEND_IMAGE}
       --cache
 
-# deploy SDARQ to GKE cluster
-- id: sdarq
-  name: *kubectl
-  waitFor: ['shared', 'sdarq-frontend-image', 'sdarq-backend-image']
-  entrypoint: ./deploy.sh
-  dir: sdarq
-
-# build Cartography Docker image
-- id: cartography-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/secexplorer
-      --destination=$${CARTOGRAPHY_IMAGE}
-      --cache
-
-# deploy SecExplorer to GKE cluster
-- id: secexplorer
-  name: *kubectl
-  waitFor: ['shared', 'cartography-image']
-  entrypoint: ./deploy.sh
-  dir: secexplorer
-  env:
-  - GCP_SERVICE_ACCOUNT_EMAIL=${_ORG_VIEWER_SA_EMAIL}
-
-# deploy Zap to GKE cluster
-- id: zap
-  name: *kubectl
-  waitFor: ['shared', 'batch-dispatcher-image']
-  entrypoint: ./deploy.sh
-  dir: zap
-
 # build codedx analysis Docker image
 - id: codedx-analysis-image
   name: *kaniko
@@ -267,11 +169,103 @@ steps:
       --destination=$${CODEDX_ANALYSIS_IMAGE}
       --cache
 
+### Terraform
+
+# prepare GCS backend for Terraform
+- id: terraform-bucket
+  name: gcr.io/cloud-builders/gsutil
+  waitFor: ['-']
+  entrypoint: sh
+  args:
+  - -c
+  - gsutil mb "gs://$${TERRAFORM_BUCKET}" ;
+    gsutil versioning set on "gs://$${TERRAFORM_BUCKET}"
+
+# deploy GKE cluster and associated GCP resources
+- id: terraform
+  name: hashicorp/terraform
+  waitFor: ['terraform-bucket', 'bastion-image']
+  entrypoint: sh
+  dir: terraform
+  args:
+  - -c
+  - terraform init
+      -backend-config "bucket=$${TERRAFORM_BUCKET}" &&
+    terraform plan -out=plan.out
+      -var "project=${PROJECT_ID}"
+      -var "region=$${REGION}"
+      -var "zones=[\"$${ZONE_1}\",\"$${ZONE_2}\"]"
+      -var "global_namespace=$${GLOBAL_NAMESPACE}"
+      -var "bastion_image=$${BASTION_IMAGE}"
+      -var "bastion_port=$${BASTION_PORT}" &&
+    terraform apply plan.out &&
+    terraform output | tr -d " " > ../shared/.env
+
+### Services
+
+# set up Config Connector and other shared GKE resources
+- id: shared
+  name: &kubectl gcr.io/cloud-builders/kubectl
+  entrypoint: ./global.sh
+  dir: shared
+
+# deploy Burp Enterprise to GKE cluster
+- id: burp-enterprise
+  name: *kubectl
+  entrypoint: ./deploy.sh
+  dir: burp-enterprise
+
+# deploy CIS scanner resources
+- id: cis
+  name: *kubectl
+  waitFor: ['shared', 'batch-dispatcher-image', 'cis-image']
+  entrypoint: ./deploy.sh
+  dir: cis
+  env:
+  - GCP_SERVICE_ACCOUNT_EMAIL=${_ORG_VIEWER_SA_EMAIL}
+
+# deploy CodeDx to GKE cluster
+- id: codedx
+  name: *kubectl
+  waitFor: ['shared', 'codedx-image']
+  entrypoint: ./deploy.sh
+  dir: codedx
+
+# deploy DefectDojo to GKE cluster
+- id: defectdojo
+  name: *kubectl
+  waitFor: ['shared', 'defectdojo-django-image', 'defectdojo-nginx-image']
+  entrypoint: ./deploy.sh
+  dir: defectdojo
+
+# deploy SDARQ to GKE cluster
+- id: sdarq
+  name: *kubectl
+  waitFor: ['shared', 'sdarq-backend-image', 'sdarq-frontend-image']
+  entrypoint: ./deploy.sh
+  dir: sdarq
+
+# deploy SecExplorer to GKE cluster
+- id: secexplorer
+  name: *kubectl
+  waitFor: ['shared', 'cartography-image']
+  entrypoint: ./deploy.sh
+  dir: secexplorer
+  env:
+  - GCP_SERVICE_ACCOUNT_EMAIL=${_ORG_VIEWER_SA_EMAIL}
+
 # deploy codedx analysis to GKE cluster
-- id: codedx-analysis-deployment
+- id: codedx-analysis
   name: *kubectl
   waitFor: ['shared', 'codedx-analysis-image']
   entrypoint: ./deploy.sh
   dir: codedx-analysis
+
+# deploy Zap to GKE cluster
+- id: zap
+  name: *kubectl
+  waitFor: ['shared', 'batch-dispatcher-image']
+  entrypoint: ./deploy.sh
+  dir: zap
 
 timeout: 7200s

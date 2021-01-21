@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GetCisScanService } from '../services/get-cis-scan.service';
 import { ActivatedRoute } from '@angular/router';
+import { CsvDataService } from '../services/csv-data.service'
 
 @Component({
   selector: 'app-cis-results',
@@ -22,7 +23,7 @@ export class CisResultsComponent implements OnInit {
 
   headElements = ['Id', 'Level', 'CVSS', 'Title', 'Failures', 'Description', 'Rationale', 'Refs'];
 
-  constructor(private getProjectScan: GetCisScanService, private router: ActivatedRoute) { }
+  constructor(private getProjectScan: GetCisScanService, private router: ActivatedRoute, private csvService: CsvDataService ) { }
 
   ngOnInit() {
     this.showSpinner = true;
@@ -31,6 +32,11 @@ export class CisResultsComponent implements OnInit {
       this.getResults(this.value)
     })
   }
+
+  saveAsCSV(projectFindings) {
+    this.csvService.exportToCsv('cis-finding.csv', this.projectFindings);
+  }
+
 
   private getResults(value) {
     this.getProjectScan.getCisScan(this.value).subscribe((data: any) => {

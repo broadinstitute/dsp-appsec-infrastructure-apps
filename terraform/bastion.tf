@@ -10,10 +10,6 @@ resource "google_project_service" "iap" {
   service = "iap.googleapis.com"
 }
 
-resource "google_compute_address" "bastion" {
-  name = local.bastion_name
-}
-
 resource "google_compute_instance" "bastion" {
   name = local.bastion_name
   zone = var.zones[0]
@@ -30,9 +26,6 @@ resource "google_compute_instance" "bastion" {
 
   network_interface {
     subnetwork = google_compute_subnetwork.gke.self_link
-    access_config {
-      nat_ip = google_compute_address.bastion.address
-    }
   }
 
   shielded_instance_config {
@@ -59,6 +52,10 @@ resource "google_compute_instance" "bastion" {
   }
 
   tags = local.bastion_tags
+
+  depends_on = [
+    google_service_account_iam_member.bastion_host_sa_cloudbuild,
+  ]
 }
 
 resource "google_compute_firewall" "bastion" {
@@ -73,7 +70,7 @@ resource "google_compute_firewall" "bastion" {
 
   allow {
     protocol = "tcp"
-    ports    = ["1080"]
+    ports    = [var.bastion_port]
   }
 }
 
@@ -84,6 +81,12 @@ module "bastion_host_sa" {
   roles = [
     "roles/logging.logWriter",
   ]
+}
+
+resource "google_service_account_iam_member" "bastion_host_sa_cloudbuild" {
+  service_account_id = module.bastion_host_sa.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = local.cloudbuild_sa
 }
 
 resource "google_service_account" "bastion_client" {
@@ -114,11 +117,14 @@ resource "google_iap_tunnel_instance_iam_member" "bastion_client" {
   member   = local.bastion_sa
 }
 
-### Outputs
-
-output "bastion_ip" {
-  value = google_compute_address.bastion.address
+resource "google_iap_tunnel_instance_iam_member" "bastion_cloudbuild" {
+  instance = google_compute_instance.bastion.name
+  zone     = google_compute_instance.bastion.zone
+  role     = "roles/iap.tunnelResourceAccessor"
+  member   = local.cloudbuild_sa
 }
+
+### Outputs
 
 output "bastion_instance" {
   value = google_compute_instance.bastion.name

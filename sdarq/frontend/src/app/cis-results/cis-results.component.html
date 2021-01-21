@@ -50,7 +50,11 @@
       />
     </div>
     <div class="col"></div>
-    <div class="col"></div>
+    <div class="col">
+      <div class="text-center animated fadeInRight" *ngIf="showTable">
+        <a mdbBtn color="primary" mdbWavesEffect (click)="saveAsCSV(projectFindings)">Download CSV file</a>
+      </div>
+    </div>
   </div>
   <br />
   <!-- start table  -->

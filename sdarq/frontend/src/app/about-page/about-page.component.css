@@ -1,0 +1,39 @@
+.jumbotron {
+    border-radius: 0.125rem;
+    background: linear-gradient(87deg, #2438a2 0, #2196F3 100%) !important;
+    overflow: hidden;
+    height: 85vh;
+    overflow: scroll;
+    margin-bottom: 0px;
+  }
+
+.lead-title {
+    color: white;
+    font-size: 2em;
+  }
+
+.lead {
+    color: white;
+    font-size: 1.6em;
+    text-align:center;
+  }
+
+.title{
+    color: white; 
+  }
+
+p{
+      color:white !important;
+      font-size: 1.2em;
+  }
+
+.fab {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 400;
+    font-size: 14.8em !important; 
+}
+
+.card-title {
+    margin-bottom: 0.75rem;
+    color: #2544ac;
+}

@@ -56,6 +56,7 @@ export LOCALHOST="127.0.0.1"
 
 export INGRESS="${SERVICE}"
 export MANAGED_CERT="${SERVICE}"
+export FRONTEND_CONFIG="${SERVICE}"
 export BACKEND_CONFIG="${SERVICE}"
 export SERVICE_PORT="http"
 export TARGET_PORT="http"

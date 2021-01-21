@@ -4,9 +4,9 @@ metadata:
   name: ${INGRESS}
   namespace: ${NAMESPACE}
   annotations:
-    kubernetes.io/ingress.allow-http: 'false'
     kubernetes.io/ingress.global-static-ip-name: ${IP_NAME}
     networking.gke.io/managed-certificates: ${MANAGED_CERT}
+    networking.gke.io/v1beta1.FrontendConfig: ${FRONTEND_CONFIG}
 spec:
   rules:
   - host: ${DNS_HOSTNAME}
@@ -15,6 +15,15 @@ spec:
       - backend:
           serviceName: ${SERVICE}
           servicePort: ${SERVICE_PORT}
+---
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: ${FRONTEND_CONFIG}
+  namespace: ${NAMESPACE}
+spec:
+  redirectToHttps:
+    enabled: true
 ---
 apiVersion: cloud.google.com/v1beta1
 kind: BackendConfig
