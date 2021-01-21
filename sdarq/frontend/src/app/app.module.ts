@@ -26,6 +26,8 @@ import { JiraTicketRiskAssesmentComponent } from './jira-ticket-risk-assesment/j
 import { ThreatModelComponent } from './threat-model/threat-model.component';
 import { RequestTmService} from './services/request-tm.service';
 import { AboutPageComponent } from './about-page/about-page.component'
+import { CsvDataService } from './services/csv-data.service'
+
 
 
 @NgModule({
@@ -61,7 +63,8 @@ import { AboutPageComponent } from './about-page/about-page.component'
     SendFormDataService,
     CisProjectService,
     GetCisScanService,
-    RequestTmService
+    RequestTmService,
+    CsvDataService
     ],
   bootstrap: [
     AppComponent
