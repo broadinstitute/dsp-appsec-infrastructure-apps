@@ -184,7 +184,8 @@ def cis_results():
     pattern = "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
     project_id_edited = project_id.strip('-').replace('-', '_')
 
-    logging.info("Request to read CIS scanner results for project %s ", project_id_edited)
+    logging.info(
+        "Request to read CIS scanner results for project %s ", project_id_edited)
 
     if re.match(pattern, project_id_edited):
         sql_tables = """
@@ -200,8 +201,8 @@ def cis_results():
         tables = [dict(row) for row in query_job_table]
         json.dumps(tables)
         if results_table.total_rows != 0:
-            sql = "SELECT * FROM `{0}.cis.{1}` WHERE id!='5.3' ORDER BY impact DESC".format(str(pubsub_project_id),
-                                                                                            str(project_id_edited))
+            sql = "SELECT * FROM `{0}.cis.{1}` WHERE id!='5.3' AND id!='2.1' AND id!='2.2' ORDER BY impact DESC".format(str(pubsub_project_id),
+                                                                                                                        str(project_id_edited))
             query_job = client.query(sql)
             query_job.result()
             records = [dict(row) for row in query_job]
@@ -233,7 +234,8 @@ def cis_scan():
         publisher = pubsub_v1.PublisherClient()
         topic_path = publisher.topic_path(pubsub_project_id, topic_name)
         user_proj = user_project_id.replace('-', '_')
-        logging.info("Request to assess security posture for project %s ", user_proj)
+        logging.info(
+            "Request to assess security posture for project %s ", user_proj)
         db.collection(firestore_collection).document(user_proj)
         if 'slack_channel' in json_data:
             slack_channel = json_data['slack_channel']
@@ -302,7 +304,8 @@ def request_tm():
                                            description=str(
                                                appsec_jira_ticket_description),
                                            issuetype={'name': 'Task'})
-    logging.info("Jira ticket in appsec board for project %s threat model", project_name)
+    logging.info(
+        "Jira ticket in appsec board for project %s threat model", project_name)
 
     slack_channels_list = ['#dsp-security', '#appsec-internal']
     for channel in slack_channels_list:
