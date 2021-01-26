@@ -1,0 +1,114 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${JOB_CONFIG_MAP}
+  namespace: ${NAMESPACE}
+data:
+  spec: |
+    template:
+      spec:
+        serviceAccountName: ${K8S_SERVICE_ACCOUNT}
+        #runtimeClassName: gvisor
+        restartPolicy: OnFailure
+        nodeSelector:
+          cloud.google.com/gke-nodepool: batch
+        tolerations:
+        - key: sandbox.gke.io/runtime
+          operator: Equal
+          value: gvisor
+          effect: NoSchedule
+
+        containers:
+        - name: zap-scan
+          image: ${ZAP_IMAGE}
+          imagePullPolicy: Always
+          env:
+          - name: CODEDX_URL
+            value: ${CODEDX_URL}
+          - name: ZAP_AUTH_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: ${ZAP_AUTH_SECRET}
+                key: ZAP_AUTH_SECRET
+          - name: CODEDX_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: ${CODEDX_API_KEY}
+                key: CODEDX_API_KEY
+          - name: SLACK_WEBHOOK
+            valueFrom:
+              secretKeyRef:
+                name: ${SLACK_WEBHOOK}
+                key: SLACK_WEBHOOK
+          - name: CODEX_PROJECT
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.annotations['CODEDX_PROJECT']
+          - name: URL
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.annotations['URL']
+          - name: SCAN_TYPE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.annotations['SCAN_TYPE']
+          resources:
+            requests:
+              memory: 2Gi
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ${K8S_SERVICE_ACCOUNT}
+  namespace: ${NAMESPACE}
+  annotations:
+    iam.gke.io/gcp-service-account: ${GCP_SERVICE_ACCOUNT_EMAIL}
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicy
+metadata:
+  name: ${JOB_TOPIC}-policy
+  namespace: ${NAMESPACE}
+spec:
+  resourceRef:
+    apiVersion: pubsub.cnrm.cloud.google.com/v1beta1
+    kind: PubSubTopic
+    name: ${JOB_TOPIC}
+  bindings:
+  - role: roles/pubsub.publisher
+    members:
+    - serviceAccount:${GCP_SERVICE_ACCOUNT_EMAIL}
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: automated-zap-scan-trigger-cronjob
+  namespace: ${NAMESPACE}
+spec:
+  schedule: "0 7 * * 0"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: ${K8S_SERVICE_ACCOUNT}
+          runtimeClassName: gvisor
+          nodeSelector:
+            cloud.google.com/gke-nodepool: batch
+          restartPolicy: OnFailure
+          containers:
+          - name: zap-trigger
+            image: ${ZAP_IMAGE}
+            command: ['python3', '/weekly_trigger.py']
+            env:
+              - name: GCP_PROJECT_ID
+                value: ${PROJECT_ID}
+              - name: ZAP_TOPIC_NAME
+                value: ${JOB_TOPIC}
+              - name: DEFECT_DOJO_URL
+                value: ${DEFECT_DOJO_URL}
+              - name: DEFECT_DOJO_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: ${DEFECT_DOJO_KEY}
+                    key: DEFECT_DOJO_KEY
