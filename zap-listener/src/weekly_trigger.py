@@ -74,7 +74,7 @@ def scan_endpoints(endpoints, gcp_project, topic_name):
                     future = publisher.publish(
                         topic_path,
                         data=message,
-                        CODEX_PROJECT=codedx_project,
+                        CODEDX_PROJECT=codedx_project,
                         URL=url,
                         SCAN_TYPE=scan_type
                     )

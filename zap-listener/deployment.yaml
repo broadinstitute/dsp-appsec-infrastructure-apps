@@ -41,7 +41,7 @@ data:
               secretKeyRef:
                 name: ${SLACK_WEBHOOK}
                 key: SLACK_WEBHOOK
-          - name: CODEX_PROJECT
+          - name: CODEDX_PROJECT
             valueFrom:
               fieldRef:
                 fieldPath: metadata.annotations['CODEDX_PROJECT']
