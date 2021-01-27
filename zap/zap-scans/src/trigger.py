@@ -1,13 +1,8 @@
 #!/usr/bin/env python3
-"""
-This module triggers a list of scans based on endpoints in Defect Dojo.
-
-- fetches a list of endpoint object from defect dojo
-- formats the endpoint object as a pubsub message
-"""
 import os
 from google.cloud import pubsub_v1
 import requests
+import argparse
 
 futures = dict()
 
@@ -93,7 +88,6 @@ def main():
     parser.add_argument('-s','--scans', nargs='+', default=[])
 
     args = parser.parse_args()
-
 
     endpoints = get_defect_dojo_endpoints(defect_dojo_url, defect_dojo_key)
     scan_endpoints(endpoints, gcp_project, zap_topic, args.scans)

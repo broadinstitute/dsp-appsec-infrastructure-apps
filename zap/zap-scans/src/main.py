@@ -1,6 +1,5 @@
 from zap_scans import compliance_scan
 import os
-from datetime import date
 from codedx_api import CodeDxAPI
 from slack import WebhookClient
 import logging

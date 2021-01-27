@@ -5,12 +5,9 @@
 # - "complete" scans that include different steps depending on the type of scan
 # - a "compliance scan" method that takes a project, url, and scan type, and returns a filename
 import time, os
-from pprint import pprint
 from zapv2 import ZAPv2
 import google.auth
 import google.auth.transport.requests
-from httplib2 import Http
-import json
 
 def get_gc_token():
     credentials, __ = google.auth.default(
@@ -22,26 +19,27 @@ def get_gc_token():
     credentials.refresh(request)
     return credentials.token
 
-def zap_init(project):
+def zap_init(project, target):
     # Connect to ZAP
     owasp_key = '' # currently disabled
     host = '127.0.0.1'
     port = os.getenv('ZAP_PORT')
     proxy = f'http://{host}:{port}'
-    zap = ZAPv2(apikey=owasp_key, proxies={'http': proxy, 'https': proxy}) 
-    
+    zap = ZAPv2(apikey=owasp_key, proxies={'http': proxy, 'https': proxy})
+
     zap.context.new_context(project, owasp_key)
 
     zap_listening = False
-    timeout = 60*3
-    while count < timeout and not zap_listening:
+    timeout = time.time() + 60*10
+    while time.time() < timeout:
         print("Waiting for Zap daemon to start...")
         try:
             zap.urlopen(target)
             zap_listening = True
-        except:
-            count += 2
-            sleep(2)
+        except Exception: 
+            pass
+        time.sleep(5)
+
     if zap_listening == False:
         print("Zap Daemon Timeout")
         exit(1)
@@ -95,7 +93,7 @@ def zap_auth_spider(zap, target):
 def zap_auth_ajax_spider(zap, target):
     print(f'Ajax Spider target {target}')
     zap = zap_auth(zap)
-    scanID = zap.ajaxSpider.scan(target)
+    zap.ajaxSpider.scan(target)
     timeout = time.time() + 60*10   # 2 minutes from now
     # Loop until the ajax spider has finished or the timeout has exceeded
     while zap.ajaxSpider.status == 'running':
@@ -144,15 +142,16 @@ def zap_active(zap, target):
 
     print ('Active Scan completed')
 
-    return zap    
+    return zap
 
 def zap_write(zap, fn):
     with open(fn, 'wb') as f:
         f.write(zap.core.xmlreport().encode('utf-8'))
+    return zap
 
 def zap_baseline_scan(project, target):
 
-    zap = zap_init(project)
+    zap = zap_init(project, target)
     zap = zap_access(zap, target)
     zap = zap_spider(zap, target)
     zap = zap_passive(zap)
@@ -165,7 +164,7 @@ def zap_baseline_scan(project, target):
 
 def zap_auth_scan(project, target):
 
-    zap = zap_init(project)
+    zap = zap_init(project, target)
     zap = zap_access(zap, target)
     zap = zap_auth_spider(zap, target)
     zap = zap_passive(zap)
@@ -174,11 +173,11 @@ def zap_auth_scan(project, target):
     zap = zap_write(zap, fn)
     zap.core.shutdown()
 
-    return fn    
+    return fn
 
 def zap_api_scan(project, target):
 
-    zap = zap_init(project)
+    zap = zap_init(project, target)
     zap = zap_access(zap, target)
     token = get_gc_token()
     zap.openapi.import_url(url=target, hostoverride=None, apikey=token)
@@ -194,7 +193,7 @@ def zap_api_scan(project, target):
 
 def zap_ui_scan(project, target):
 
-    zap = zap_init(project)
+    zap = zap_init(project, target)
     zap = zap_access(zap, target)
     zap = zap_auth_spider(zap, target)
     zap = zap_auth_ajax_spider(zap, target)
@@ -205,7 +204,7 @@ def zap_ui_scan(project, target):
     zap = zap_write(zap, fn)
     zap.core.shutdown()
 
-    return fn    
+    return fn
 
 def compliance_scan(project, target, scan='baseline-scan'):
     if scan == 'auth-scan':
