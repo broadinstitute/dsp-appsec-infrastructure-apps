@@ -96,7 +96,7 @@ def parse_profiles(target_project_id: str, profiles):
             tags = ctrl['tags']
             tag_id = '_'.join(profile['name'].split('-')[2:0:-1])
             refs = collect_refs(ctrl['refs'], [])
-            bench = profile['title']
+            bench = profile['title'].lstrip('InSpec ')
 
             rows.append({
                 'id': tags[tag_id],
