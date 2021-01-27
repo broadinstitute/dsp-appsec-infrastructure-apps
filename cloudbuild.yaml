@@ -13,6 +13,7 @@ options:
   - BASTION_PORT=1080
   - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis
   - SOURCECLEAR_IMAGE=us.gcr.io/${PROJECT_ID}/sourceclear
+  - ZAP_IMAGE=us.gcr.io/${PROJECT_ID}/zap:${SHORT_SHA}
   - CODEDX_ANALYSIS_IMAGE=us.gcr.io/${PROJECT_ID}/codedx-analysis:${SHORT_SHA}
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
   - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
@@ -167,6 +168,17 @@ steps:
   - executor
       --context=dir:///workspace/codedx-analysis
       --destination=$${CODEDX_ANALYSIS_IMAGE}
+      --cache
+
+- id: zap-image
+  name: *kaniko
+  waitFor: ['kaniko']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/zap/zap-scans
+      --destination=$${ZAP_IMAGE}
       --cache
 
 ### Terraform

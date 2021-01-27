@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-This module
+This module triggers a list of scans based on endpoints in Defect Dojo.
+
 - fetches a list of endpoint object from defect dojo
 - formats the endpoint object as a pubsub message
 """
@@ -11,8 +12,8 @@ import requests
 futures = dict()
 
 def get_defect_dojo_endpoints(url, key):
-    endpoint = 'https://{}/api/v2/endpoints/'.format(url)
-    token = 'Token {}'.format(key)
+    endpoint = f'{url}/api/v2/endpoints/'
+    token = f'Token {key}'
 
     headers = {'content-type': 'application/json',
             'Authorization': token}
@@ -35,12 +36,12 @@ def get_callback(future, data):
             print(future.result())
             futures.pop(data)
         except:
-            print("Please handle {} for {}.".format(future.exception(), data))
+            print(f"Please handle {future.exception()} for {data}.")
 
     return callback
 
 
-def scan_endpoints(endpoints, gcp_project, topic_name):
+def scan_endpoints(endpoints, gcp_project, topic_name, scans):
     """
     Scan multiple endpoints by publishing multiple
     messages to a Pub/Sub topic with an error handler.
@@ -65,9 +66,9 @@ def scan_endpoints(endpoints, gcp_project, topic_name):
             # endpoints to scan will include tag codedx:CODEDX_PROJECT to identify project on codedx
             if "codedx" in tag:
                 codedx_project = "".join(tag.split(":")[1:])
-        if codedx_project is not None:   
+        if codedx_project is not None:
             for scan_type in endpoint["tags"]:
-                if scan_type in ["baseline-scan", "api-scan", "auth-scan", "ui-scan"]:
+                if scan_type in scans:
                     url = f"{endpoint['protocol']}://{endpoint['host']}"
 
                     # When a message is published, the client returns a future.
@@ -88,8 +89,14 @@ def main():
     zap_topic = os.getenv('ZAP_TOPIC_NAME')
     gcp_project = os.getenv('GCP_PROJECT_ID')
 
+    parser = argparse.ArgumentParser(description='Get scan types to run')
+    parser.add_argument('-s','--scans', nargs='+', default=[])
+
+    args = parser.parse_args()
+
+
     endpoints = get_defect_dojo_endpoints(defect_dojo_url, defect_dojo_key)
-    scan_endpoints(endpoints, gcp_project, zap_topic)
+    scan_endpoints(endpoints, gcp_project, zap_topic, args.scans)
 
 if __name__ == '__main__':
     main()
