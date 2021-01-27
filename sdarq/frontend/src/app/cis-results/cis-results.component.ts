@@ -21,7 +21,7 @@ export class CisResultsComponent implements OnInit {
   errors: any[];
   showTable: boolean;
 
-  headElements = ['Id', 'Level', 'CVSS', 'Title', 'Failures', 'Description', 'Rationale', 'Refs'];
+  headElements = ['Benchmark', 'Id', 'Level', 'CVSS', 'Title', 'Failures', 'Description', 'Rationale', 'Refs'];
 
   constructor(private getProjectScan: GetCisScanService, private router: ActivatedRoute, private csvService: CsvDataService ) { }
 
