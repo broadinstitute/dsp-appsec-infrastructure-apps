@@ -23,7 +23,10 @@ export class FilterPipe implements PipeTransform {
                 const rationale = it.rationale
                     .toLowerCase()
                     .includes(searchString.toLowerCase());
-                return id + level + impact + title + description + rationale;
+                const benchmark = it.benchmark
+                    .toLowerCase()
+                    .includes(searchString.toLowerCase());
+                return id + level + impact + title + description + rationale + benchmark;
             });
         }
     }
