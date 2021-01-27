@@ -96,6 +96,7 @@ def parse_profiles(target_project_id: str, profiles):
             tags = ctrl['tags']
             tag_id = '_'.join(profile['name'].split('-')[2:0:-1])
             refs = collect_refs(ctrl['refs'], [])
+            bench = profile['title']
 
             rows.append({
                 'id': tags[tag_id],
@@ -106,6 +107,7 @@ def parse_profiles(target_project_id: str, profiles):
                 'description': ctrl['desc'],
                 'rationale': rationale,
                 'refs': refs,
+                'benchmark': bench,
             })
 
     return '; '.join(titles), rows
@@ -141,6 +143,7 @@ def load_bigquery(target_project_id: str, dataset_id: str, table_id: str,
         f('description', 'STRING', mode='REQUIRED'),
         f('rationale', 'STRING', mode='REQUIRED'),
         f('refs', 'STRING', mode='REPEATED'),
+        f('benchmark', 'STRING', mode='REQUIRED'),
     )
     job_config = bigquery.LoadJobConfig(
         schema=schema,
