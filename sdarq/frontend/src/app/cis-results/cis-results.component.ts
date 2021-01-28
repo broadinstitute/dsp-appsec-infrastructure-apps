@@ -25,7 +25,8 @@ export class CisResultsComponent implements OnInit {
 
   headElements = ['Benchmark', 'Id', 'Level', 'CVSS', 'Title', 'Failures', 'Description', 'Rationale', 'Refs'];
 
-  constructor(private getProjectScan: GetCisScanService, private router: ActivatedRoute, private csvService: CsvDataService, private getTableLastUpdateDate: GetCisScanService) { }
+  constructor(private getProjectScan: GetCisScanService, private router: ActivatedRoute,
+              private csvService: CsvDataService, private getTableLastUpdateDate: GetCisScanService) { }
 
   ngOnInit() {
     this.showSpinner = true;
