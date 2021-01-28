@@ -48,7 +48,6 @@ topic_name = os.environ['JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
 
 
-
 # Instantiate the DefectDojo backend wrapper
 dd = wrapper.DefectDojoAPI(dojo_host, dojo_api_key, dojo_user, debug=True)
 app = FlaskAPI(__name__)
@@ -216,6 +215,30 @@ def cis_results():
             gcloud config list project --format='value(core.project)'
             """
             return Response(json.dumps({'statusText': notfound}), status=404, mimetype='application/json')
+
+
+@app.route('/table_data/', methods=['POST'])
+@cross_origin(origins=sdarq_host)
+def table_data():
+    """
+    Get latest modified date from a specific table
+    """
+    project_id_encoded = request.get_data()
+    project_id = project_id_encoded.decode("utf-8")
+    pattern = "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
+    project_id_edited = project_id.strip('-').replace('-', '_')
+    sql_tables = "SELECT TIMESTAMP_MILLIS(last_modified_time) AS last_modified_time FROM `{0}.cis.__TABLES__` WHERE table_id=@tableid".format(
+        str(pubsub_project_id))
+    job_config = bigquery.QueryJobConfig(
+        query_parameters=[
+            bigquery.ScalarQueryParameter(
+                "tableid", "STRING", project_id_edited)
+        ])
+    query_job_table = client.query(sql_tables, job_config=job_config)
+    results_table = query_job_table.result()
+    tables = [dict(row) for row in query_job_table]
+    json_obj = json.dumps(tables)
+    return json_obj
 
 
 @app.route('/cis_scan/', methods=['POST'])

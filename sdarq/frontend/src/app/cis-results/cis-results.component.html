@@ -28,7 +28,9 @@
         <a mdbBtn color="primary" mdbWavesEffect (click)="saveAsCSV(projectFindings)">Download CSV file</a>
       </div>
     </div>
-    <div class="col"></div>
+    <div class="col">
+      <p>Date: {{ latestDate.last_modified_time }}</p>
+    </div>
     <div class="col">
       <input type="text" class="form-control" name="searchString" placeholder="Search..." [(ngModel)]="searchString"
         *ngIf="showTable" />

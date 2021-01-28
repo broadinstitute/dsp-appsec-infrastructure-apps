@@ -13,7 +13,9 @@ export class CisResultsComponent implements OnInit {
 
   result: any;
   projectFindings: any[];
+  latestDate: any[];
   data: any[];
+  date: any[];
   params: any;
   value: string;
   showModal: boolean;
@@ -23,13 +25,14 @@ export class CisResultsComponent implements OnInit {
 
   headElements = ['Benchmark', 'Id', 'Level', 'CVSS', 'Title', 'Failures', 'Description', 'Rationale', 'Refs'];
 
-  constructor(private getProjectScan: GetCisScanService, private router: ActivatedRoute, private csvService: CsvDataService ) { }
+  constructor(private getProjectScan: GetCisScanService, private router: ActivatedRoute, private csvService: CsvDataService, private getTableLastUpdateDate: GetCisScanService) { }
 
   ngOnInit() {
     this.showSpinner = true;
     this.router.queryParams.subscribe(params => {
       this.value = params.project_id
       this.getResults(this.value)
+      this.getLatestDate(this.value)
     })
   }
 
@@ -50,4 +53,13 @@ export class CisResultsComponent implements OnInit {
         this.showSpinner = false;
       });
   }
+
+  private getLatestDate(value) {
+    this.getTableLastUpdateDate.getTableLastUpdateDate(this.value).subscribe((date: any) => {
+      this.latestDate = date;
+    },
+      (date) => {
+      });
+  }
 }
+
