@@ -108,6 +108,7 @@ def parse_profiles(target_project_id: str, profiles):
                 'description': ctrl['desc'],
                 'rationale': rationale,
                 'refs': refs,
+                'benchmark': bench,
             })
 
     return '; '.join(titles), rows
@@ -144,6 +145,7 @@ def load_bigquery(target_project_id: str, dataset_id: str, table_id: str,
         f('description', 'STRING', mode='REQUIRED'),
         f('rationale', 'STRING', mode='REQUIRED'),
         f('refs', 'STRING', mode='REPEATED'),
+        f('benchmark', 'STRING', mode='REQUIRED'),
     )
     job_config = bigquery.LoadJobConfig(
         schema=schema,
