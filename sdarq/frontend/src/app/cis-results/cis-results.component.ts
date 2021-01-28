@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { GetCisScanService } from '../services/get-cis-scan.service';
 import { ActivatedRoute } from '@angular/router';
 import { CsvDataService } from '../services/csv-data.service'
+import { ConstantPool } from '@angular/compiler';
 
 @Component({
   selector: 'app-cis-results',
@@ -14,6 +15,7 @@ export class CisResultsComponent implements OnInit {
   result: any;
   projectFindings: any[];
   latestDate: any[];
+  table_id: any[];
   data: any[];
   date: any[];
   params: any;
@@ -22,6 +24,7 @@ export class CisResultsComponent implements OnInit {
   showSpinner: boolean;
   errors: any[];
   showTable: boolean;
+  filename: string;
 
   headElements = ['Benchmark', 'Id', 'Level', 'CVSS', 'Title', 'Failures', 'Description', 'Rationale', 'Refs'];
 
@@ -37,8 +40,11 @@ export class CisResultsComponent implements OnInit {
     })
   }
 
-  saveAsCSV(projectFindings) {
-    this.csvService.exportToCsv('cis-finding.csv', this.projectFindings);
+  saveAsCSV(projectFindings, latestDate, table_id) {
+    const format = '.csv'
+    const table_name = table_id.concat('_'.toString())
+    this.filename = table_name.concat(latestDate.toString()).concat(format.toString())
+    this.csvService.exportToCsv(this.filename, this.projectFindings);
   }
 
 
@@ -57,7 +63,8 @@ export class CisResultsComponent implements OnInit {
 
   private getLatestDate(value) {
     this.getTableLastUpdateDate.getTableLastUpdateDate(this.value).subscribe((date: any) => {
-      this.latestDate = date;
+      this.latestDate = date[0].last_modified_date;
+      this.table_id = date[0].table_id
     },
       (date) => {
       });

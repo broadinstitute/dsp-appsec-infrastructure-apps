@@ -227,7 +227,7 @@ def table_data():
     project_id = project_id_encoded.decode("utf-8")
     pattern = "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
     project_id_edited = project_id.strip('-').replace('-', '_')
-    sql_tables = "SELECT TIMESTAMP_MILLIS(last_modified_time) AS last_modified_time FROM `{0}.cis.__TABLES__` WHERE table_id=@tableid".format(
+    sql_tables = "SELECT table_id, DATE(TIMESTAMP_MILLIS(last_modified_time)) AS last_modified_date FROM `{0}.cis.__TABLES__` WHERE table_id=@tableid".format(
         str(pubsub_project_id))
     job_config = bigquery.QueryJobConfig(
         query_parameters=[
@@ -235,10 +235,10 @@ def table_data():
                 "tableid", "STRING", project_id_edited)
         ])
     query_job_table = client.query(sql_tables, job_config=job_config)
-    results_table = query_job_table.result()
-    tables = [dict(row) for row in query_job_table]
-    json_obj = json.dumps(tables)
-    return json_obj
+    query_job_table.result()
+    table = [dict(row) for row in query_job_table]
+    date_object = json.dumps(table, indent=4, sort_keys=True, default=str)
+    return date_object
 
 
 @app.route('/cis_scan/', methods=['POST'])
