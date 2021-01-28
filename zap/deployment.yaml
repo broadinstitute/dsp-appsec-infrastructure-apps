@@ -25,12 +25,12 @@ data:
           - name: CODEDX_API_KEY
             valueFrom:
               secretKeyRef:
-                name: ${CODEDX_API_KEY}
+                name: ${JOB_SECRET}
                 key: CODEDX_API_KEY
           - name: SLACK_WEBHOOK
             valueFrom:
               secretKeyRef:
-                name: ${SLACK_WEBHOOK}
+                name: ${JOB_SECRET}
                 key: SLACK_WEBHOOK
           - name: CODEDX_PROJECT
             valueFrom:
@@ -63,14 +63,6 @@ data:
           requests:
             memory: 2Gi
 ---
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: ${K8S_SERVICE_ACCOUNT}
-  namespace: ${NAMESPACE}
-  annotations:
-    iam.gke.io/gcp-service-account: ${GCP_SERVICE_ACCOUNT_EMAIL}
----
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicy
 metadata:
@@ -84,7 +76,7 @@ spec:
   bindings:
   - role: roles/pubsub.publisher
     members:
-    - serviceAccount:${GCP_SERVICE_ACCOUNT_EMAIL}
+    - serviceAccount:${K8S_SERVICE_ACCOUNT}
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
@@ -116,40 +108,7 @@ spec:
               - name: DEFECT_DOJO_KEY
                 valueFrom:
                   secretKeyRef:
-                    name: ${DEFECT_DOJO_KEY}
-                    key: DEFECT_DOJO_KEY
----
-apiVersion: batch/v1beta1
-kind: CronJob
-metadata:
-  name: automated-weekly-zap-scan-trigger-cronjob
-  namespace: ${NAMESPACE}
-spec:
-  schedule: "0 7 * * 0"
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          serviceAccountName: ${K8S_SERVICE_ACCOUNT}
-          runtimeClassName: gvisor
-          nodeSelector:
-            cloud.google.com/gke-nodepool: batch
-          restartPolicy: OnFailure
-          containers:
-          - name: zap-trigger
-            image: ${ZAP_IMAGE}
-            command: ['python3', '/trigger.py', 'baseline-scan', 'api-scan', 'auth-scan']
-            env:
-              - name: GCP_PROJECT_ID
-                value: ${PROJECT_ID}
-              - name: ZAP_TOPIC_NAME
-                value: ${JOB_TOPIC}
-              - name: DEFECT_DOJO_URL
-                value: ${DEFECT_DOJO_URL}
-              - name: DEFECT_DOJO_KEY
-                valueFrom:
-                  secretKeyRef:
-                    name: ${DEFECT_DOJO_KEY}
+                    name: ${JOB_SECRET}
                     key: DEFECT_DOJO_KEY
 ---
 apiVersion: batch/v1beta1
@@ -182,5 +141,5 @@ spec:
               - name: DEFECT_DOJO_KEY
                 valueFrom:
                   secretKeyRef:
-                    name: ${DEFECT_DOJO_KEY}
+                    name: ${JOB_SECRET}
                     key: DEFECT_DOJO_KEY

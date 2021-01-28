@@ -52,6 +52,18 @@ def zap_auth(zap):
     zap.replacer.add_rule(description="auth", enabled=True, matchtype="REQ_HEADER", matchregex=False, matchstring="Authorization", replacement=bearer)
     return zap
 
+def wait_for_scan(scanner, minutes, is_auth=False, scan_id=None):
+    time.sleep(5)
+    start = time.time()
+    timeout = time.time() + 60*minutes # timeout is x minutes from now
+    while ((scan_id != None and int(scanner.status(scanid)) < 100)
+        or (scanner.status == 'running')):
+        time.sleep(2)
+        if time.time() > timeout:
+                    break
+        if is_auth and (time.time() - start) > 1800:
+            zap = zap_auth(zap)
+
 def zap_access(zap, target):
     # Proxy a request to the target so that ZAP has something to deal with
     print(f'Accessing target {target}')
@@ -60,48 +72,20 @@ def zap_access(zap, target):
     time.sleep(2)
     return zap
 
-def zap_spider(zap, target):
+def zap_spider(zap, target, is_auth=False):
+    if is_auth:
+        zap = zap_auth(zap)
     print(f'Spidering target {target}')
     scanid = zap.spider.scan(target)
-    # Give the Spider a chance to start
-    time.sleep(2)
-    while (int(zap.spider.status(scanid)) < 100):
-        time.sleep(2)
-
+    wait_for_scan(zap.spider, 5, is_auth, scanid)
     print ('Spider completed')
     return zap
 
-def zap_auth_spider(zap, target):
-    zap = zap_auth(zap)
-    print(f'Spidering target {target}')
-    scanid = zap.spider.scan(target)
-    # Give the Spider a chance to start
-    time.sleep(2)
-    count = 2
-    while (int(zap.spider.status(scanid)) < 100):
-        # Loop until the spider has finished
-        print(f'Spider progress %: {zap.spider.status(scanid)}')
-        time.sleep(2)
-        count += 2
-        if count > 1800:
-            zap = zap_auth(zap)
-            count = 0
-
-    print ('Spider completed')
-    return zap
-
-def zap_auth_ajax_spider(zap, target):
+def zap_ajax_spider(zap, target, is_auth=False):
     print(f'Ajax Spider target {target}')
     zap = zap_auth(zap)
     zap.ajaxSpider.scan(target)
-    timeout = time.time() + 60*10   # 2 minutes from now
-    # Loop until the ajax spider has finished or the timeout has exceeded
-    while zap.ajaxSpider.status == 'running':
-        if time.time() > timeout:
-            break
-        print('Ajax Spider status' + zap.ajaxSpider.status)
-        time.sleep(2)
-
+    wait_for_scan(zap.ajaxSpider, 5, is_auth)
     print('Ajax Spider completed')
     return zap
 
@@ -113,35 +97,10 @@ def zap_passive(zap):
     print ('Passive Scan completed')
     return zap
 
-def zap_auth_active(zap, target):
-    zap = zap_auth(zap)
-
+def zap_active(zap, target, is_auth=False):
     print (f'Active Scanning target {target}')
     scanid = zap.ascan.scan(target)
-    count = 0
-    while (int(zap.ascan.status(scanid)) < 100):
-        # Loop until the scanner has finished
-        print (f'Scan progress %: {zap.ascan.status(scanid)}')
-        time.sleep(5)
-        count += 5
-        if count > 1800:
-            zap = zap_auth(zap)
-            count = 0
-
-    print ('Active Scan completed')
-
-    return zap
-
-def zap_active(zap, target):
-    print (f'Active Scanning target {target}')
-    scanid = zap.ascan.scan(target)
-    while (int(zap.ascan.status(scanid)) < 100):
-        # Loop until the scanner has finished
-        print (f'Scan progress %: {zap.ascan.status(scanid)}')
-        time.sleep(5)
-
-    print ('Active Scan completed')
-
+    wait_for_scan(zap.ascan, 60, is_auth, scanid)
     return zap
 
 def zap_write(zap, fn):
@@ -149,70 +108,21 @@ def zap_write(zap, fn):
         f.write(zap.core.xmlreport().encode('utf-8'))
     return zap
 
-def zap_baseline_scan(project, target):
-
-    zap = zap_init(project, target)
-    zap = zap_access(zap, target)
-    zap = zap_spider(zap, target)
-    zap = zap_passive(zap)
-
-    fn = f'{project}_baseline_zap_report.xml'
-    zap = zap_write(zap, fn)
-    zap.core.shutdown()
-
-    return fn
-
-def zap_auth_scan(project, target):
-
-    zap = zap_init(project, target)
-    zap = zap_access(zap, target)
-    zap = zap_auth_spider(zap, target)
-    zap = zap_passive(zap)
-
-    fn = f'{project}_auth_zap_report.xml'
-    zap = zap_write(zap, fn)
-    zap.core.shutdown()
-
-    return fn
-
-def zap_api_scan(project, target):
-
-    zap = zap_init(project, target)
-    zap = zap_access(zap, target)
-    token = get_gc_token()
-    zap.openapi.import_url(url=target, hostoverride=None, apikey=token)
-    zap = zap_auth_spider(zap, target)
-    zap = zap_passive(zap)
-    zap = zap_auth_active(zap, target)
-
-    fn = f'{project}_api_zap_report.xml'
-    zap = zap_write(zap, fn)
-    zap.core.shutdown()
-
-    return fn
-
-def zap_ui_scan(project, target):
-
-    zap = zap_init(project, target)
-    zap = zap_access(zap, target)
-    zap = zap_auth_spider(zap, target)
-    zap = zap_auth_ajax_spider(zap, target)
-    zap = zap_passive(zap)
-    zap = zap_auth_active(zap, target)
-
-    fn = f'{project}_ui_zap_report.xml'
-    zap = zap_write(zap, fn)
-    zap.core.shutdown()
-
-    return fn
-
 def compliance_scan(project, target, scan='baseline-scan'):
-    if scan == 'auth-scan':
-        file_name = zap_auth_scan(project, target)
-    elif scan == 'api-scan':
-        file_name = zap_api_scan(project, target)
-    elif scan == 'ui-scan':
-        file_name = zap_ui_scan(project, target)
-    else:
-        file_name = zap_baseline_scan(project, target)
+    is_auth = scan != 'baseline-scan'
+    zap = zap_init(project, target)
+    zap = zap_access(zap, target)
+    if scan == 'api-scan':
+        token = get_gc_token()
+        zap.openapi.import_url(url=target, hostoverride=None, apikey=token)
+    zap = zap_spider(zap, target, is_auth)
+    if scan == 'ui-scan':
+        zap = zap_ajax_spider(zap, target, is_auth)
+    zap = zap_passive(zap)
+    if scan == 'ui-scan':
+        zap = zap_active(zap, target, is_auth)
+    file_name = f'{project}_{scan.replace('-', '_')}_report.xml'
+    zap = zap_write(zap, file_name)
+    zap.core.shutdown()
+
     return file_name

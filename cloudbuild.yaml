@@ -14,7 +14,6 @@ options:
   - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis
   - SOURCECLEAR_IMAGE=us.gcr.io/${PROJECT_ID}/sourceclear
   - ZAP_IMAGE=us.gcr.io/${PROJECT_ID}/zap:${SHORT_SHA}
-  - CODEDX_ANALYSIS_IMAGE=us.gcr.io/${PROJECT_ID}/codedx-analysis:${SHORT_SHA}
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
   - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
   - DOCS_IMAGE=us.gcr.io/${PROJECT_ID}/docs:${SHORT_SHA}
@@ -158,18 +157,6 @@ steps:
       --destination=$${SDARQ_BACKEND_IMAGE}
       --cache
 
-# build codedx analysis Docker image
-- id: codedx-analysis-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/codedx-analysis
-      --destination=$${CODEDX_ANALYSIS_IMAGE}
-      --cache
-
 - id: zap-image
   name: *kaniko
   waitFor: ['kaniko']
@@ -265,13 +252,6 @@ steps:
   dir: secexplorer
   env:
   - GCP_SERVICE_ACCOUNT_EMAIL=${_ORG_VIEWER_SA_EMAIL}
-
-# deploy codedx analysis to GKE cluster
-- id: codedx-analysis
-  name: *kubectl
-  waitFor: ['shared', 'codedx-analysis-image']
-  entrypoint: ./deploy.sh
-  dir: codedx-analysis
 
 # deploy Zap to GKE cluster
 - id: zap
