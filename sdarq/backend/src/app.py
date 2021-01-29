@@ -200,7 +200,7 @@ def cis_results():
         results_table = query_job_table.result()
         tables = [dict(row) for row in query_job_table]
         if results_table.total_rows != 0:
-            sql_query = "SELECT table_id, DATE(TIMESTAMP_MILLIS(last_modified_time)) AS last_modified_date FROM `{0}.cis.__TABLES__` WHERE table_id=@tableid".format(
+            sql_query = "SELECT table_id, TIMESTAMP_MILLIS(last_modified_time) AS last_modified_date FROM `{0}.cis.__TABLES__` WHERE table_id=@tableid".format(
                 str(pubsub_project_id))
             job_config = bigquery.QueryJobConfig(
                 query_parameters=[

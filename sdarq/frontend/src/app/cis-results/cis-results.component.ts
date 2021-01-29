@@ -43,7 +43,8 @@ export class CisResultsComponent implements OnInit {
 
   saveAsCSV(projectFindings, modified_date, table_name) {
     const format = '.csv'
-    const table = table_name.concat('_'.toString())
+    const prefix = 'GCP_CIS_Results_'.concat(table_name.toString())
+    const table = prefix.concat('_'.toString())
     this.filename = table.concat(modified_date.toString()).concat(format.toString())
     this.csvService.exportToCsv(this.filename, this.projectFindings);
   }
