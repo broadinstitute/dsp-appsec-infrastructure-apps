@@ -99,6 +99,7 @@ def parse_profiles(target_project_id: str, profiles):
             bench = profile['title'].lstrip('InSpec ')
 
             rows.append({
+                'benchmark': bench,
                 'id': tags[tag_id],
                 'level': tags['cis_level'],
                 'impact': str(ctrl['impact']),
@@ -107,7 +108,6 @@ def parse_profiles(target_project_id: str, profiles):
                 'description': ctrl['desc'],
                 'rationale': rationale,
                 'refs': refs,
-                'benchmark': bench,
             })
 
     return '; '.join(titles), rows
@@ -135,6 +135,7 @@ def load_bigquery(target_project_id: str, dataset_id: str, table_id: str,
 
     f = bigquery.SchemaField
     schema = (
+        f('benchmark', 'STRING', mode='REQUIRED'),
         f('id', 'STRING', mode='REQUIRED'),
         f('level', 'INTEGER', mode='REQUIRED'),
         f('impact', 'STRING', mode='REQUIRED'),
@@ -143,7 +144,6 @@ def load_bigquery(target_project_id: str, dataset_id: str, table_id: str,
         f('description', 'STRING', mode='REQUIRED'),
         f('rationale', 'STRING', mode='REQUIRED'),
         f('refs', 'STRING', mode='REPEATED'),
-        f('benchmark', 'STRING', mode='REQUIRED'),
     )
     job_config = bigquery.LoadJobConfig(
         schema=schema,

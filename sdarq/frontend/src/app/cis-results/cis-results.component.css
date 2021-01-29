@@ -12,3 +12,8 @@
     border-radius: 0.15rem !important;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
+
+.updateDate {
+    font-size:1.2em;
+    line-height: 1.5em;
+}
