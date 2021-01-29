@@ -78,68 +78,51 @@ spec:
     members:
     - serviceAccount:${K8S_SERVICE_ACCOUNT}
 ---
-apiVersion: batch/v1beta1
-kind: CronJob
-metadata:
-  name: automated-zap-scan-trigger-cronjob
-  namespace: ${NAMESPACE}
-spec:
-  schedule: "0 7 * * 0"
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          serviceAccountName: ${K8S_SERVICE_ACCOUNT}
-          runtimeClassName: gvisor
-          nodeSelector:
-            cloud.google.com/gke-nodepool: batch
-          restartPolicy: OnFailure
-          containers:
-          - name: zap-trigger
-            image: ${ZAP_IMAGE}
-            command: ['python3', '/weekly_trigger.py']
-            env:
-              - name: GCP_PROJECT_ID
-                value: ${PROJECT_ID}
-              - name: ZAP_TOPIC_NAME
-                value: ${JOB_TOPIC}
-              - name: DEFECT_DOJO_URL
-                value: ${DEFECT_DOJO_URL}
-              - name: DEFECT_DOJO_KEY
-                valueFrom:
-                  secretKeyRef:
-                    name: ${JOB_SECRET}
-                    key: DEFECT_DOJO_KEY
----
-apiVersion: batch/v1beta1
-kind: CronJob
-metadata:
-  name: automated-monthly-zap-scan-trigger-cronjob
-  namespace: ${NAMESPACE}
-spec:
-  schedule: "0 0 1 * *"
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          serviceAccountName: ${K8S_SERVICE_ACCOUNT}
-          runtimeClassName: gvisor
-          nodeSelector:
-            cloud.google.com/gke-nodepool: batch
-          restartPolicy: OnFailure
-          containers:
-          - name: zap-trigger-monthly
-            image: ${ZAP_IMAGE}
-            command: ['python3', '/trigger.py', 'ui-scan']
-            env:
-              - name: GCP_PROJECT_ID
-                value: ${PROJECT_ID}
-              - name: ZAP_TOPIC_NAME
-                value: ${JOB_TOPIC}
-              - name: DEFECT_DOJO_URL
-                value: ${DEFECT_DOJO_URL}
-              - name: DEFECT_DOJO_KEY
-                valueFrom:
-                  secretKeyRef:
-                    name: ${JOB_SECRET}
-                    key: DEFECT_DOJO_KEY
+apiVersion: v1
+kind: List
+items:
+- &cron-job
+  apiVersion: batch/v1beta1
+  kind: CronJob
+  metadata:
+    name: automated-zap-scan-trigger-cronjob
+    namespace: ${NAMESPACE}
+  spec:
+    schedule: "0 7 * * 0"
+    jobTemplate:
+      spec:
+        template:
+          spec: &job-spec
+            serviceAccountName: ${K8S_SERVICE_ACCOUNT}
+            runtimeClassName: gvisor
+            nodeSelector:
+              cloud.google.com/gke-nodepool: batch
+            restartPolicy: OnFailure
+            containers: 
+            - &zap-trigger
+              name: zap-trigger
+              image: ${ZAP_IMAGE}
+              command: ['python3', '/trigger.py', 'baseline-scan', 'api-scan', 'auth-scan']
+              env:
+                - name: GCP_PROJECT_ID
+                  value: ${PROJECT_ID}
+                - name: ZAP_TOPIC_NAME
+                  value: ${JOB_TOPIC}
+                - name: DEFECT_DOJO_URL
+                  value: ${DEFECT_DOJO_URL}
+                - name: DEFECT_DOJO_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${JOB_SECRET}
+                      key: DEFECT_DOJO_KEY
+- << : *cron-job
+  spec:
+    schedule: "0 0 1 * *"
+    jobTemplate:
+      spec:
+        template:
+          spec:
+            << : *job-spec
+            containers:
+              - << : *zap-trigger
+                command: ['python3', '/trigger.py', 'ui-scan']
