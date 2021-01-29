@@ -13,6 +13,8 @@ def upload_gcp(bucket_name, scan, filename):
     path = f'{scan}s/{date}/{filename}'
     blob = bucket.blob(path)
     blob.upload_from_filename(filename)
+    location = f"https://console.cloud.google.com/storage/browser/{bucket_name}/{path}"
+    return location
 
 def slack_message(msg):
     slack_url = os.getenv('SLACK_WEBHOOK')
@@ -48,7 +50,10 @@ def main():
     # run the scan
     filename = compliance_scan(codedx_project, target_url, scan_type)
     if bucket_name:
-        upload_gcp(bucket_name, scan_type, filename)
+        storage_object_url = upload_gcp(bucket_name, scan_type, filename)
+        if scan == 'ui-scan': # right now this is what we have to check for compliance
+            slack_text = f"<!here> New vulnerability report uploaded to GCS bucket: {storage_object_url}"
+            slack_message(slack_text)
     # upload to codedx
     codedx_upload(codedx_project, filename)
 
