@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { GetCisScanService } from '../services/get-cis-scan.service';
 import { ActivatedRoute } from '@angular/router';
 import { CsvDataService } from '../services/csv-data.service'
-import { ConstantPool } from '@angular/compiler';
+import { textChangeRangeIsUnchanged } from 'typescript';
 
 @Component({
   selector: 'app-cis-results',
@@ -25,32 +25,35 @@ export class CisResultsComponent implements OnInit {
   errors: any[];
   showTable: boolean;
   filename: string;
+  table_name: any[];
+  modified_date: any[];
 
   headElements = ['Benchmark', 'Id', 'Level', 'CVSS', 'Title', 'Failures', 'Description', 'Rationale', 'Refs'];
 
-  constructor(private getProjectScan: GetCisScanService, private router: ActivatedRoute,
-              private csvService: CsvDataService, private getTableLastUpdateDate: GetCisScanService) { }
+
+  constructor(private getProjectScan: GetCisScanService, private router: ActivatedRoute, private csvService: CsvDataService) { }
 
   ngOnInit() {
     this.showSpinner = true;
     this.router.queryParams.subscribe(params => {
       this.value = params.project_id
       this.getResults(this.value)
-      this.getLatestDate(this.value)
     })
   }
 
-  saveAsCSV(projectFindings, latestDate, table_id) {
+  saveAsCSV(projectFindings, modified_date, table_name) {
     const format = '.csv'
-    const table_name = table_id.concat('_'.toString())
-    this.filename = table_name.concat(latestDate.toString()).concat(format.toString())
+    const table = table_name.concat('_'.toString())
+    this.filename = table.concat(modified_date.toString()).concat(format.toString())
     this.csvService.exportToCsv(this.filename, this.projectFindings);
   }
 
 
   private getResults(value) {
     this.getProjectScan.getCisScan(this.value).subscribe((data: any) => {
-      this.projectFindings = data;
+      this.projectFindings = data.findings;
+      this.table_name = data.table[0].table_id;
+      this.modified_date = data.table[0].last_modified_date;
       this.showSpinner = false;
       this.showTable = true;
     },
@@ -61,13 +64,5 @@ export class CisResultsComponent implements OnInit {
       });
   }
 
-  private getLatestDate(value) {
-    this.getTableLastUpdateDate.getTableLastUpdateDate(this.value).subscribe((date: any) => {
-      this.latestDate = date[0].last_modified_date;
-      this.table_id = date[0].table_id
-    },
-      (date) => {
-      });
-  }
 }
 

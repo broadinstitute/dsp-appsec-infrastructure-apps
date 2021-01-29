@@ -199,15 +199,25 @@ def cis_results():
         query_job_table = client.query(sql_tables, job_config=job_config)
         results_table = query_job_table.result()
         tables = [dict(row) for row in query_job_table]
-        json.dumps(tables)
         if results_table.total_rows != 0:
-            sql = "SELECT * FROM `{0}.cis.{1}` WHERE id!='5.3' AND id!='2.1' AND id!='2.2' ORDER BY impact DESC".format(str(pubsub_project_id),
-                                                                                                                        str(project_id_edited))
-            query_job = client.query(sql)
+            sql_query = "SELECT table_id, DATE(TIMESTAMP_MILLIS(last_modified_time)) AS last_modified_date FROM `{0}.cis.__TABLES__` WHERE table_id=@tableid".format(
+                str(pubsub_project_id))
+            job_config = bigquery.QueryJobConfig(
+                query_parameters=[
+                    bigquery.ScalarQueryParameter(
+                        "tableid", "STRING", project_id_edited)
+                ])
+            query_job_table = client.query(sql_query, job_config=job_config)
+            query_job_table.result()
+            table_data = [dict(row) for row in query_job_table]
+            sql_query_2 = "SELECT * FROM `{0}.cis.{1}` WHERE id!='5.3' AND id!='2.1' AND id!='2.2' ORDER BY impact DESC".format(str(pubsub_project_id),
+                                                                                                                                str(project_id_edited))
+            query_job = client.query(sql_query_2)
             query_job.result()
-            records = [dict(row) for row in query_job]
-            json_obj = json.dumps(records)
-            return json_obj
+            findings = [dict(row) for row in query_job]
+            table = json.dumps({'findings': findings, 'table': table_data},
+                               indent=4, sort_keys=True, default=str)
+            return table
         else:
             notfound = f"""
             This Google project is not found! Did you make sure to supply the right GCP Project ID?
@@ -215,30 +225,6 @@ def cis_results():
             gcloud config list project --format='value(core.project)'
             """
             return Response(json.dumps({'statusText': notfound}), status=404, mimetype='application/json')
-
-
-@app.route('/table_data/', methods=['POST'])
-@cross_origin(origins=sdarq_host)
-def table_data():
-    """
-    Get latest modified date from a specific table
-    """
-    project_id_encoded = request.get_data()
-    project_id = project_id_encoded.decode("utf-8")
-    pattern = "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
-    project_id_edited = project_id.strip('-').replace('-', '_')
-    sql_tables = "SELECT table_id, DATE(TIMESTAMP_MILLIS(last_modified_time)) AS last_modified_date FROM `{0}.cis.__TABLES__` WHERE table_id=@tableid".format(
-        str(pubsub_project_id))
-    job_config = bigquery.QueryJobConfig(
-        query_parameters=[
-            bigquery.ScalarQueryParameter(
-                "tableid", "STRING", project_id_edited)
-        ])
-    query_job_table = client.query(sql_tables, job_config=job_config)
-    query_job_table.result()
-    table = [dict(row) for row in query_job_table]
-    date_object = json.dumps(table, indent=4, sort_keys=True, default=str)
-    return date_object
 
 
 @app.route('/cis_scan/', methods=['POST'])
