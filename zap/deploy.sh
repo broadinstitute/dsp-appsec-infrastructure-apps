@@ -14,6 +14,7 @@ export K8S_SERVICE_ACCOUNT="${JOB_CONFIG_MAP}"
 export CODEDX_URL="http://${CODEDX_NAMESPACE}.${CODEDX_SERVICE}.svc.cluster.local/codedx"
 export DEFECT_DOJO_URL="http://${DOJO_NAMESPACE}.${DOJO_SERVICE}.svc.cluster.local"
 export ZAP_PORT='8008'
+export BUCKET_NAME="${PROJECT_ID}-vuln-reports"
 
 ./kube-apply.py \
   "namespace.yaml" \

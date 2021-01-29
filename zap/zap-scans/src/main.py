@@ -1,8 +1,18 @@
-from zap_scans import compliance_scan
+import logging
 import os
+from zap_scans import compliance_scan
 from codedx_api import CodeDxAPI
 from slack import WebhookClient
-import logging
+from google.cloud import storage
+from datetime import datetime
+
+def upload_gcp(bucket_name, scan, filename):
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    date = datetime.today().strftime('%Y%m%d')
+    path = f'{scan}s/{date}/{filename}'
+    blob = bucket.blob(path)
+    blob.upload_from_filename(filename)
 
 def slack_message(msg):
     slack_url = os.getenv('SLACK_WEBHOOK')
@@ -33,10 +43,12 @@ def main():
     codedx_project = os.getenv('CODEX_PROJECT')
     target_url = os.getenv('URL')
     scan_type = os.getenv('SCAN_TYPE')
+    bucket_name = os.getenv('BUCKET_NAME')
 
     # run the scan
     filename = compliance_scan(codedx_project, target_url, scan_type)
-
+    if bucket_name:
+        upload_gcp(bucket_name, scan_type, filename)
     # upload to codedx
     codedx_upload(codedx_project, filename)
 

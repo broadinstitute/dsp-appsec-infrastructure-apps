@@ -20,6 +20,8 @@ data:
           env:
           - name: CODEDX_URL
             value: ${CODEDX_URL}
+          - name: BUCKET_NAME
+            value: ${BUCKET_NAME}
           - name: ZAP_PORT
             value: ${ZAP_PORT}
           - name: CODEDX_API_KEY
@@ -126,3 +128,24 @@ items:
             containers:
               - << : *zap-trigger
                 command: ['python3', '/trigger.py', 'ui-scan']
+---
+apiVersion: storage.cnrm.cloud.google.com/v1beta1
+kind: StorageBucket
+metadata:
+  name: ${BUCKET_NAME}
+  namespace: ${NAMESPACE}
+  annotations:
+    cnrm.cloud.google.com/deletion-policy: abandon
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: ${BUCKET_NAME}-policy
+  namespace: ${NAMESPACE}
+spec:
+  member: serviceAccount:${K8S_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
+  role: roles/storage.objectCreator
+  resourceRef:
+    apiVersion: storage.cnrm.cloud.google.com/v1beta1
+    kind: StorageBucket
+    name: ${BUCKET_NAME}
