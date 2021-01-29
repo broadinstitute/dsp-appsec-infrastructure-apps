@@ -8,6 +8,7 @@ import time, os
 from zapv2 import ZAPv2
 import google.auth
 import google.auth.transport.requests
+from main import slack_message
 
 def get_gc_token():
     credentials, __ = google.auth.default(
@@ -31,12 +32,12 @@ def zap_init(project, target):
 
     zap_listening = False
     timeout = time.time() + 60*10
-    while time.time() < timeout:
+    while (not zap_listening) and time.time() < timeout:
         print("Waiting for Zap daemon to start...")
         try:
             zap.urlopen(target)
             zap_listening = True
-        except Exception: 
+        except Exception:
             pass
         time.sleep(5)
 
@@ -56,7 +57,7 @@ def wait_for_scan(scanner, minutes, is_auth=False, scan_id=None):
     time.sleep(5)
     start = time.time()
     timeout = time.time() + 60*minutes # timeout is x minutes from now
-    while ((scan_id != None and int(scanner.status(scanid)) < 100)
+    while ((scan_id != None and int(scanner.status(scan_id)) < 100)
         or (scanner.status == 'running')):
         time.sleep(2)
         if time.time() > timeout:
@@ -104,6 +105,7 @@ def zap_active(zap, target, is_auth=False):
     return zap
 
 def zap_write(zap, fn):
+    zap.core.set_option_merge_related_alerts(True)
     with open(fn, 'wb') as f:
         f.write(zap.core.xmlreport().encode('utf-8'))
     return zap
@@ -121,7 +123,12 @@ def compliance_scan(project, target, scan='baseline-scan'):
     zap = zap_passive(zap)
     if scan == 'ui-scan':
         zap = zap_active(zap, target, is_auth)
-    file_name = f'{project}_{scan.replace('-', '_')}_report.xml'
+
+    highs = [alert for alert in zap.alert.alerts() if alert['risk'] == 'High']
+    slack_text = f"High risk alerts detected in Zap Scan for {project}/{target}:\n```{highs}```"
+    slack_message(slack_text)
+
+    file_name = f'{project}_{scan}_report.xml'.replace("-", "_")
     zap = zap_write(zap, file_name)
     zap.core.shutdown()
 
