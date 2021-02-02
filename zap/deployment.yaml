@@ -52,8 +52,8 @@ data:
         - name: zap
           image: owasp/zap2docker-weekly
           command: ['zap.sh']
-          args: ['-daemon', 
-            '-host', '0.0.0.0', 
+          args: ['-daemon',
+            '-host', '0.0.0.0',
             '-port', '$(ZAP_PORT)',
             '-config', 'api.disablekey=true',
             '-config', 'api.addrs.addr.name=.*',
@@ -87,7 +87,7 @@ items:
   apiVersion: batch/v1beta1
   kind: CronJob
   metadata:
-    name: automated-zap-scan-trigger-cronjob
+    name: zap-trigger-weekly
     namespace: ${NAMESPACE}
   spec:
     schedule: "0 7 * * 0"
@@ -100,7 +100,7 @@ items:
             nodeSelector:
               cloud.google.com/gke-nodepool: batch
             restartPolicy: OnFailure
-            containers: 
+            containers:
             - &zap-trigger
               name: zap-trigger
               image: ${ZAP_IMAGE}
@@ -118,6 +118,9 @@ items:
                       name: ${JOB_SECRET}
                       key: DEFECT_DOJO_KEY
 - << : *cron-job
+  metadata:
+    name: zap-trigger-monthly
+    namespace: ${NAMESPACE}
   spec:
     schedule: "0 0 1 * *"
     jobTemplate:
