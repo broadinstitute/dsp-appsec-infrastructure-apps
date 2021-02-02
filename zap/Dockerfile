@@ -1,14 +1,16 @@
-FROM python:slim
+# Set up a Python virtualenv in a "build" stage
+FROM python:3 AS build
+RUN python3 -m venv /venv
 
-RUN apt-get update -q && \
-    apt-get upgrade -qq && \
-    rm -rf /var/lib/apt/lists/*
+# Install Python dependencies into the virtualenv
+COPY requirements.txt .
+RUN /venv/bin/pip install --upgrade -r requirements.txt
 
-WORKDIR /zap
+# Copy the virtualenv and sources into the minimal final image
+FROM gcr.io/distroless/python3-debian10
+WORKDIR /app
 
-COPY src/requirements.txt .
-RUN pip install --upgrade -r requirements.txt
-
+COPY --from=build /venv /venv
 COPY src/*.py ./
 
-ENTRYPOINT ["python3", "-u", "main.py"]
+ENTRYPOINT ["/venv/bin/python3", "-u", "main.py"]
