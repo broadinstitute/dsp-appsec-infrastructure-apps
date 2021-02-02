@@ -13,6 +13,7 @@ data:
         restartPolicy: OnFailure
         nodeSelector:
           cloud.google.com/gke-nodepool: batch
+
         containers:
         - name: zap-scan
           image: ${ZAP_IMAGE}
@@ -87,21 +88,22 @@ items:
   apiVersion: batch/v1beta1
   kind: CronJob
   metadata:
-    name: zap-trigger-weekly
+    name: ${CRON_JOB}-weekly
     namespace: ${NAMESPACE}
   spec:
     schedule: "0 7 * * 0"
     jobTemplate:
       spec:
         template:
-          spec: &job-spec
+          spec: &cron-job-spec
             serviceAccountName: ${CRON_SERVICE_ACCOUNT}
             runtimeClassName: gvisor
             nodeSelector:
               cloud.google.com/gke-nodepool: batch
             restartPolicy: OnFailure
+
             containers:
-            - &zap-trigger
+            - &cron-job-container
               name: zap-trigger
               image: ${ZAP_IMAGE}
               command: ['python3', '/trigger.py', 'baseline-scan', 'api-scan', 'auth-scan']
@@ -119,7 +121,7 @@ items:
                       key: DEFECT_DOJO_KEY
 - << : *cron-job
   metadata:
-    name: zap-trigger-monthly
+    name: ${CRON_JOB}-monthly
     namespace: ${NAMESPACE}
   spec:
     schedule: "0 0 1 * *"
@@ -127,9 +129,9 @@ items:
       spec:
         template:
           spec:
-            << : *job-spec
+            << : *cron-job-spec
             containers:
-              - << : *zap-trigger
+              - << : *cron-job-container
                 command: ['python3', '/trigger.py', 'ui-scan']
 ---
 apiVersion: storage.cnrm.cloud.google.com/v1beta1
