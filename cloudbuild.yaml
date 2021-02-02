@@ -164,7 +164,7 @@ steps:
   args:
   - -c
   - executor
-      --context=dir:///workspace/zap/zap-scans
+      --context=dir:///workspace/zap
       --destination=$${ZAP_IMAGE}
       --cache
 
