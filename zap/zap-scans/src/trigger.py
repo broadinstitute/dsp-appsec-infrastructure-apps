@@ -64,7 +64,7 @@ def scan_endpoints(endpoints, gcp_project, topic_name, scans):
         if codedx_project is not None:
             for scan_type in endpoint["tags"]:
                 if scan_type in scans:
-                    url = f"{endpoint['protocol']}://{endpoint['host']}"
+                    url = f"{endpoint['protocol']}://{endpoint['host']}{endpoint['path']}"
 
                     # When a message is published, the client returns a future.
                     future = publisher.publish(
