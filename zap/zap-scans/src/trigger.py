@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import os
 from google.cloud import pubsub_v1
 import requests
@@ -6,13 +7,15 @@ import argparse
 
 futures = dict()
 
+
 def get_defect_dojo_endpoints(url, key):
     endpoint = f'{url}/api/v2/endpoints/'
     token = f'Token {key}'
 
     headers = {'content-type': 'application/json',
-            'Authorization': token}
-    r = requests.get(endpoint, headers=headers, verify=True) # set verify to False if ssl cert is self-signed
+               'Authorization': token}
+    # set verify to False if ssl cert is self-signed
+    r = requests.get(endpoint, headers=headers, verify=True)
 
     endpoints = r
     if r.status_code != 200:
@@ -21,6 +24,7 @@ def get_defect_dojo_endpoints(url, key):
     endpoints = r.json()["results"]
 
     return endpoints
+
 
 def get_callback(future, data):
     """
@@ -78,6 +82,7 @@ def scan_endpoints(endpoints, gcp_project, topic_name, scans):
                     # Publish failures shall be handled in the callback function.
                     future.add_done_callback(get_callback(future, data))
 
+
 def main():
     defect_dojo_url = os.getenv('DEFECT_DOJO_URL')
     defect_dojo_key = os.getenv('DEFECT_DOJO_KEY')
@@ -85,12 +90,13 @@ def main():
     gcp_project = os.getenv('GCP_PROJECT_ID')
 
     parser = argparse.ArgumentParser(description='Get scan types to run')
-    parser.add_argument('-s','--scans', nargs='+', default=[])
+    parser.add_argument('-s', '--scans', nargs='+', default=[])
 
     args = parser.parse_args()
 
     endpoints = get_defect_dojo_endpoints(defect_dojo_url, defect_dojo_key)
     scan_endpoints(endpoints, gcp_project, zap_topic, args.scans)
+
 
 if __name__ == '__main__':
     main()
