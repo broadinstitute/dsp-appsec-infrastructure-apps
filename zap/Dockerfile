@@ -1,4 +1,8 @@
-FROM python:3
+FROM python:slim
+
+RUN apt-get update -q && \
+    apt-get upgrade -qq && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /zap
 
