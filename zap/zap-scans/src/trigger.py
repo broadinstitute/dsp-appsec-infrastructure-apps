@@ -30,7 +30,7 @@ def get_callback(future, data):
         try:
             print(future.result())
             futures.pop(data)
-        except:
+        except Exception:
             print(f"Please handle {future.exception()} for {data}.")
 
     return callback

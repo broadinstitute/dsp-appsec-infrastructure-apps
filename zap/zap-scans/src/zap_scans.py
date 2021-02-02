@@ -38,8 +38,7 @@ def zap_init(project, target):
             zap.urlopen(target)
             zap_listening = True
         except Exception:
-            pass
-        time.sleep(5)
+            time.sleep(5)
 
     if zap_listening == False:
         print("Zap Daemon Timeout")
