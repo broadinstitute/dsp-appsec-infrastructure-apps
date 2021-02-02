@@ -23,7 +23,7 @@ data:
           - name: BUCKET_NAME
             value: ${BUCKET_NAME}
           - name: ZAP_PORT
-            value: ${ZAP_PORT}
+            value: '${ZAP_PORT}'
           - name: CODEDX_API_KEY
             valueFrom:
               secretKeyRef:
@@ -60,7 +60,7 @@ data:
             '-config', 'api.addrs.addr.regex=true']
           env:
           - name: ZAP_PORT
-            value: ${ZAP_PORT}
+            value: '${ZAP_PORT}'
         resources:
           requests:
             memory: 2Gi
