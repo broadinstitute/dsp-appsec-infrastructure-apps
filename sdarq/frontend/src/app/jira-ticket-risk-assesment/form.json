@@ -77,11 +77,7 @@
         "choices": [
          {
           "value": "item1",
-          "text": "Changing or adding an API endpoint that takes uncontrolled/direct user input"
-         },
-         {
-          "value": "item6",
-          "text": "Changing or adding an API endpoint that process XML files"
+          "text": "Changing or adding an API endpoint that processes XML files from user input (See OWASP Top 10 A4: https://owasp.org/www-project-top-ten/2017/A4_2017-XML_External_Entities_(XXE).html)"
          },
          {
           "value": "item2",
@@ -178,7 +174,8 @@
        {
         "type": "radiogroup",
         "name": "integrity",
-        "visibleIf": "{confidentiality} = 'item2' and {product_features_other} = ['item1']",
+        "visible": false,
+        "visibleIf": "{product_features_other} = ['item1'] and {confidentiality} = 'item2' and {product_features_other} = ['item1']",
         "title": "Integrity: Suppose an attacker would be able to find a vulnerability that is introduced as part of this change, and successfully exploit it.  Integrity is about protecting data from being modified by an unauthorized party. Would the exploitation of a potential vulnerability in this component lead to loss of Integrity?",
         "isRequired": true,
         "choices": [
@@ -239,14 +236,14 @@
         "type": "html",
         "name": "risk_high_infrastructure_only",
         "visible": false,
-        "visibleIf": "{high_level} = 'change_infrastructure' and {infrastructure_gcp} anyof ['infrastructure_q1', 'infrastructure_q2', 'infrastructure_q3'] and {if_access_control_change_playbook} = 'item3' or {high_level} = 'change_infrastructure' and {infrastructure_gcp} = 'infrastructure_q4'",
+        "visibleIf": "{high_level} = 'change_infrastructure' and {infrastructure_gcp} anyof ['infrastructure_q1', 'infrastructure_q2', 'infrastructure_q3'] and {if_access_control_change_playbook} = 'item3' or {infrastructure_gcp} = 'infrastructure_q4'",
         "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nPlease reach out to appsec@broadinstitute.org or tag someone from the DSP Appsec team in the Jira ticket.\n</div>"
        },
        {
         "type": "html",
         "name": "risk_high_product_only",
         "visible": false,
-        "visibleIf": "{high_level} = 'change_product_api' and {product_terra} anyof ['item1', 'item2', 'item4', 'item6']",
+        "visibleIf": "{high_level} = 'change_product_api' and {product_terra} anyof ['item1', 'item2', 'item4']",
         "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nPlease reach out to appsec@broadinstitute.org or tag someone from the DSP Appsec team in the Jira ticket.\n</div>"
        },
        {
@@ -267,12 +264,13 @@
         "type": "html",
         "name": "risk_medium",
         "visible": false,
+        "visibleIf": "{infrastructure_gcp} = ['item3'] and {high_level} = 'item1'",
         "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\nPlease reach out to appsec@broadinstitute.org or tag someone from the DSP Appsec team in the Jira ticket.\n</div>"
        },
        {
         "type": "html",
         "name": "risk_low",
-        "visibleIf": "{high_level} = 'change_infrastructure' and {infrastructure_gcp} anyof ['infrastructure_q3', 'infrastructure_q2', 'infrastructure_q1'] and {if_access_control_change_playbook} = 'item1' or {high_level} = 'change_product_api' and {product_terra} = ['item5'] and {product_features_other} = ['item1'] and {confidentiality} = 'item2' and {integrity} = 'item2' and {availability} anyof ['item1', 'item2', 'item3']",
+        "visibleIf": "{high_level} = 'change_product_api' and {product_terra} = ['item5'] and {product_features_other} = ['item1'] and {confidentiality} = 'item2' and {integrity} = 'item2' and {availability} anyof ['item1', 'item2', 'item3']",
         "html": "<div class=\"alert alert-info\">\nRisk: <b>LOW</b>\n<hr>\n</div>\n\n"
        },
        {
@@ -280,6 +278,13 @@
         "name": "risk_low_ui_only",
         "visible": false,
         "visibleIf": "{high_level} = 'change_product_ui' and {product_ui_question_change} = ['item1']",
+        "html": "<div class=\"alert alert-info\">\nRisk: <b>LOW</b>\n<hr>\n</div>\n\n"
+       },
+       {
+        "type": "html",
+        "name": "risk_low_infrastructure_only",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_infrastructure' and {if_access_control_change_playbook} = 'item1'",
         "html": "<div class=\"alert alert-info\">\nRisk: <b>LOW</b>\n<hr>\n</div>\n\n"
        },
        {
@@ -301,3 +306,4 @@
      }
     ]
    }
+   
