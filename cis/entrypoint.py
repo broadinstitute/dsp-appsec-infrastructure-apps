@@ -96,8 +96,10 @@ def parse_profiles(target_project_id: str, profiles):
             tags = ctrl['tags']
             tag_id = '_'.join(profile['name'].split('-')[2:0:-1])
             refs = collect_refs(ctrl['refs'], [])
+            bench = profile['title'].lstrip('InSpec ')
 
             rows.append({
+                'benchmark': bench,
                 'id': tags[tag_id],
                 'level': tags['cis_level'],
                 'impact': str(ctrl['impact']),
@@ -133,6 +135,7 @@ def load_bigquery(target_project_id: str, dataset_id: str, table_id: str,
 
     f = bigquery.SchemaField
     schema = (
+        f('benchmark', 'STRING', mode='REQUIRED'),
         f('id', 'STRING', mode='REQUIRED'),
         f('level', 'INTEGER', mode='REQUIRED'),
         f('impact', 'STRING', mode='REQUIRED'),

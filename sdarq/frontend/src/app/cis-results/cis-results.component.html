@@ -3,35 +3,19 @@
     <div class="row">
       <div class="col"></div>
       <div class="colalign-self-center">
-        <div
-          class="spinner-grow text-primary"
-          role="status"
-          *ngIf="showSpinner"
-        >
+        <div class="spinner-grow text-primary" role="status" *ngIf="showSpinner">
           <span class="sr-only">Loading...</span>
         </div>
-        <div
-          class="spinner-grow text-primary"
-          role="status"
-          *ngIf="showSpinner"
-        >
+        <div class="spinner-grow text-primary" role="status" *ngIf="showSpinner">
           <span class="sr-only">Loading...</span>
         </div>
-        <div
-          class="spinner-grow text-primary"
-          role="status"
-          *ngIf="showSpinner"
-        >
+        <div class="spinner-grow text-primary" role="status" *ngIf="showSpinner">
           <span class="sr-only">Loading...</span>
         </div>
       </div>
       <div class="col"></div>
     </div>
-    <div
-      class="alert alert-warning animated fadeInRight"
-      role="alert"
-      *ngIf="showModal"
-    >
+    <div class="alert alert-warning animated fadeInRight" role="alert" *ngIf="showModal">
       {{ errors.error.statusText }}
     </div>
     <div class="text-center animated fadeInRight" *ngIf="showModal">
@@ -39,62 +23,53 @@
     </div>
   </div>
   <div class="row">
-    <div class="col">
-      <input
-        type="text"
-        class="form-control"
-        name="searchString"
-        placeholder="Search..."
-        [(ngModel)]="searchString"
-        *ngIf="showTable"
-      />
-    </div>
-    <div class="col"></div>
-    <div class="col">
-      <div class="text-center animated fadeInRight" *ngIf="showTable">
-        <a mdbBtn color="primary" mdbWavesEffect (click)="saveAsCSV(projectFindings)">Download CSV file</a>
+    <div class="col animated fadeIn">
+      <div *ngIf="showTable">
+        <a mdbBtn color="primary" mdbWavesEffect (click)="saveAsCSV(projectFindings,modified_date,table_name)">Download CSV file</a>
       </div>
+    </div>
+    <div class="col">
+    </div>
+    <div class="col">
+      <input type="text" class="form-control" name="searchString" placeholder="Search..." [(ngModel)]="searchString"
+        *ngIf="showTable" />
     </div>
   </div>
   <br />
   <!-- start table  -->
-  <table
-    mdbTable
-    #tableEl="mdbTable"
-    hover="true"
-    striped="true"
-    class="z-depth-1"
-    class="animated fadeIn"
-    *ngIf="showTable"
-  >
-    <th *ngFor="let head of headElements" class="mdb-color darken-3 white-text">
-      {{ head }}
-    </th>
-    <tbody #row>
-      <tr
-        mdbTableCol
-        *ngFor="let findings of projectFindings | filter: searchString"
-      >
-        <td>{{ findings.id }}</td>
-        <td>{{ findings.level }}</td>
-        <td>{{ findings.impact * 10}}</td>
-        <td style="font-weight: 400; white-space: pre-wrap;">
-          {{ findings.title }}
-        </td>
-        <td>
-          <ul *ngFor="let failuresMessage of findings.failures">
-            <li style="white-space: pre-wrap;">{{ failuresMessage }}</li>
-          </ul>
-        </td>
-        <td style="white-space: pre-wrap;">{{ findings.description }}</td>
-        <td style="white-space: pre-wrap;">{{ findings.rationale }}</td>
-        <td>
-          <ul *ngFor="let link of findings.refs">
-            <li><a href="{{ link }}" target="_blank">Ref</a></li>
-          </ul>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="row">
+    <div class="col">
+      <p *ngIf="showTable" class="updateDate">Last update date: {{ modified_date }}</p>
+      <table mdbTable #tableEl="mdbTable" hover="true" striped="true" class="z-depth-1" class="animated fadeIn"
+        *ngIf="showTable">
+        <th *ngFor="let head of headElements" class="mdb-color darken-3 white-text">
+          {{ head }}
+        </th>
+        <tbody #row>
+          <tr mdbTableCol *ngFor="let findings of projectFindings | filter: searchString">
+            <td style="white-space: pre-wrap;">{{ findings.benchmark }}</td>
+            <td>{{ findings.id }}</td>
+            <td>{{ findings.level }}</td>
+            <td>{{ findings.impact * 10}}</td>
+            <td style="font-weight: 400; white-space: pre-wrap;">
+              {{ findings.title }}
+            </td>
+            <td>
+              <ul *ngFor="let failuresMessage of findings.failures">
+                <li style="white-space: pre-wrap;">{{ failuresMessage }}</li>
+              </ul>
+            </td>
+            <td style="white-space: pre-wrap;">{{ findings.description }}</td>
+            <td style="white-space: pre-wrap;">{{ findings.rationale }}</td>
+            <td>
+              <ul *ngFor="let link of findings.refs">
+                <li><a href="{{ link }}" target="_blank">Ref</a></li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
   <!-- end table  -->
 </div>

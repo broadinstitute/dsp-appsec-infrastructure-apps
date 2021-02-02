@@ -43,9 +43,9 @@ jira_instance = os.getenv('jira_instance')
 sdarq_host = os.getenv('sdarq_host')
 dojo_host_url = os.getenv('dojo_host_url')
 firestore_collection = os.getenv('firestore_collection')
+appsec_jira_board = os.getenv('appsec_jira_board')
 topic_name = os.environ['JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
-# appsec_jira_board = os.getenv['appsec_jira_board']
 
 
 # Instantiate the DefectDojo backend wrapper
@@ -116,7 +116,7 @@ def submit():
     appsec_jira_ticket_description = github_url + '\n' + architecture_diagram
     appsec_jira_ticket_summury = 'Threat Model request ' + dojo_name
 
-    jira_ticket_appsec = jira.create_issue(project="DSEC",
+    jira_ticket_appsec = jira.create_issue(project=appsec_jira_board,
                                            summary=appsec_jira_ticket_summury,
                                            description=str(
                                                appsec_jira_ticket_description),
@@ -199,15 +199,25 @@ def cis_results():
         query_job_table = client.query(sql_tables, job_config=job_config)
         results_table = query_job_table.result()
         tables = [dict(row) for row in query_job_table]
-        json.dumps(tables)
         if results_table.total_rows != 0:
-            sql = "SELECT * FROM `{0}.cis.{1}` WHERE id!='5.3' AND id!='2.1' AND id!='2.2' ORDER BY impact DESC".format(str(pubsub_project_id),
-                                                                                                                        str(project_id_edited))
-            query_job = client.query(sql)
+            sql_query = "SELECT table_id, FORMAT_TIMESTAMP('%m-%d-%G %T',TIMESTAMP_MILLIS(last_modified_time)) AS last_modified_date FROM `{0}.cis.__TABLES__` WHERE table_id=@tableid".format(
+                str(pubsub_project_id))
+            job_config = bigquery.QueryJobConfig(
+                query_parameters=[
+                    bigquery.ScalarQueryParameter(
+                        "tableid", "STRING", project_id_edited)
+                ])
+            query_job_table = client.query(sql_query, job_config=job_config)
+            query_job_table.result()
+            table_data = [dict(row) for row in query_job_table]
+            sql_query_2 = "SELECT * FROM `{0}.cis.{1}` WHERE id!='5.3' AND id!='2.1' AND id!='2.2' ORDER BY impact DESC".format(str(pubsub_project_id),
+                                                                                                                                str(project_id_edited))
+            query_job = client.query(sql_query_2)
             query_job.result()
-            records = [dict(row) for row in query_job]
-            json_obj = json.dumps(records)
-            return json_obj
+            findings = [dict(row) for row in query_job]
+            table = json.dumps({'findings': findings, 'table': table_data},
+                               indent=4, sort_keys=True, default=str)
+            return table
         else:
             notfound = f"""
             This Google project is not found! Did you make sure to supply the right GCP Project ID?
@@ -299,7 +309,7 @@ def request_tm():
 
     logging.info("Request for threat model for project %s ", project_name)
 
-    jira_ticket_appsec = jira.create_issue(project="DSEC",
+    jira_ticket_appsec = jira.create_issue(project=appsec_jira_board,
                                            summary=appsec_jira_ticket_summury,
                                            description=str(
                                                appsec_jira_ticket_description),
@@ -310,7 +320,7 @@ def request_tm():
     slack_channels_list = ['#dsp-security', '#appsec-internal']
     for channel in slack_channels_list:
         slacknotify.slacknotify_threat_model(slack_token, channel, security_champion,
-                                             request_type, project_name, jira_instance, jira_ticket_appsec, "DSEC")
+                                             request_type, project_name, jira_instance, jira_ticket_appsec, appsec_jira_board)
 
     return ''
 
