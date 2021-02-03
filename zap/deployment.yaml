@@ -15,6 +15,19 @@ data:
           cloud.google.com/gke-nodepool: batch
 
         containers:
+        - name: zap
+          image: owasp/zap2docker-weekly
+          command: ['zap.sh']
+          args: [
+            '-daemon',
+            '-host', '127.0.0.1',
+            '-port', '${ZAP_PORT}',
+            '-config', 'api.disablekey=true',
+          ]
+          resources:
+            requests:
+              memory: 2Gi
+
         - name: zap-scan
           image: ${ZAP_IMAGE}
           imagePullPolicy: Always
@@ -48,19 +61,6 @@ data:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.annotations['SCAN_TYPE']
-
-        - name: zap
-          image: owasp/zap2docker-weekly
-          command: ['zap.sh']
-          args: [
-            '-daemon',
-            '-host', '127.0.0.1',
-            '-port', '${ZAP_PORT}',
-            '-config', 'api.disablekey=true',
-          ]
-          resources:
-            requests:
-              memory: 2Gi
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicy
