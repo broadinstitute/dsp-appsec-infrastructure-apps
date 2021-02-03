@@ -9,6 +9,8 @@ import time
 
 import google.auth
 import google.auth.transport.requests
+from requests.exceptions import ProxyError
+from urllib3.exceptions import NewConnectionError
 from zapv2 import ZAPv2
 
 from notify import slack_message
@@ -33,16 +35,15 @@ def zap_init(project, target):
     proxy = f'http://{host}:{port}'
     zap = ZAPv2(apikey=owasp_key, proxies={'http': proxy, 'https': proxy})
 
-    zap.context.new_context(project, owasp_key)
-
     zap_listening = False
     timeout = time.time() + 60*10
     while (not zap_listening) and time.time() < timeout:
         print("Waiting for Zap daemon to start...")
         try:
+            zap.context.new_context(project, owasp_key)
             zap.urlopen(target)
             zap_listening = True
-        except Exception:
+        except (ProxyError, NewConnectionError):
             time.sleep(5)
 
     if zap_listening == False:
