@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { GetCisScanService } from '../services/get-cis-scan.service';
 import { ActivatedRoute } from '@angular/router';
 import { CsvDataService } from '../services/csv-data.service';
+declare var require: any
 
 @Component({
   selector: 'app-cis-results',
@@ -51,13 +52,12 @@ export class CisResultsComponent implements OnInit {
   }
 
   ConvertToCSV(json: string, fields: any): string {
-    const Json2csvParser = require('json2csv').parse;
+
+    const Json2csvParser = require('json2csv').parse; 
     let options: {
     };
     options = fields;
     const csv = Json2csvParser(JSON.parse(json), options);
-    console.log(JSON.parse(json));
-    console.log(csv);
     return csv.split(/"",""/gm).join('\n');
   }
 
