@@ -2,11 +2,13 @@
 
 import logging
 import os
-from zap_scans import compliance_scan
-from codedx_api import CodeDxAPI
-from slack import WebhookClient
-from google.cloud import storage
 from datetime import datetime
+
+from codedx_api import CodeDxAPI
+from google.cloud import storage
+
+from notify import slack_message
+from zap_scans import compliance_scan
 
 
 def upload_gcp(bucket_name, scan, filename):
@@ -18,14 +20,6 @@ def upload_gcp(bucket_name, scan, filename):
     blob.upload_from_filename(filename)
     location = f"https://console.cloud.google.com/storage/browser/{bucket_name}/{path}"
     return location
-
-
-def slack_message(msg):
-    slack_url = os.getenv('SLACK_WEBHOOK')
-    webhook = WebhookClient(slack_url)
-    response = webhook.send(text=msg)
-    if response.status_code != 200:
-        print(f'Response from slack returned an error: {response.body}')
 
 
 def get_codedx_client():

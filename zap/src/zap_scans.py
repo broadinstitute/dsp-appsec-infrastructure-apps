@@ -1,17 +1,17 @@
-#!/usr/bin/env python3
-
 # The modules includes
 # - method to fetch an access token (for running scans as a authenticated user)
 # - individual "steps" of each zap scans
 # - "complete" scans that include different steps depending on the type of scan
 # - a "compliance scan" method that takes a project, url, and scan type, and returns a filename
 
-import time
 import os
-from zapv2 import ZAPv2
+import time
+
 import google.auth
 import google.auth.transport.requests
-from main import slack_message
+from zapv2 import ZAPv2
+
+from notify import slack_message
 
 
 def get_gc_token():

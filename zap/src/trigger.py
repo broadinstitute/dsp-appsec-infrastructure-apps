@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
-import os
-from google.cloud import pubsub_v1
-import requests
 import argparse
+import os
+
+import requests
+from google.cloud import pubsub_v1
 
 futures = dict()
 
