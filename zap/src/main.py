@@ -43,7 +43,7 @@ def main():
     # configure logging
     logging.basicConfig(level=logging.INFO)
     # get scan variables
-    codedx_project = os.getenv('CODEX_PROJECT')
+    codedx_project = os.getenv('CODEDX_PROJECT')
     target_url = os.getenv('URL')
     scan_type = os.getenv('SCAN_TYPE')
     bucket_name = os.getenv('BUCKET_NAME')
