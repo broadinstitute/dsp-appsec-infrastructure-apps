@@ -44,11 +44,11 @@ data:
               secretKeyRef:
                 name: ${JOB_SECRET}
                 key: CODEDX_API_KEY
-          - name: SLACK_WEBHOOK
+          - name: SLACK_TOKEN
             valueFrom:
               secretKeyRef:
                 name: ${JOB_SECRET}
-                key: SLACK_WEBHOOK
+                key: SLACK_TOKEN
           - name: CODEDX_PROJECT
             valueFrom:
               fieldRef:

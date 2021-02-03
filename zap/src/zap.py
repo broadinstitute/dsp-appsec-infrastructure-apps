@@ -142,8 +142,9 @@ def compliance_scan(project, target, scan='baseline-scan'):
         zap = zap_active(zap, target, is_auth)
 
     highs = [alert for alert in zap.alert.alerts() if alert['risk'] == 'High']
-    slack_text = f"High risk alerts detected in Zap Scan for {project}/{target}:\n```{highs}```"
-    slack_message(slack_text)
+    if highs:
+        slack_text = f"High risk alerts detected in Zap Scan for {project}/{target}:\n```{highs}```"
+        slack_message('#automated-security-scans', slack_text)
 
     file_name = f'{project}_{scan}_report.xml'.replace("-", "_")
     zap = zap_write(zap, file_name)

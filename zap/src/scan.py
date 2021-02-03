@@ -54,7 +54,7 @@ def main():
         storage_object_url = upload_gcp(bucket_name, scan_type, filename)
         if scan_type == 'ui-scan':  # right now this is what we have to check for compliance
             slack_text = f"<!here> New vulnerability report uploaded to GCS bucket: {storage_object_url}"
-            slack_message(slack_text)
+            slack_message('#automated-security-scans', slack_text)
     # upload to codedx
     codedx_upload(codedx_project, filename)
 
