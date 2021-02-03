@@ -58,7 +58,7 @@ export class CisResultsComponent implements OnInit {
     };
     options = fields;
     const csv = Json2csvParser(JSON.parse(json), options);
-    return csv.split(/"",""/gm).join('\n');
+    return csv.split(/\[/gm).join(' ').split(/\]/gm).join(' ').split(/"",""/gm).join('\n');
   }
 
 
