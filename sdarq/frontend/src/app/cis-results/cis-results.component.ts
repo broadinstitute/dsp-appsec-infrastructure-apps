@@ -53,7 +53,7 @@ export class CisResultsComponent implements OnInit {
 
   ConvertToCSV(json: string, fields: any): string {
 
-    const Json2csvParser = require('json2csv').parse; 
+    const Json2csvParser = require('json2csv').parse;
     let options: {
     };
     options = fields;
