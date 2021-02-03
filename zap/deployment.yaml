@@ -55,7 +55,7 @@ data:
           image: owasp/zap2docker-weekly
           command: ['zap.sh']
           args: ['-daemon',
-            '-host', '0.0.0.0',
+            '-host', '127.0.0.1',
             '-port', '$(ZAP_PORT)',
             '-config', 'api.disablekey=true',
             '-config', 'api.addrs.addr.name=.*',
