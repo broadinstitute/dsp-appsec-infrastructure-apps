@@ -47,9 +47,6 @@ data:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.annotations['SCAN_TYPE']
-          resources:
-            requests:
-              memory: 2Gi
 
         - name: zap
           image: owasp/zap2docker-weekly
