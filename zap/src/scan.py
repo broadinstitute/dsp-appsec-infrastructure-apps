@@ -39,18 +39,14 @@ def zap_retry(function, exception):
     return False
 
 
-def zap_init(project, target):
+def zap_init(project):
     # Connect to ZAP
     owasp_key = ''  # currently disabled
     host = '127.0.0.1'
     port = os.getenv('ZAP_PORT')
     proxy = f'http://{host}:{port}'
     zap = ZAPv2(apikey=owasp_key, proxies={'http': proxy, 'https': proxy})
-
-    if not zap_retry(lambda: zap.context.new_context(project, owasp_key), ProxyError) or \
-            not zap_retry(lambda: zap.urlopen(target), NewConnectionError):
-        print("Zap Daemon Timeout")
-        sys.exit(1)
+    zap.context.new_context(project, owasp_key)
     return zap
 
 
@@ -129,7 +125,7 @@ def zap_write(zap, fn):
 
 def compliance_scan(project, target, scan='baseline-scan'):
     is_auth = scan != 'baseline-scan'
-    zap = zap_init(project, target)
+    zap = zap_init(project)
     zap = zap_access(zap, target)
     if scan == 'api-scan':
         token = get_gc_token()

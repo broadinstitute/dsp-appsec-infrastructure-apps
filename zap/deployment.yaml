@@ -60,6 +60,12 @@ data:
             '-port', '${ZAP_PORT}',
             '-config', 'api.disablekey=true',
           ]
+          startupProbe:
+            httpGet:
+              path: /JSON/core/view/version/?
+              port: ${ZAP_PORT}
+            periodSeconds: 5
+            failureThreshold: 10
           resources:
             requests:
               memory: 2Gi
