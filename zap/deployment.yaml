@@ -147,7 +147,7 @@ metadata:
   namespace: ${NAMESPACE}
 spec:
   member: serviceAccount:${JOB_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
-  role: roles/storage.objectCreator
+  role: roles/storage.objectAdmin
   resourceRef:
     apiVersion: storage.cnrm.cloud.google.com/v1beta1
     kind: StorageBucket
