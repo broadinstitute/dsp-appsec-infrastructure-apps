@@ -13,8 +13,8 @@ export JOB_SECRET="${JOB_CONFIG_MAP}"
 export JOB_SERVICE_ACCOUNT="${JOB_CONFIG_MAP}"
 export CRON_JOB="${NAMESPACE}-trigger"
 export CRON_SERVICE_ACCOUNT="${CRON_JOB}"
-export CODEDX_URL="http://${CODEDX_NAMESPACE}.${CODEDX_SERVICE}.svc.cluster.local/codedx"
-export DEFECT_DOJO_URL="http://${DOJO_NAMESPACE}.${DOJO_SERVICE}.svc.cluster.local"
+export CODEDX_URL="http://${CODEDX_SERVICE}.${CODEDX_NAMESPACE}.svc.cluster.local/codedx"
+export DEFECT_DOJO_URL="http://${DOJO_SERVICE}.${DOJO_NAMESPACE}.svc.cluster.local"
 export ZAP_PORT='8008'
 export BUCKET_NAME="${PROJECT_ID}-vuln-reports"
 
