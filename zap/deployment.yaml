@@ -54,15 +54,12 @@ data:
         - name: zap
           image: owasp/zap2docker-weekly
           command: ['zap.sh']
-          args: ['-daemon',
+          args: [
+            '-daemon',
             '-host', '127.0.0.1',
-            '-port', '$(ZAP_PORT)',
+            '-port', '${ZAP_PORT}',
             '-config', 'api.disablekey=true',
-            '-config', 'api.addrs.addr.name=.*',
-            '-config', 'api.addrs.addr.regex=true']
-          env:
-          - name: ZAP_PORT
-            value: '${ZAP_PORT}'
+          ]
           resources:
             requests:
               memory: 2Gi
