@@ -8,7 +8,7 @@ from codedx_api import CodeDxAPI
 from google.cloud import storage
 
 from notify import slack_message
-from zap_scans import compliance_scan
+from scan import compliance_scan
 
 
 def upload_gcp(bucket_name, scan, filename):

@@ -50,6 +50,7 @@ data:
           resources:
             requests:
               memory: 2Gi
+
         - name: zap
           image: owasp/zap2docker-weekly
           command: ['zap.sh']
@@ -62,9 +63,9 @@ data:
           env:
           - name: ZAP_PORT
             value: '${ZAP_PORT}'
-        resources:
-          requests:
-            memory: 2Gi
+          resources:
+            requests:
+              memory: 2Gi
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicy
