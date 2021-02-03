@@ -5,6 +5,7 @@
 # - a "compliance scan" method that takes a project, url, and scan type, and returns a filename
 
 import os
+import sys
 import time
 
 import google.auth
@@ -27,6 +28,17 @@ def get_gc_token():
     return credentials.token
 
 
+def zap_retry(function, exception):
+    timeout = time.time() + 60*10
+    while time.time() < timeout:
+        try:
+            function()
+            return True
+        except exception:
+            time.sleep(5)
+    return False
+
+
 def zap_init(project, target):
     # Connect to ZAP
     owasp_key = ''  # currently disabled
@@ -35,20 +47,10 @@ def zap_init(project, target):
     proxy = f'http://{host}:{port}'
     zap = ZAPv2(apikey=owasp_key, proxies={'http': proxy, 'https': proxy})
 
-    zap_listening = False
-    timeout = time.time() + 60*10
-    while (not zap_listening) and time.time() < timeout:
-        print("Waiting for Zap daemon to start...")
-        try:
-            zap.context.new_context(project, owasp_key)
-            zap.urlopen(target)
-            zap_listening = True
-        except (ProxyError, NewConnectionError):
-            time.sleep(5)
-
-    if zap_listening == False:
+    if not zap_retry(lambda: zap.context.new_context(project, owasp_key), ProxyError) or \
+            not zap_retry(lambda: zap.urlopen(target), NewConnectionError):
         print("Zap Daemon Timeout")
-        exit(1)
+        sys.exit(1)
     return zap
 
 
