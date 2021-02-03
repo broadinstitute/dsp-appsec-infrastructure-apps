@@ -102,7 +102,7 @@ items:
             - &cron-job-container
               name: zap-trigger
               image: ${ZAP_IMAGE}
-              args: ['trigger.py', 'baseline-scan', 'api-scan', 'auth-scan']
+              args: ['trigger.py', '-s', 'baseline-scan', 'api-scan', 'auth-scan']
               env:
               - name: GCP_PROJECT_ID
                 value: ${PROJECT_ID}
@@ -128,7 +128,7 @@ items:
             << : *cron-job-spec
             containers:
             - << : *cron-job-container
-              args: ['trigger.py', 'ui-scan']
+              args: ['trigger.py', '-s', 'ui-scan']
 ---
 apiVersion: storage.cnrm.cloud.google.com/v1beta1
 kind: StorageBucket
