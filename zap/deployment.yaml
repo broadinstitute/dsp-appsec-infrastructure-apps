@@ -31,7 +31,7 @@ data:
         - name: zap-scan
           image: ${ZAP_IMAGE}
           imagePullPolicy: Always
-          args: ['main.py']
+          args: ['scan.py']
           env:
           - name: CODEDX_URL
             value: ${CODEDX_URL}
