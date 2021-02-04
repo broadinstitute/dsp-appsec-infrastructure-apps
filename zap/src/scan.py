@@ -24,7 +24,7 @@ def upload_gcp(bucket_name, scan, filename):
 
 def get_codedx_client():
     base_url = os.getenv('CODEDX_URL')
-    codedx_api_key = str(os.getenv('CODEDX_API_KEY'))
+    codedx_api_key = str(os.getenv('CODEDX_API_KEY')).decode("utf-8")
     cdx = CodeDxAPI.CodeDx(base_url, codedx_api_key)
     return cdx
 

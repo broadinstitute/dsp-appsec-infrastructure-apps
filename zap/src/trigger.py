@@ -26,6 +26,19 @@ def get_defect_dojo_endpoints(url, key):
 
     return endpoints
 
+def get_callback(future, data):
+    """
+    Handle publish failures
+    """
+    def callback(future):
+        try:
+            print(future.result())
+            futures.pop(data)
+        except:
+            print("Please handle {} for {}.".format(future.exception(), data))
+
+    return callback
+
 def scan_endpoints(endpoints, gcp_project, topic_name, scans):
     """
     Scan multiple endpoints by publishing multiple
@@ -46,6 +59,7 @@ def scan_endpoints(endpoints, gcp_project, topic_name, scans):
     topic_path = publisher.topic_path(gcp_project, topic_name)
 
     for endpoint in endpoints:
+        data = u"{}".format(endpoint)
         codedx_project = None
         for tag in endpoint["tags"]:
             # endpoints to scan will include tag codedx:CODEDX_PROJECT to identify project on codedx
