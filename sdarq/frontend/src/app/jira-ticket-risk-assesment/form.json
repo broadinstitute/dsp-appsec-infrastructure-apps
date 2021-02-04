@@ -6,45 +6,62 @@
        {
         "type": "html",
         "name": "introduction",
-        "html": "<h4> Introduction </h4>\n\nAssessing the risk of a feature/story without having any code written is a hard thing to do. The majority of the value in this exercise should come from the fact that a general idea about the impact that a particular change may have in the Terra Prod environment allows DSP Product Teams to have a meaningful discussion with the Appsec team in order to determine if there is anything inherently wrong from a security perspective before moving on with the actual implementation. \n\n<hr> Moreover, the impact is dependent on and affected by implementation details. For example, the initial risk assessment of a feature/story may be a \"Medium\", however implementation may introduce an insecure change that ultimately brings the impact to a \"High\". Examples would be: using an insecure third-party/open-source component, failing to perform object-level Authorization checks, insufficient/improper validation of untrusted input that can result in content-injection attacks, etc. \n<hr>\n<h4>Note</h4>\nPlease make sure you are familiar with <a href='https://owasp.org/www-pdf-archive/OWASP_Top_10-2017_%28en%29.pdf.pdf'>OWASP Top 10 </a>\n"
+        "html": "<h4> Introduction </h4>\n\nAssessing the risk of a feature/story without having any code written is a hard thing to do. The majority of the value in this exercise should come from the fact that a general idea about the impact that a particular change may have in the Terra Prod environment allows DSP Product Teams to have a meaningful discussion with the Appsec team in order to determine if there is anything inherently wrong from a security perspective before moving on with the actual implementation. \n\n<hr>\n<hr>\n<h4>Prerequisites</h4>\nPlease make sure you are familiar with <a href='https://owasp.org/www-pdf-archive/OWASP_Top_10-2017_%28en%29.pdf.pdf'>OWASP Top 10.</a>This will be an important reference during the risk assessment process\n<hr>\n\n\n\n"
+       },
+       {
+        "type": "html",
+        "name": "risk_assessment_guide",
+        "html": "<h4>Definitions</h4>\n\n-  <u>Threat</u>: Flaw that results in compromise of Confidentiality, Integrity or Availability<br>\n- <u>Risk</u>: Potential for loss due to some vulnerability being exploited <br>\n- <u>Mitigation</u>: The measures in place to help prevent a vulnerability. <br>\n- <u>Confidentiality:</u>: Confidentiality is the protection of data against unauthorized disclosure, or otherwise put, it is about ensuring that only those with the correct authorization can access the data. Confidentiality applies to data at rest, but also to data in motion <br>\n- <u>Integrity:</u>: Integrity is about protecting data against unauthorized modification, or assuring data trustworthiness  <br>\n- <u>Availability:</u>: Availability is about ensuring the presence of information or resources. <br>\n"
+       },
+       {
+        "type": "html",
+        "name": "question1",
+        "html": "<h4>Examples</h4>\n\nYou can find some example changes along with their risk assessment methodology <a href=\"https://www.google.com/\">here</a>.\n\n"
        },
        {
         "type": "radiogroup",
         "name": "high_level",
         "title": "At a high level this change is about:",
         "isRequired": true,
+        "hasComment": true,
+        "commentText": "Use the space below should you need to provide more information or additional context. ",
         "choices": [
          {
-          "value": "item1",
-          "text": "Infrastructure/GCP (e.g. Changing firewall rules, GCP configs, etc). (Note: Changes like these are typically handled by DSP DevOps, usually requested through a ticket)"
+          "value": "change_infrastructure",
+          "text": "Infrastructure/GCP (e.g. Changing firewall rules, GCP configs, etc). (Such changes are *typically* handled by DSP DevOps, usually requested through a ticket)"
          },
          {
-          "value": "item2",
-          "text": "Product (changes related to Terra services, such adding a new service or updating/modifying an existing one, new API endpoint, etc)"
+          "value": "change_product_api",
+          "text": "Product - API (changes related to Terra services, such adding a new service or updating/modifying an existing one, new API endpoint, etc)"
+         },
+         {
+          "value": "change_product_ui",
+          "text": "Product - UI (changes related to Terra UI)"
          }
         ],
         "otherText": "Not sure - I need further help with this. "
        },
        {
-        "type": "checkbox",
+        "type": "radiogroup",
         "name": "infrastructure_gcp",
-        "visibleIf": "{high_level} = 'item1'",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_infrastructure'",
         "title": "You selected this change is about Infrastructure/GCP. Please select all that apply: ",
         "choices": [
          {
-          "value": "item1",
-          "text": "Access control change that involves granting privileged or public access to an entity. (E.g. adding someone as a System Administrator in Terra)"
+          "value": "infrastructure_q1",
+          "text": "Access control change that involves granting privileged or public access to an entity. (E.g. Adding someone as a System Administrator in Terra, Making a service world-reachable, etc.)"
          },
          {
-          "value": "item2",
+          "value": "infrastructure_q2",
           "text": "Changing an existing firewall rule or adding a new one (E.g. changing VPC firewall or Cloud Armor config)"
          },
          {
-          "value": "item3",
+          "value": "infrastructure_q3",
           "text": "Changing logging configs (E.g. adding a new log stream or disabling audit logging)"
          },
          {
-          "value": "item4",
+          "value": "infrastructure_q4",
           "text": "Other"
          }
         ],
@@ -54,25 +71,17 @@
         "type": "checkbox",
         "name": "product_terra",
         "visible": false,
-        "visibleIf": "{high_level} = 'item2'",
+        "visibleIf": "{high_level} = 'change_product_api'",
         "title": "You selected this change is about Product (Terra services). Please select all that apply: ",
         "isRequired": true,
         "choices": [
          {
           "value": "item1",
-          "text": "Changing or adding an API endpoint that takes uncontrolled/direct user input"
-         },
-         {
-          "value": "item6",
-          "text": "Changing or adding an API endpoint that process XML files"
+          "text": "Changing or adding an API endpoint that processes XML files from user input (See OWASP Top 10 A4: https://owasp.org/www-project-top-ten/2017/A4_2017-XML_External_Entities_(XXE).html)"
          },
          {
           "value": "item2",
           "text": "Introducing/changing a file upload feature"
-         },
-         {
-          "value": "item3",
-          "text": "Loading active content, such as scripts or style sheets, from third-parties (i.e., not under our direct control)"
          },
          {
           "value": "item4",
@@ -85,68 +94,58 @@
         ]
        },
        {
-        "type": "radiogroup",
-        "name": "validated_input",
-        "visibleIf": "{product_terra} = ['item1']",
-        "title": "Is user input validated? ",
+        "type": "checkbox",
+        "name": "product_ui_question_change",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_product_ui'",
+        "title": "You selected this change is about Product  - UI. Please select all that apply:",
+        "isRequired": true,
         "choices": [
          {
-          "value": "item1",
-          "text": "Yes"
+          "value": "change_ui_url_inputs",
+          "text": "Feature that involves URL inputs from users or other systems. E.g. This feature allows the user to add a URL which can contain dynamic script content via javascript: protocol urls."
          },
          {
-          "value": "item2",
-          "text": "No"
+          "value": "change_ui_load_active_content",
+          "text": "Loading active content, such as scripts or style sheets, from third-parties (i.e., not under our direct control)"
+         },
+         {
+          "value": "change_ui_change_dom",
+          "text": "Accessing the DOM to inject content into DOM nodes directly or directly using `dangerouslySetInnerHTML` in React"
+         },
+         {
+          "value": "item1",
+          "text": "Other"
          }
-        ]
+        ],
+        "otherText": "Other"
        },
        {
-        "type": "radiogroup",
-        "name": "parameterized_queries",
-        "visibleIf": "{validated_input} = 'item1' and {product_terra} = ['item1']",
-        "title": "Are you using parameterized queries? ",
+        "type": "checkbox",
+        "name": "product_features_other",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_product_api' and {product_terra} = ['item5']",
+        "title": "Select all that apply.",
+        "isRequired": true,
         "choices": [
          {
-          "value": "item1",
-          "text": "Yes or N/A"
+          "value": "change_ui_url_inputs",
+          "text": "This component/feature adds to or changes existing security controls, or otherwise explicitly implements security/privacy features."
          },
          {
-          "value": "item2",
-          "text": "No"
-         }
-        ]
-       },
-       {
-        "type": "radiogroup",
-        "name": "unicode_encoding",
-        "visibleIf": "{parameterized_queries} = 'item1' and {validated_input} = 'item1' and {product_terra} = ['item1']",
-        "title": "Are you implementing policies to prevent bypass unicode encoding?",
-        "choices": [
-         {
-          "value": "item1",
-          "text": "Yes"
+          "value": "change_ui_load_active_content",
+          "text": "This component/feature build/parse URLs, read/write URLs, or operate with/consume URLs."
          },
          {
-          "value": "item2",
-          "text": "No"
-         }
-        ]
-       },
-       {
-        "type": "radiogroup",
-        "name": "sanitized_input",
-        "visibleIf": "{unicode_encoding} = 'item1' and {parameterized_queries} = 'item1' and {validated_input} = 'item1'",
-        "title": "Is user input sanitized?",
-        "choices": [
-         {
-          "value": "item1",
-          "text": "Yes"
+          "value": "change_ui_change_dom",
+          "text": "The implementation of this component/feature includes performing serialization (converting objects to byte strings) and deserialization."
          },
          {
-          "value": "item2",
-          "text": "No"
+          "value": "item1",
+          "text": "None of the above or other change"
          }
-        ]
+        ],
+        "otherText": "Other"
        },
        {
         "type": "html",
@@ -154,59 +153,8 @@
        },
        {
         "type": "radiogroup",
-        "name": "privacy_security_features",
-        "visibleIf": "{product_terra} = ['item5'] and {high_level} = 'item2'",
-        "title": "Does this component/feature adds to or changes existing security controls, or otherwise explicitly implements security/privacy features?",
-        "isRequired": true,
-        "choices": [
-         {
-          "value": "item1",
-          "text": "Yes"
-         },
-         {
-          "value": "item2",
-          "text": "No"
-         }
-        ]
-       },
-       {
-        "type": "radiogroup",
-        "name": "consume_url",
-        "visibleIf": "{privacy_security_features} = 'item2' and {high_level} = 'item2'",
-        "title": "Does this component/feature build/parse URLs, read/write URLs, or operate with/consume URLs?",
-        "isRequired": true,
-        "choices": [
-         {
-          "value": "item1",
-          "text": "Yes"
-         },
-         {
-          "value": "item2",
-          "text": "No"
-         }
-        ]
-       },
-       {
-        "type": "radiogroup",
-        "name": "serialization_deserialization",
-        "visibleIf": "{consume_url} = 'item2' and {high_level} = 'item2'",
-        "title": "Will the implementation of this component/feature include performing serialization (converting objects to byte strings) and deserialization?",
-        "isRequired": true,
-        "choices": [
-         {
-          "value": "item1",
-          "text": "Yes"
-         },
-         {
-          "value": "item2",
-          "text": "No"
-         }
-        ]
-       },
-       {
-        "type": "radiogroup",
         "name": "confidentiality",
-        "visibleIf": "{privacy_security_features} = 'item2' and {consume_url} = 'item2' and {serialization_deserialization} = 'item2' and {high_level} = 'item2'",
+        "visibleIf": "{high_level} = 'change_product_api' and {product_terra} = ['item5'] and {product_features_other} = ['item1']",
         "title": "Confidentiality:  Suppose an attacker would be able to find a vulnerability that is introduced as part of this change and successfully exploit it.  Confidentiality is about protecting the information from being exposed to an unauthorized party. Would the exploitation of a potential vulnerability in this component lead to loss of Confidentiality? ",
         "choices": [
          {
@@ -226,7 +174,8 @@
        {
         "type": "radiogroup",
         "name": "integrity",
-        "visibleIf": "{privacy_security_features} = 'item2' and {consume_url} = 'item2' and {serialization_deserialization} = 'item2' and {high_level} = 'item2'",
+        "visible": false,
+        "visibleIf": "{product_features_other} = ['item1'] and {confidentiality} = 'item2' and {product_features_other} = ['item1']",
         "title": "Integrity: Suppose an attacker would be able to find a vulnerability that is introduced as part of this change, and successfully exploit it.  Integrity is about protecting data from being modified by an unauthorized party. Would the exploitation of a potential vulnerability in this component lead to loss of Integrity?",
         "isRequired": true,
         "choices": [
@@ -247,7 +196,8 @@
        {
         "type": "radiogroup",
         "name": "availability",
-        "visibleIf": "{consume_url} = 'item2' and {privacy_security_features} = 'item2' and {serialization_deserialization} = 'item2' and {high_level} = 'item2'",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_product_api' and {product_terra} = ['item5'] and {product_features_other} = ['item1'] and {integrity} = 'item2' and {confidentiality} = 'item2'",
         "title": "Availability: Suppose an attacker would be able to find a vulnerability that is introduced as part of this change, and successfully exploit it.  Availability means that information is accessible to authorized users, i.e. that Terra and data are accessible by authorized users whenever it's needed. Would the exploitation of a potential vulnerability in this component lead to loss of Availability?",
         "choices": [
          {
@@ -265,31 +215,95 @@
         ]
        },
        {
+        "type": "radiogroup",
+        "name": "if_access_control_change_playbook",
+        "visible": false,
+        "visibleIf": "{infrastructure_gcp} anyof ['other', 'item2', 'item1', 'infrastructure_q1', 'infrastructure_q2', 'infrastructure_q3'] and {high_level} = 'change_infrastructure'",
+        "title": "I have followed one of our standard playbooks to make this change or this change is similar to a previous change that went through a security review",
+        "requiredErrorText": "test",
+        "choices": [
+         {
+          "value": "item1",
+          "text": "Yes"
+         },
+         {
+          "value": "item3",
+          "text": "I am not sure / I'm not aware of any playbooks that could help with this specific change"
+         }
+        ]
+       },
+       {
         "type": "html",
-        "name": "risk_high",
-        "visibleIf": "{infrastructure_gcp} anyof ['item1', 'item2'] and {high_level} = 'item1' or {high_level} = 'item2' and {product_terra} anyof ['item2', 'item3', 'item4', 'item6'] or {high_level} = 'item2' and {privacy_security_features} = 'item1' or {high_level} = 'item2' and {consume_url} = 'item1' or {high_level} = 'item2' and {serialization_deserialization} = 'item1' or {high_level} = 'item2' and {confidentiality} = 'item1' or {high_level} = 'item2' and {integrity} = 'item1' or {high_level} = 'item2' and {product_terra} = ['item1'] and {unicode_encoding} = 'item2' or {high_level} = 'item2' and {product_terra} = ['item1'] and {validated_input} = 'item2' or {high_level} = 'item2' and {product_terra} = ['item1'] and {parameterized_queries} = 'item2' or {high_level} = 'item2' and {product_terra} = ['item1'] and {sanitized_input} = 'item2'",
+        "name": "risk_high_infrastructure_only",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_infrastructure' and {infrastructure_gcp} anyof ['infrastructure_q1', 'infrastructure_q2', 'infrastructure_q3'] and {if_access_control_change_playbook} = 'item3' or {infrastructure_gcp} = 'infrastructure_q4'",
         "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nPlease reach out to appsec@broadinstitute.org or tag someone from the DSP Appsec team in the Jira ticket.\n</div>"
+       },
+       {
+        "type": "html",
+        "name": "risk_high_product_only",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_product_api' and {product_terra} anyof ['item1', 'item2', 'item4']",
+        "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nPlease reach out to appsec@broadinstitute.org or tag someone from the DSP Appsec team in the Jira ticket.\n</div>"
+       },
+       {
+        "type": "html",
+        "name": "risk_high_third_party_scripts",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_product_ui' and {product_terra} = ['item3']",
+        "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nPlease reach out to appsec@broadinstitute.org or tag someone from the DSP Appsec team in the Jira ticket.\n<hr>\nLoading third-party scripts can have a number caveats. \n\n\n</div>"
+       },
+       {
+        "type": "html",
+        "name": "high_ui_change_only",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_product_ui' and {product_ui_question_change} anyof ['change_ui_url_inputs', 'change_ui_load_active_content', 'change_ui_change_dom']",
+        "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nPlease reach out to appsec@broadinstitute.org or tag someone from the DSP Appsec team in the Jira ticket.\n<hr> \n\n\n</div>"
        },
        {
         "type": "html",
         "name": "risk_medium",
         "visible": false,
-        "visibleIf": "{infrastructure_gcp} = ['item3'] and {high_level} = 'item1' or {high_level} = 'item2' and {product_terra} = ['item1'] and {sanitized_input} = 'item1' and {parameterized_queries} = 'item1' and {unicode_encoding} = 'item1' and {validated_input} = 'item1'",
+        "visibleIf": "{infrastructure_gcp} = ['item3'] and {high_level} = 'item1'",
         "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\nPlease reach out to appsec@broadinstitute.org or tag someone from the DSP Appsec team in the Jira ticket.\n</div>"
        },
        {
         "type": "html",
         "name": "risk_low",
-        "visibleIf": "{high_level} = 'item2' and {availability} anyof ['item2', 'item1'] and {confidentiality} = 'item2' and {integrity} = 'item2'",
+        "visibleIf": "{high_level} = 'change_product_api' and {product_terra} = ['item5'] and {product_features_other} = ['item1'] and {confidentiality} = 'item2' and {integrity} = 'item2' and {availability} anyof ['item1', 'item2', 'item3']",
         "html": "<div class=\"alert alert-info\">\nRisk: <b>LOW</b>\n<hr>\n</div>\n\n"
        },
        {
         "type": "html",
-        "name": "question2",
-        "visibleIf": "{confidentiality} = 'item3' and {integrity} = 'item2' or {integrity} = 'item3' or {infrastructure_gcp} = ['item4', 'item3'] or {infrastructure_gcp} = ['item4']",
-        "html": "To determine the risk of this change, please reach out to appsec@broadinstitute.org or tag someone from the DSP Appsec team in the Jira ticket."
+        "name": "risk_low_ui_only",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_product_ui' and {product_ui_question_change} = ['item1']",
+        "html": "<div class=\"alert alert-info\">\nRisk: <b>LOW</b>\n<hr>\n</div>\n\n"
+       },
+       {
+        "type": "html",
+        "name": "risk_low_infrastructure_only",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_infrastructure' and {if_access_control_change_playbook} = 'item1'",
+        "html": "<div class=\"alert alert-info\">\nRisk: <b>LOW</b>\n<hr>\n</div>\n\n"
+       },
+       {
+        "type": "html",
+        "name": "risk_medium_product_only",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_product_api' and {product_terra} = ['item5'] and {product_features_other} anyof ['change_ui_change_dom', 'change_ui_load_active_content', 'change_ui_url_inputs']",
+        "html": "<div class=\"alert alert-info\">\nRisk: <b>MEDIUM</b>\n<hr>\n</div>\n\n"
+       },
+       {
+        "type": "html",
+        "name": "risk_high_generic",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_product_api' and {product_terra} = ['item5'] and {product_features_other} = ['item1'] and {confidentiality} = 'item1' or {high_level} = 'change_product_api' and {product_terra} = ['item5'] and {product_features_other} = ['item1'] and {confidentiality} = 'item3' or {high_level} = 'change_product_api' and {product_terra} = ['item5'] and {product_features_other} = ['item1'] and {confidentiality} = 'item2' and {integrity} = 'item1' or {high_level} = 'change_product_api' and {product_terra} = ['item5'] and {product_features_other} = ['item1'] and {confidentiality} = 'item2' and {integrity} = 'item3'",
+        "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nTo determine the risk of this change, please reach out to appsec@broadinstitute.org or tag someone from the DSP Appsec team in the Jira ticket.\n</div>\n\n"
        }
-      ]
+      ],
+      "title": "Jira Security Risk Assessment Guide"
      }
     ]
    }
+   
