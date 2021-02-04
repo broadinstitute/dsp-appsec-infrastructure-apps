@@ -7,7 +7,7 @@ from datetime import datetime
 from codedx_api import CodeDxAPI
 from google.cloud import storage
 
-from notify import slack_message
+from notify import slack_message, slack_attach
 from zap import compliance_scan
 
 
@@ -38,6 +38,26 @@ def codedx_upload(project, file_name):
 
     cdx.analyze(project, file_name)
 
+def codedx_report(project):
+    cdx = get_codedx_client()
+    cdx.update_projects()
+    if project not in list(cdx.projects):
+        print("Error getting PDF report: project does not exist for PDF report.")
+        return
+    report_title = f"{project}_report_{date.today().strftime("%b%d%y")}.pdf"
+    filters = {
+        "status": ["false-positive", "ignored", "mitigated", "fixed"]
+    }
+    res = cdx.get_pdf(project, 
+                    summary_mode="detailed", 
+                    details_mode="with-source", 
+                    include_result_details=True, 
+                    include_comments=True, 
+                    include_request_response=False, 
+                    file_name=report_title, 
+                    filters=filters)
+
+    slack_attach('#automated-security-scans', report_title)
 
 def main():
     # configure logging
@@ -57,6 +77,7 @@ def main():
             slack_message('#automated-security-scans', slack_text)
     # upload to codedx
     codedx_upload(codedx_project, filename)
+    codedx_report(codedx_project)
 
 
 if __name__ == "__main__":
