@@ -39,6 +39,7 @@ def codedx_upload(project, file_name):
     cdx.analyze(project, file_name)
 
 def codedx_report(project, channel='#automated-security-scans'):
+    print(f"Getting PDF report from Codedx project: {project}")
     cdx = get_codedx_client()
     cdx.update_projects()
     if project not in list(cdx.projects):
@@ -50,15 +51,16 @@ def codedx_report(project, channel='#automated-security-scans'):
         "status": ["false-positive", "ignored", "mitigated", "fixed"]
     }
 
-    res = cdx.get_pdf(project, 
-                    summary_mode="detailed", 
-                    details_mode="with-source", 
-                    include_result_details=True, 
-                    include_comments=True, 
-                    include_request_response=False, 
-                    file_name=report_title, 
-                    filters=filters)
+    cdx.get_pdf(project,
+                summary_mode="detailed",
+                details_mode="with-source",
+                include_result_details=True,
+                include_comments=True,
+                include_request_response=False,
+                file_name=report_title,
+                filters=filters)
 
+    print(f"Uploading PDF report to Slack channel: {channel}")
     slack_attach(channel, report_title)
 
 def main():

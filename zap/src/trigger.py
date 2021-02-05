@@ -27,14 +27,12 @@ def get_defect_dojo_endpoints(url, key):
     return endpoints
 
 def get_callback(future, data):
-    """
-    Handle publish failures
-    """
+    """Handle publish failures"""
     def callback(future):
         try:
             print(future.result())
             futures.pop(data)
-        except:
+        except Exception:
             print("Please handle {} for {}.".format(future.exception(), data))
 
     return callback

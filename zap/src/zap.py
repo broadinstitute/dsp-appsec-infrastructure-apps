@@ -61,7 +61,7 @@ def zap_auth(zap):
     return zap
 
 
-def wait_for_scan(scanner, minutes, is_auth=False, scan_id=None):
+def wait_for_scan(zap, scanner, minutes, is_auth=False, scan_id=None):
     time.sleep(5)
     start = time.time()
     timeout = time.time() + 60*minutes  # timeout is x minutes from now
@@ -88,7 +88,7 @@ def zap_spider(zap, target, is_auth=False):
         zap = zap_auth(zap)
     print(f'Spidering target {target}')
     scanid = zap.spider.scan(target)
-    wait_for_scan(zap.spider, 5, is_auth, scanid)
+    wait_for_scan(zap, zap.spider, 5, is_auth, scanid)
     print('Spider completed')
     return zap
 
@@ -97,7 +97,7 @@ def zap_ajax_spider(zap, target, is_auth=False):
     print(f'Ajax Spider target {target}')
     zap = zap_auth(zap)
     zap.ajaxSpider.scan(target)
-    wait_for_scan(zap.ajaxSpider, 5, is_auth)
+    wait_for_scan(zap, zap.ajaxSpider, 5, is_auth)
     print('Ajax Spider completed')
     return zap
 
@@ -114,7 +114,7 @@ def zap_passive(zap):
 def zap_active(zap, target, is_auth=False):
     print(f'Active Scanning target {target}')
     scanid = zap.ascan.scan(target)
-    wait_for_scan(zap.ascan, 60, is_auth, scanid)
+    wait_for_scan(zap, zap.ascan, 60, is_auth, scanid)
     return zap
 
 
@@ -138,7 +138,7 @@ def send_alerts(channel, project, alerts):
             "type": "divider"
         }
     ]
-    
+
     fields = ['name', 'method', 'url', 'confidence', 'description']
     alerts_dict = {}
     for alert in alerts:
