@@ -47,9 +47,9 @@ appsec_jira_board = os.getenv('appsec_jira_board')
 topic_name = os.environ['JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
 
-
 # Instantiate the DefectDojo backend wrapper
-dd = wrapper.DefectDojoAPI(dojo_host, dojo_api_key, dojo_user, debug=True)
+dd = wrapper.DefectDojoAPIv2(dojo_host, dojo_api_key, dojo_user, api_version="v2")
+
 app = FlaskAPI(__name__)
 
 # Instantiate the Jira backend wrapper
@@ -88,17 +88,7 @@ def submit():
     json_data = request.get_json()
     dojo_name = json_data['Service']
     security_champion = json_data['Security champion']
-
-    # Create a product in DefectDojo
     product_type = 1
-    product = dd.create_product(
-        dojo_name, "Initial Engagement Placeholder", product_type)
-    logging.info("Product created: %s", dojo_name)
-
-    if product.success:
-        product_id = product.id()
-    else:
-        raise Exception("dd.create_product(): " + str(product))
 
     def prepare_dojo_input(json_data):
         """ Prepares defect dojo description input """
@@ -143,10 +133,12 @@ def submit():
         del json_data['Ticket_Description']
 
         # Set product description
-        dd.set_product(product_id, description=prepare_dojo_input(json_data))
+        product = dd.create_product(dojo_name, prepare_dojo_input(json_data), product_type)
+        product_id = product.id()
+        logging.info("Product created: %s", dojo_name)
 
         # Set Slack notification
-        slack_channels_list = ['#appsec-internal', '#dsp-security']
+        slack_channels_list = ['#']
         for channel in slack_channels_list:
             slacknotify.slacknotify_jira(slack_token, channel, dojo_name, security_champion,
                                          product_id, dojo_host_url, jira_instance,
@@ -154,10 +146,12 @@ def submit():
 
     else:
         # Set product description
-        dd.set_product(product_id, description=prepare_dojo_input(json_data))
+        product = dd.create_product(dojo_name, prepare_dojo_input(json_data), product_type)
+        product_id = product.id()
+        logging.info("Product created: %s", dojo_name)
 
         # When Jira ticket creation is not selected
-        slack_channels_list = ['#appsec-internal', '#dsp-security']
+        slack_channels_list = ['#zap-test']
         for channel in slack_channels_list:
             slacknotify.slacknotify(
                 slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
