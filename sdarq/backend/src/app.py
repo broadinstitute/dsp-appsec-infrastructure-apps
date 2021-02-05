@@ -188,7 +188,8 @@ def cis_results():
         "Request to read CIS scanner results for project %s ", project_id_edited)
 
     if re.match(pattern, project_id_edited):
-        table_id = u"{0}.{1}.{2}".format(pubsub_project_id, 'cis', project_id_edited)
+        table_id = u"{0}.{1}.{2}".format(
+            pubsub_project_id, 'cis', project_id_edited)
         try:
             client.get_table(table_id)
             sql_query = "SELECT table_id, FORMAT_TIMESTAMP('%m-%d-%G %T',TIMESTAMP_MILLIS(last_modified_time)) AS last_modified_date FROM `{0}.cis.__TABLES__` WHERE table_id=@tableid".format(
