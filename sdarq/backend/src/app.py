@@ -188,18 +188,10 @@ def cis_results():
         "Request to read CIS scanner results for project %s ", project_id_edited)
 
     if re.match(pattern, project_id_edited):
-        sql_tables = """
-                SELECT table_name FROM `cis.INFORMATION_SCHEMA.TABLES` WHERE table_name=@corpus
-                """
-        job_config = bigquery.QueryJobConfig(
-            query_parameters=[
-                bigquery.ScalarQueryParameter(
-                    "corpus", "STRING", project_id_edited)
-            ])
-        query_job_table = client.query(sql_tables, job_config=job_config)
-        results_table = query_job_table.result()
-        tables = [dict(row) for row in query_job_table]
-        if results_table.total_rows != 0:
+        table_id = u"{0}.{1}.{2}".format(
+            pubsub_project_id, 'cis', project_id_edited)
+        try:
+            client.get_table(table_id)
             sql_query = "SELECT table_id, FORMAT_TIMESTAMP('%m-%d-%G %T',TIMESTAMP_MILLIS(last_modified_time)) AS last_modified_date FROM `{0}.cis.__TABLES__` WHERE table_id=@tableid".format(
                 str(pubsub_project_id))
             job_config = bigquery.QueryJobConfig(
@@ -218,7 +210,7 @@ def cis_results():
             table = json.dumps({'findings': findings, 'table': table_data},
                                indent=4, sort_keys=True, default=str)
             return table
-        else:
+        except Exception:
             notfound = f"""
             This Google project is not found! Did you make sure to supply the right GCP Project ID?
             You can verify the ID of the project you want to scan by running the following command:
