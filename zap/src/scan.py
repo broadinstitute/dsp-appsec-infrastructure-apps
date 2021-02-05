@@ -44,7 +44,8 @@ def codedx_report(project, channel='#automated-security-scans'):
     if project not in list(cdx.projects):
         print("Error getting PDF report: project does not exist for PDF report.")
         return
-    report_title = f"{project}_report_{date.today().strftime("%b%d%y")}.pdf"
+    now = datetime.now()
+    report_title = f'{project}_report_{now:%Y%m%d}.pdf'
     filters = {
         "status": ["false-positive", "ignored", "mitigated", "fixed"]
     }
