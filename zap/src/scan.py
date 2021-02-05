@@ -72,7 +72,7 @@ def main():
     slack_channel = os.getenv('SLACK_CHANNEL')
 
     # run the scan
-    filename = compliance_scan(codedx_project, target_url, scan_type, '#automated-security-scans')
+    filename = compliance_scan(codedx_project, target_url, '#automated-security-scans', scan_type)
     if bucket_name:
         storage_object_url = upload_gcp(bucket_name, scan_type, filename)
         if scan_type == 'ui-scan':  # right now this is what we have to check for compliance
