@@ -9,6 +9,15 @@ def slack_message(channel, msg):
     if response.status_code != 200:
         print(f'Response from slack returned an error: {response.body}')
 
+def slack_blocks(channel, blocks):
+    attachments = [{"blocks": blocks}]
+    client = slack.WebClient(slack_token)
+    response = client.chat_postMessage(
+        channel=channel,
+        attachments=attachments)
+    if response.status_code != 200:
+        print(f'Response from slack blocks returned an error: {response.body}')
+
 def slack_attach(channel, filename):
     client = WebClient(token=os.environ['SLACK_TOKEN'])
     response = client.chat_postMessage(
@@ -17,7 +26,7 @@ def slack_attach(channel, filename):
     )
 
     if response.status_code != 200:
-        print(f'Response from slack returned an error: {response.body}')
+        print(f'Response from slack file message returned an error: {response.body}')
     
     file_path = filename
 

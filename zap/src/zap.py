@@ -13,9 +13,7 @@ import google.auth.transport.requests
 from requests.exceptions import ProxyError
 from urllib3.exceptions import NewConnectionError
 from zapv2 import ZAPv2
-
-from notify import slack_message
-
+from notify import slack_blocks
 
 def get_gc_token():
     credentials, __ = google.auth.default(
@@ -127,7 +125,37 @@ def zap_write(zap, fn):
     return zap
 
 
-def compliance_scan(project, target, scan='baseline-scan'):
+def send_alerts(channel, alerts):
+    blocks = [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"<!here> :triangular_flag_on_post: New high risk alerts discovered during Zap Scan for project *{project}*"
+            }
+        },
+        {
+            "type": "divider"
+        }
+    ]
+    
+    fields = ['name', 'method', 'url', 'confidence', 'description']
+    for alert in alerts:
+        slack_section = {
+            "type": "section",
+            "fields": []
+        }
+        for field in fields:
+            if field in alert:
+                slack_section["fields"].append({
+                    "type": "mrkdwn",
+                    "text": f"*{field.title()}*:\n{alert[field]}"
+                })
+        blocks.append(slack_section)
+    slack_blocks(channel, blocks)
+
+
+def compliance_scan(project, target, scan='baseline-scan', channel):
     is_auth = scan != 'baseline-scan'
     zap = zap_init(project, target)
     zap = zap_access(zap, target)
@@ -141,10 +169,10 @@ def compliance_scan(project, target, scan='baseline-scan'):
     if scan == 'ui-scan':
         zap = zap_active(zap, target, is_auth)
 
-    highs = [alert for alert in zap.alert.alerts() if alert['risk'] == 'High']
-    if highs:
-        slack_text = f"High risk alerts detected in Zap Scan for {project}/{target}:\n```{highs}```"
-        slack_message('#automated-security-scans', slack_text)
+    if channel:
+        highs = [alert for alert in zap.alert.alerts() if alert['risk'] == 'High']
+        if highs:
+            send_alerts(channel, highs)
 
     file_name = f'{project}_{scan}_report.xml'.replace("-", "_")
     zap = zap_write(zap, file_name)

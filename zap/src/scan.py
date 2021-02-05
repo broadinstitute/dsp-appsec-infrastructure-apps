@@ -38,7 +38,7 @@ def codedx_upload(project, file_name):
 
     cdx.analyze(project, file_name)
 
-def codedx_report(project):
+def codedx_report(project, channel='#automated-security-scans'):
     cdx = get_codedx_client()
     cdx.update_projects()
     if project not in list(cdx.projects):
@@ -48,6 +48,7 @@ def codedx_report(project):
     filters = {
         "status": ["false-positive", "ignored", "mitigated", "fixed"]
     }
+
     res = cdx.get_pdf(project, 
                     summary_mode="detailed", 
                     details_mode="with-source", 
@@ -57,7 +58,7 @@ def codedx_report(project):
                     file_name=report_title, 
                     filters=filters)
 
-    slack_attach('#automated-security-scans', report_title)
+    slack_attach(channel, report_title)
 
 def main():
     # configure logging
@@ -67,9 +68,10 @@ def main():
     target_url = os.getenv('URL')
     scan_type = os.getenv('SCAN_TYPE')
     bucket_name = os.getenv('BUCKET_NAME')
+    slack_channel = os.getenv('SLACK_CHANNEL')
 
     # run the scan
-    filename = compliance_scan(codedx_project, target_url, scan_type)
+    filename = compliance_scan(codedx_project, target_url, scan_type, '#automated-security-scans')
     if bucket_name:
         storage_object_url = upload_gcp(bucket_name, scan_type, filename)
         if scan_type == 'ui-scan':  # right now this is what we have to check for compliance
@@ -77,7 +79,8 @@ def main():
             slack_message('#automated-security-scans', slack_text)
     # upload to codedx
     codedx_upload(codedx_project, filename)
-    codedx_report(codedx_project)
+    if slack_channel:
+        codedx_report(codedx_project, slack_channel)
 
 
 if __name__ == "__main__":
