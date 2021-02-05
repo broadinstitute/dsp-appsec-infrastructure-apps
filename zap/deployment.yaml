@@ -61,6 +61,10 @@ data:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.annotations['SCAN_TYPE']
+          - name: SLACK_CHANNEL
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.annotations['SLACK_CHANNEL']
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicy
