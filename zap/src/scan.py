@@ -96,10 +96,13 @@ def main():
     filename = compliance_scan(codedx_project, target_url, scan_type)
     codedx_upload(codedx_project, filename)
 
-    if scan_type == "ui-scan" and bucket_name:
+    gcs_slack_text = ""
+    if scan_type == "ui-scan":
+        # if no slack_channel given, send alerts on ui-scans to defaults AppSec channel
+        if not slack_channel: 
+            slack_channel = "#automated_security_scans"
         storage_object_url = upload_gcp(bucket_name, scan_type, filename)
-        slack_text = f"<!here> New vulnerability report uploaded to GCS bucket: {storage_object_url}"
-        slack_message('#automated-security-scans', slack_text)
+        gcs_slack_text = f"<!here> New vulnerability report uploaded to GCS bucket: {storage_object_url}\n"
 
     # upload to codedx
     if slack_channel:
@@ -107,11 +110,14 @@ def main():
         if high_alert_count > 0:
             report = get_codedx_report_by_alert_severity(codedx_project, alert_filters)
             report_message = (
-                f":triangular_flag_on_post:  Endpoint { target_url } contains "
+                gcs_slack_text,
+                f" :triangular_flag_on_post:  Endpoint { target_url } contains "
                 f"{ high_alert_count } high or critical risk vulnerabilities. "
                 f"Please see attached report for details."
             )
             slack_attach(slack_channel, report_message, report)
+        elif gcs_slack_text:
+            slack_message(slack_channel, gcs_slack_text)
 
 
 if __name__ == "__main__":
