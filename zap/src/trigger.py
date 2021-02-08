@@ -67,8 +67,6 @@ def scan_endpoints(endpoints, gcp_project, topic_name, scans):
                 codedx_project = "".join(tag.split(":")[1:])
             if "slack" in tag:
                 slack_channel = "".join(tag.split(":")[1:])
-            if "bucket" in tag:
-                bucket_name = "".join(tag.split(":")[1:])
         if codedx_project is not None:
             for scan_type in endpoint["tags"]:
                 if scan_type in scans:
@@ -79,8 +77,7 @@ def scan_endpoints(endpoints, gcp_project, topic_name, scans):
                         CODEDX_PROJECT=codedx_project,
                         URL=url,
                         SCAN_TYPE=scan_type,
-                        SLACK_CHANNEL=slack_channel,
-                        BUCKET_NAME=bucket_name
+                        SLACK_CHANNEL=slack_channel
                     )
 
                     futures[data] = future
