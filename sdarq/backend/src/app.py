@@ -43,7 +43,7 @@ jira_instance = os.getenv('jira_instance')
 sdarq_host = os.getenv('sdarq_host')
 dojo_host_url = os.getenv('dojo_host_url')
 firestore_collection = os.getenv('firestore_collection')
-appsec_jira_board = os.getenv('appsec_jira_board')
+# appsec_jira_board = os.getenv('appsec_jira_board')
 topic_name = os.environ['JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
 
@@ -106,7 +106,7 @@ def submit():
     appsec_jira_ticket_description = github_url + '\n' + architecture_diagram
     appsec_jira_ticket_summury = 'Threat Model request ' + dojo_name
 
-    jira_ticket_appsec = jira.create_issue(project=appsec_jira_board,
+    jira_ticket_appsec = jira.create_issue(project='DSEC',
                                            summary=appsec_jira_ticket_summury,
                                            description=str(
                                                appsec_jira_ticket_description),
@@ -295,7 +295,7 @@ def request_tm():
 
     logging.info("Request for threat model for project %s ", project_name)
 
-    jira_ticket_appsec = jira.create_issue(project=appsec_jira_board,
+    jira_ticket_appsec = jira.create_issue(project='DSEC',
                                            summary=appsec_jira_ticket_summury,
                                            description=str(
                                                appsec_jira_ticket_description),
@@ -306,7 +306,7 @@ def request_tm():
     slack_channels_list = ['#dsp-security', '#appsec-internal']
     for channel in slack_channels_list:
         slacknotify.slacknotify_threat_model(slack_token, channel, security_champion,
-                                             request_type, project_name, jira_instance, jira_ticket_appsec, appsec_jira_board)
+                                             request_type, project_name, jira_instance, jira_ticket_appsec, 'DSEC')
 
     return ''
 
