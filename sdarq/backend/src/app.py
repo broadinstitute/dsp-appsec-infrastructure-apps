@@ -105,7 +105,7 @@ def submit():
     appsec_jira_ticket_description = github_url + '\n' + architecture_diagram
     appsec_jira_ticket_summury = 'Threat Model request ' + dojo_name
 
-    jira_ticket_appsec = jira.create_issue(project='ATP',
+    jira_ticket_appsec = jira.create_issue(project='DSEC',
                                            summary=appsec_jira_ticket_summury,
                                            description=str(
                                                appsec_jira_ticket_description),
@@ -137,7 +137,7 @@ def submit():
         logging.info("Product created: %s", dojo_name)
 
         # Set Slack notification
-        slack_channels_list = ['#zap-test']
+        slack_channels_list = ['#appsec-internal', '#dsp-security']
         for channel in slack_channels_list:
             slacknotify.slacknotify_jira(slack_token, channel, dojo_name, security_champion,
                                          product_id, dojo_host_url, jira_instance,
@@ -150,7 +150,7 @@ def submit():
         logging.info("Product created: %s", dojo_name)
 
         # When Jira ticket creation is not selected
-        slack_channels_list = ['#zap-test']
+        slack_channels_list = ['#appsec-internal', '#dsp-security']
         for channel in slack_channels_list:
             slacknotify.slacknotify(
                 slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
@@ -294,7 +294,7 @@ def request_tm():
 
     logging.info("Request for threat model for project %s ", project_name)
 
-    jira_ticket_appsec = jira.create_issue(project='ATP',
+    jira_ticket_appsec = jira.create_issue(project='DSEC',
                                            summary=appsec_jira_ticket_summury,
                                            description=str(
                                                appsec_jira_ticket_description),
@@ -305,7 +305,7 @@ def request_tm():
     slack_channels_list = ['#dsp-security', '#appsec-internal']
     for channel in slack_channels_list:
         slacknotify.slacknotify_threat_model(slack_token, channel, security_champion,
-                                             request_type, project_name, jira_instance, jira_ticket_appsec, 'ATP')
+                                             request_type, project_name, jira_instance, jira_ticket_appsec, 'DSEC')
 
     return ''
 
