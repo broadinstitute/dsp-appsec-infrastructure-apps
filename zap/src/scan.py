@@ -56,6 +56,14 @@ def get_codedx_alert_count_by_severity(project, alert_filters):
     return res["count"]
 
 
+def get_alerts_string(codedx_project, alert_filters):
+    alert_string = ""
+    for severity in alert_filters:
+        count = get_codedx_alert_count_by_severity(codedx_project, severity)
+        alert_string += f"{ count } { severity } risk findings\n"
+    return alert_string
+
+
 def get_codedx_report_by_alert_severity(project, severity_filters):
     print(f"Getting PDF report from Codedx project: {project}")
     cdx = get_codedx_client()
@@ -112,11 +120,11 @@ def main():
         alert_count = get_codedx_alert_count_by_severity(codedx_project, alert_filters)
         if alert_count > 0:
             report = get_codedx_report_by_alert_severity(codedx_project, alert_filters)
-            alerts_string = ",".join(alert_filters)
+            alerts_string = get_alerts_string(codedx_project, alert_filters)
             report_message = (
                 f"{ gcs_slack_text }"
-                f":triangular_flag_on_post:  Endpoint { target_url } contains "
-                f"{ alert_count } [{ alerts_string }] risk vulnerabilities. "
+                f":triangular_flag_on_post:  Endpoint { target_url } contains:\n"
+                f"{ alerts_string }"
                 f"Please see attached report for details."
             )
             slack_attach(slack_channel, report_message, report)
