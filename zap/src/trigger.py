@@ -59,8 +59,8 @@ def scan_endpoints(endpoints, gcp_project, topic_name, scans):
     for endpoint in endpoints:
         data = u"{}".format(endpoint)
         codedx_project = None
-        slack_channel = None
-        bucket_name = None
+        slack_channel = ""
+        bucket_name = ""
         for tag in endpoint["tags"]:
             # endpoints to scan will include tag codedx:CODEDX_PROJECT to identify project on codedx
             if "codedx" in tag:
@@ -73,43 +73,16 @@ def scan_endpoints(endpoints, gcp_project, topic_name, scans):
             for scan_type in endpoint["tags"]:
                 if scan_type in scans:
                     url = f"{endpoint['protocol']}://{endpoint['host']}{endpoint['path']}"
-                    # When a message is published, the client returns a future.
-                    if bucket_name and slack_channel:
-                        future = publisher.publish(
-                            topic_path,
-                            data=message,
-                            CODEDX_PROJECT=codedx_project,
-                            URL=url,
-                            SCAN_TYPE=scan_type,
-                            SLACK_CHANNEL=slack_channel,
-                            BUCKET_NAME=bucket_name
-                        )
-                    elif bucket_name:
-                        future = publisher.publish(
-                            topic_path,
-                            data=message,
-                            CODEDX_PROJECT=codedx_project,
-                            URL=url,
-                            SCAN_TYPE=scan_type,
-                            BUCKET_NAME=bucket_name
-                        )
-                    elif slack_channel:
-                        future = publisher.publish(
-                            topic_path,
-                            data=message,
-                            CODEDX_PROJECT=codedx_project,
-                            URL=url,
-                            SCAN_TYPE=scan_type,
-                            SLACK_CHANNEL=slack_channel
-                        )
-                    else:
-                        future = publisher.publish(
-                            topic_path,
-                            data=message,
-                            CODEDX_PROJECT=codedx_project,
-                            URL=url,
-                            SCAN_TYPE=scan_type
-                        )
+                    future = publisher.publish(
+                        topic_path,
+                        data=message,
+                        CODEDX_PROJECT=codedx_project,
+                        URL=url,
+                        SCAN_TYPE=scan_type,
+                        SLACK_CHANNEL=slack_channel,
+                        BUCKET_NAME=bucket_name
+                    )
+                    
                     futures[data] = future
                     # Publish failures shall be handled in the callback function.
                     future.add_done_callback(get_callback(future, data))
