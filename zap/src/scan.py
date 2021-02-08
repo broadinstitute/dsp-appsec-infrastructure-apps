@@ -58,9 +58,16 @@ def get_codedx_alert_count_by_severity(project, alert_filters):
 
 def get_alerts_string(codedx_project, alert_filters):
     alert_string = ""
+    emojis = {
+        "Critical": ":stopsign:",
+        "High": ":triangular_flag_on_post:",
+        "Medium": ":radioactive_sign:",
+        "Low": ":warning:",
+        "Info": ":heavy_check_mark:"
+    }
     for severity in alert_filters:
         count = get_codedx_alert_count_by_severity(codedx_project, severity)
-        alert_string += f"{ count } { severity } risk findings\n"
+        alert_string += f"\t{ emojis[severity] } { count } { severity } findings\n"
     return alert_string
 
 
@@ -101,9 +108,9 @@ def main():
     all_alerts = os.getenv('ALL_ALERTS')
 
     if all_alerts:
-        alert_filters = ["Info", "Low", "Medium", "High", "Critical"]
+        alert_filters = ["Critical", "High", "Medium", "Low", "Info"]
     else:
-        alert_filters = ["High", "Critical"]
+        alert_filters = ["Critical", "High"]
 
     # run the scan
     filename = compliance_scan(codedx_project, target_url, scan_type)
@@ -123,7 +130,7 @@ def main():
             alerts_string = get_alerts_string(codedx_project, alert_filters)
             report_message = (
                 f"{ gcs_slack_text }"
-                f":triangular_flag_on_post:  Endpoint { target_url } contains:\n"
+                f"Endpoint { target_url } contains:\n"
                 f"{ alerts_string }"
                 f"Please see attached report for details."
             )
