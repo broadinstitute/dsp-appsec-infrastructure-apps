@@ -60,7 +60,6 @@ def scan_endpoints(endpoints, gcp_project, topic_name, scans):
         data = u"{}".format(endpoint)
         codedx_project = None
         slack_channel = ""
-        bucket_name = ""
         for tag in endpoint["tags"]:
             # endpoints to scan will include tag codedx:CODEDX_PROJECT to identify project on codedx
             if "codedx" in tag:
