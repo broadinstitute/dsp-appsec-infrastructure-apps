@@ -90,7 +90,12 @@ def main():
     scan_type = os.getenv('SCAN_TYPE')
     bucket_name = os.getenv('BUCKET_NAME')
     slack_channel = os.getenv('SLACK_CHANNEL')
-    alert_filters = os.getenv('ALERT_FILTERS', "High,Critical").split(",")
+    all_alerts = os.getenv('ALL_ALERTS')
+
+    if all_alerts:
+        alert_filters = ["Info", "Low", "Medium", "High", "Critical"]
+    else:
+        alert_filters = ["High", "Critical"]
 
     # run the scan
     filename = compliance_scan(codedx_project, target_url, scan_type)
@@ -106,13 +111,13 @@ def main():
 
     # upload to codedx
     if slack_channel:
-        high_alert_count = get_codedx_alert_count_by_severity(codedx_project, alert_filters)
-        if high_alert_count > 0:
+        alert_count = get_codedx_alert_count_by_severity(codedx_project, alert_filters)
+        if alert_count > 0:
             report = get_codedx_report_by_alert_severity(codedx_project, alert_filters)
             report_message = (
                 f"{ gcs_slack_text }"
                 f":triangular_flag_on_post:  Endpoint { target_url } contains "
-                f"{ high_alert_count } high or critical risk vulnerabilities. "
+                f"{ alert_count } [{ ",".join(alert_filters) }] risk vulnerabilities. "
                 f"Please see attached report for details."
             )
             slack_attach(slack_channel, report_message, report)
