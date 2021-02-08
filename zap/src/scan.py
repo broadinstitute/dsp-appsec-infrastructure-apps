@@ -114,10 +114,11 @@ def main():
         alert_count = get_codedx_alert_count_by_severity(codedx_project, alert_filters)
         if alert_count > 0:
             report = get_codedx_report_by_alert_severity(codedx_project, alert_filters)
+            alerts_string = ",".join(alert_filters)
             report_message = (
                 f"{ gcs_slack_text }"
                 f":triangular_flag_on_post:  Endpoint { target_url } contains "
-                f"{ alert_count } [{ ",".join(alert_filters) }] risk vulnerabilities. "
+                f"{ alert_count } [{ alerts_string }] risk vulnerabilities. "
                 f"Please see attached report for details."
             )
             slack_attach(slack_channel, report_message, report)
