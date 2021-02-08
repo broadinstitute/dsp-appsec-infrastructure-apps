@@ -60,12 +60,15 @@ def scan_endpoints(endpoints, gcp_project, topic_name, scans):
         data = u"{}".format(endpoint)
         codedx_project = None
         slack_channel = None
+        bucket_name = None
         for tag in endpoint["tags"]:
             # endpoints to scan will include tag codedx:CODEDX_PROJECT to identify project on codedx
             if "codedx" in tag:
                 codedx_project = "".join(tag.split(":")[1:])
             if "slack" in tag:
                 slack_channel = "".join(tag.split(":")[1:])
+            if "bucket" in tag:
+                bucket_name = "".join(tag.split(":")[1:])
         if codedx_project is not None:
             for scan_type in endpoint["tags"]:
                 if scan_type in scans:
@@ -77,7 +80,8 @@ def scan_endpoints(endpoints, gcp_project, topic_name, scans):
                         CODEDX_PROJECT=codedx_project,
                         URL=url,
                         SCAN_TYPE=scan_type,
-                        SLACK_CHANNEL=slack_channel
+                        SLACK_CHANNEL=slack_channel,
+                        BUCKET_NAME=bucket_name
                     )
                     futures[data] = future
                     # Publish failures shall be handled in the callback function.

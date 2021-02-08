@@ -125,40 +125,7 @@ def zap_write(zap, fn):
     return zap
 
 
-def send_alerts(channel, project, alerts):
-    blocks = [
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": f"<!here> :triangular_flag_on_post: New high risk alerts discovered during Zap Scan for project *{project}*"
-            }
-        },
-        {
-            "type": "divider"
-        }
-    ]
-
-    fields = ['name', 'method', 'url', 'confidence', 'description']
-    alerts_dict = {}
-    for alert in alerts:
-        if alert['alert'] not in alerts_dict:
-            slack_section = {
-                "type": "section",
-                "fields": []
-            }
-            for field in fields:
-                if field in alert:
-                    slack_section["fields"].append({
-                        "type": "mrkdwn",
-                        "text": f"*{field.title()}*:\n{alert[field]}"
-                    })
-            blocks.append(slack_section)
-            alerts_dict[alert['alert']] = True
-    slack_blocks(channel, blocks)
-
-
-def compliance_scan(project, target, channel, scan='baseline-scan'):
+def compliance_scan(project, target, scan='baseline-scan'):
     is_auth = scan != 'baseline-scan'
     zap = zap_init(project, target)
     zap = zap_access(zap, target)
@@ -171,11 +138,6 @@ def compliance_scan(project, target, channel, scan='baseline-scan'):
     zap = zap_passive(zap)
     if scan == 'ui-scan':
         zap = zap_active(zap, target, is_auth)
-
-    if channel:
-        highs = [alert for alert in zap.alert.alerts() if alert['risk'] == 'High']
-        if highs:
-            send_alerts(channel, project, highs)
 
     file_name = f'{project}_{scan}_report.xml'.replace("-", "_")
     zap = zap_write(zap, file_name)

@@ -19,7 +19,7 @@ def slack_blocks(channel, blocks):
     if response.status_code != 200:
         print(f'Response from slack blocks returned an error: {response.body}')
 
-def slack_attach(channel, filename):
+def slack_attach(channel, msg, filename):
     client = WebClient(token=os.environ['SLACK_TOKEN'])
     file_path = filename
     with open(file_path , "rb"):
@@ -27,7 +27,7 @@ def slack_attach(channel, filename):
             channels=channel,
             file=file_path,
             title=filename,
-            initial_comment="Please see attached vulnerability report."
+            initial_comment=msg
         )
 
     if response.status_code != 200:
