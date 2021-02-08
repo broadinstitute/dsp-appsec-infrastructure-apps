@@ -102,7 +102,7 @@ def main():
         if not slack_channel: 
             slack_channel = "#automated_security_scans"
         storage_object_url = upload_gcp(bucket_name, scan_type, filename)
-        gcs_slack_text = f"<!here> New vulnerability report uploaded to GCS bucket: {storage_object_url}\n"
+        gcs_slack_text = f"New vulnerability report uploaded to GCS bucket: {storage_object_url}\n"
 
     # upload to codedx
     if slack_channel:
@@ -110,8 +110,8 @@ def main():
         if high_alert_count > 0:
             report = get_codedx_report_by_alert_severity(codedx_project, alert_filters)
             report_message = (
-                gcs_slack_text,
-                f" :triangular_flag_on_post:  Endpoint { target_url } contains "
+                f"{ gcs_slack_text }"
+                f":triangular_flag_on_post:  Endpoint { target_url } contains "
                 f"{ high_alert_count } high or critical risk vulnerabilities. "
                 f"Please see attached report for details."
             )

@@ -138,7 +138,7 @@ def compliance_scan(project, target, scan='baseline-scan'):
     if scan == 'ui-scan':
         zap = zap_active(zap, target, is_auth)
 
-    file_name = f'{project}_{scan}_report.xml'.replace("-", "_")
+    file_name = f'{project}_{scan}_report.xml'.replace("-", "_").replace(" ", "")
     zap = zap_write(zap, file_name)
     zap.core.shutdown()
 

@@ -69,6 +69,7 @@ data:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.annotations['ALERT_FILTERS']
+            optional: true
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicy
