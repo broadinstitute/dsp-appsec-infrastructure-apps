@@ -74,15 +74,42 @@ def scan_endpoints(endpoints, gcp_project, topic_name, scans):
                 if scan_type in scans:
                     url = f"{endpoint['protocol']}://{endpoint['host']}{endpoint['path']}"
                     # When a message is published, the client returns a future.
-                    future = publisher.publish(
-                        topic_path,
-                        data=message,
-                        CODEDX_PROJECT=codedx_project,
-                        URL=url,
-                        SCAN_TYPE=scan_type,
-                        SLACK_CHANNEL=slack_channel,
-                        BUCKET_NAME=bucket_name
-                    )
+                    if bucket_name and slack_channel:
+                        future = publisher.publish(
+                            topic_path,
+                            data=message,
+                            CODEDX_PROJECT=codedx_project,
+                            URL=url,
+                            SCAN_TYPE=scan_type,
+                            SLACK_CHANNEL=slack_channel,
+                            BUCKET_NAME=bucket_name
+                        )
+                    elif bucket_name:
+                        future = publisher.publish(
+                            topic_path,
+                            data=message,
+                            CODEDX_PROJECT=codedx_project,
+                            URL=url,
+                            SCAN_TYPE=scan_type,
+                            BUCKET_NAME=bucket_name
+                        )
+                    elif slack_channel:
+                        future = publisher.publish(
+                            topic_path,
+                            data=message,
+                            CODEDX_PROJECT=codedx_project,
+                            URL=url,
+                            SCAN_TYPE=scan_type,
+                            SLACK_CHANNEL=slack_channel
+                        )
+                    else:
+                        future = publisher.publish(
+                            topic_path,
+                            data=message,
+                            CODEDX_PROJECT=codedx_project,
+                            URL=url,
+                            SCAN_TYPE=scan_type
+                        )
                     futures[data] = future
                     # Publish failures shall be handled in the callback function.
                     future.add_done_callback(get_callback(future, data))

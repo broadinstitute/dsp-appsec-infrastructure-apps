@@ -107,7 +107,7 @@ def main():
         if high_alert_count > 0:
             report = get_codedx_report_by_alert_severity(codedx_project, alert_filters)
             slack_message = (
-                f":triangular_flag_on_post:  CodeDx Project { codedx_project } contains "
+                f":triangular_flag_on_post:  Endpoint { target_url } contains "
                 f"{ high_alert_count } high or critical risk vulnerabilities. "
                 f"Please see attached report for details."
             )
