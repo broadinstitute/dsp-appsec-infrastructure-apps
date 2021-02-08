@@ -307,6 +307,7 @@ def request_tm():
         slacknotify.slacknotify_threat_model(slack_token, channel, security_champion,
                                              request_type, project_name, jira_instance, jira_ticket_appsec, 'ATP')
 
+
     return ''
 
 
