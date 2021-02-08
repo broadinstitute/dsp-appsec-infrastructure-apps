@@ -27,7 +27,7 @@ def get_defect_dojo_endpoints(url, key):
     return endpoints
 
 def get_callback(future, data):
-    """Handle publish failures"""
+    """Handle publish failures."""
     def callback(future):
         try:
             print(future.result())
@@ -82,7 +82,7 @@ def scan_endpoints(endpoints, gcp_project, topic_name, scans):
                         SLACK_CHANNEL=slack_channel,
                         BUCKET_NAME=bucket_name
                     )
-                    
+
                     futures[data] = future
                     # Publish failures shall be handled in the callback function.
                     future.add_done_callback(get_callback(future, data))

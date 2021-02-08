@@ -13,7 +13,6 @@ import google.auth.transport.requests
 from requests.exceptions import ProxyError
 from urllib3.exceptions import NewConnectionError
 from zapv2 import ZAPv2
-from notify import slack_blocks
 
 def get_gc_token():
     credentials, __ = google.auth.default(
