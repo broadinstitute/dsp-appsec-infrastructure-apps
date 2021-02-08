@@ -105,7 +105,7 @@ def main():
     if scan_type == "ui-scan":
         # if no slack_channel given, send alerts on ui-scans to defaults AppSec channel
         if not slack_channel: 
-            slack_channel = "#automated_security_scans"
+            slack_channel = "#automated-security-scans"
         storage_object_url = upload_gcp(bucket_name, scan_type, filename)
         gcs_slack_text = f"New vulnerability report uploaded to GCS bucket: {storage_object_url}\n"
 
