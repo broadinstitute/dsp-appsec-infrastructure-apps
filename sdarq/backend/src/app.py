@@ -201,7 +201,7 @@ def cis_results():
             query_job.result()
             findings = [dict(row) for row in query_job]
             table = json.dumps({'findings': findings, 'table': table_data},
-                               indent=4, sort_keys=True, default=str)
+                               indent=4, default=str)
             return table
         except Exception:
             notfound = f"""
