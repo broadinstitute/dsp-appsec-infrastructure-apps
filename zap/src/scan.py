@@ -114,8 +114,8 @@ def main():
     slack_channel = os.getenv("SLACK_CHANNEL")
 
     default_severities = "|".join((Severity.CRITICAL.value, Severity.HIGH.value))
-    severities = os.getenv("SEVERITIES", default_severities).split("|")
-    severities = [Severity(s) for s in severities]
+    severities = os.getenv("SEVERITIES") or default_severities
+    severities = [Severity(s) for s in severities.split("|")]
 
     # run the scan
     filename = compliance_scan(codedx_project, target_url, scan_type)
