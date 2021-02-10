@@ -39,20 +39,6 @@ def codedx_upload(cdx: CodeDx, project: str, filename: str):
     cdx.analyze(project, filename)
 
 
-def get_codedx_alert_count_by_severity(cdx: CodeDx, project: str, severity: str) -> int:
-    if project not in list(cdx.projects):
-        raise ValueError("Error getting high alert count: project does not exist.")
-    filters = {
-        "filter": {
-            "severity": severity,
-        },
-    }
-    res = cdx.get_finding_count(project, filters)
-    if "count" not in res:
-        print(f"Error fetching count: {res}")
-    return res["count"]
-
-
 class Severity(str, Enum):
     CRITICAL = "Critical"
     HIGH = "High"
@@ -61,7 +47,23 @@ class Severity(str, Enum):
     INFO = "Info"
 
 
-def get_alerts_string(cdx: CodeDx, project: str, severities: List[str]):
+def get_codedx_alert_count_by_severity(
+    cdx: CodeDx, project: str, severity: Severity
+) -> int:
+    if project not in list(cdx.projects):
+        raise ValueError("Error getting high alert count: project does not exist.")
+    filters = {
+        "filter": {
+            "severity": severity.value,
+        },
+    }
+    res = cdx.get_finding_count(project, filters)
+    if "count" not in res:
+        print(f"Error fetching count: {res}")
+    return res["count"]
+
+
+def get_alerts_string(cdx: CodeDx, project: str, severities: List[Severity]):
     alert_string = ""
     emojis = {
         Severity.CRITICAL.value: ":stopsign:",
@@ -72,12 +74,14 @@ def get_alerts_string(cdx: CodeDx, project: str, severities: List[str]):
     }
     for severity in severities:
         count = get_codedx_alert_count_by_severity(cdx, project, severity)
-        alert_string += f"\t{ emojis[severity] } { count } { severity } findings\n"
+        alert_string += (
+            f"\t{ emojis[severity] } { count } { severity.value } findings\n"
+        )
     return alert_string
 
 
 def get_codedx_report_by_alert_severity(
-    cdx: CodeDx, project: str, severities: List[str]
+    cdx: CodeDx, project: str, severities: List[Severity]
 ):
     print(f"Getting PDF report from Codedx project: {project}")
     if project not in list(cdx.projects):
@@ -86,7 +90,7 @@ def get_codedx_report_by_alert_severity(
     report_date = datetime.now()
     report_file = f'{project.replace("-", "_")}_report_{report_date:%Y%m%d}.pdf'
     filters = {
-        "severity": severities,
+        "severity": [s.value for s in severities],
         "status": ["new", "unresolved", "reopened"],
     }
     cdx.get_pdf(
@@ -114,8 +118,9 @@ def main():
     bucket_name = os.getenv("BUCKET_NAME")
     slack_channel = os.getenv("SLACK_CHANNEL")
 
-    default_severities = "|".join(Severity.CRITICAL.value, Severity.HIGH.value)
+    default_severities = "|".join((Severity.CRITICAL.value, Severity.HIGH.value))
     severities = os.getenv("SEVERITIES", default_severities).split("|")
+    severities = [Severity(s) for s in severities]
 
     # run the scan
     filename = compliance_scan(codedx_project, target_url, scan_type)
