@@ -3,6 +3,7 @@
 import logging
 import os
 from datetime import datetime
+from enum import Enum
 from typing import List
 
 from codedx_api.CodeDxAPI import CodeDx
@@ -52,14 +53,22 @@ def get_codedx_alert_count_by_severity(cdx: CodeDx, project: str, severity: str)
     return res["count"]
 
 
+class Severity(str, Enum):
+    CRITICAL = "Critical"
+    HIGH = "High"
+    MEDIUM = "Medium"
+    LOW = "Low"
+    INFO = "Info"
+
+
 def get_alerts_string(cdx: CodeDx, project: str, severities: List[str]):
     alert_string = ""
     emojis = {
-        "Critical": ":stopsign:",
-        "High": ":triangular_flag_on_post:",
-        "Medium": ":radioactive_sign:",
-        "Low": ":warning:",
-        "Info": ":heavy_check_mark:",
+        Severity.CRITICAL.value: ":stopsign:",
+        Severity.HIGH.value: ":triangular_flag_on_post:",
+        Severity.MEDIUM.value: ":radioactive_sign:",
+        Severity.LOW.value: ":warning:",
+        Severity.INFO.value: ":heavy_check_mark:",
     }
     for severity in severities:
         count = get_codedx_alert_count_by_severity(cdx, project, severity)
@@ -97,13 +106,16 @@ def get_codedx_report_by_alert_severity(
 def main():
     # configure logging
     logging.basicConfig(level=logging.INFO)
+
     # get scan variables
     codedx_project = os.getenv("CODEDX_PROJECT")
     target_url = os.getenv("URL")
     scan_type = os.getenv("SCAN_TYPE")
     bucket_name = os.getenv("BUCKET_NAME")
     slack_channel = os.getenv("SLACK_CHANNEL")
-    severities = os.getenv("SEVERITIES", "Critical|High").split("|")
+
+    default_severities = "|".join(Severity.CRITICAL.value, Severity.HIGH.value)
+    severities = os.getenv("SEVERITIES", default_severities).split("|")
 
     # run the scan
     filename = compliance_scan(codedx_project, target_url, scan_type)
