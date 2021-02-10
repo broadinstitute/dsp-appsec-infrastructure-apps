@@ -4,6 +4,7 @@
 # - "complete" scans that include different steps depending on the type of scan
 # - a "compliance scan" method that takes a project, url, and scan type, and returns a filename
 
+import logging
 import os
 import sys
 import time
@@ -53,13 +54,13 @@ def zap_init(context: str, target_url: str):
     if not zap_retry(
         lambda: zap.context.new_context(context, owasp_key), ProxyError
     ) or not zap_retry(lambda: zap.urlopen(target_url), NewConnectionError):
-        print("Zap Daemon Timeout")
+        logging.info("Zap Daemon Timeout")
         sys.exit(1)
     return zap
 
 
 def zap_auth(zap: ZAPv2):
-    print("Authenticating via Replacer...")
+    logging.info("Authenticating via Replacer...")
     token = get_gcp_token()
     bearer = f"Bearer {token}"
     zap.replacer.add_rule(
@@ -88,7 +89,7 @@ def wait_for_scan(zap: ZAPv2, scanner, minutes, is_auth=False, scan_id=None):
 
 def zap_access(zap: ZAPv2, target: str):
     # Proxy a request to the target so that ZAP has something to deal with
-    print(f"Accessing target {target}")
+    logging.info(f"Accessing target {target}")
     zap.urlopen(target)
     # Give the sites tree a chance to get updated
     time.sleep(2)
@@ -97,30 +98,30 @@ def zap_access(zap: ZAPv2, target: str):
 def zap_spider(zap: ZAPv2, target_url: str, is_auth: bool = False):
     if is_auth:
         zap_auth(zap)
-    print(f"Spidering target {target_url}")
+    logging.info(f"Spidering target {target_url}")
     scanid = zap.spider.scan(target_url)
     wait_for_scan(zap, zap.spider, 5, is_auth, scanid)
-    print("Spider completed")
+    logging.info("Spider completed")
 
 
 def zap_ajax_spider(zap: ZAPv2, target_url: str, is_auth: bool = False):
-    print(f"Ajax Spider target {target_url}")
+    logging.info(f"Ajax Spider target {target_url}")
     zap_auth(zap)
     zap.ajaxSpider.scan(target_url)
     wait_for_scan(zap, zap.ajaxSpider, 5, is_auth)
-    print("Ajax Spider completed")
+    logging.info("Ajax Spider completed")
 
 
 def zap_passive(zap: ZAPv2):
     while int(zap.pscan.records_to_scan) > 0:
-        print(f"Records to passive scan : {zap.pscan.records_to_scan}")
+        logging.info(f"Records to passive scan : {zap.pscan.records_to_scan}")
         time.sleep(2)
 
-    print("Passive Scan completed")
+    logging.info("Passive Scan completed")
 
 
 def zap_active(zap: ZAPv2, target_url: str, is_auth: bool = False):
-    print(f"Active Scanning target {target_url}")
+    logging.info(f"Active Scanning target {target_url}")
     scanid = zap.ascan.scan(target_url)
     wait_for_scan(zap, zap.ascan, 60, is_auth, scanid)
 

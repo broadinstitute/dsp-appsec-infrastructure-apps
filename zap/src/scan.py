@@ -57,7 +57,7 @@ def get_codedx_alert_count_by_severity(
     }
     res = cdx.get_finding_count(project, filters)
     if "count" not in res:
-        print(f"Error fetching count: {res}")
+        logging.info(f"Error fetching count: {res}")
     return res["count"]
 
 
@@ -82,7 +82,7 @@ def get_alerts_string(cdx: CodeDx, project: str, severities: List[Severity]):
 def get_codedx_report_by_alert_severity(
     cdx: CodeDx, project: str, severities: List[Severity]
 ):
-    print(f"Getting PDF report from Codedx project: {project}")
+    logging.info(f"Getting PDF report from Codedx project: {project}")
     report_date = datetime.now()
     report_file = f'{project.replace("-", "_")}_report_{report_date:%Y%m%d}.pdf'
     filters = {
@@ -107,9 +107,6 @@ SEVERITY_DELIM = "|"
 
 
 def main():
-    # configure logging
-    logging.basicConfig(level=logging.INFO)
-
     # get scan variables
     codedx_project = os.getenv("CODEDX_PROJECT")
     target_url = os.getenv("URL")
@@ -122,6 +119,11 @@ def main():
     )
     severities = os.getenv("SEVERITIES") or default_severities
     severities = [Severity(s.capitalize()) for s in severities.split(SEVERITY_DELIM)]
+
+    # configure logging
+    logging.basicConfig(
+        level=logging.INFO, format=f"%(levelname)-8s [{codedx_project}] %(message)s"
+    )
 
     # run the scan
     filename = compliance_scan(codedx_project, target_url, scan_type)
