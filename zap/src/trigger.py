@@ -4,7 +4,7 @@ import argparse
 import os
 import re
 from asyncio import Future
-from typing import List, Set
+from typing import List, Literal, Optional, Set, TypedDict
 
 import requests
 from google.cloud import pubsub_v1
@@ -12,7 +12,15 @@ from google.cloud import pubsub_v1
 from zap import ScanType
 
 
-def get_defect_dojo_endpoints(base_url: str, api_key: str):
+class Endpoint(TypedDict):
+    protocol: Literal["http", "https"]
+    host: str
+    port: Optional[int]
+    path: str
+    tags: List[str]
+
+
+def get_defect_dojo_endpoints(base_url: str, api_key: str) -> List[Endpoint]:
     endpoint = base_url + "/api/v2/endpoints/"
     headers = {
         "content-type": "application/json",
@@ -20,24 +28,26 @@ def get_defect_dojo_endpoints(base_url: str, api_key: str):
     }
     r = requests.get(endpoint, headers=headers, timeout=30)
     r.raise_for_status()
-    endpoints = r.json()["results"]
-    return endpoints
+    return r.json()["results"]
 
 
-def pubsub_callback(endpoint: str):
+def pubsub_callback(endpoint: Endpoint):
     """Handle publish failures."""
 
     def callback(future: Future):
         try:
             print(future.result())
         except Exception as err:
-            print("Please handle {} for {}.".format(err, endpoint))
+            print(f"Please handle {err} for {endpoint}.")
 
     return callback
 
 
 def scan_endpoints(
-    endpoints, gcp_project: str, topic_name: str, scan_types: List[ScanType]
+    endpoints: List[Endpoint],
+    gcp_project: str,
+    topic_name: str,
+    scan_types: List[ScanType],
 ):
     """
     Scan multiple endpoints by publishing multiple
