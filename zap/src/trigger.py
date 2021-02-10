@@ -75,11 +75,11 @@ def scan_endpoints(
                     slack_channel = tag_val
 
         if not codedx_project:
-            return
+            continue
 
         for scan_type in scan_types:
             if scan_type not in endpoint_scans:
-                return
+                continue
 
             port = endpoint.get("port", "")
             url = f"{endpoint['protocol']}://{endpoint['host']}{port}{endpoint['path']}"
