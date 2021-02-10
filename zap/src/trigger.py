@@ -2,42 +2,39 @@
 
 import argparse
 import os
+import re
+from asyncio import Future
+from typing import List, Set
 
 import requests
 from google.cloud import pubsub_v1
 
-futures = dict()
 
-
-def get_defect_dojo_endpoints(url, key):
-    endpoint = f'{url}/api/v2/endpoints/'
-    token = f'Token {key}'
-
-    headers = {'content-type': 'application/json',
-               'Authorization': token}
-    # set verify to False if ssl cert is self-signed
-    r = requests.get(endpoint, headers=headers, verify=True)
-
-    endpoints = r
-    if r.status_code != 200:
-        print(r.text)
-
+def get_defect_dojo_endpoints(base_url: str, api_key: str):
+    endpoint = base_url + "/api/v2/endpoints/"
+    headers = {
+        "content-type": "application/json",
+        "Authorization": f"Token {api_key}",
+    }
+    r = requests.get(endpoint, headers=headers, timeout=30)
+    r.raise_for_status()
     endpoints = r.json()["results"]
-
     return endpoints
 
-def get_callback(future, data):
+
+def pubsub_callback(endpoint: str):
     """Handle publish failures."""
-    def callback(future):
+
+    def callback(future: Future):
         try:
             print(future.result())
-            futures.pop(data)
-        except Exception:
-            print("Please handle {} for {}.".format(future.exception(), data))
+        except Exception as err:
+            print("Please handle {} for {}.".format(err, endpoint))
 
     return callback
 
-def scan_endpoints(endpoints, gcp_project, topic_name, scans):
+
+def scan_endpoints(endpoints, gcp_project: str, topic_name: str, scan_types: List[str]):
     """
     Scan multiple endpoints by publishing multiple
     messages to a Pub/Sub topic with an error handler.
@@ -50,52 +47,57 @@ def scan_endpoints(endpoints, gcp_project, topic_name, scans):
     Returns:
         None
     """
-    message = ""
-    message = message.encode("utf-8")
-
     publisher = pubsub_v1.PublisherClient()
     topic_path = publisher.topic_path(gcp_project, topic_name)
 
-    for endpoint in endpoints:
-        data = u"{}".format(endpoint)
-        codedx_project = None
-        slack_channel = ""
-        all_alerts = ""
-        for tag in endpoint["tags"]:
-            # endpoints to scan will include tag codedx:CODEDX_PROJECT to identify project on codedx
-            if "codedx" in tag:
-                codedx_project = "".join(tag.split(":")[1:])
-            if "slack" in tag:
-                slack_channel = "".join(tag.split(":")[1:])
-            if "all_alerts" in tag:
-                all_alerts = tag
-        if codedx_project is not None:
-            for scan_type in endpoint["tags"]:
-                if scan_type in scans:
-                    url = f"{endpoint['protocol']}://{endpoint['host']}{endpoint['path']}"
-                    future = publisher.publish(
-                        topic_path,
-                        data=message,
-                        CODEDX_PROJECT=codedx_project,
-                        URL=url,
-                        SCAN_TYPE=scan_type,
-                        SLACK_CHANNEL=slack_channel,
-                        ALL_ALERTS=all_alerts
-                    )
+    tag_matcher = re.compile(r"^([^:]+):(.*)$")
 
-                    futures[data] = future
-                    # Publish failures shall be handled in the callback function.
-                    future.add_done_callback(get_callback(future, data))
+    for endpoint in endpoints:
+        codedx_project = ""
+        slack_channel = ""
+        severities: Set[str] = set()
+        scan_tags: Set[str] = set()
+        for tag in endpoint["tags"]:
+            tag_match = tag_matcher.match(tag)
+            if tag_match:
+                tag_key, tag_val = tag_match.group(1), tag_match.group(2)
+                if tag_key == "codedx":
+                    codedx_project = tag_val
+                if tag_key == "scan":
+                    scan_tags.add(tag_val)
+                if tag_key == "severity":
+                    severities.add(tag_val)
+                if tag_key == "slack":
+                    slack_channel = tag_val
+
+        if not codedx_project:
+            return
+
+        for scan_type in scan_types:
+            if scan_type not in scan_tags:
+                return
+
+            url = f"{endpoint['protocol']}://{endpoint['host']}{endpoint['path']}"
+            future = publisher.publish(
+                topic_path,
+                data=b"",
+                CODEDX_PROJECT=codedx_project,
+                URL=url,
+                SCAN_TYPE=scan_type,
+                SLACK_CHANNEL=slack_channel,
+                SEVERITIES="|".join(severities),
+            )
+            future.add_done_callback(pubsub_callback(endpoint))
 
 
 def main():
-    defect_dojo_url = os.getenv('DEFECT_DOJO_URL')
-    defect_dojo_key = os.getenv('DEFECT_DOJO_KEY')
-    zap_topic = os.getenv('ZAP_TOPIC_NAME')
-    gcp_project = os.getenv('GCP_PROJECT_ID')
+    defect_dojo_url = os.getenv("DEFECT_DOJO_URL")
+    defect_dojo_key = os.getenv("DEFECT_DOJO_KEY")
+    zap_topic = os.getenv("ZAP_TOPIC_NAME")
+    gcp_project = os.getenv("GCP_PROJECT_ID")
 
-    parser = argparse.ArgumentParser(description='Get scan types to run')
-    parser.add_argument('-s', '--scans', nargs='+', default=[])
+    parser = argparse.ArgumentParser(description="Get scan types to run")
+    parser.add_argument("-s", "--scans", nargs="+", default=[])
 
     args = parser.parse_args()
 
@@ -103,5 +105,5 @@ def main():
     scan_endpoints(endpoints, gcp_project, zap_topic, args.scans)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
