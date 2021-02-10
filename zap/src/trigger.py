@@ -52,14 +52,6 @@ def scan_endpoints(
     """
     Scan multiple endpoints by publishing multiple
     messages to a Pub/Sub topic with an error handler.
-
-    Args:
-        List of endpoints to be scanned
-        gcp project id
-        pub sub topic
-
-    Returns:
-        None
     """
     publisher = pubsub_v1.PublisherClient()
     topic_path = publisher.topic_path(gcp_project, topic_name)
