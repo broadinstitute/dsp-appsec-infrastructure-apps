@@ -73,7 +73,7 @@ def scan_endpoints(
             if tag_key == "scan":
                 endpoint_scans.add(ScanType(tag_val))
             if tag_key == "severity":
-                severities.add(tag_val)
+                severities.add(tag_val.capitalize())
             if tag_key == "slack":
                 slack_channel = tag_val
 
