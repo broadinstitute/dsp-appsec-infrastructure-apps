@@ -63,16 +63,18 @@ def scan_endpoints(
         endpoint_scans: Set[ScanType] = set()
         for tag in endpoint["tags"]:
             tag_match = tag_matcher.match(tag)
-            if tag_match:
-                tag_key, tag_val = tag_match.group(1), tag_match.group(2)
-                if tag_key == "codedx":
-                    codedx_project = tag_val
-                if tag_key == "scan":
-                    endpoint_scans.add(ScanType(tag_val))
-                if tag_key == "severity":
-                    severities.add(tag_val)
-                if tag_key == "slack":
-                    slack_channel = tag_val
+            if not tag_match:
+                continue
+
+            tag_key, tag_val = tag_match.group(1), tag_match.group(2)
+            if tag_key == "codedx":
+                codedx_project = tag_val
+            if tag_key == "scan":
+                endpoint_scans.add(ScanType(tag_val))
+            if tag_key == "severity":
+                severities.add(tag_val)
+            if tag_key == "slack":
+                slack_channel = tag_val
 
         if not codedx_project:
             continue
