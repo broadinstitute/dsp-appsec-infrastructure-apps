@@ -102,6 +102,9 @@ def get_codedx_report_by_alert_severity(
     return report_file
 
 
+SEVERITY_DELIM = "|"
+
+
 def main():
     # configure logging
     logging.basicConfig(level=logging.INFO)
@@ -113,9 +116,11 @@ def main():
     bucket_name = os.getenv("BUCKET_NAME")
     slack_channel = os.getenv("SLACK_CHANNEL")
 
-    default_severities = "|".join((Severity.CRITICAL.value, Severity.HIGH.value))
+    default_severities = SEVERITY_DELIM.join(
+        (Severity.CRITICAL.value, Severity.HIGH.value)
+    )
     severities = os.getenv("SEVERITIES") or default_severities
-    severities = [Severity(s) for s in severities.split("|")]
+    severities = [Severity(s) for s in severities.split(SEVERITY_DELIM)]
 
     # run the scan
     filename = compliance_scan(codedx_project, target_url, scan_type)

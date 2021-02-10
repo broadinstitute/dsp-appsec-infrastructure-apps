@@ -9,6 +9,7 @@ from typing import List, Set
 import requests
 from google.cloud import pubsub_v1
 
+from scan import SEVERITY_DELIM
 from zap import ScanType
 
 
@@ -92,7 +93,7 @@ def scan_endpoints(
                 URL=url,
                 SCAN_TYPE=scan_type.value,
                 SLACK_CHANNEL=slack_channel,
-                SEVERITIES="|".join(severities),
+                SEVERITIES=SEVERITY_DELIM.join(severities),
             )
             future.add_done_callback(pubsub_callback(endpoint))
 
