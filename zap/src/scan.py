@@ -10,14 +10,14 @@ from codedx_api.CodeDxAPI import CodeDx
 from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
 
-from zap import compliance_scan
+from zap import compliance_scan, ScanType
 
 
-def upload_gcp(bucket_name: str, scan: str, filename: str):
+def upload_gcp(bucket_name: str, scan_type: ScanType, filename: str):
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     date = datetime.today().strftime("%Y%m%d")
-    path = f"{scan}s/{date}/{filename}"
+    path = f"{scan_type.value}-scans/{date}/{filename}"
     blob = bucket.blob(path)
     blob.upload_from_filename(filename)
     location = f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}"
@@ -48,13 +48,13 @@ class Severity(str, Enum):
 
 
 def get_codedx_alert_count_by_severity(
-    cdx: CodeDx, project: str, severity: Severity
+    cdx: CodeDx, project: str, severities: List[Severity]
 ) -> int:
     if project not in list(cdx.projects):
         raise ValueError("Error getting high alert count: project does not exist.")
     filters = {
         "filter": {
-            "severity": severity.value,
+            "severity": [s.value for s in severities],
         },
     }
     res = cdx.get_finding_count(project, filters)
@@ -114,7 +114,7 @@ def main():
     # get scan variables
     codedx_project = os.getenv("CODEDX_PROJECT")
     target_url = os.getenv("URL")
-    scan_type = os.getenv("SCAN_TYPE")
+    scan_type = ScanType(os.getenv("SCAN_TYPE"))
     bucket_name = os.getenv("BUCKET_NAME")
     slack_channel = os.getenv("SLACK_CHANNEL")
 
@@ -131,7 +131,7 @@ def main():
     codedx_upload(cdx, codedx_project, filename)
 
     gcs_slack_text = ""
-    if scan_type == "ui-scan":
+    if scan_type == ScanType.UI:
         # if no slack_channel given, send alerts on ui-scans to defaults AppSec channel
         storage_object_url = upload_gcp(bucket_name, scan_type, filename)
         gcs_slack_text = (

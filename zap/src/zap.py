@@ -133,25 +133,30 @@ def zap_write(zap: ZAPv2, file_name: str):
 
 class ScanType(str, Enum):
     API = "api"
+    AUTH = "auth"
     BASELINE = "baseline"
     UI = "ui"
 
 
-def compliance_scan(project: str, target_url: str, scan: str = ScanType.BASELINE.value):
-    is_auth = scan != ScanType.BASELINE.value
+def compliance_scan(
+    project: str, target_url: str, scan_type: ScanType = ScanType.BASELINE
+):
+    is_auth = scan_type != ScanType.BASELINE
     zap = zap_init(project, target_url)
     zap_access(zap, target_url)
-    if scan == ScanType.API.value:
+    if scan_type == ScanType.API:
         token = get_gcp_token()
         zap.openapi.import_url(url=target_url, hostoverride=None, apikey=token)
     zap_spider(zap, target_url, is_auth)
-    if scan == ScanType.UI.value:
+    if scan_type == ScanType.UI:
         zap_ajax_spider(zap, target_url, is_auth)
     zap_passive(zap)
-    if scan == ScanType.UI.value:
+    if scan_type == ScanType.UI:
         zap_active(zap, target_url, is_auth)
 
-    file_name = f"{project}_{scan}_report.xml".replace("-", "_").replace(" ", "")
+    file_name = f"{project}_{scan_type.value}_report.xml".replace("-", "_").replace(
+        " ", ""
+    )
     zap_write(zap, file_name)
     zap.core.shutdown()
 
