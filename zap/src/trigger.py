@@ -83,7 +83,7 @@ def scan_endpoints(
                 continue
 
             port = f":{endpoint['port']}" if endpoint["port"] else ""
-            url = f"{endpoint['protocol']}://{endpoint['host']}{port}{endpoint['path']}"
+            url = f"{endpoint['protocol']}://{endpoint['host']}{port}{endpoint['path'] or ''}"
             future = publisher.publish(
                 topic=topic_path,
                 data=b"",
