@@ -82,7 +82,7 @@ def scan_endpoints(
             if scan_type not in endpoint_scans:
                 continue
 
-            port = f":{endpoint['port']}" or ""
+            port = f":{endpoint['port']}" if endpoint["port"] else ""
             url = f"{endpoint['protocol']}://{endpoint['host']}{port}{endpoint['path']}"
             future = publisher.publish(
                 topic=topic_path,
