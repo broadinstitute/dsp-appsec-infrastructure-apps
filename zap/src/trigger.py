@@ -81,7 +81,8 @@ def scan_endpoints(
             if scan_type not in endpoint_scans:
                 return
 
-            url = f"{endpoint['protocol']}://{endpoint['host']}{endpoint['path']}"
+            port = endpoint.get("port", "")
+            url = f"{endpoint['protocol']}://{endpoint['host']}{port}{endpoint['path']}"
             future = publisher.publish(
                 topic_path,
                 data=b"",
@@ -104,7 +105,6 @@ def main():
     parser.add_argument(
         "-s", "--scans", nargs="+", default=[], type=ScanType, choices=list(ScanType)
     )
-
     args = parser.parse_args()
 
     endpoints = get_defect_dojo_endpoints(defect_dojo_url, defect_dojo_key)
