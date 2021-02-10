@@ -50,8 +50,6 @@ class Severity(str, Enum):
 def get_codedx_alert_count_by_severity(
     cdx: CodeDx, project: str, severities: List[Severity]
 ) -> int:
-    if project not in list(cdx.projects):
-        raise ValueError("Error getting high alert count: project does not exist.")
     filters = {
         "filter": {
             "severity": [s.value for s in severities],
@@ -84,9 +82,6 @@ def get_codedx_report_by_alert_severity(
     cdx: CodeDx, project: str, severities: List[Severity]
 ):
     print(f"Getting PDF report from Codedx project: {project}")
-    if project not in list(cdx.projects):
-        print("Error getting PDF report: project does not exist for PDF report.")
-        return
     report_date = datetime.now()
     report_file = f'{project.replace("-", "_")}_report_{report_date:%Y%m%d}.pdf'
     filters = {
