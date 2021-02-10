@@ -31,7 +31,7 @@ data:
         - name: zap-scan
           image: ${ZAP_IMAGE}
           imagePullPolicy: Always
-          args: ['scan.py']
+          args: ['scan']
           env:
           - name: CODEDX_URL
             value: ${CODEDX_URL}
@@ -110,7 +110,7 @@ items:
             - &cron-job-container
               name: zap-trigger
               image: ${ZAP_IMAGE}
-              args: ['trigger.py', '-s', 'baseline', 'api', 'auth']
+              args: ['trigger', '-s', 'baseline', 'api', 'auth']
               env:
               - name: GCP_PROJECT_ID
                 value: ${PROJECT_ID}
@@ -136,7 +136,7 @@ items:
             << : *cron-job-spec
             containers:
             - << : *cron-job-container
-              args: ['trigger.py', '-s', 'ui']
+              args: ['trigger', '-s', 'ui']
 ---
 apiVersion: storage.cnrm.cloud.google.com/v1beta1
 kind: StorageBucket

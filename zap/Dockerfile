@@ -20,4 +20,4 @@ WORKDIR /app
 COPY --from=build /venv /venv
 COPY src/*.py ./
 
-ENTRYPOINT ["/venv/bin/python3", "-u"]
+ENTRYPOINT ["/venv/bin/python3", "-u", "-m"]
