@@ -137,6 +137,9 @@ class ScanType(str, Enum):
     BASELINE = "baseline"
     UI = "ui"
 
+    def __str__(self):
+        return self.value
+
 
 def compliance_scan(
     project: str, target_url: str, scan_type: ScanType = ScanType.BASELINE
@@ -154,7 +157,7 @@ def compliance_scan(
     if scan_type == ScanType.UI:
         zap_active(zap, target_url, is_auth)
 
-    file_name = f"{project}_{scan_type.value}-scan_report.xml"
+    file_name = f"{project}_{scan_type}-scan_report.xml"
     file_name = file_name.replace("-", "_").replace(" ", "")
     zap_write(zap, file_name)
     zap.core.shutdown()

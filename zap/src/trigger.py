@@ -9,6 +9,8 @@ from typing import List, Set
 import requests
 from google.cloud import pubsub_v1
 
+from zap import ScanType
+
 
 def get_defect_dojo_endpoints(base_url: str, api_key: str):
     endpoint = base_url + "/api/v2/endpoints/"
@@ -34,7 +36,9 @@ def pubsub_callback(endpoint: str):
     return callback
 
 
-def scan_endpoints(endpoints, gcp_project: str, topic_name: str, scan_types: List[str]):
+def scan_endpoints(
+    endpoints, gcp_project: str, topic_name: str, scan_types: List[ScanType]
+):
     """
     Scan multiple endpoints by publishing multiple
     messages to a Pub/Sub topic with an error handler.
@@ -56,7 +60,7 @@ def scan_endpoints(endpoints, gcp_project: str, topic_name: str, scan_types: Lis
         codedx_project = ""
         slack_channel = ""
         severities: Set[str] = set()
-        scan_tags: Set[str] = set()
+        endpoint_scans: Set[ScanType] = set()
         for tag in endpoint["tags"]:
             tag_match = tag_matcher.match(tag)
             if tag_match:
@@ -64,7 +68,7 @@ def scan_endpoints(endpoints, gcp_project: str, topic_name: str, scan_types: Lis
                 if tag_key == "codedx":
                     codedx_project = tag_val
                 if tag_key == "scan":
-                    scan_tags.add(tag_val)
+                    endpoint_scans.add(ScanType(tag_val))
                 if tag_key == "severity":
                     severities.add(tag_val)
                 if tag_key == "slack":
@@ -74,7 +78,7 @@ def scan_endpoints(endpoints, gcp_project: str, topic_name: str, scan_types: Lis
             return
 
         for scan_type in scan_types:
-            if scan_type not in scan_tags:
+            if scan_type not in endpoint_scans:
                 return
 
             url = f"{endpoint['protocol']}://{endpoint['host']}{endpoint['path']}"
@@ -83,7 +87,7 @@ def scan_endpoints(endpoints, gcp_project: str, topic_name: str, scan_types: Lis
                 data=b"",
                 CODEDX_PROJECT=codedx_project,
                 URL=url,
-                SCAN_TYPE=scan_type,
+                SCAN_TYPE=scan_type.value,
                 SLACK_CHANNEL=slack_channel,
                 SEVERITIES="|".join(severities),
             )
@@ -97,7 +101,9 @@ def main():
     gcp_project = os.getenv("GCP_PROJECT_ID")
 
     parser = argparse.ArgumentParser(description="Get scan types to run")
-    parser.add_argument("-s", "--scans", nargs="+", default=[])
+    parser.add_argument(
+        "-s", "--scans", nargs="+", default=[], type=ScanType, choices=list(ScanType)
+    )
 
     args = parser.parse_args()
 

@@ -17,7 +17,7 @@ def upload_gcp(bucket_name: str, scan_type: ScanType, filename: str):
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     date = datetime.today().strftime("%Y%m%d")
-    path = f"{scan_type.value}-scans/{date}/{filename}"
+    path = f"{scan_type}-scans/{date}/{filename}"
     blob = bucket.blob(path)
     blob.upload_from_filename(filename)
     location = f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}"
