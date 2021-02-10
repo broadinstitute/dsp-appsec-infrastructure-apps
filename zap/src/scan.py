@@ -73,7 +73,7 @@ def get_alerts_string(cdx: CodeDx, project: str, severities: List[Severity]):
         Severity.INFO.value: ":heavy_check_mark:",
     }
     for severity in severities:
-        count = get_codedx_alert_count_by_severity(cdx, project, severity)
+        count = get_codedx_alert_count_by_severity(cdx, project, [severity])
         alert_string += (
             f"\t{ emojis[severity] } { count } { severity.value } findings\n"
         )
@@ -132,7 +132,6 @@ def main():
 
     gcs_slack_text = ""
     if scan_type == ScanType.UI:
-        # if no slack_channel given, send alerts on ui-scans to defaults AppSec channel
         storage_object_url = upload_gcp(bucket_name, scan_type, filename)
         gcs_slack_text = (
             f"New vulnerability report uploaded to GCS bucket: {storage_object_url}\n"
