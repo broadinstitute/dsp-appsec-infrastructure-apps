@@ -9,7 +9,6 @@ from typing import List, Set
 import requests
 from google.cloud import pubsub_v1
 
-from scan import SEVERITY_DELIM
 from zap import ScanType
 
 
@@ -60,7 +59,6 @@ def scan_endpoints(
     for endpoint in endpoints:
         codedx_project = ""
         slack_channel = ""
-        severities: Set[str] = set()
         endpoint_scans: Set[ScanType] = set()
         for tag in endpoint["tags"]:
             tag_match = tag_matcher.match(tag)
@@ -72,8 +70,6 @@ def scan_endpoints(
                 codedx_project = tag_val
             if tag_key == "scan":
                 endpoint_scans.add(ScanType(tag_val))
-            if tag_key == "severity":
-                severities.add(tag_val.capitalize())
             if tag_key == "slack":
                 slack_channel = tag_val
 
@@ -87,13 +83,12 @@ def scan_endpoints(
             port = endpoint["port"] or ""
             url = f"{endpoint['protocol']}://{endpoint['host']}{port}{endpoint['path']}"
             future = publisher.publish(
-                topic_path,
+                topic=topic_path,
                 data=b"",
                 CODEDX_PROJECT=codedx_project,
                 URL=url,
                 SCAN_TYPE=scan_type.value,
                 SLACK_CHANNEL=slack_channel,
-                SEVERITIES=SEVERITY_DELIM.join(severities),
             )
             future.add_done_callback(pubsub_callback(endpoint))
 

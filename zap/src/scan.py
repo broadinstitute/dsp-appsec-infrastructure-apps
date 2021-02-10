@@ -10,7 +10,7 @@ from codedx_api.CodeDxAPI import CodeDx
 from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
 
-from zap import compliance_scan, ScanType
+from zap import ScanType, compliance_scan
 
 
 def upload_gcp(bucket_name: str, scan_type: ScanType, filename: str):
@@ -120,7 +120,7 @@ def main():
         (Severity.CRITICAL.value, Severity.HIGH.value)
     )
     severities = os.getenv("SEVERITIES") or default_severities
-    severities = [Severity(s) for s in severities.split(SEVERITY_DELIM)]
+    severities = [Severity(s.capitalize()) for s in severities.split(SEVERITY_DELIM)]
 
     # run the scan
     filename = compliance_scan(codedx_project, target_url, scan_type)
