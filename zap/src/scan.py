@@ -72,9 +72,10 @@ def get_alerts_string(cdx: CodeDx, project: str, severities: List[Severity]):
     }
     for severity in severities:
         count = get_codedx_alert_count_by_severity(cdx, project, [severity])
-        messages.append(
-            f"\t{ emojis[severity] } { count } { severity.value } findings\n"
-        )
+        if count:
+            messages.append(
+                f"\t{ emojis[severity] } { count } { severity.value } findings\n"
+            )
     return "".join(messages)
 
 
