@@ -27,11 +27,11 @@ def upload_gcp(bucket_name: str, scan_type: ScanType, filename: str):
 def get_codedx_client():
     base_url = os.getenv("CODEDX_URL")
     codedx_api_key = os.getenv("CODEDX_API_KEY")
-    cdx = CodeDx(base_url, codedx_api_key)
-    return cdx
+    return CodeDx(base_url, codedx_api_key)
 
 
 def codedx_upload(cdx: CodeDx, project: str, filename: str):
+    cdx.update_projects()
     if project not in list(cdx.projects):
         cdx.create_project(project)
         cdx.update_projects()
@@ -62,7 +62,7 @@ def get_codedx_alert_count_by_severity(
 
 
 def get_alerts_string(cdx: CodeDx, project: str, severities: List[Severity]):
-    alert_string = ""
+    messages: List[str] = []
     emojis = {
         Severity.CRITICAL.value: ":stopsign:",
         Severity.HIGH.value: ":triangular_flag_on_post:",
@@ -72,10 +72,10 @@ def get_alerts_string(cdx: CodeDx, project: str, severities: List[Severity]):
     }
     for severity in severities:
         count = get_codedx_alert_count_by_severity(cdx, project, [severity])
-        alert_string += (
+        messages.append(
             f"\t{ emojis[severity] } { count } { severity.value } findings\n"
         )
-    return alert_string
+    return "".join(messages)
 
 
 def get_codedx_report_by_alert_severity(
@@ -121,8 +121,6 @@ def main():
     filename = compliance_scan(codedx_project, target_url, scan_type)
 
     cdx = get_codedx_client()
-    cdx.update_projects()
-
     codedx_upload(cdx, codedx_project, filename)
 
     gcs_slack_text = ""
