@@ -16,7 +16,7 @@ class Endpoint(TypedDict):
     protocol: Literal["http", "https"]
     host: str
     port: Optional[int]
-    path: str
+    path: Optional[str]
     tags: List[str]
 
 

@@ -23,10 +23,11 @@ data:
             '-host', '127.0.0.1',
             '-port', '${ZAP_PORT}',
             '-config', 'api.disablekey=true',
+            '-Xmx900m',
           ]
           resources:
             requests:
-              memory: 500Mi
+              memory: 950Mi
 
         - name: zap-scan
           image: ${ZAP_IMAGE}
