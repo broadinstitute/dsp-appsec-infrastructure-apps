@@ -36,12 +36,11 @@ def retry(function: Callable, *args):
     while time.time() < timeout:
         try:
             function(*args)
-            return True
+            return
         except Exception as e:
             err = e
             time.sleep(5)
-    logging.error(err)
-    return False
+    raise err
 
 
 def zap_checkurl(zap: ZAPv2, target_url: str):
@@ -58,10 +57,9 @@ def zap_init(context: str, target_url: str):
     proxy = f"http://{host}:{port}"
     zap = ZAPv2(apikey=owasp_key, proxies={"http": proxy, "https": proxy})
 
-    if not retry(zap.context.new_context, context, owasp_key) or not retry(
-        zap_checkurl, zap, target_url
-    ):
-        sys.exit(1)
+    retry(zap.context.new_context, context, owasp_key)
+    retry(zap_checkurl, zap, target_url)
+
     return zap
 
 
