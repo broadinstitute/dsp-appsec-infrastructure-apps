@@ -166,8 +166,9 @@ def main():
     elif gcs_slack_text:
         slack.chat_postMessage(channel=slack_channel, text=gcs_slack_text)
     else:
+        logging.info("Nothing to report")
         return
-    logging.info(f"Posted to Slack channel: {slack_channel}")
+    logging.info(f"Report sent to Slack channel: {slack_channel}")
 
 
 if __name__ == "__main__":
