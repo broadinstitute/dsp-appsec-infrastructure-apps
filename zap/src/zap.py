@@ -20,6 +20,8 @@ from zap_common import (
     zap_wait_for_passive_scan,
 )
 
+TIMEOUT_MINS = 5
+
 
 def zap_init():
     """
@@ -28,7 +30,7 @@ def zap_init():
     port = os.getenv("ZAP_PORT")
     proxy = f"http://localhost:{port}"
     zap = ZAPv2(proxies={"http": proxy, "https": proxy})
-    wait_for_zap_start(zap)
+    wait_for_zap_start(zap, timeout_in_secs=TIMEOUT_MINS * 60)
     return zap
 
 
@@ -120,9 +122,9 @@ def zap_compliance_scan(
     zap_spider(zap, target_url)
 
     if scan_type == ScanType.UI:
-        zap_ajax_spider(zap, target_url, max_time=5)
+        zap_ajax_spider(zap, target_url, max_time=TIMEOUT_MINS)
 
-    zap_wait_for_passive_scan(zap, timeout_in_secs=5 * 60)
+    zap_wait_for_passive_scan(zap, timeout_in_secs=TIMEOUT_MINS * 60)
 
     if scan_type == ScanType.UI:
         zap_active_scan(zap, target_url, None)
