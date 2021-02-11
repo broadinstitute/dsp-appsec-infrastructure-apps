@@ -4,9 +4,9 @@ Triggers ZAP scans for endpoints from DefectDojo.
 """
 
 import argparse
-from os import getenv
 import re
 from asyncio import Future
+from os import getenv
 from typing import List, Literal, Optional, Set, TypedDict
 
 import requests

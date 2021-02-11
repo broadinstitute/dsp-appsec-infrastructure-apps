@@ -4,9 +4,9 @@ Runs ZAP scan, uploads results to Code Dx and GCS, and alerts Slack.
 """
 
 import logging
-from os import getenv
 from datetime import datetime
 from enum import Enum
+from os import getenv
 from typing import List
 
 from codedx_api.CodeDxAPI import CodeDx
