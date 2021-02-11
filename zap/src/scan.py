@@ -180,6 +180,7 @@ def main():
 
     # continue only if Slack channel is set
     if not slack_channel:
+        logging.warning("Slack alert was not requested")
         return
 
     slack = SlackClient(token=os.environ["SLACK_TOKEN"])
@@ -205,9 +206,9 @@ def main():
     elif gcs_slack_text:
         slack.chat_postMessage(channel=slack_channel, text=gcs_slack_text)
     else:
-        logging.warning("Nothing to report")
+        logging.warning("No findings for alert to Slack")
         return
-    logging.info("Report sent to Slack channel: %s", slack_channel)
+    logging.info("Alert sent to Slack channel: %s", slack_channel)
 
 
 if __name__ == "__main__":
