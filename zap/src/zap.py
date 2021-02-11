@@ -103,7 +103,7 @@ def zap_report(zap: ZAPv2, project: str, scan_type: ScanType):
 
 
 def zap_compliance_scan(
-    context: str, target_url: str, scan_type: ScanType = ScanType.BASELINE
+    project: str, target_url: str, scan_type: ScanType = ScanType.BASELINE
 ):
     """
     Run a ZAP compliance scan of a given type against the target URL.
