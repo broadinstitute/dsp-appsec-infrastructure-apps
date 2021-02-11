@@ -30,8 +30,9 @@ def zap_init(context: str, target_url: str):
     zap = ZAPv2(proxies={"http": proxy, "https": proxy})
     wait_for_zap_start(zap, timeout_in_secs=60)
 
-    zap.context.new_context(context)
+    context_id = zap.context.new_context(context)
     zap_common.context_name = context
+    zap_common.context_id = context_id
 
     zap_access_target(zap, target_url)
 
