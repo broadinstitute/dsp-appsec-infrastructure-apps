@@ -124,7 +124,8 @@ def main():
     logging.basicConfig(
         level=logging.INFO, format=f"%(levelname)-8s [{codedx_project}] %(message)s"
     )
-    logging.info(f"Scan type: {scan_type}; severities: {[s.value for s in severities]}")
+    logging.info("Scan type: " + scan_type)
+    logging.info("Severities: " + ", ".join(s.value for s in severities))
 
     # run the scan
     filename = compliance_scan(codedx_project, target_url, scan_type)
