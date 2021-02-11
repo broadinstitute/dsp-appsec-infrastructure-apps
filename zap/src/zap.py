@@ -30,23 +30,17 @@ def get_gcp_token() -> str:
     return credentials.token
 
 
-def retry(function: Callable, *args):
+def retry(function: Callable, e, *args):
     timeout = time.time() + 60 * 10
     err = Exception()
     while time.time() < timeout:
         try:
             function(*args)
             return
-        except Exception as e:
-            err = e
+        except e as ex:
+            err = ex
             time.sleep(5)
     raise err
-
-
-def zap_checkurl(zap: ZAPv2, target_url: str):
-    result = zap.urlopen(target_url)
-    if result.startswith("ZAP Error"):
-        raise RuntimeError(result)
 
 
 def zap_init(context: str, target_url: str):
@@ -57,8 +51,7 @@ def zap_init(context: str, target_url: str):
     proxy = f"http://{host}:{port}"
     zap = ZAPv2(apikey=owasp_key, proxies={"http": proxy, "https": proxy})
 
-    retry(zap.context.new_context, context, owasp_key)
-    retry(zap_checkurl, zap, target_url)
+    retry(zap.context.new_context, ConnectionRefusedError, context, owasp_key)
 
     return zap
 
@@ -91,10 +84,12 @@ def wait_for_scan(zap: ZAPv2, scanner, minutes, is_auth=False, scan_id=None):
             zap_auth(zap)
 
 
-def zap_access(zap: ZAPv2, target: str):
-    # Proxy a request to the target so that ZAP has something to deal with
-    logging.info(f"Accessing target {target}")
-    zap.urlopen(target)
+def zap_access(zap: ZAPv2, target_url: str):
+    # Proxy a request to the target URL so that ZAP has something to deal with
+    logging.info(f"Accessing target URL {target_url}")
+    result = zap.urlopen(target_url)
+    if result.startswith("ZAP Error"):
+        raise RuntimeError(result)
     # Give the sites tree a chance to get updated
     time.sleep(2)
 
