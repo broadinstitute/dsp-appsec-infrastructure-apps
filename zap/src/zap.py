@@ -28,7 +28,7 @@ def zap_init():
     port = os.getenv("ZAP_PORT")
     proxy = f"http://localhost:{port}"
     zap = ZAPv2(proxies={"http": proxy, "https": proxy})
-    wait_for_zap_start(zap, timeout_in_secs=60)
+    wait_for_zap_start(zap)
     return zap
 
 
