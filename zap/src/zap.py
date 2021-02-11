@@ -9,12 +9,10 @@ import os
 import sys
 import time
 from enum import Enum
-from typing import Callable
+from typing import Callable, Optional
 
 import google.auth
 import google.auth.transport.requests
-from requests.exceptions import ProxyError
-from urllib3.exceptions import NewConnectionError
 from zapv2 import ZAPv2
 
 
@@ -32,15 +30,24 @@ def get_gcp_token() -> str:
     return credentials.token
 
 
-def zap_retry(function: Callable, exception):
+def retry(function: Callable, *args):
     timeout = time.time() + 60 * 10
+    err: Optional[Exception] = None
     while time.time() < timeout:
         try:
-            function()
+            function(*args)
             return True
-        except exception:
+        except Exception as e:
+            err = e
             time.sleep(5)
+    logging.error(err)
     return False
+
+
+def zap_checkurl(zap: ZAPv2, target_url: str):
+    result = zap.urlopen(target_url)
+    if result.startswith("ZAP Error"):
+        raise RuntimeError(result)
 
 
 def zap_init(context: str, target_url: str):
@@ -51,10 +58,9 @@ def zap_init(context: str, target_url: str):
     proxy = f"http://{host}:{port}"
     zap = ZAPv2(apikey=owasp_key, proxies={"http": proxy, "https": proxy})
 
-    if not zap_retry(
-        lambda: zap.context.new_context(context, owasp_key), ProxyError
-    ) or not zap_retry(lambda: zap.urlopen(target_url), NewConnectionError):
-        logging.info("Zap Daemon Timeout")
+    if not retry(zap.context.new_context, context, owasp_key) or not retry(
+        zap_checkurl, zap, target_url
+    ):
         sys.exit(1)
     return zap
 
