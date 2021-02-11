@@ -22,13 +22,17 @@ from zap_common import (
 TIMEOUT_MINS = 5
 
 
-def zap_init(port: int):
+def zap_init(zap_port: int, target_url: str):
     """
     Connect to ZAP service running on localhost.
     """
-    proxy = f"http://localhost:{port}"
+    proxy = f"http://localhost:{zap_port}"
     zap = ZAPv2(proxies={"http": proxy, "https": proxy})
     wait_for_zap_start(zap, timeout_in_secs=TIMEOUT_MINS * 60)
+
+    logging.info("Accessing target %s", target_url)
+    zap_access_target(zap, target_url)
+
     return zap
 
 
@@ -111,8 +115,7 @@ def zap_compliance_scan(
     """
     Run a ZAP compliance scan of a given type against the target URL.
     """
-    zap = zap_init(zap_port)
-    zap_access_target(zap, target_url)
+    zap = zap_init(zap_port, target_url)
 
     if scan_type != ScanType.BASELINE:
         zap_auth(zap)
