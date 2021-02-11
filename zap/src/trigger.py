@@ -98,7 +98,7 @@ def parse_tags(endpoint: Endpoint):
         if tag_key == "codedx":
             codedx_project = tag_val
         if tag_key == "scan":
-            endpoint_scans.add(ScanType(tag_val))
+            endpoint_scans.add(ScanType[tag_val.upper()])
         if tag_key == "slack":
             slack_channel = tag_val
     return codedx_project, slack_channel, endpoint_scans

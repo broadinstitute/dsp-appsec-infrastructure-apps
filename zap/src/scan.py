@@ -166,9 +166,9 @@ def slack_alert_with_report(  # pylint: disable=too-many-arguments
         alerts_string = get_alerts_string(cdx, codedx_project, severities)
         report_message = (
             f"{ gcs_slack_text }"
-            f"Results from **{scan_type}** scan of endpoint { target_url }:\n"
+            f"Results from {scan_type.label()} scan of endpoint { target_url }:\n"
             f"{ alerts_string }"
-            f"Please see attached report for details."
+            f"Please see the attached report for details."
         )
         slack.files_upload(
             channels=channel,
@@ -200,7 +200,7 @@ def main():
     codedx_api_key = getenv("CODEDX_API_KEY")
 
     target_url = getenv("URL")
-    scan_type = ScanType(getenv("SCAN_TYPE"))
+    scan_type = ScanType[getenv("SCAN_TYPE").upper()]
 
     bucket_name = getenv("BUCKET_NAME")
 
