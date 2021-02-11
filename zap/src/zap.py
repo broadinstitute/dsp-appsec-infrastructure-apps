@@ -3,7 +3,6 @@ Provides high-level methods to interface with ZAP.
 """
 
 import logging
-import os
 from enum import Enum
 
 import google.auth
@@ -23,11 +22,10 @@ from zap_common import (
 TIMEOUT_MINS = 5
 
 
-def zap_init():
+def zap_init(port: int):
     """
     Connect to ZAP service running on localhost.
     """
-    port = os.getenv("ZAP_PORT")
     proxy = f"http://localhost:{port}"
     zap = ZAPv2(proxies={"http": proxy, "https": proxy})
     wait_for_zap_start(zap, timeout_in_secs=TIMEOUT_MINS * 60)
@@ -105,12 +103,15 @@ def zap_report(zap: ZAPv2, project: str, scan_type: ScanType):
 
 
 def zap_compliance_scan(
-    project: str, target_url: str, scan_type: ScanType = ScanType.BASELINE
+    project: str,
+    zap_port: int,
+    target_url: str,
+    scan_type: ScanType = ScanType.BASELINE,
 ):
     """
     Run a ZAP compliance scan of a given type against the target URL.
     """
-    zap = zap_init()
+    zap = zap_init(zap_port)
     zap_access_target(zap, target_url)
 
     if scan_type != ScanType.BASELINE:

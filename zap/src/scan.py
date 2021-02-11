@@ -4,7 +4,7 @@ Runs ZAP scan, uploads results to Code Dx and GCS, and alerts Slack.
 """
 
 import logging
-import os
+from os import getenv
 from datetime import datetime
 from enum import Enum
 from typing import List
@@ -27,15 +27,6 @@ def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str):
     blob = bucket.blob(path)
     blob.upload_from_filename(filename)
     return f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}"
-
-
-def get_codedx_client():
-    """
-    Initialize Code Dx client.
-    """
-    base_url = os.getenv("CODEDX_URL")
-    codedx_api_key = os.getenv("CODEDX_API_KEY")
-    return CodeDx(base_url, codedx_api_key)
 
 
 def codedx_upload(cdx: CodeDx, project: str, filename: str):
@@ -130,14 +121,14 @@ def get_codedx_report_by_alert_severity(
 SEVERITY_DELIM = "|"
 
 
-def parse_severities():
+def parse_severities(severities: str):
     """
-    Parse the list of severities from SEVERITIES environment variable.
+    Parse the list of severities.
     """
     default_severities = SEVERITY_DELIM.join(
         (Severity.CRITICAL.value, Severity.HIGH.value)
     )
-    severities = os.getenv("SEVERITIES") or default_severities
+    severities = severities or default_severities
     return [Severity(s.capitalize()) for s in severities.split(SEVERITY_DELIM)]
 
 
@@ -201,14 +192,22 @@ def main():
     - Upload ZAP XML report to GCS, if needed
     - Send a Slack alert with Code Dx report, if needed.
     """
-    # get scan variables
-    codedx_project = os.getenv("CODEDX_PROJECT")
-    target_url = os.getenv("URL")
-    scan_type = ScanType(os.getenv("SCAN_TYPE"))
-    bucket_name = os.getenv("BUCKET_NAME")
-    slack_channel = os.getenv("SLACK_CHANNEL")
-    slack_token = os.getenv("SLACK_TOKEN")
-    severities = parse_severities()
+    # parse env variables
+    zap_port = int(getenv("ZAP_PORT", ""))
+
+    codedx_project = getenv("CODEDX_PROJECT")
+    codedx_url = getenv("CODEDX_URL")
+    codedx_api_key = getenv("CODEDX_API_KEY")
+
+    target_url = getenv("URL")
+    scan_type = ScanType(getenv("SCAN_TYPE"))
+
+    bucket_name = getenv("BUCKET_NAME")
+
+    slack_channel = getenv("SLACK_CHANNEL")
+    slack_token = getenv("SLACK_TOKEN")
+
+    severities = parse_severities(getenv("SEVERITIES"))
 
     # configure logging
     logging.basicConfig(
@@ -218,10 +217,10 @@ def main():
     logging.info("Severities: %s", ", ".join(s.value for s in severities))
 
     # run Zap scan
-    zap_filename = zap_compliance_scan(codedx_project, target_url, scan_type)
+    zap_filename = zap_compliance_scan(codedx_project, zap_port, target_url, scan_type)
 
     # upload its results to Code Dx
-    cdx = get_codedx_client()
+    cdx = CodeDx(codedx_url, codedx_api_key)
     codedx_upload(cdx, codedx_project, zap_filename)
 
     # optionally, upload them to GCS
