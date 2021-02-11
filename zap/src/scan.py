@@ -158,9 +158,9 @@ def main():
 
     # configure logging
     logging.basicConfig(
-        level=logging.INFO, format=f"%(levelname)-8s [{codedx_project}] %(message)s"
+        level=logging.INFO,
+        format=f"%(levelname)-8s [{codedx_project} {scan_type}-scan] %(message)s",
     )
-    logging.info("Scan type: %s", scan_type)
     logging.info("Severities: %s", ", ".join(s.value for s in severities))
 
     # run Zap scan
