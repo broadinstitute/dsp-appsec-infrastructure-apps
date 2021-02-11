@@ -124,6 +124,7 @@ def main():
     logging.basicConfig(
         level=logging.INFO, format=f"%(levelname)-8s [{codedx_project}] %(message)s"
     )
+    logging.info(f"Scan type: {scan_type}; severities: {[s.value for s in severities]}")
 
     # run the scan
     filename = compliance_scan(codedx_project, target_url, scan_type)
@@ -143,7 +144,7 @@ def main():
 
     slack = SlackClient(token=os.environ["SLACK_TOKEN"])
 
-    # upload to codedx
+    # send a Slack alert
     if get_codedx_alert_count_by_severity(cdx, codedx_project, severities):
         report_file = get_codedx_report_by_alert_severity(
             cdx, codedx_project, severities
@@ -163,6 +164,9 @@ def main():
         )
     elif gcs_slack_text:
         slack.chat_postMessage(channel=slack_channel, text=gcs_slack_text)
+    else:
+        return
+    logging.info(f"Posted to Slack channel: {slack_channel}")
 
 
 if __name__ == "__main__":
