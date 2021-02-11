@@ -141,6 +141,59 @@ def parse_severities():
     return [Severity(s.capitalize()) for s in severities.split(SEVERITY_DELIM)]
 
 
+def slack_alert_with_report(  # pylint: disable=too-many-arguments
+    cdx: CodeDx,
+    codedx_project: str,
+    severities: List[Severity],
+    token: str,
+    channel: str,
+    target_url: str,
+    xml_report_url: str,
+    scan_type: ScanType,
+):
+    """
+    Alert Slack on requested findings, if any.
+    """
+    # continue only if Slack channel is set
+    if not channel:
+        logging.warning("Slack alert was not requested")
+        return
+
+    slack = SlackClient(token)
+
+    gcs_slack_text = ""
+    if xml_report_url:
+        gcs_slack_text = (
+            f"New vulnerability report uploaded to GCS bucket: {xml_report_url}\n"
+        )
+
+    if get_codedx_alert_count_by_severity(cdx, codedx_project, severities):
+        # attach a full report, if there are findings
+        report_file = get_codedx_report_by_alert_severity(
+            cdx, codedx_project, severities
+        )
+        alerts_string = get_alerts_string(cdx, codedx_project, severities)
+        report_message = (
+            f"{ gcs_slack_text }"
+            f"{scan_type} scan of endpoint { target_url } contains:\n"
+            f"{ alerts_string }"
+            f"Please see attached report for details."
+        )
+        slack.files_upload(
+            channels=channel,
+            file=report_file,
+            title=report_file,
+            initial_comment=report_message,
+        )
+    elif gcs_slack_text:
+        # mention only XML report, if it was requested
+        slack.chat_postMessage(channel=channel, text=gcs_slack_text)
+    else:
+        logging.warning("No findings for alert to Slack")
+        return
+    logging.info("Alert sent to Slack channel: %s", channel)
+
+
 def main():
     """
     - Run ZAP scan
@@ -154,6 +207,7 @@ def main():
     scan_type = ScanType(os.getenv("SCAN_TYPE"))
     bucket_name = os.getenv("BUCKET_NAME")
     slack_channel = os.getenv("SLACK_CHANNEL")
+    slack_token = os.getenv("SLACK_TOKEN")
     severities = parse_severities()
 
     # configure logging
@@ -171,44 +225,21 @@ def main():
     codedx_upload(cdx, codedx_project, zap_filename)
 
     # optionally, upload them to GCS
-    gcs_slack_text = ""
+    xml_report_url = ""
     if scan_type == ScanType.UI:
-        storage_object_url = upload_gcs(bucket_name, scan_type, zap_filename)
-        gcs_slack_text = (
-            f"New vulnerability report uploaded to GCS bucket: {storage_object_url}\n"
-        )
+        xml_report_url = upload_gcs(bucket_name, scan_type, zap_filename)
 
-    # continue only if Slack channel is set
-    if not slack_channel:
-        logging.warning("Slack alert was not requested")
-        return
-
-    slack = SlackClient(token=os.environ["SLACK_TOKEN"])
-
-    # send a Slack alert
-    if get_codedx_alert_count_by_severity(cdx, codedx_project, severities):
-        report_file = get_codedx_report_by_alert_severity(
-            cdx, codedx_project, severities
-        )
-        alerts_string = get_alerts_string(cdx, codedx_project, severities)
-        report_message = (
-            f"{ gcs_slack_text }"
-            f"Endpoint { target_url } contains:\n"
-            f"{ alerts_string }"
-            f"Please see attached report for details."
-        )
-        slack.files_upload(
-            channels=slack_channel,
-            file=report_file,
-            title=report_file,
-            initial_comment=report_message,
-        )
-    elif gcs_slack_text:
-        slack.chat_postMessage(channel=slack_channel, text=gcs_slack_text)
-    else:
-        logging.warning("No findings for alert to Slack")
-        return
-    logging.info("Alert sent to Slack channel: %s", slack_channel)
+    # alert Slack, if needed
+    slack_alert_with_report(
+        cdx,
+        codedx_project,
+        severities,
+        slack_token,
+        slack_channel,
+        target_url,
+        xml_report_url,
+        scan_type,
+    )
 
 
 if __name__ == "__main__":
