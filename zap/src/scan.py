@@ -166,7 +166,7 @@ def slack_alert_with_report(  # pylint: disable=too-many-arguments
         alerts_string = get_alerts_string(cdx, codedx_project, severities)
         report_message = (
             f"{ gcs_slack_text }"
-            f"{scan_type} scan of endpoint { target_url } contains:\n"
+            f"Results from **{scan_type}** scan of endpoint { target_url }:\n"
             f"{ alerts_string }"
             f"Please see attached report for details."
         )
