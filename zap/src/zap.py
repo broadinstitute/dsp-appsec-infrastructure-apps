@@ -56,6 +56,15 @@ def zap_auth(zap: ZAPv2):
     )
 
 
+def zap_api_import(zap: ZAPv2, target_url: str):
+    """
+    Import OpenAPI definition from target URL.
+    """
+    res = zap.openapi.import_url(target_url)
+    if not zap.core.urls():
+        raise RuntimeError(f"Failed to import API from {target_url}: {res}")
+
+
 def get_gcp_token() -> str:
     """
     Generate a Google access token with custom scopes for the default identity.
@@ -113,7 +122,7 @@ def zap_compliance_scan(
         zap_auth(zap)
 
     if scan_type == ScanType.API:
-        zap.openapi.import_url(target_url)
+        zap_api_import(zap, target_url)
 
     zap_spider(zap, target_url)
 
