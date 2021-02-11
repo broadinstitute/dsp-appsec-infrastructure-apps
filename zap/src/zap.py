@@ -32,7 +32,7 @@ def get_gcp_token() -> str:
 
 def retry(function: Callable, *args):
     timeout = time.time() + 60 * 10
-    err: Exception = RuntimeError(f"Unknown error in {function}({args})")
+    err = Exception()
     while time.time() < timeout:
         try:
             function(*args)
