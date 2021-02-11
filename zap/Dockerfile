@@ -1,5 +1,7 @@
 FROM python:slim AS base
 
+FROM owasp/zap2docker-weekly AS zap
+
 # Set up a Python virtualenv in a "build" stage
 FROM base AS build
 
@@ -20,15 +22,17 @@ FROM build
 
 RUN /venv/bin/pip3 install -U git+https://github.com/PyCQA/pylint.git
 
+COPY --from=zap /zap/zap_common.py ./
 COPY src/*.py ./
 
-RUN /venv/bin/pylint ./*.py
+RUN /venv/bin/pylint --ignore=zap_common.py ./*.py
 
 
 # Copy the virtualenv and sources into the clean final image
 FROM base
 
 COPY --from=build /venv /venv
+COPY --from=zap /zap/zap_common.py ./
 COPY src/*.py ./
 
 ENTRYPOINT ["/venv/bin/python3", "-u", "-m"]
