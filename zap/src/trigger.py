@@ -4,7 +4,7 @@ Triggers ZAP scans for endpoints from DefectDojo.
 """
 
 import argparse
-import os
+from os import getenv
 import re
 from asyncio import Future
 from typing import List, Literal, Optional, Set, TypedDict
@@ -134,10 +134,10 @@ def main():
     - Fetch the list of endpoints from DefectDojo
     - Trigger the scans for all endpoints
     """
-    defect_dojo_url = os.getenv("DEFECT_DOJO_URL")
-    defect_dojo_key = os.getenv("DEFECT_DOJO_KEY")
-    zap_topic = os.getenv("ZAP_TOPIC_NAME")
-    gcp_project = os.getenv("GCP_PROJECT_ID")
+    defect_dojo_url = getenv("DEFECT_DOJO_URL")
+    defect_dojo_key = getenv("DEFECT_DOJO_KEY")
+    zap_topic = getenv("ZAP_TOPIC_NAME")
+    gcp_project = getenv("GCP_PROJECT_ID")
 
     parser = argparse.ArgumentParser(description="Get scan types to run")
     parser.add_argument(
