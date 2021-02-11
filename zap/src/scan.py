@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+"""
+Runs ZAP scan, uploads results to Code Dx and GCS, and alerts Slack.
+"""
 
 import logging
 import os
@@ -10,27 +13,35 @@ from codedx_api.CodeDxAPI import CodeDx
 from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
 
-from zap import ScanType, compliance_scan
+from zap import ScanType, zap_compliance_scan
 
 
-def upload_gcp(bucket_name: str, scan_type: ScanType, filename: str):
+def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str):
+    """
+    Upload scans to a GCS bucket and return the path to the file in Cloud Console.
+    """
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     date = datetime.today().strftime("%Y%m%d")
     path = f"{scan_type}-scans/{date}/{filename}"
     blob = bucket.blob(path)
     blob.upload_from_filename(filename)
-    location = f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}"
-    return location
+    return f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}"
 
 
 def get_codedx_client():
+    """
+    Initialize Code Dx client.
+    """
     base_url = os.getenv("CODEDX_URL")
     codedx_api_key = os.getenv("CODEDX_API_KEY")
     return CodeDx(base_url, codedx_api_key)
 
 
 def codedx_upload(cdx: CodeDx, project: str, filename: str):
+    """
+    Create CodeDx project if needed and trigger analysis on the uploaded file.
+    """
     cdx.update_projects()
     if project not in list(cdx.projects):
         cdx.create_project(project)
@@ -40,6 +51,10 @@ def codedx_upload(cdx: CodeDx, project: str, filename: str):
 
 
 class Severity(str, Enum):
+    """
+    Provides possible values of finding severity in Code Dx.
+    """
+
     CRITICAL = "Critical"
     HIGH = "High"
     MEDIUM = "Medium"
@@ -50,6 +65,9 @@ class Severity(str, Enum):
 def get_codedx_alert_count_by_severity(
     cdx: CodeDx, project: str, severities: List[Severity]
 ) -> int:
+    """
+    Get finding count, given the severity levels for a Code Dx project.
+    """
     filters = {
         "filter": {
             "severity": [s.value for s in severities],
@@ -57,11 +75,14 @@ def get_codedx_alert_count_by_severity(
     }
     res = cdx.get_finding_count(project, filters)
     if "count" not in res:
-        logging.info(f"Error fetching count: {res}")
+        raise RuntimeError(f"Error fetching count: {res}")
     return res["count"]
 
 
 def get_alerts_string(cdx: CodeDx, project: str, severities: List[Severity]):
+    """
+    Get the list of finding statistics to be shown in a Slack alert.
+    """
     messages: List[str] = []
     emojis = {
         Severity.CRITICAL.value: ":stopsign:",
@@ -82,7 +103,10 @@ def get_alerts_string(cdx: CodeDx, project: str, severities: List[Severity]):
 def get_codedx_report_by_alert_severity(
     cdx: CodeDx, project: str, severities: List[Severity]
 ):
-    logging.info(f"Getting PDF report from Codedx project: {project}")
+    """
+    Generate a PDF report, given the severity levels for a Code Dx project.
+    """
+    logging.info("Getting PDF report from Codedx project: %s", project)
     report_date = datetime.now()
     report_file = f'{project.replace("-", "_")}_report_{report_date:%Y%m%d}.pdf'
     filters = {
@@ -106,40 +130,55 @@ def get_codedx_report_by_alert_severity(
 SEVERITY_DELIM = "|"
 
 
+def parse_severities():
+    """
+    Parse the list of severities from SEVERITIES environment variable.
+    """
+    default_severities = SEVERITY_DELIM.join(
+        (Severity.CRITICAL.value, Severity.HIGH.value)
+    )
+    severities = os.getenv("SEVERITIES") or default_severities
+    return [Severity(s.capitalize()) for s in severities.split(SEVERITY_DELIM)]
+
+
 def main():
+    """
+    - Run ZAP scan
+    - Upload results to Code Dx
+    - Upload ZAP XML report to GCS, if needed
+    - Send a Slack alert with Code Dx report, if needed.
+    """
     # get scan variables
     codedx_project = os.getenv("CODEDX_PROJECT")
     target_url = os.getenv("URL")
     scan_type = ScanType(os.getenv("SCAN_TYPE"))
     bucket_name = os.getenv("BUCKET_NAME")
     slack_channel = os.getenv("SLACK_CHANNEL")
-
-    default_severities = SEVERITY_DELIM.join(
-        (Severity.CRITICAL.value, Severity.HIGH.value)
-    )
-    severities = os.getenv("SEVERITIES") or default_severities
-    severities = [Severity(s.capitalize()) for s in severities.split(SEVERITY_DELIM)]
+    severities = parse_severities()
 
     # configure logging
     logging.basicConfig(
         level=logging.INFO, format=f"%(levelname)-8s [{codedx_project}] %(message)s"
     )
-    logging.info("Scan type: " + scan_type)
-    logging.info("Severities: " + ", ".join(s.value for s in severities))
+    logging.info("Scan type: %s", scan_type)
+    logging.info("Severities: %s", ", ".join(s.value for s in severities))
 
-    # run the scan
-    filename = compliance_scan(codedx_project, target_url, scan_type)
+    # run Zap scan
+    zap_filename = zap_compliance_scan(codedx_project, target_url, scan_type)
 
+    # upload its results to Code Dx
     cdx = get_codedx_client()
-    codedx_upload(cdx, codedx_project, filename)
+    codedx_upload(cdx, codedx_project, zap_filename)
 
+    # optionally, upload them to GCS
     gcs_slack_text = ""
     if scan_type == ScanType.UI:
-        storage_object_url = upload_gcp(bucket_name, scan_type, filename)
+        storage_object_url = upload_gcs(bucket_name, scan_type, zap_filename)
         gcs_slack_text = (
             f"New vulnerability report uploaded to GCS bucket: {storage_object_url}\n"
         )
 
+    # continue only if Slack channel is set
     if not slack_channel:
         return
 
@@ -166,9 +205,9 @@ def main():
     elif gcs_slack_text:
         slack.chat_postMessage(channel=slack_channel, text=gcs_slack_text)
     else:
-        logging.info("Nothing to report")
+        logging.warning("Nothing to report")
         return
-    logging.info(f"Report sent to Slack channel: {slack_channel}")
+    logging.info("Report sent to Slack channel: %s", slack_channel)
 
 
 if __name__ == "__main__":

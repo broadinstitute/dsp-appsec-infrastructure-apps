@@ -1,4 +1,5 @@
 {
   "python.formatting.provider": "black",
+  "python.linting.pylintUseMinimalCheckers": false,
   "python.analysis.extraPaths": ["zap/src"]
 }
