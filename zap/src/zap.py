@@ -6,18 +6,17 @@
 
 import logging
 import os
-import sys
 import time
 from enum import Enum
-from typing import Callable, Optional
+from typing import Callable
 
 import google.auth
 import google.auth.transport.requests
-from zapv2 import ZAPv2
+from zapv2 import ZAPv2, spider
 
 
 def get_gcp_token() -> str:
-    credentials, __ = google.auth.default(
+    credentials, _ = google.auth.default(
         scopes=[
             "profile",
             "email",
@@ -30,20 +29,20 @@ def get_gcp_token() -> str:
     return credentials.token
 
 
-def retry(function: Callable, e, *args):
+def retry(function: Callable, *args):
     timeout = time.time() + 60 * 10
     err = Exception()
     while time.time() < timeout:
         try:
             function(*args)
             return
-        except e as ex:
+        except Exception as ex:
             err = ex
             time.sleep(5)
     raise err
 
 
-def zap_init(context: str, target_url: str):
+def zap_init(context: str):
     # Connect to ZAP
     owasp_key = ""  # currently disabled
     host = "127.0.0.1"
@@ -51,7 +50,7 @@ def zap_init(context: str, target_url: str):
     proxy = f"http://{host}:{port}"
     zap = ZAPv2(apikey=owasp_key, proxies={"http": proxy, "https": proxy})
 
-    retry(zap.context.new_context, ConnectionRefusedError, context, owasp_key)
+    retry(zap.context.new_context, context, owasp_key)
 
     return zap
 
@@ -70,11 +69,13 @@ def zap_auth(zap: ZAPv2):
     )
 
 
-def wait_for_scan(zap: ZAPv2, scanner, minutes, is_auth=False, scan_id=None):
+def wait_for_scan(
+    zap: ZAPv2, scanner: spider, minutes: int, is_auth=False, scan_id=None
+):
     time.sleep(5)
     start = time.time()
     timeout = time.time() + 60 * minutes  # timeout is x minutes from now
-    while (scan_id != None and int(scanner.status(scan_id)) < 100) or (
+    while (scan_id is not None and int(scanner.status(scan_id)) < 100) or (
         scanner.status == "running"
     ):
         time.sleep(2)
@@ -86,7 +87,7 @@ def wait_for_scan(zap: ZAPv2, scanner, minutes, is_auth=False, scan_id=None):
 
 def zap_access(zap: ZAPv2, target_url: str):
     # Proxy a request to the target URL so that ZAP has something to deal with
-    logging.info(f"Accessing target URL {target_url}")
+    logging.info("Accessing target URL %s", target_url)
     result = zap.urlopen(target_url)
     if result.startswith("ZAP Error"):
         raise RuntimeError(result)
@@ -97,14 +98,14 @@ def zap_access(zap: ZAPv2, target_url: str):
 def zap_spider(zap: ZAPv2, target_url: str, is_auth: bool = False):
     if is_auth:
         zap_auth(zap)
-    logging.info(f"Spidering target {target_url}")
-    scanid = zap.spider.scan(target_url)
-    wait_for_scan(zap, zap.spider, 5, is_auth, scanid)
+    logging.info("Spidering target %s", target_url)
+    scan_id = zap.spider.scan(target_url)
+    wait_for_scan(zap, zap.spider, 5, is_auth, scan_id)
     logging.info("Spider completed")
 
 
 def zap_ajax_spider(zap: ZAPv2, target_url: str, is_auth: bool = False):
-    logging.info(f"Ajax Spider target {target_url}")
+    logging.info("Ajax Spider target %s", target_url)
     zap_auth(zap)
     zap.ajaxSpider.scan(target_url)
     wait_for_scan(zap, zap.ajaxSpider, 5, is_auth)
@@ -113,22 +114,22 @@ def zap_ajax_spider(zap: ZAPv2, target_url: str, is_auth: bool = False):
 
 def zap_passive(zap: ZAPv2):
     while int(zap.pscan.records_to_scan) > 0:
-        logging.info(f"Records to passive scan : {zap.pscan.records_to_scan}")
+        logging.info("Records to passive scan: %s", zap.pscan.records_to_scan)
         time.sleep(2)
 
     logging.info("Passive Scan completed")
 
 
 def zap_active(zap: ZAPv2, target_url: str, is_auth: bool = False):
-    logging.info(f"Active Scanning target {target_url}")
-    scanid = zap.ascan.scan(target_url)
-    wait_for_scan(zap, zap.ascan, 60, is_auth, scanid)
+    logging.info("Active Scanning target %s", target_url)
+    scan_id = zap.ascan.scan(target_url)
+    wait_for_scan(zap, zap.ascan, 60, is_auth, scan_id)
 
 
 def zap_write(zap: ZAPv2, file_name: str):
     zap.core.set_option_merge_related_alerts(True)
-    with open(file_name, "wb") as f:
-        f.write(zap.core.xmlreport().encode("utf-8"))
+    with open(file_name, "wb") as file:
+        file.write(zap.core.xmlreport().encode("utf-8"))
 
 
 class ScanType(str, Enum):
@@ -138,14 +139,14 @@ class ScanType(str, Enum):
     UI = "ui"
 
     def __str__(self):
-        return self.value
+        return str(self.value)
 
 
 def compliance_scan(
     project: str, target_url: str, scan_type: ScanType = ScanType.BASELINE
 ):
     is_auth = scan_type != ScanType.BASELINE
-    zap = zap_init(project, target_url)
+    zap = zap_init(project)
     zap_access(zap, target_url)
     if scan_type == ScanType.API:
         token = get_gcp_token()
