@@ -10,9 +10,9 @@ import google.auth
 from google.auth.transport.requests import Request as GoogleAuthRequest
 from zapv2 import ZAPv2
 
-import zap_common
 from zap_common import (
     wait_for_zap_start,
+    write_report,
     zap_access_target,
     zap_active_scan,
     zap_ajax_spider,
@@ -21,7 +21,7 @@ from zap_common import (
 )
 
 
-def zap_init(context: str, target_url: str):
+def zap_init():
     """
     Connect to ZAP service running on localhost.
     """
@@ -29,13 +29,6 @@ def zap_init(context: str, target_url: str):
     proxy = f"http://localhost:{port}"
     zap = ZAPv2(proxies={"http": proxy, "https": proxy})
     wait_for_zap_start(zap, timeout_in_secs=60)
-
-    context_id = zap.context.new_context(context)
-    zap_common.context_name = context
-    zap_common.context_id = context_id
-
-    zap_access_target(zap, target_url)
-
     return zap
 
 
@@ -60,8 +53,9 @@ def zap_api_import(zap: ZAPv2, target_url: str):
     """
     Import OpenAPI definition from target URL.
     """
+    start_urls = zap.core.urls()
     res = zap.openapi.import_url(target_url)
-    if not zap.core.urls():
+    if zap.core.urls() == start_urls:
         raise RuntimeError(f"Failed to import API from {target_url}: {res}")
 
 
@@ -95,17 +89,15 @@ class ScanType(str, Enum):
         return str(self.value)
 
 
-def zap_report(zap: ZAPv2, context: str, scan_type: ScanType):
+def zap_report(zap: ZAPv2, project: str, scan_type: ScanType):
     """
     Generate ZAP scan XML report.
     """
     zap.core.set_option_merge_related_alerts(True)
 
-    filename = f"{context}_{scan_type}-scan_report.xml"
+    filename = f"{project}_{scan_type}-scan_report.xml"
     filename = filename.replace("-", "_").replace(" ", "")
-
-    with open(filename, "wb") as file:
-        file.write(zap.core.xmlreport().encode("utf-8"))
+    write_report(filename, zap.core.xmlreport())
 
     return filename
 
@@ -116,7 +108,8 @@ def zap_compliance_scan(
     """
     Run a ZAP compliance scan of a given type against the target URL.
     """
-    zap = zap_init(context, target_url)
+    zap = zap_init()
+    zap_access_target(zap, target_url)
 
     if scan_type != ScanType.BASELINE:
         zap_auth(zap)
@@ -134,7 +127,7 @@ def zap_compliance_scan(
     if scan_type == ScanType.UI:
         zap_active_scan(zap, target_url, None)
 
-    filename = zap_report(zap, context, scan_type)
+    filename = zap_report(zap, project, scan_type)
     zap.core.shutdown()
 
     return filename
