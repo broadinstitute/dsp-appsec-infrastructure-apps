@@ -31,15 +31,13 @@ def get_gcp_token() -> str:
 
 def retry(function: Callable, *args):
     timeout = time.time() + 60 * 10
-    err = Exception()
     while time.time() < timeout:
         try:
             function(*args)
             return
-        except Exception as ex:
-            err = ex
+        except ConnectionRefusedError:
             time.sleep(5)
-    raise err
+    raise TimeoutError("Zap Proxy timeout")
 
 
 def zap_init(context: str):
