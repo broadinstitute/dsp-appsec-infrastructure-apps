@@ -7,7 +7,7 @@ import argparse
 import re
 from asyncio import Future
 from os import getenv
-from typing import List, Literal, Optional, Set, TypedDict
+from typing import List, Literal, Optional, TypedDict
 
 import requests
 from google.cloud.pubsub_v1 import PublisherClient
@@ -88,7 +88,7 @@ def parse_tags(endpoint: Endpoint):
     """
     codedx_project = ""
     slack_channel = ""
-    endpoint_scans: Set[ScanType] = set()
+    scan_type = ""
     for tag in endpoint["tags"]:
         tag_match = TAG_MATCHER.match(tag)
         if not tag_match:
@@ -98,10 +98,10 @@ def parse_tags(endpoint: Endpoint):
         if tag_key == "codedx":
             codedx_project = tag_val
         if tag_key == "scan":
-            endpoint_scans.add(ScanType[tag_val.upper()])
+            scan_type = ScanType[tag_val.upper()]
         if tag_key == "slack":
             slack_channel = tag_val
-    return codedx_project, slack_channel, endpoint_scans
+    return codedx_project, slack_channel, scan_type
 
 
 def trigger_scans(
@@ -118,15 +118,11 @@ def trigger_scans(
     topic = publisher.topic_path(gcp_project, topic_name)  # pylint: disable=no-member
 
     for endpoint in endpoints:
-        codedx_project, slack_channel, endpoint_scans = parse_tags(endpoint)
-        if not codedx_project:
-            continue
-
-        for scan_type in scan_types:
-            if scan_type in endpoint_scans:
-                trigger_scan(
-                    publisher, endpoint, topic, codedx_project, scan_type, slack_channel
-                )
+        codedx_project, slack_channel, scan_type = parse_tags(endpoint)
+        if codedx_project and (scan_type in scan_types):
+            trigger_scan(
+                publisher, endpoint, topic, codedx_project, scan_type, slack_channel
+            )
 
 
 def main():
