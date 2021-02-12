@@ -47,7 +47,8 @@ topic_name = os.environ['JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
 
 # Instantiate the DefectDojo backend wrapper
-dd = wrapper.DefectDojoAPIv2(dojo_host, dojo_api_key, dojo_user, api_version="v2")
+dd = wrapper.DefectDojoAPIv2(
+    dojo_host, dojo_api_key, dojo_user, api_version="v2")
 
 app = FlaskAPI(__name__)
 
@@ -105,7 +106,7 @@ def submit():
     appsec_jira_ticket_description = github_url + '\n' + architecture_diagram
     appsec_jira_ticket_summury = 'Threat Model request ' + dojo_name
 
-    jira_ticket_appsec = jira.create_issue(project='ATP',
+    jira_ticket_appsec = jira.create_issue(project='DSEC',
                                            summary=appsec_jira_ticket_summury,
                                            description=str(
                                                appsec_jira_ticket_description),
@@ -132,7 +133,8 @@ def submit():
         del json_data['Ticket_Description']
 
         # Set product description
-        product = dd.create_product(dojo_name, prepare_dojo_input(json_data), product_type)
+        product = dd.create_product(
+            dojo_name, prepare_dojo_input(json_data), product_type)
         product_id = product.id()
         logging.info("Product created: %s", dojo_name)
 
@@ -145,7 +147,8 @@ def submit():
 
     else:
         # Set product description
-        product = dd.create_product(dojo_name, prepare_dojo_input(json_data), product_type)
+        product = dd.create_product(
+            dojo_name, prepare_dojo_input(json_data), product_type)
         product_id = product.id()
         logging.info("Product created: %s", dojo_name)
 
@@ -204,6 +207,7 @@ def cis_results():
                                indent=4, default=str)
             return table
         except Exception:
+            status_code = 404
             notfound = f"""
             This Google project is not found! Did you make sure to supply the right GCP Project ID?
             You can verify the ID of the project you want to scan by running the following command:
@@ -263,7 +267,6 @@ def cis_scan():
     doc = doc_ref.get()
 
     check_dict = doc.to_dict()
-    print(check_dict)
     if check_dict:
         status_code = 404
         text_message = check_dict['Error']
@@ -294,7 +297,7 @@ def request_tm():
 
     logging.info("Request for threat model for project %s ", project_name)
 
-    jira_ticket_appsec = jira.create_issue(project='ATP',
+    jira_ticket_appsec = jira.create_issue(project='DSEC',
                                            summary=appsec_jira_ticket_summury,
                                            description=str(
                                                appsec_jira_ticket_description),
@@ -305,9 +308,7 @@ def request_tm():
     slack_channels_list = ['#dsp-security', '#appsec-internal']
     for channel in slack_channels_list:
         slacknotify.slacknotify_threat_model(slack_token, channel, security_champion,
-                                             request_type, project_name, jira_instance, jira_ticket_appsec, 'ATP')
-
-
+                                             request_type, project_name, jira_instance, jira_ticket_appsec, 'DSEC')
 
     return ''
 
