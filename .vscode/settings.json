@@ -1,0 +1,10 @@
+{
+  "python.formatting.provider": "black",
+  "python.linting.pylintUseMinimalCheckers": false,
+  "python.analysis.extraPaths": ["zap/src"],
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  }
+}

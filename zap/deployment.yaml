@@ -8,44 +8,160 @@ data:
   spec: |
     template:
       spec:
+        serviceAccountName: ${JOB_SERVICE_ACCOUNT}
         runtimeClassName: gvisor
+        restartPolicy: OnFailure
         nodeSelector:
           cloud.google.com/gke-nodepool: batch
-        restartPolicy: OnFailure
+
         containers:
         - name: zap
           image: owasp/zap2docker-weekly
-          command: ['zap-cli']
-          args: ['quick-scan', '-sc', '-o', '-config api.disablekey=true', '-s', 'xss', '$(URL)']
+          command: ['zap.sh']
+          args: [
+            '-daemon',
+            '-host', '127.0.0.1',
+            '-port', '${ZAP_PORT}',
+            '-config', 'api.disablekey=true',
+            '-Xmx900m',
+          ]
+          resources:
+            requests:
+              memory: 950Mi
+
+        - name: zap-scan
+          image: ${ZAP_IMAGE}
+          imagePullPolicy: Always
+          args: ['scan']
           env:
+          - name: CODEDX_URL
+            value: ${CODEDX_URL}
+          - name: BUCKET_NAME
+            value: ${BUCKET_NAME}
+          - name: ZAP_PORT
+            value: '${ZAP_PORT}'
+          - name: CODEDX_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: ${JOB_SECRET}
+                key: CODEDX_API_KEY
+          - name: SLACK_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: ${JOB_SECRET}
+                key: SLACK_TOKEN
+          - name: CODEDX_PROJECT
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.annotations['CODEDX_PROJECT']
           - name: URL
             valueFrom:
               fieldRef:
                 fieldPath: metadata.annotations['URL']
+          - name: SCAN_TYPE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.annotations['SCAN_TYPE']
+          - name: SLACK_CHANNEL
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.annotations['SLACK_CHANNEL']
+          - name: SEVERITIES
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.annotations['SEVERITIES']
           resources:
             requests:
-              memory: 250M
+              memory: 50Mi
 ---
-apiVersion: batch/v1beta1
-kind: CronJob
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicy
 metadata:
-  name: zap
+  name: ${JOB_TOPIC}-policy
   namespace: ${NAMESPACE}
 spec:
-  schedule: "0 4 * * 0"
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          runtimeClassName: gvisor
-          nodeSelector:
-            cloud.google.com/gke-nodepool: batch
-          restartPolicy: OnFailure
-          containers:
-          - name: zap
-            image: owasp/zap2docker-weekly
-            command: ['zap-cli']
-            args: ['quick-scan', '-sc', '-o', '-config api.disablekey=true', '-s', 'xss', 'https://app.terra.bio']
-            resources:
-              requests:
-                memory: 250M
+  resourceRef:
+    apiVersion: pubsub.cnrm.cloud.google.com/v1beta1
+    kind: PubSubTopic
+    name: ${JOB_TOPIC}
+  bindings:
+  - role: roles/pubsub.publisher
+    members:
+    - serviceAccount:${CRON_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
+---
+apiVersion: v1
+kind: List
+items:
+- &cron-job
+  apiVersion: batch/v1beta1
+  kind: CronJob
+  metadata:
+    name: ${CRON_JOB}-weekly
+    namespace: ${NAMESPACE}
+  spec:
+    schedule: "0 7 * * 0"
+    jobTemplate:
+      spec:
+        template:
+          spec: &cron-job-spec
+            serviceAccountName: ${CRON_SERVICE_ACCOUNT}
+            runtimeClassName: gvisor
+            nodeSelector:
+              cloud.google.com/gke-nodepool: batch
+            restartPolicy: OnFailure
+
+            containers:
+            - &cron-job-container
+              name: zap-trigger
+              image: ${ZAP_IMAGE}
+              args: ['trigger', '-s', 'baseline', 'api', 'auth']
+              env:
+              - name: GCP_PROJECT_ID
+                value: ${PROJECT_ID}
+              - name: ZAP_TOPIC_NAME
+                value: ${JOB_TOPIC}
+              - name: DEFECT_DOJO_URL
+                value: ${DEFECT_DOJO_URL}
+              - name: DEFECT_DOJO_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: ${JOB_SECRET}
+                    key: DEFECT_DOJO_KEY
+              resources:
+                requests:
+                  memory: 50Mi
+- << : *cron-job
+  metadata:
+    name: ${CRON_JOB}-monthly
+    namespace: ${NAMESPACE}
+  spec:
+    schedule: "0 0 1 * *"
+    jobTemplate:
+      spec:
+        template:
+          spec:
+            << : *cron-job-spec
+            containers:
+            - << : *cron-job-container
+              args: ['trigger', '-s', 'ui']
+---
+apiVersion: storage.cnrm.cloud.google.com/v1beta1
+kind: StorageBucket
+metadata:
+  name: ${BUCKET_NAME}
+  namespace: ${NAMESPACE}
+  annotations:
+    cnrm.cloud.google.com/deletion-policy: abandon
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: ${BUCKET_NAME}-policy
+  namespace: ${NAMESPACE}
+spec:
+  member: serviceAccount:${JOB_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
+  role: roles/storage.objectAdmin
+  resourceRef:
+    apiVersion: storage.cnrm.cloud.google.com/v1beta1
+    kind: StorageBucket
+    name: ${BUCKET_NAME}
