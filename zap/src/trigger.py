@@ -73,7 +73,7 @@ def trigger_scan(  # pylint: disable=too-many-arguments
         data=b"",
         CODEDX_PROJECT=codedx_project,
         URL=url,
-        SCAN_TYPE=scan_type.value,
+        SCAN_TYPE=scan_type.name,
         SLACK_CHANNEL=slack_channel,
     )
     future.add_done_callback(pubsub_callback(endpoint))
