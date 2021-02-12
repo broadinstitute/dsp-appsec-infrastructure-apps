@@ -88,7 +88,7 @@ def parse_tags(endpoint: Endpoint):
     """
     codedx_project = ""
     slack_channel = ""
-    scan_type = ""
+    scan_type: ScanType
     for tag in endpoint["tags"]:
         tag_match = TAG_MATCHER.match(tag)
         if not tag_match:
