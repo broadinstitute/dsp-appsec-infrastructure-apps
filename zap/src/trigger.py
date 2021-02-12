@@ -141,12 +141,13 @@ def main():
 
     parser = argparse.ArgumentParser(description="Get scan types to run")
     parser.add_argument(
-        "-s", "--scans", nargs="+", default=[], type=ScanType, choices=list(ScanType)
+        "-s", "--scans", nargs="+", default=[], type=str, choices=list(ScanType)
     )
     args = parser.parse_args()
+    scan_types = [ScanType[s.upper()] for s in args.scans]
 
     endpoints = get_defect_dojo_endpoints(defect_dojo_url, defect_dojo_key)
-    trigger_scans(endpoints, gcp_project, zap_topic, args.scans)
+    trigger_scans(endpoints, gcp_project, zap_topic, scan_types)
 
 
 if __name__ == "__main__":
