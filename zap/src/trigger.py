@@ -7,7 +7,7 @@ import argparse
 import re
 from asyncio import Future
 from os import getenv
-from typing import List, Literal, Optional, TypedDict
+from typing import List, Literal, Optional, Set, TypedDict
 
 import requests
 from google.cloud.pubsub_v1 import PublisherClient
@@ -108,7 +108,7 @@ def trigger_scans(
     endpoints: List[Endpoint],
     gcp_project: str,
     topic_name: str,
-    scan_types: List[ScanType],
+    scan_types: Set[ScanType],
 ):
     """
     Scan multiple endpoints by publishing multiple
@@ -137,10 +137,15 @@ def main():
 
     parser = argparse.ArgumentParser(description="Get scan types to run")
     parser.add_argument(
-        "-s", "--scans", nargs="+", default=[], type=str, choices=list(ScanType)
+        "-s",
+        "--scans",
+        nargs="+",
+        default=[],
+        type=str,
+        choices=[s.name.lower() for s in list(ScanType)],
     )
     args = parser.parse_args()
-    scan_types = [ScanType[s.upper()] for s in args.scans]
+    scan_types = set(ScanType[s.upper()] for s in args.scans)
 
     endpoints = get_defect_dojo_endpoints(defect_dojo_url, defect_dojo_key)
     trigger_scans(endpoints, gcp_project, zap_topic, scan_types)
