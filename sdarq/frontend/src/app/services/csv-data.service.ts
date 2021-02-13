@@ -10,8 +10,10 @@ export class CsvDataService {
     const Json2csvParser = require('json2csv').parse;
     const fields = fieldsdata;
     const opts = { fields };
-    const csv = Json2csvParser(JSON.parse(data), {opts});
-    return csv.split(/\[/gm).join(' ').split(/\]/gm).join(' ').split(/"",""/gm).join('\n');
+    const csv_notformatted = Json2csvParser(JSON.parse(data), {opts});
+    const csv_format = csv_notformatted.split(/"",""/gm).join('\n');
+    const csv = csv_format.split(/""]/gm).join('').split(/\[""/gm).join('')
+    return csv
   }
 
   exportToCsv(filename: string, csvContent: string) {
