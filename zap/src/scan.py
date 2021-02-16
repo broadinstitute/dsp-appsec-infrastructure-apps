@@ -9,10 +9,10 @@ from enum import Enum
 from os import getenv
 from typing import List
 
-from google.cloud import storage
-
 from codedx_api.CodeDxAPI import CodeDx
+from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
+
 from zap import ScanType, zap_compliance_scan
 
 
