@@ -9,10 +9,10 @@ from enum import Enum
 from os import getenv
 from typing import List
 
-from codedx_api.CodeDxAPI import CodeDx
 from google.cloud import storage
-from slack_sdk.web import WebClient as SlackClient
 
+from codedx_api.CodeDxAPI import CodeDx
+from slack_sdk.web import WebClient as SlackClient
 from zap import ScanType, zap_compliance_scan
 
 
@@ -62,6 +62,7 @@ def get_codedx_alert_count_by_severity(
     filters = {
         "filter": {
             "severity": [s.value for s in severities],
+            "status": ["new", "unresolved", "reopened"],
         },
     }
     res = cdx.get_finding_count(project, filters)
