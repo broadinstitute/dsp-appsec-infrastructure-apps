@@ -1,6 +1,5 @@
-import argparse
 import re
-from typing import List, Literal, Optional, Set, TypedDict
+from typing import List, Literal, Optional, TypedDict
 from enum import Enum
 
 
@@ -30,7 +29,7 @@ class ScanType(str, Enum):
         return str(self.name).lower()
 
     def label(self):
-        """"Get user-friendly name of the scan type"""
+        """Get user-friendly name of the scan type"""
         return str(self.value)
 
 
@@ -42,7 +41,6 @@ def parse_tags(endpoint: Endpoint):
     Parse tags for a given endpoint.
     """
     codedx_project = ""
-    slack_channel = ""
     scan_type: Optional[ScanType] = None
     for tag in endpoint["tags"]:
         tag_match = TAG_MATCHER.match(tag)

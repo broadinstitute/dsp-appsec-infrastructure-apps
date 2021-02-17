@@ -7,7 +7,7 @@ This module
 - sends request to scan a GCP project against the CIS Benchmark
 - get results from BigQuery for a scanned GCP project
 - send a request for threat model
-- scan a service via ZAP tool 
+- scan a service via ZAP tool
 """
 #!/usr/bin/env python3
 
@@ -15,10 +15,9 @@ import os
 import re
 import json
 import logging
-from enum import Enum
 import threading
 
-from typing import List, Literal, Optional, Set, TypedDict
+from typing import List, Optional, TypedDict
 from flask import request, Response
 from flask_api import FlaskAPI
 from flask_cors import cross_origin
