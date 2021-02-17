@@ -26,7 +26,9 @@ import { JiraTicketRiskAssesmentComponent } from './jira-ticket-risk-assesment/j
 import { ThreatModelComponent } from './threat-model/threat-model.component';
 import { RequestTmService} from './services/request-tm.service';
 import { AboutPageComponent } from './about-page/about-page.component'
-import { CsvDataService } from './services/csv-data.service'
+import { CsvDataService } from './services/csv-data.service';
+import { ServiceScanComponent } from './service-scan/service-scan.component'
+import { ScanServiceService} from './services/scan-service.service'
 
 
 
@@ -49,7 +51,8 @@ import { CsvDataService } from './services/csv-data.service'
     FilterPipe,
     JiraTicketRiskAssesmentComponent,
     ThreatModelComponent,
-    AboutPageComponent
+    AboutPageComponent,
+    ServiceScanComponent
   ],
   imports: [
     BrowserModule,
@@ -64,7 +67,8 @@ import { CsvDataService } from './services/csv-data.service'
     CisProjectService,
     GetCisScanService,
     RequestTmService,
-    CsvDataService
+    CsvDataService,
+    ScanServiceService
     ],
   bootstrap: [
     AppComponent
