@@ -6,6 +6,8 @@ This module
         - notifies several Slack channels about service requirements request
 - sends request to scan a GCP project against the CIS Benchmark
 - get results from BigQuery for a scanned GCP project
+- send a request for threat model
+- scan a service via ZAP tool 
 """
 #!/usr/bin/env python3
 
@@ -13,9 +15,10 @@ import os
 import re
 import json
 import logging
+from enum import Enum
 import threading
 
-from typing import List
+from typing import List, Literal, Optional, Set, TypedDict
 from flask import request, Response
 from flask_api import FlaskAPI
 from flask_cors import cross_origin
@@ -24,8 +27,9 @@ from google.cloud import pubsub_v1
 from google.cloud import firestore
 from jira import JIRA
 
+import requests
 import slacknotify
-import defectdojo as wrapper
+import get_defectdojo_tags as dd
 from github_repo_dispatcher import github_repo_dispatcher
 
 # Env variables
@@ -45,10 +49,13 @@ dojo_host_url = os.getenv('dojo_host_url')
 firestore_collection = os.getenv('firestore_collection')
 topic_name = os.environ['JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
+zap_topic_name = os.environ['ZAP_JOB_TOPIC']
 
-# Instantiate the DefectDojo backend wrapper
-dd = wrapper.DefectDojoAPIv2(
-    dojo_host, dojo_api_key, dojo_user, api_version="v2")
+# Create headers for DefectDojo API call
+headers = {
+    "content-type": "application/json",
+    "Authorization": f"Token {dojo_api_key}",
+}
 
 app = FlaskAPI(__name__)
 
@@ -89,6 +96,7 @@ def submit():
     dojo_name = json_data['Service']
     security_champion = json_data['Security champion']
     product_type = 1
+    products_endpoint = f"{dojo_host}api/v2/products/"
 
     def prepare_dojo_input(json_data):
         """ Prepares defect dojo description input """
@@ -132,10 +140,14 @@ def submit():
         # Delete Ticket_Description from json
         del json_data['Ticket_Description']
 
-        # Set product description
-        product = dd.create_product(
-            dojo_name, prepare_dojo_input(json_data), product_type)
-        product_id = product.id()
+        # Create DefectDojo product
+        data = {'name': dojo_name, 'description': prepare_dojo_input(
+            json_data), 'prod_type': product_type}
+        res = requests.post(products_endpoint,
+                            headers=headers, data=json.dumps(data))
+        res.raise_for_status()
+        product_id = res.json()['id']
+
         logging.info("Product created: %s", dojo_name)
 
         # Set Slack notification
@@ -146,10 +158,14 @@ def submit():
                                          project_key_id, jira_ticket)
 
     else:
-        # Set product description
-        product = dd.create_product(
-            dojo_name, prepare_dojo_input(json_data), product_type)
-        product_id = product.id()
+        # Create DefectDojo product
+        data = {'name': dojo_name, 'description': prepare_dojo_input(
+            json_data), 'prod_type': product_type}
+        res = requests.post(products_endpoint,
+                            headers=headers, data=json.dumps(data))
+        res.raise_for_status()
+        product_id = res.json()['id']
+
         logging.info("Product created: %s", dojo_name)
 
         # When Jira ticket creation is not selected
@@ -311,6 +327,49 @@ def request_tm():
                                              request_type, project_name, jira_instance, jira_ticket_appsec, 'DSEC')
 
     return ''
+
+
+@app.route('/zap_scan/', methods=['POST'])
+@cross_origin(origins=sdarq_host)
+def zap_scan():
+    """
+    Scan a service via ZAP tool
+    Args:
+        json file
+    Returns:
+        200 if a Zap Scan is triggered
+        400 if user can't scan a project
+    """
+    json_data = request.get_json()
+    severities = "critical|high|medium|low|info"
+    message = ""
+    service_url = json_data['url']
+    dev_slack_channel = json['slack_channel']
+    service_scan_type = json['scan_type']
+    endpoint = f"{dojo_host}api/v2/endpoints/"
+
+    publisher = pubsub_v1.PublisherClient()
+    zap_topic_path = publisher.topic_path(pubsub_project_id, zap_topic_name)
+
+    res = requests.get(endpoint, headers=headers, timeout=30)
+    res.raise_for_status()
+    endpoints = res.json()["results"]
+
+    for endpoint in endpoints:
+        if endpoint['host'] == service_url:
+            service_codex_project, service_scan_type = dd.parse_tags(endpoint)
+            publisher.publish(zap_topic_path,
+                              data=message,
+                              URL=service_url,
+                              CODEDX_PROJECT=service_codex_project,
+                              SCAN_TYPE=service_scan_type,
+                              SEVERITIES=severities,
+                              SLACK_CHANNEL=dev_slack_channel)
+            return ''
+    else:
+        status_code = 404
+        text_message = f"You should NOT run a security pentest against this URL:{service_url}, or maybe it doesn't exist in AppSec list."
+        return Response(json.dumps({'statusText': text_message}), status=status_code, mimetype='application/json')
 
 
 if __name__ == "__main__":
