@@ -1,1 +1,5 @@
-<p>service-scan works!</p>
+<div class="jumbotron">
+    <div class="container">
+        <app-survey [json]="json" (submitSurvey)="requestServiceScan($event)"></app-survey>
+    </div>
+</div>
