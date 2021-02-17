@@ -97,6 +97,8 @@ def submit():
     security_champion = json_data['Security champion']
     product_type = 1
     products_endpoint = f"{dojo_host}api/v2/products/"
+    slack_channels_list = ['#dsp-security', '#appsec-internal']
+
 
     def prepare_dojo_input(json_data):
         """ Prepares defect dojo description input """
@@ -151,7 +153,6 @@ def submit():
         logging.info("Product created: %s", dojo_name)
 
         # Set Slack notification
-        slack_channels_list = ['#dsp-security', '#appsec-internal']
         for channel in slack_channels_list:
             slacknotify.slacknotify_jira(slack_token, channel, dojo_name, security_champion,
                                          product_id, dojo_host_url, jira_instance,
@@ -169,7 +170,6 @@ def submit():
         logging.info("Product created: %s", dojo_name)
 
         # When Jira ticket creation is not selected
-        slack_channels_list = ['#dsp-security', '#appsec-internal']
         for channel in slack_channels_list:
             slacknotify.slacknotify(
                 slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
