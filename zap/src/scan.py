@@ -6,39 +6,63 @@ Runs ZAP scan, uploads results to Code Dx and GCS, and alerts Slack.
 import logging
 from datetime import datetime
 from enum import Enum
+from json.decoder import JSONDecodeError
 from os import getenv
+from sys import exc_info
 from typing import List
 
 from codedx_api.CodeDxAPI import CodeDx
+from google.auth.exceptions import DefaultCredentialsError
 from google.cloud import storage
+from requests.exceptions import ConnectionError, HTTPError, MissingSchema
 from slack_sdk.web import WebClient as SlackClient
 
 from zap import ScanType, zap_compliance_scan
+from zap_common import ScanNotStartedException
 
 
-def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str):
+def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str, token: str, channel: str):
     """
     Upload scans to a GCS bucket and return the path to the file in Cloud Console.
     """
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
-    date = datetime.today().strftime("%Y%m%d")
-    path = f"{scan_type}-scans/{date}/{filename}"
-    blob = bucket.blob(path)
-    blob.upload_from_filename(filename)
+    try:
+        storage_client = storage.Client()
+        bucket = storage_client.bucket(bucket_name)
+        date = datetime.today().strftime("%Y%m%d")
+        path = f"{scan_type}-scans/{date}/{filename}"
+        blob = bucket.blob(path)
+        blob.upload_from_filename(filename)
+    except storage.Error as e:
+        error = f"GCS upload error: ```{ e }```"
+        error_slack_alert(error, e, token, channel)
     return f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}"
 
+def error_slack_alert(error: str, e: Exception, token: str, channel: str):
+    if not channel:
+        error = f"{ error }. No Slack alert requested."
+    else:
+        slack = SlackClient(token)
+        slack.chat_postMessage(channel=channel, text=error)
+    logging.warning(error)
 
-def codedx_upload(cdx: CodeDx, project: str, filename: str):
+    if e:
+        raise e
+
+
+def codedx_upload(cdx: CodeDx, project: str, filename: str, token: str, channel: str):
     """
     Create CodeDx project if needed and trigger analysis on the uploaded file.
     """
-    cdx.update_projects()
-    if project not in list(cdx.projects):
-        cdx.create_project(project)
+    try:
         cdx.update_projects()
-
-    cdx.analyze(project, filename)
+        if project not in list(cdx.projects):
+            cdx.create_project(project)
+            cdx.update_projects()
+    
+        cdx.analyze(project, filename)
+    except (MissingSchema, ConnectionError, HTTPError) as e:
+        error = f"Error uploading scan results to CodeDx: ```{ e }```"
+        error_slack_alert(error, e, token, channel)
 
 
 class Severity(str, Enum):
@@ -54,7 +78,11 @@ class Severity(str, Enum):
 
 
 def get_codedx_alert_count_by_severity(
-    cdx: CodeDx, project: str, severities: List[Severity]
+    cdx: CodeDx, 
+    project: str, 
+    severities: List[Severity], 
+    token: str, 
+    channel: str
 ) -> int:
     """
     Get finding count, given the severity levels for a Code Dx project.
@@ -65,9 +93,15 @@ def get_codedx_alert_count_by_severity(
             "status": ["new", "unresolved", "reopened"],
         },
     }
-    res = cdx.get_finding_count(project, filters)
-    if "count" not in res:
-        raise RuntimeError(f"Error fetching count: {res}")
+
+    try:
+        res = cdx.get_finding_count(project, filters)
+        if "count" not in res:
+            raise RuntimeError(f"{ res }")
+    except (HTTPError, RuntimeError) as e:
+        error = f"Error fetching alert count from CodeDx: ```{ e }```"
+        error_slack_alert(error, e, token, channel)
+
     return res["count"]
 
 
@@ -93,7 +127,7 @@ def get_alerts_string(cdx: CodeDx, project: str, severities: List[Severity]):
 
 
 def get_codedx_report_by_alert_severity(
-    cdx: CodeDx, project: str, severities: List[Severity]
+    cdx: CodeDx, project: str, severities: List[Severity], token: str, channel: str
 ):
     """
     Generate a PDF report, given the severity levels for a Code Dx project.
@@ -105,16 +139,20 @@ def get_codedx_report_by_alert_severity(
         "severity": [s.value for s in severities],
         "status": ["new", "unresolved", "reopened"],
     }
-    cdx.get_pdf(
-        project,
-        summary_mode="detailed",
-        details_mode="with-source",
-        include_result_details=True,
-        include_comments=True,
-        include_request_response=False,
-        file_name=report_file,
-        filters=filters,
-    )
+    try: 
+        cdx.get_pdf(
+            project,
+            summary_mode="detailed",
+            details_mode="with-source",
+            include_result_details=True,
+            include_comments=True,
+            include_request_response=False,
+            file_name=report_file,
+            filters=filters,
+        )
+    except HTTPError as e:
+        error = f"Error getting PDF from CodeDx: ```{ e }```"
+        error_slack_alert(error, e, token, channel)
 
     return report_file
 
@@ -159,10 +197,10 @@ def slack_alert_with_report(  # pylint: disable=too-many-arguments
             f"New vulnerability report uploaded to GCS bucket: {xml_report_url}\n"
         )
 
-    if get_codedx_alert_count_by_severity(cdx, codedx_project, severities):
+    if get_codedx_alert_count_by_severity(cdx, codedx_project, severities, token, channel):
         # attach a full report, if there are findings
         report_file = get_codedx_report_by_alert_severity(
-            cdx, codedx_project, severities
+            cdx, codedx_project, severities, token, channel
         )
         alerts_string = get_alerts_string(cdx, codedx_project, severities)
         report_message = (
@@ -218,16 +256,35 @@ def main():
     logging.info("Severities: %s", ", ".join(s.value for s in severities))
 
     # run Zap scan
-    zap_filename = zap_compliance_scan(codedx_project, zap_port, target_url, scan_type)
+    try:
+        zap_filename = zap_compliance_scan(codedx_project, zap_port, target_url, scan_type)
+    except (IOError, RuntimeError, ScanNotStartedException) as e:
+        zap_error = f"*ZAP ERROR:* ```{ e }```"
+        error_slack_alert(zap_error, e, slack_token, slack_channel)
+    except DefaultCredentialsError as e:
+        zap_error = f"*ZAP AUTHENTICATION ERROR:* ```{ e }```"
+        error_slack_alert(zap_error, e, slack_token, slack_channel)
+    except JSONDecodeError as e:
+        zap_error = f"*ZAP STARTUP ERROR:* ```{ e }```"
+        error_slack_alert(zap_error, e, slack_token, slack_channel)
+    except:
+        zap_error = f"ZAP Unexpected ERROR: ```{ str(exc_info()[0]) }```"
+        error_slack_alert(zap_error, RuntimeError, slack_token, slack_channel)
 
     # upload its results to Code Dx
     cdx = CodeDx(codedx_url, codedx_api_key)
-    codedx_upload(cdx, codedx_project, zap_filename)
+    codedx_upload(cdx, codedx_project, zap_filename, slack_token, slack_channel)
 
     # optionally, upload them to GCS
     xml_report_url = ""
     if scan_type == ScanType.UI:
-        xml_report_url = upload_gcs(bucket_name, scan_type, zap_filename)
+        xml_report_url = upload_gcs(
+            bucket_name, 
+            scan_type, 
+            zap_filename, 
+            slack_token, 
+            slack_channel
+        )
 
     # alert Slack, if needed
     slack_alert_with_report(
