@@ -1,9 +1,21 @@
 #!/usr/bin/env python3
 
-import slack
+import sys
+import ssl
+import os
+from slack_sdk import WebClient
+
+ssl_context = ssl.create_default_context()
+ssl_context.check_hostname = False
+ssl_context.verify_mode = ssl.CERT_NONE
+
+slack_token = os.getenv('slack_token')
+
+client = WebClient(token=slack_token,
+                         ssl=ssl_context)
 
 
-def slacknotify(slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url):
+def slacknotify(channel, dojo_name, security_champion, product_id, dojo_host_url):
     """
     Sends slack notification where: 
         1. No Jira ticket is selected 
@@ -20,10 +32,10 @@ def slacknotify(slack_token, channel, dojo_name, security_champion, product_id, 
     Returns:
         Sends slack notification
     """
-    client = slack.WebClient(slack_token)
     response = client.chat_postMessage(
         channel=channel,
-        attachments=[{"blocks": [
+        text="New service engagement created",
+        blocks=[
             {
                 "type": "section",
                         "text": {
@@ -58,13 +70,11 @@ def slacknotify(slack_token, channel, dojo_name, security_champion, product_id, 
                             }
                         ]
             }
-        ],
-            "color": "#1D10D8"
-        }]
+        ]
     )
 
 
-def slacknotify_jira(slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket):
+def slacknotify_jira(channel, dojo_name, security_champion, product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket):
     """
     Sends slack notification where: 
         1. Jira ticket is selected 
@@ -84,10 +94,10 @@ def slacknotify_jira(slack_token, channel, dojo_name, security_champion, product
     Returns:
         Sends slack notification
     """
-    client = slack.WebClient(slack_token)
     response = client.chat_postMessage(
         channel=channel,
-        attachments=[{"blocks": [
+        text="New service engagement created",
+        blocks=[
             {
                 "type": "section",
                 "text": {
@@ -130,13 +140,11 @@ def slacknotify_jira(slack_token, channel, dojo_name, security_champion, product
                     }
                 ]
             }
-        ],
-            "color": "#1D10D8"
-        }]
+        ]
     )
 
 
-def slacknotify_threat_model(slack_token, channel, security_champion, request_type, project_name,  jira_instance, jira_ticket_appsec, appsec_jira_board):
+def slacknotify_threat_model(channel, security_champion, request_type, project_name,  jira_instance, jira_ticket_appsec, appsec_jira_board):
     """
     Sends slack notification there is a request for threat model
 
@@ -153,10 +161,10 @@ def slacknotify_threat_model(slack_token, channel, security_champion, request_ty
     Returns:
         Sends slack notification
     """
-    client = slack.WebClient(slack_token)
     response = client.chat_postMessage(
         channel=channel,
-        attachments=[{"blocks": [
+        text="New service engagement created",
+        blocks=[
             {
                 "type": "section",
                 "text": {
@@ -191,7 +199,5 @@ def slacknotify_threat_model(slack_token, channel, security_champion, request_ty
                     }
                 ]
             }
-        ],
-            "color": "#1D10D8"
-        }]
+        ]
     )

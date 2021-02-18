@@ -6,10 +6,10 @@ urllib3==1.24.2
 flask-api
 flask-cors
 virtualenv==16.0.0
-slacker
 jira
 gunicorn[gevent]>= 1.4
-slackclient
+slack_sdk
+websocket-client==0.47.0
 google-cloud-bigquery
 google-cloud-firestore
 google-cloud-pubsub
