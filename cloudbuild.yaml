@@ -154,7 +154,7 @@ steps:
   - -c
   - executor
       --context=dir:///workspace
-      --dockerfile=sdarq/backend/src/Dockerfile
+      --dockerfile=/sdarq/backend/src/Dockerfile
       --destination=$${SDARQ_BACKEND_IMAGE}
       --cache
 
