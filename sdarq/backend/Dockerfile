@@ -1,16 +1,12 @@
-FROM python:3.6-jessie
+FROM python:slim
 
-RUN apt-get update \
-  && pip install --upgrade pip==20.2.2 \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
+RUN  pip install --upgrade pip 
 
 WORKDIR /app
-COPY requirements.txt /app/requirements.txt
-RUN pip install -r /app/requirements.txt
+COPY sdarq/backend/requirements.txt requirements.txt
+RUN pip install -r requirements.txt
 
-COPY src/* /app/
-RUN ls -al /app/
+COPY sdarq/backend/src/*.py zap/src/*.py ./
 
 ENV PORT 8080
 ENTRYPOINT [ \

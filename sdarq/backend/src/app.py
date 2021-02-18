@@ -26,10 +26,8 @@ from flask_cors import cross_origin
 from google.cloud import bigquery, firestore, pubsub_v1
 from jira import JIRA
 
-ROOT_DIR = os.path.dirname(os.path.abspath('../../'))
-sys.path.insert(0, ROOT_DIR)
-import sdarq.backend.src.parse_data as parse_json_data
-from zap.src.trigger import parse_tags
+import parse_data as parse_json_data
+from trigger import parse_tags
 
 import slacknotify
 from github_repo_dispatcher import github_repo_dispatcher
