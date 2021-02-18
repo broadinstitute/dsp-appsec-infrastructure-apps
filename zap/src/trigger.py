@@ -12,7 +12,7 @@ from typing import List, Literal, Optional, Set, TypedDict
 import requests
 from google.cloud.pubsub_v1 import PublisherClient
 
-from zap.src.zap import ScanType
+from zap import ScanType
 
 
 class Endpoint(TypedDict):  # pylint: disable=inherit-non-class,too-few-public-methods

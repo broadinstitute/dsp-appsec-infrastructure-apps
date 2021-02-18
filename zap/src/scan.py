@@ -13,7 +13,7 @@ from codedx_api.CodeDxAPI import CodeDx
 from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
 
-from zap.src.zap import ScanType, zap_compliance_scan
+from zap import ScanType, zap_compliance_scan
 
 
 def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str):
