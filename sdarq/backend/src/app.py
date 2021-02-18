@@ -11,24 +11,27 @@ This module
 """
 #!/usr/bin/env python3
 
-import os
-import re
 import json
 import logging
+import os
+import re
+import sys
 import threading
-
-from typing import List, Optional, TypedDict
-from flask import request, Response
-from flask_api import FlaskAPI
-from flask_cors import cross_origin
-from google.cloud import bigquery
-from google.cloud import pubsub_v1
-from google.cloud import firestore
-from jira import JIRA
+from typing import List, TypedDict
 
 import requests
+from flask import Response, request
+from flask_api import FlaskAPI
+from flask_cors import cross_origin
+from google.cloud import bigquery, firestore, pubsub_v1
+from jira import JIRA
+
+ROOT_DIR = os.path.dirname(os.path.abspath('../../'))
+sys.path.insert(0, ROOT_DIR)
+import sdarq.backend.src.parse_data as parse_json_data
+from zap.src.trigger import parse_tags
+
 import slacknotify
-import get_defectdojo_tags as dd
 from github_repo_dispatcher import github_repo_dispatcher
 
 # Env variables
@@ -98,17 +101,6 @@ def submit():
     products_endpoint = f"{dojo_host}api/v2/products/"
     slack_channels_list = ['#dsp-security', '#appsec-internal']
 
-
-    def prepare_dojo_input(json_data):
-        """ Prepares defect dojo description input """
-        data = json.dumps(json_data).strip('{}')
-        data1 = data.strip(',').replace(',', ' \n')
-        data2 = data1.strip('[').replace('[', ' ')
-        data3 = data2.strip(']').replace(']', ' ')
-        data4 = data3.strip('""').replace('"', ' ')
-
-        return data4
-
     # Create a Jira ticket for Threat Model in Appsec team board
     architecture_diagram = json_data['Architecture Diagram']
     github_url = json_data['Github URL']
@@ -142,7 +134,7 @@ def submit():
         del json_data['Ticket_Description']
 
         # Create DefectDojo product
-        data = {'name': dojo_name, 'description': prepare_dojo_input(
+        data = {'name': dojo_name, 'description': parse_json_data.prepare_dojo_input(
             json_data), 'prod_type': product_type}
         res = requests.post(products_endpoint,
                             headers=headers, data=json.dumps(data))
@@ -153,13 +145,13 @@ def submit():
 
         # Set Slack notification
         for channel in slack_channels_list:
-            slacknotify.slacknotify_jira(slack_token, channel, dojo_name, security_champion,
+            slacknotify.slacknotify_jira(channel, dojo_name, security_champion,
                                          product_id, dojo_host_url, jira_instance,
                                          project_key_id, jira_ticket)
 
     else:
         # Create DefectDojo product
-        data = {'name': dojo_name, 'description': prepare_dojo_input(
+        data = {'name': dojo_name, 'description': parse_json_data.prepare_dojo_input(
             json_data), 'prod_type': product_type}
         res = requests.post(products_endpoint,
                             headers=headers, data=json.dumps(data))
@@ -170,8 +162,7 @@ def submit():
 
         # When Jira ticket creation is not selected
         for channel in slack_channels_list:
-            slacknotify.slacknotify(
-                slack_token, channel, dojo_name, security_champion, product_id, dojo_host_url)
+            slacknotify.slacknotify(channel, dojo_name, security_champion, product_id, dojo_host_url)
 
     if github_token and github_org and github_repo:
         github_repo_dispatcher(github_token, github_org,
@@ -305,6 +296,7 @@ def request_tm():
     security_champion = user_data['Eng']
     request_type = user_data['Type']
     project_name = user_data['Name']
+    slack_channels_list = ['#dsp-security', '#appsec-internal']
 
     appsec_jira_ticket_summury = user_data['Type'] + user_data['Name']
     appsec_jira_ticket_description = user_data['Diagram'] + '\n' + \
@@ -320,9 +312,8 @@ def request_tm():
     logging.info(
         "Jira ticket in appsec board for project %s threat model", project_name)
 
-    slack_channels_list = ['#dsp-security', '#appsec-internal']
     for channel in slack_channels_list:
-        slacknotify.slacknotify_threat_model(slack_token, channel, security_champion,
+        slacknotify.slacknotify_threat_model(channel, security_champion,
                                              request_type, project_name, jira_instance, jira_ticket_appsec, 'DSEC')
 
     return ''
@@ -334,17 +325,15 @@ def zap_scan():
     """
     Scan a service via ZAP tool
     Args:
-        json file
+        Json file
     Returns:
         200 if a Zap Scan is triggered
         400 if user can't scan a project
     """
     json_data = request.get_json()
-    severities = "critical|high|medium|low|info"
-    message = ""
-    service_url = json_data['url']
-    dev_slack_channel = json['slack_channel']
-    service_scan_type = json['scan_type']
+    message = b""
+    service_url = json_data['URL']
+    dev_slack_channel = f"#{json_data['slack_channel']}"
     endpoint = f"{dojo_host}api/v2/endpoints/"
 
     publisher = pubsub_v1.PublisherClient()
@@ -356,12 +345,15 @@ def zap_scan():
 
     for endpoint in endpoints:
         if endpoint['host'] == service_url:
-            service_codex_project, service_scan_type = dd.parse_tags(endpoint)
+            service_codex_project, default_slack_channel, service_scan_type = parse_tags(
+                endpoint)
+            service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}"
+            severities = parse_json_data.parse_severities(json_data['severities'])
             publisher.publish(zap_topic_path,
                               data=message,
-                              URL=service_url,
+                              URL=service_full_endpoint,
                               CODEDX_PROJECT=service_codex_project,
-                              SCAN_TYPE=service_scan_type,
+                              SCAN_TYPE=service_scan_type.name,
                               SEVERITIES=severities,
                               SLACK_CHANNEL=dev_slack_channel)
             return ''
