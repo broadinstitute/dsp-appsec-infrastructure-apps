@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import formJson from './form.json';
-import { ScanServiceService} from '../services/scan-service.service';
+import { ScanServiceService } from '../services/scan-service.service';
 
 
 @Component({
@@ -10,17 +10,26 @@ import { ScanServiceService} from '../services/scan-service.service';
 })
 export class ServiceScanComponent implements OnInit {
 
+  showModalErr: boolean;
+  showForm: boolean;
+  showModalError: any;
+
   constructor(private sendServiceScanrRequest: ScanServiceService) { }
 
   ngOnInit(): void {
+    this.showModalError = false;
+    this.showForm = true;
   }
 
   json = formJson
 
   requestServiceScan(result) {
     this.sendServiceScanrRequest.sendServiceScanrRequest(result).subscribe((res) => {
-      console.log('Form sent');
     },
-      (res) => { });
+      (res) => {
+        this.showModalErr = true;
+        this.showModalError = res;
+        this.showForm = false;
+      });
   }
 }
