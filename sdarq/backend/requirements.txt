@@ -9,7 +9,6 @@ virtualenv==16.0.0
 jira
 gunicorn[gevent]>= 1.4
 slack_sdk
-websocket-client==0.47.0
 google-cloud-bigquery
 google-cloud-firestore
 google-cloud-pubsub
