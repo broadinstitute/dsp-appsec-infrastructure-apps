@@ -17,7 +17,7 @@ import os
 import re
 import sys
 import threading
-from typing import List, TypedDict
+from typing import List
 
 import requests
 from flask import Response, request
