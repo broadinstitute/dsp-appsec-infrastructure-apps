@@ -25,10 +25,9 @@ from flask_api import FlaskAPI
 from flask_cors import cross_origin
 from google.cloud import bigquery, firestore, pubsub_v1
 from jira import JIRA
-
-import parse_data as parse_json_data
 from trigger import parse_tags
 
+import parse_data as parse_json_data
 import slacknotify
 from github_repo_dispatcher import github_repo_dispatcher
 
@@ -326,7 +325,7 @@ def zap_scan():
         Json file
     Returns:
         200 if a Zap Scan is triggered
-        400 if user can't scan a project
+        404 if project not found
     """
     json_data = request.get_json()
     message = b""
