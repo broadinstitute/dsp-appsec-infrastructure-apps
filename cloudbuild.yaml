@@ -154,7 +154,7 @@ steps:
   - -c
   - executor
       --context=dir:///workspace
-      --destination=/sdarq/src/$${SDARQ_BACKEND_IMAGE}
+      --destination=sdarq/src/$${SDARQ_BACKEND_IMAGE}
       --cache
 
 - id: zap-image
