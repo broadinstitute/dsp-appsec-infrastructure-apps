@@ -45,7 +45,6 @@ jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
 sdarq_host = os.getenv('sdarq_host')
 dojo_host_url = os.getenv('dojo_host_url')
-defect_dojo_url = os.getenv('DEFECT_DOJO_URL') #
 firestore_collection = os.getenv('firestore_collection')
 topic_name = os.environ['JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
@@ -96,7 +95,7 @@ def submit():
     dojo_name = json_data['Service']
     security_champion = json_data['Security champion']
     product_type = 1
-    products_endpoint = f"{defect_dojo_url}api/v2/products/"
+    products_endpoint = f"{dojo_host_url}api/v2/products/"
     slack_channels_list = ['#dsp-security', '#appsec-internal']
 
     # Create a Jira ticket for Threat Model in Appsec team board
@@ -332,7 +331,7 @@ def zap_scan():
     message = b""
     service_url = json_data['URL']
     dev_slack_channel = f"#{json_data['slack_channel']}"
-    endpoint = f"{defect_dojo_url}api/v2/endpoints"
+    endpoint = f"{dojo_host_url}api/v2/endpoints"
 
     publisher = pubsub_v1.PublisherClient()
     zap_topic_path = publisher.topic_path(pubsub_project_id, zap_topic_name)

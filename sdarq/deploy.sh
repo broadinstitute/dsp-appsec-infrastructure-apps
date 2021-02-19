@@ -9,8 +9,6 @@ export $(xargs < .env)
 export NAMESPACE="sdarq"
 export DEPLOYMENT="${NAMESPACE}"
 
-export DEFECT_DOJO_URL="http://${DOJO_SERVICE}.${DOJO_NAMESPACE}.svc.cluster.local"
-
 export IP_NAME="${NAMESPACE}"
 export DNS_HOSTNAME="${NAMESPACE}.${DNS_DOMAIN}"
 
