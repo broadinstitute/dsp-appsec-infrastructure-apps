@@ -33,7 +33,7 @@ import slacknotify
 from github_repo_dispatcher import github_repo_dispatcher
 
 # Env variables
-dojo_host = os.getenv('dojo_host') # get Defect Dojo URL
+dojo_host = os.getenv('dojo_host')  # get Defect Dojo URL
 dojo_user = os.getenv('dojo_user')
 dojo_api_key = os.getenv('dojo_api_key')
 slack_token = os.getenv('slack_token')
@@ -45,7 +45,7 @@ jira_username = os.getenv('jira_username')
 jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
 sdarq_host = os.getenv('sdarq_host')
-dojo_host_url = os.getenv('dojo_host_url') 
+dojo_host_url = os.getenv('dojo_host_url')
 firestore_collection = os.getenv('firestore_collection')
 topic_name = os.environ['JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
@@ -160,7 +160,8 @@ def submit():
 
         # When Jira ticket creation is not selected
         for channel in slack_channels_list:
-            slacknotify.slacknotify(channel, dojo_name, security_champion, product_id, dojo_host_url)
+            slacknotify.slacknotify(
+                channel, dojo_name, security_champion, product_id, dojo_host_url)
 
     if github_token and github_org and github_repo:
         github_repo_dispatcher(github_token, github_org,
@@ -330,7 +331,7 @@ def zap_scan():
     """
     json_data = request.get_json()
     message = b""
-    service_url = json_data['URL']
+    user_supplied_url = json_data['URL']
     dev_slack_channel = f"#{json_data['slack_channel']}"
     endpoint = f"{dojo_host_url}api/v2/endpoints/"
 
@@ -341,13 +342,17 @@ def zap_scan():
     res.raise_for_status()
     endpoints = res.json()["results"]
 
-    parsed_user_url = urlparse(service_url)
+    if not re.match(r'^(http|https)://', user_supplied_url):
+        user_supplied_url = 'https://' + user_supplied_url
+
+    parsed_user_url = urlparse(user_supplied_url)
     for endpoint in endpoints:
         if endpoint['host'] == parsed_user_url.netloc or endpoint['host'] == parsed_user_url.path:
             service_codex_project, default_slack_channel, service_scan_type = parse_tags(
                 endpoint)
             service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}"
-            severities = parse_json_data.parse_severities(json_data['severities'])
+            severities = parse_json_data.parse_severities(
+                json_data['severities'])
             publisher.publish(zap_topic_path,
                               data=message,
                               URL=service_full_endpoint,
