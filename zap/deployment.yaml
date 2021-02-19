@@ -87,6 +87,7 @@ spec:
   bindings:
   - role: roles/pubsub.publisher
     members:
+    - serviceAccount:${SDARQ_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
     - serviceAccount:${CRON_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
 ---
 apiVersion: v1
