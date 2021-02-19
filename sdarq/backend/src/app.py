@@ -18,6 +18,7 @@ import re
 import sys
 import threading
 from typing import List
+from urllib.parse import urlparse
 
 import requests
 from flask import Response, request
@@ -44,7 +45,7 @@ jira_username = os.getenv('jira_username')
 jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
 sdarq_host = os.getenv('sdarq_host')
-dojo_host_url = os.getenv('dojo_host_url')
+dojo_host_url = os.getenv('dojo_host_url') 
 firestore_collection = os.getenv('firestore_collection')
 topic_name = os.environ['JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
@@ -340,8 +341,11 @@ def zap_scan():
     res.raise_for_status()
     endpoints = res.json()["results"]
 
+    parsed_user_url = urlparse(service_url)
+    print(parsed_user_url)
     for endpoint in endpoints:
-        if endpoint['host'] == service_url:
+        if endpoint['host'] == parsed_user_url.netloc or endpoint['host'] == parsed_user_url.path:
+            print(parsed_user_url.netloc)
             service_codex_project, default_slack_channel, service_scan_type = parse_tags(
                 endpoint)
             service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}"
@@ -356,7 +360,7 @@ def zap_scan():
             return ''
     else:
         status_code = 404
-        text_message = f"You should NOT run a security pentest against this URL:{service_url}, or maybe it doesn't exist in AppSec list."
+        text_message = f"You should NOT run a security pentest against the URL you entered, or maybe it doesn't exist in AppSec list."
         return Response(json.dumps({'statusText': text_message}), status=status_code, mimetype='application/json')
 
 
