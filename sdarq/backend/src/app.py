@@ -331,7 +331,7 @@ def zap_scan():
     message = b""
     service_url = json_data['URL']
     dev_slack_channel = f"#{json_data['slack_channel']}"
-    endpoint = f"{dojo_host_url}api/v2/endpoints"
+    endpoint = f"{dojo_host_url}api/v2/endpoints/"
 
     publisher = pubsub_v1.PublisherClient()
     zap_topic_path = publisher.topic_path(pubsub_project_id, zap_topic_name)
