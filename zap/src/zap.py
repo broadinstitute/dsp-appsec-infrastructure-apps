@@ -9,15 +9,9 @@ import google.auth
 from google.auth.transport.requests import Request as GoogleAuthRequest
 from zapv2 import ZAPv2
 
-from zap_common import (
-    wait_for_zap_start,
-    write_report,
-    zap_access_target,
-    zap_active_scan,
-    zap_ajax_spider,
-    zap_spider,
-    zap_wait_for_passive_scan,
-)
+from zap_common import (wait_for_zap_start, write_report, zap_access_target,
+                        zap_active_scan, zap_ajax_spider, zap_spider,
+                        zap_wait_for_passive_scan)
 
 TIMEOUT_MINS = 5
 
@@ -139,5 +133,6 @@ def zap_compliance_scan(
 
     filename = zap_report(zap, project, scan_type)
     zap.core.shutdown()
+
 
     return filename

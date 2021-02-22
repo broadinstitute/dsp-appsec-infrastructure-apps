@@ -14,7 +14,7 @@ from typing import List
 from codedx_api.CodeDxAPI import CodeDx
 from google.auth.exceptions import DefaultCredentialsError
 from google.cloud import storage
-from requests.exceptions import ConnectionError, HTTPError, MissingSchema
+from requests.exceptions import HTTPError, MissingSchema
 from slack_sdk.web import WebClient as SlackClient
 
 from zap import ScanType, zap_compliance_scan
@@ -58,7 +58,7 @@ def codedx_upload(cdx: CodeDx, project: str, filename: str, token: str, channel:
         if project not in list(cdx.projects):
             cdx.create_project(project)
             cdx.update_projects()
-    
+
         cdx.analyze(project, filename)
     except (MissingSchema, ConnectionError, HTTPError) as e:
         error = f"Error uploading scan results to CodeDx: ```{ e }```"
@@ -78,10 +78,10 @@ class Severity(str, Enum):
 
 
 def get_codedx_alert_count_by_severity(
-    cdx: CodeDx, 
-    project: str, 
-    severities: List[Severity], 
-    token: str, 
+    cdx: CodeDx,
+    project: str,
+    severities: List[Severity],
+    token: str,
     channel: str
 ) -> int:
     """
@@ -139,7 +139,7 @@ def get_codedx_report_by_alert_severity(
         "severity": [s.value for s in severities],
         "status": ["new", "unresolved", "reopened"],
     }
-    try: 
+    try:
         cdx.get_pdf(
             project,
             summary_mode="detailed",
@@ -267,7 +267,7 @@ def main():
     except JSONDecodeError as e:
         zap_error = f"*ZAP STARTUP ERROR:* ```{ e }```"
         error_slack_alert(zap_error, e, slack_token, slack_channel)
-    except:
+    except Exception:
         zap_error = f"ZAP Unexpected ERROR: ```{ str(exc_info()[0]) }```"
         error_slack_alert(zap_error, RuntimeError, slack_token, slack_channel)
 
@@ -279,10 +279,10 @@ def main():
     xml_report_url = ""
     if scan_type == ScanType.UI:
         xml_report_url = upload_gcs(
-            bucket_name, 
-            scan_type, 
-            zap_filename, 
-            slack_token, 
+            bucket_name,
+            scan_type,
+            zap_filename,
+            slack_token,
             slack_channel
         )
 
