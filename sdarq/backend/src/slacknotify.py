@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import sys
 import ssl
 import os
 from slack_sdk import WebClient

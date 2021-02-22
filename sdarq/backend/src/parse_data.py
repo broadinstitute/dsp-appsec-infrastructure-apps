@@ -1,7 +1,9 @@
 import json
 
 def parse_severities(json_data):
-    """Returns severities for zap scan"""
+    """
+    Returns severities for zap scan
+    """
     data = json.dumps(json_data).strip('{}')
     data1 = data.strip(', ').replace(', ','|')
     data2 = data1.strip('[').replace('[','')
@@ -11,7 +13,9 @@ def parse_severities(json_data):
 
 
 def prepare_dojo_input(json_data):
-    """Returns defect dojo description input"""
+    """
+    Returns defect dojo description input
+    """
     data = json.dumps(json_data).strip('{}')
     data1 = data.strip(',').replace(',', ' \n')
     data2 = data1.strip('[').replace('[', ' ')

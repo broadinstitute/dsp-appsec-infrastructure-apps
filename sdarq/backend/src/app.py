@@ -15,7 +15,6 @@ import json
 import logging
 import os
 import re
-import sys
 import threading
 from typing import List
 from urllib.parse import urlparse
@@ -98,6 +97,7 @@ def submit():
     product_type = 1
     products_endpoint = f"{dojo_host_url}api/v2/products/"
     slack_channels_list = ['#zap-test']
+    jira_project_key = "ATP"
 
     # Create a Jira ticket for Threat Model in Appsec team board
     architecture_diagram = json_data['Architecture Diagram']
@@ -105,7 +105,7 @@ def submit():
     appsec_jira_ticket_description = github_url + '\n' + architecture_diagram
     appsec_jira_ticket_summury = 'Threat Model request ' + dojo_name
 
-    jira_ticket_appsec = jira.create_issue(project='ATP',
+    jira_ticket_appsec = jira.create_issue(project=jira_project_key,
                                            summary=appsec_jira_ticket_summury,
                                            description=str(
                                                appsec_jira_ticket_description),
@@ -296,6 +296,7 @@ def request_tm():
     request_type = user_data['Type']
     project_name = user_data['Name']
     slack_channels_list = ['#dsp-security', '#appsec-internal']
+    jira_project_key = "ATP"
 
     appsec_jira_ticket_summury = user_data['Type'] + user_data['Name']
     appsec_jira_ticket_description = user_data['Diagram'] + '\n' + \
@@ -303,7 +304,7 @@ def request_tm():
 
     logging.info("Request for threat model for project %s ", project_name)
 
-    jira_ticket_appsec = jira.create_issue(project='ATP',
+    jira_ticket_appsec = jira.create_issue(project=jira_project_key,
                                            summary=appsec_jira_ticket_summury,
                                            description=str(
                                                appsec_jira_ticket_description),
@@ -313,7 +314,7 @@ def request_tm():
 
     for channel in slack_channels_list:
         slacknotify.slacknotify_threat_model(channel, security_champion,
-                                             request_type, project_name, jira_instance, jira_ticket_appsec, 'ATP')
+                                             request_type, project_name, jira_instance, jira_ticket_appsec, jira_project_key)
 
     return ''
 
@@ -363,7 +364,9 @@ def zap_scan():
             return ''
     else:
         status_code = 404
-        text_message = f"You should NOT run a security pentest against the URL you entered, or maybe it doesn't exist in AppSec list."
+        text_message = f"""
+        You should NOT run a security pentest against the URL you entered, or maybe it doesn't exist in AppSec list.
+        """
         return Response(json.dumps({'statusText': text_message}), status=status_code, mimetype='application/json')
 
 

@@ -131,7 +131,7 @@
   border-radius: 5px !important;
 }
 
-.sv_main .sv_container .sv_body .sv_nav .sv_complete_btn:hover{
+.sv_main .sv_container .sv_body .sv_nav .sv_complete_btn:hover {
   background-color: #112857 !important;
   transition: background-color 0.5s;
 }
