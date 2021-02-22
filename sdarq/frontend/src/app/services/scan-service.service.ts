@@ -11,7 +11,6 @@ export class ScanServiceService {
 
   private Url = location.origin + '/zap_scan/';
 
-
   constructor(private http: HttpClient) { }
 
   sendServiceScanrRequest(data): Observable<any> {

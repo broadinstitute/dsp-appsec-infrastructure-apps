@@ -96,8 +96,8 @@ def submit():
     security_champion = json_data['Security champion']
     product_type = 1
     products_endpoint = f"{dojo_host_url}api/v2/products/"
-    slack_channels_list = ['#zap-test']
-    jira_project_key = "ATP"
+    slack_channels_list = ['#dsp-security', '#appsec-internal']
+    jira_project_key = "DSEC"
 
     # Create a Jira ticket for Threat Model in Appsec team board
     architecture_diagram = json_data['Architecture Diagram']
@@ -296,7 +296,7 @@ def request_tm():
     request_type = user_data['Type']
     project_name = user_data['Name']
     slack_channels_list = ['#dsp-security', '#appsec-internal']
-    jira_project_key = "ATP"
+    jira_project_key = "DSEC"
 
     appsec_jira_ticket_summury = user_data['Type'] + user_data['Name']
     appsec_jira_ticket_description = user_data['Diagram'] + '\n' + \
