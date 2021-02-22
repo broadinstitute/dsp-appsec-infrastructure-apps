@@ -22,6 +22,7 @@ export BACKEND_CONFIG="${SERVICE}"
 export SDARQ_CONFIG="${SERVICE}"
 export SDARQ_SECRET="sdarq"
 export JOB_TOPIC="cis-scans"
+export ZAP_JOB_TOPIC="zap-scans"
 
 export FRONTEND_PORT="frontend"
 export BACKEND_PORT="backend"

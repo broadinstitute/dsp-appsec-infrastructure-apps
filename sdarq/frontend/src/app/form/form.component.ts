@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { SendFormDataService } from '../services/send-form-data.service';
-import { HttpClient } from '@angular/common/http';
 import formJson from './form.json';
 
 @Component({
@@ -9,7 +8,7 @@ import formJson from './form.json';
   styleUrls: ['./form.component.css']
 })
 export class FormComponent implements OnInit {
-  constructor(private sendForm: SendFormDataService, private http: HttpClient) { }
+  constructor(private sendForm: SendFormDataService) { }
 
   ngOnInit() { }
 

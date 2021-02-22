@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import formJson from './form.json';
 import { CisProjectService } from '../services/cis-project.service';
-import { HttpClient } from '@angular/common/http';
-import { QuestionBooleanModel } from 'survey-angular';
 
 
 @Component({
@@ -20,7 +18,7 @@ export class CisScanComponent implements OnInit {
   showForm: boolean;
   showModalError: boolean;
 
-  constructor(private sendProject: CisProjectService, private http: HttpClient) { }
+  constructor(private sendProject: CisProjectService) { }
 
   ngOnInit(): void {
     this.showModal = false;
