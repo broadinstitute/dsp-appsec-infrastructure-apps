@@ -348,19 +348,22 @@ def zap_scan():
 
     parsed_user_url = urlparse(user_supplied_url)
     for endpoint in endpoints:
-        if endpoint['host'] == parsed_user_url.netloc or endpoint['host'] == parsed_user_url.path:
+        if endpoint['host'] == parsed_user_url.netloc:
             service_codex_project, default_slack_channel, service_scan_type = parse_tags(
                 endpoint)
-            service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}"
-            severities = parse_json_data.parse_severities(
-                json_data['severities'])
-            publisher.publish(zap_topic_path,
-                              data=message,
-                              URL=service_full_endpoint,
-                              CODEDX_PROJECT=service_codex_project,
-                              SCAN_TYPE=service_scan_type.name,
-                              SEVERITIES=severities,
-                              SLACK_CHANNEL=dev_slack_channel)
+            if endpoint['path']:
+                service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}{endpoint['path']}"
+            else:
+                service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}"
+            
+                severities = parse_json_data.parse_severities(json_data['severities'])
+                publisher.publish(zap_topic_path,
+                                data=message,
+                                URL=service_full_endpoint,
+                                CODEDX_PROJECT=service_codex_project,
+                                SCAN_TYPE=service_scan_type.name,
+                                SEVERITIES=severities,
+                                SLACK_CHANNEL=dev_slack_channel)
             return ''
     else:
         status_code = 404
