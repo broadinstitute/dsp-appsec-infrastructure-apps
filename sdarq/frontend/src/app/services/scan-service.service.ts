@@ -7,13 +7,13 @@ import { catchError } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class CisProjectService {
+export class ScanServiceService {
 
-  private Url = location.origin + '/cis_scan/';
+  private Url = location.origin + '/zap_scan/';
 
   constructor(private http: HttpClient) { }
 
-  sendCisProject(data): Observable<any> {
+  sendServiceScanrRequest(data): Observable<any> {
     const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };

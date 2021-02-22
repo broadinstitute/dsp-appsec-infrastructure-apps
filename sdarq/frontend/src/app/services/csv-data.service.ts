@@ -1,41 +1,28 @@
 import { Injectable } from '@angular/core';
+declare var require: any
 
 @Injectable({
   providedIn: 'root'
 })
 export class CsvDataService {
 
-  // constructor() { }
+  ConvertToCSV(data: string, fieldsdata: any): string {
+    const Json2csvParser = require('json2csv').parse;
+    const fields = fieldsdata;
+    const opts = { fields };
+    const csv_notformatted = Json2csvParser(JSON.parse(data), {opts});
+    const csv_format = csv_notformatted.split(/"",""/gm).join('\n');
+    const csv = csv_format.split(/""]/gm).join('').split(/\[""/gm).join('')
+    return csv
+  }
 
-  exportToCsv(filename: string, rows: object[]) {
-    if (!rows || !rows.length) {
-      return;
-    }
-    const separator = ',';
-    const keys = Object.keys(rows[0]);
-    const csvContent =
-      keys.join(separator) +
-      '\n' +
-      rows.map(row => {
-        return keys.map(k => {
-          let cell = row[k] === null || row[k] === undefined ? '' : row[k];
-          cell = cell instanceof Date
-            ? cell.toLocaleString()
-            : cell.toString().replace(/"/g, '""');
-          if (cell.search(/("|,|\n)/g) >= 0) {
-            cell = `"${cell}"`;
-          }
-          return cell;
-        }).join(separator);
-      }).join('\n');
-
+  exportToCsv(filename: string, csvContent: string) {
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    if (navigator.msSaveBlob) { // IE 10+
+    if (navigator.msSaveBlob) {
       navigator.msSaveBlob(blob, filename);
     } else {
       const link = document.createElement('a');
       if (link.download !== undefined) {
-        // Browsers that support HTML5 download attribute
         const url = URL.createObjectURL(blob);
         link.setAttribute('href', url);
         link.setAttribute('download', filename);

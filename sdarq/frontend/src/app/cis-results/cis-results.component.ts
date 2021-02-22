@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GetCisScanService } from '../services/get-cis-scan.service';
 import { ActivatedRoute } from '@angular/router';
-import { CsvDataService } from '../services/csv-data.service'
-import { textChangeRangeIsUnchanged } from 'typescript';
+import { CsvDataService } from '../services/csv-data.service';
 
 @Component({
   selector: 'app-cis-results',
@@ -10,7 +9,6 @@ import { textChangeRangeIsUnchanged } from 'typescript';
   styleUrls: ['./cis-results.component.css']
 })
 export class CisResultsComponent implements OnInit {
-
 
   result: any;
   projectFindings: any[];
@@ -27,7 +25,10 @@ export class CisResultsComponent implements OnInit {
   filename: string;
   table_name: any[];
   modified_date: any[];
+<<<<<<< HEAD
 
+=======
+>>>>>>> b95c4a9e79462784e76070436d2944f451e988cd
   headElements = ['Benchmark', 'Id', 'Level', 'CVSS', 'Title', 'Failures', 'Description', 'Rationale', 'Refs'];
 
 
@@ -46,9 +47,9 @@ export class CisResultsComponent implements OnInit {
     const prefix = 'GCP_CIS_Results_'.concat(table_name.toString())
     const table = prefix.concat('_'.toString())
     this.filename = table.concat(modified_date.toString()).concat(format.toString())
-    this.csvService.exportToCsv(this.filename, this.projectFindings);
-  }
+    this.csvService.exportToCsv(this.filename, this.csvService.ConvertToCSV(JSON.stringify(projectFindings), this.headElements))
 
+  }
 
   private getResults(value) {
     this.getProjectScan.getCisScan(this.value).subscribe((data: any) => {

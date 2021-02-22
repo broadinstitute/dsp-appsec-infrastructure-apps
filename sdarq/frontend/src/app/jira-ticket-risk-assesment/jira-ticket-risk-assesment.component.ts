@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import formJson from './form.json';
 
 
@@ -10,7 +9,7 @@ import formJson from './form.json';
 })
 export class JiraTicketRiskAssesmentComponent implements OnInit {
 
-  constructor(private http: HttpClient) { }
+  constructor() { }
 
   ngOnInit(): void { }
 

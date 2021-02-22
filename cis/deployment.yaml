@@ -121,7 +121,7 @@ spec:
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: automated-cis-scan-cronjob
+  name: cis-trigger-weekly
   namespace: ${NAMESPACE}
 spec:
   schedule: "0 7 * * 6"

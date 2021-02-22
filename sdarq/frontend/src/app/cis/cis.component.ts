@@ -1,7 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { CisProjectService } from '../services/cis-project.service';
-import { HttpClient } from '@angular/common/http';
-import { GetCisScanService } from '../services/get-cis-scan.service';
 import formJson from './form.json';
 
 @Component({
@@ -16,7 +13,7 @@ export class CisComponent implements OnInit {
   table_show: boolean;
   json = formJson
 
-  constructor(private sendProject: CisProjectService, private http: HttpClient, private getProjectScan: GetCisScanService) { }
+  constructor() { }
 
   ngOnInit() { }
 

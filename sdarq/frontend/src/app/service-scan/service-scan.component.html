@@ -1,0 +1,8 @@
+<div class="jumbotron">
+    <div class="container">
+        <div class="alert alert-danger animated fadeInRight" role="alert" *ngIf="showModalErr">
+            {{showModalError}}
+        </div>
+        <app-survey *ngIf="showForm" [json]="json" (submitSurvey)="requestServiceScan($event)"></app-survey>
+    </div>
+</div>
