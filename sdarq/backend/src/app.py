@@ -97,7 +97,7 @@ def submit():
     security_champion = json_data['Security champion']
     product_type = 1
     products_endpoint = f"{dojo_host_url}api/v2/products/"
-    slack_channels_list = ['#dsp-security', '#appsec-internal']
+    slack_channels_list = ['#zap-test']
 
     # Create a Jira ticket for Threat Model in Appsec team board
     architecture_diagram = json_data['Architecture Diagram']
@@ -105,7 +105,7 @@ def submit():
     appsec_jira_ticket_description = github_url + '\n' + architecture_diagram
     appsec_jira_ticket_summury = 'Threat Model request ' + dojo_name
 
-    jira_ticket_appsec = jira.create_issue(project='DSEC',
+    jira_ticket_appsec = jira.create_issue(project='ATP',
                                            summary=appsec_jira_ticket_summury,
                                            description=str(
                                                appsec_jira_ticket_description),
@@ -303,7 +303,7 @@ def request_tm():
 
     logging.info("Request for threat model for project %s ", project_name)
 
-    jira_ticket_appsec = jira.create_issue(project='DSEC',
+    jira_ticket_appsec = jira.create_issue(project='ATP',
                                            summary=appsec_jira_ticket_summury,
                                            description=str(
                                                appsec_jira_ticket_description),
@@ -313,7 +313,7 @@ def request_tm():
 
     for channel in slack_channels_list:
         slacknotify.slacknotify_threat_model(channel, security_champion,
-                                             request_type, project_name, jira_instance, jira_ticket_appsec, 'DSEC')
+                                             request_type, project_name, jira_instance, jira_ticket_appsec, 'ATP')
 
     return ''
 

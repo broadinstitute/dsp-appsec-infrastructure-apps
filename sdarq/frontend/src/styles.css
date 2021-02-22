@@ -119,8 +119,8 @@
 .sv_main input[type="button"],
 .sv_main button {
   color: white;
-  background-color: #5885d0 !important;
-  font-size: 0.95em;
+  background-color: #1f499a !important;
+  font-size: 1em !important;
   font-weight: lighter !important;
   line-height: 3em !important;
   letter-spacing: 0.07em !important;
@@ -128,7 +128,12 @@
   min-width: 100px;
   cursor: pointer;
   padding: 0 2em;
-  border-radius: 7px !important;
+  border-radius: 5px !important;
+}
+
+.sv_main .sv_container .sv_body .sv_nav .sv_complete_btn:hover{
+  background-color: #112857 !important;
+  transition: background-color 0.5s;
 }
 
 .sv_main .sv_container .sv_body .sv_p_root .sv_page_title {
