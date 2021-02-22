@@ -25,10 +25,6 @@ export class CisResultsComponent implements OnInit {
   filename: string;
   table_name: any[];
   modified_date: any[];
-<<<<<<< HEAD
-
-=======
->>>>>>> b95c4a9e79462784e76070436d2944f451e988cd
   headElements = ['Benchmark', 'Id', 'Level', 'CVSS', 'Title', 'Failures', 'Description', 'Rationale', 'Refs'];
 
 
