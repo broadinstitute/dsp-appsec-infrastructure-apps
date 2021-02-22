@@ -16,13 +16,18 @@ from zap_common import (wait_for_zap_start, write_report, zap_access_target,
 TIMEOUT_MINS = 5
 
 
+def zap_connect(zap_port: int):
+    proxy = f"http://localhost:{zap_port}"
+    zap = ZAPv2(proxies={"http": proxy, "https": proxy})
+    wait_for_zap_start(zap, timeout_in_secs=TIMEOUT_MINS * 60)
+    return zap
+
+
 def zap_init(zap_port: int, target_url: str):
     """
     Connect to ZAP service running on localhost.
     """
-    proxy = f"http://localhost:{zap_port}"
-    zap = ZAPv2(proxies={"http": proxy, "https": proxy})
-    wait_for_zap_start(zap, timeout_in_secs=TIMEOUT_MINS * 60)
+    zap = zap_connect(zap_port)
 
     logging.info("Accessing target %s", target_url)
     zap_access_target(zap, target_url)
@@ -132,7 +137,5 @@ def zap_compliance_scan(
         zap_active_scan(zap, target_url, None)
 
     filename = zap_report(zap, project, scan_type)
-    zap.core.shutdown()
-
 
     return filename
