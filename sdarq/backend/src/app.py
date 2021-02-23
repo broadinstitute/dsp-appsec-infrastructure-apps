@@ -362,6 +362,7 @@ def zap_scan():
                             SCAN_TYPE=service_scan_type.name,
                             SEVERITIES=severities,
                             SLACK_CHANNEL=dev_slack_channel)
+
             return ''
     else:
         status_code = 404

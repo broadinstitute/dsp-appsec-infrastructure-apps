@@ -62,6 +62,7 @@ def get_codedx_alert_count_by_severity(
     filters = {
         "filter": {
             "severity": [s.value for s in severities],
+            "status": ["new", "unresolved", "reopened"],
         },
     }
     res = cdx.get_finding_count(project, filters)
