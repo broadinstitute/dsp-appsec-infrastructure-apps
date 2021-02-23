@@ -25,7 +25,7 @@ from flask_api import FlaskAPI
 from flask_cors import cross_origin
 from google.cloud import bigquery, firestore, pubsub_v1
 from jira import JIRA
-from trigger import parse_tags
+from trigger import parse_tags 
 
 import parse_data as parse_json_data
 import slacknotify
@@ -349,21 +349,19 @@ def zap_scan():
     parsed_user_url = urlparse(user_supplied_url)
     for endpoint in endpoints:
         if endpoint['host'] == parsed_user_url.netloc:
-            service_codex_project, default_slack_channel, service_scan_type = parse_tags(
-                endpoint)
-            if endpoint['path']:
-                service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}{endpoint['path']}"
-            else:
+            service_codex_project, default_slack_channel, service_scan_type = parse_tags(endpoint)
+            if endpoint['path'] == None:
                 service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}"
-            
-                severities = parse_json_data.parse_severities(json_data['severities'])
-                publisher.publish(zap_topic_path,
-                                data=message,
-                                URL=service_full_endpoint,
-                                CODEDX_PROJECT=service_codex_project,
-                                SCAN_TYPE=service_scan_type.name,
-                                SEVERITIES=severities,
-                                SLACK_CHANNEL=dev_slack_channel)
+            else:
+                service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}{endpoint['path']}"
+            severities = parse_json_data.parse_severities(json_data['severities'])
+            publisher.publish(zap_topic_path,
+                            data=message,
+                            URL=service_full_endpoint,
+                            CODEDX_PROJECT=service_codex_project,
+                            SCAN_TYPE=service_scan_type.name,
+                            SEVERITIES=severities,
+                            SLACK_CHANNEL=dev_slack_channel)
             return ''
     else:
         status_code = 404
