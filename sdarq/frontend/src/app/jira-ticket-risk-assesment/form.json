@@ -16,7 +16,7 @@
        {
         "type": "html",
         "name": "question1",
-        "html": "<h4>Examples</h4>\n\nYou can find some example changes along with their risk assessment methodology <a href=\"https://www.google.com/\">here</a>.\n\n"
+        "html": "<h4>Examples</h4>\n\nYou can find some example changes along with their risk assessment methodology <a href=\"https://docs.google.com/document/d/1OafhuSrvgoKYaIgFaEhO1bNfPxXBpoelv9vXLoHE42M\">here</a>.\n\n"
        },
        {
         "type": "radiogroup",
