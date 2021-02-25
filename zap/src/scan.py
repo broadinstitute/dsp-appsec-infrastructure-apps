@@ -31,7 +31,8 @@ def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str):
 
 def error_slack_alert(error: str, e: Exception, token: str, channel: str):
     if not channel:
-        error = f"{ error }. No Slack alert requested."
+        error_log = f"{ error }. No Slack alert requested."
+        logging.warning(error_log)
     else:
         slack = SlackClient(token)
         slack.chat_postMessage(channel=channel, text=error)
