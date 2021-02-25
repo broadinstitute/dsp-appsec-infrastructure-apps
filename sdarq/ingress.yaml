@@ -32,6 +32,10 @@ spec:
         backend:
           serviceName: ${SERVICE}
           servicePort: ${BACKEND_PORT}
+      - path: /zap_scan/
+        backend:
+          serviceName: ${SERVICE}
+          servicePort: ${BACKEND_PORT}
 ---
 apiVersion: networking.gke.io/v1beta1
 kind: FrontendConfig

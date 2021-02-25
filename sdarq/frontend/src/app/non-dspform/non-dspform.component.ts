@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { SendFormDataService } from '../services/send-form-data.service';
-import { HttpClient } from '@angular/common/http';
 import formJson from './newForm.json';
 
 @Component({
@@ -10,7 +9,7 @@ import formJson from './newForm.json';
 })
 export class NonDSPformComponent implements OnInit {
 
-  constructor(private sendFormNotDSP: SendFormDataService, private http: HttpClient) { }
+  constructor(private sendFormNotDSP: SendFormDataService) { }
 
   ngOnInit() { }
 
