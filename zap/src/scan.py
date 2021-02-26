@@ -4,7 +4,6 @@ Runs ZAP scan, uploads results to Code Dx and GCS, and alerts Slack.
 """
 
 import logging
-import traceback
 from datetime import datetime
 from enum import Enum
 from os import getenv
@@ -282,8 +281,8 @@ def main():
                 except Exception as zap_e:
                     error_message = f"Error shutting down zap: { zap_e }"
                     error_slack_alert(error_message, slack_token, slack_channel)
-                    logging.warning(traceback.format_exception(zap_e))
-                logging.warning(traceback.format_exception(e))
+                    logging.exception("Error shutting down zap.")
+                logging.exception("Max retries exceeded.")
                 exit(0)
             sleep(5)
         else:
