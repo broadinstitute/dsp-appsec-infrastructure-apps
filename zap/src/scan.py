@@ -30,6 +30,9 @@ def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str):
     return f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}"
 
 def error_slack_alert(error: str, e: Exception, token: str, channel: str):
+    """
+    Send error to slack or make a note in the logs.
+    """
     if not channel:
         error_log = f"{ error }. No Slack alert requested."
         logging.warning(error_log)
