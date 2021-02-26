@@ -60,7 +60,11 @@ def zap_api_import(zap: ZAPv2, target_url: str):
     Import OpenAPI definition from target URL.
     """
     start_urls = zap.core.urls()
+    print("PREIMPORT")
+    print(start_urls)
     res = zap.openapi.import_url(target_url)
+    print("POSTIMPORT")
+    print(zap.core.urls())
     if zap.core.urls() == start_urls:
         raise RuntimeError(f"Failed to import API from {target_url}: {res}")
 

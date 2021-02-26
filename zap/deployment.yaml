@@ -10,7 +10,7 @@ data:
       spec:
         serviceAccountName: ${JOB_SERVICE_ACCOUNT}
         runtimeClassName: gvisor
-        restartPolicy: OnFailure
+        restartPolicy: Never
         nodeSelector:
           cloud.google.com/gke-nodepool: batch
 

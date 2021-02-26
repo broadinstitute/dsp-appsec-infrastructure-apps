@@ -4,9 +4,11 @@ Runs ZAP scan, uploads results to Code Dx and GCS, and alerts Slack.
 """
 
 import logging
+import traceback
 from datetime import datetime
 from enum import Enum
 from os import getenv
+from sys import exit
 from time import sleep
 from typing import List
 
@@ -280,7 +282,9 @@ def main():
                 except Exception as zap_e:
                     error_message = f"Error shutting down zap: { zap_e }"
                     error_slack_alert(error_message, slack_token, slack_channel)
-                raise e
+                    logging.warning(traceback.format_exception(zap_e))
+                logging.warning(traceback.format_exception(e))
+                exit(0)
             sleep(5)
         else:
             break
