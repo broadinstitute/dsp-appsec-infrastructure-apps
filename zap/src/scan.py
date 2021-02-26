@@ -273,13 +273,13 @@ def main():
             logging.warning(error_message)
             if attempt == max_retries - 1:
                 error_message = f"Error running Zap Scans. Last known error: { e }"
-                error_slack_alert(error_message, e, slack_token, slack_channel)
+                error_slack_alert(error_message, slack_token, slack_channel)
                 try:
                     zap = zap_connect(zap_port)
                     zap.core.shutdown()
                 except Exception as zap_e:
                     error_message = f"Error shutting down zap: { zap_e }"
-                    error_slack_alert(error_message, zap_e, slack_token, slack_channel)
+                    error_slack_alert(error_message, slack_token, slack_channel)
                 raise e
             sleep(5)
         else:
