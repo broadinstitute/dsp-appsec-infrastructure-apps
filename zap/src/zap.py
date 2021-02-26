@@ -17,6 +17,9 @@ TIMEOUT_MINS = 5
 
 
 def zap_connect(zap_port: int):
+    """
+    Connect to the Zap instance
+    """
     proxy = f"http://localhost:{zap_port}"
     zap = ZAPv2(proxies={"http": proxy, "https": proxy})
     wait_for_zap_start(zap, timeout_in_secs=TIMEOUT_MINS * 60)

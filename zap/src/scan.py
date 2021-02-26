@@ -29,7 +29,7 @@ def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str):
     blob.upload_from_filename(filename)
     return f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}"
 
-def error_slack_alert(error: str, e: Exception, token: str, channel: str):
+def error_slack_alert(error: str, token: str, channel: str):
     """
     Send error to slack or make a note in the logs.
     """
@@ -121,7 +121,7 @@ def get_codedx_report_by_alert_severity(
         "severity": [s.value for s in severities],
         "status": ["new", "unresolved", "reopened"],
     }
-    
+
     cdx.get_pdf(
         project,
         summary_mode="detailed",
@@ -210,7 +210,7 @@ def main():
     - Upload ZAP XML report to GCS, if needed
     - Send a Slack alert with Code Dx report, if needed.
     """
-    max_retries = getenv("MAX_RETRIES", 5)
+    max_retries = int(getenv("MAX_RETRIES", '5'))
 
     for attempt in range(max_retries):
         # run Zap scan
