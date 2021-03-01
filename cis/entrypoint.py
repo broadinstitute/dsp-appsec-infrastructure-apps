@@ -24,7 +24,6 @@ BENCHMARK_PROFILES = (
     'inspec-gke-cis-k8s',
 )
 
-
 def benchmark(target_project_id: str, profile: str):
     """
     Runs a Google Cloud Inspec CIS benchmark profile
@@ -34,7 +33,7 @@ def benchmark(target_project_id: str, profile: str):
     proc = subprocess.run([
         'inspec', 'exec', profile,
         '-t', 'gcp://', '--reporter', 'json',
-        '--input', f'gcp_project_id={target_project_id}',
+        '--input', f'gcp_project_id={target_project_id}'
     ], stdout=subprocess.PIPE, stderr=sys.stderr, text=True, check=False)
 
     # normal exit codes as documented at
@@ -59,7 +58,7 @@ def benchmarks(target_project_id: str):
     return target_project_id, profiles
 
 
-def parse_profiles(target_project_id: str, profiles):
+def parse_profiles(target_project_id: str, profiles, exclude_profile_control):
     """
     Parses scan results into a table structure for BigQuery.
     """
@@ -71,6 +70,8 @@ def parse_profiles(target_project_id: str, profiles):
 
         titles.add(profile['title'])
         for ctrl in profile['controls']:
+            if ctrl['id'] in exclude_profile_control:
+                continue
             failures = []
             for res in ctrl['results']:
                 if 'exception' in res:
@@ -312,6 +313,7 @@ def main():
     slack_channel = os.getenv('SLACK_CHANNEL')
     slack_results_url = os.getenv('SLACK_RESULTS_URL')
     fs_collection = os.getenv('FIRESTORE_COLLECTION')
+    exclude_profile_control = os.getenv['EXCLUDE_PROFILES_CONTROLS']
 
     try:
         # define table_id and Firestore doc_ref for reporting success/errors
@@ -323,7 +325,7 @@ def main():
         validate_project(target_project_id)
 
         # scan and load results into BigQuery
-        title, rows = parse_profiles(*benchmarks(target_project_id))
+        title, rows = parse_profiles(*benchmarks(target_project_id), exclude_profile_control)
         load_bigquery(target_project_id, dataset_id, table_id, title, rows)
 
         # post to Slack, if specified
