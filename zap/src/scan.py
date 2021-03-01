@@ -7,13 +7,15 @@ import logging
 from datetime import datetime
 from enum import Enum
 from os import getenv
+from sys import exit
+from time import sleep
 from typing import List
 
 from codedx_api.CodeDxAPI import CodeDx
 from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
 
-from zap import ScanType, zap_compliance_scan
+from zap import ScanType, zap_compliance_scan, zap_connect
 
 
 def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str):
@@ -27,6 +29,17 @@ def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str):
     blob = bucket.blob(path)
     blob.upload_from_filename(filename)
     return f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}"
+
+def error_slack_alert(error: str, token: str, channel: str):
+    """
+    Send error to slack or make a note in the logs.
+    """
+    if not channel:
+        error_log = f"{ error }. No Slack alert requested."
+        logging.warning(error_log)
+    else:
+        slack = SlackClient(token)
+        slack.chat_postMessage(channel=channel, text=error)
 
 
 def codedx_upload(cdx: CodeDx, project: str, filename: str):
@@ -54,7 +67,9 @@ class Severity(str, Enum):
 
 
 def get_codedx_alert_count_by_severity(
-    cdx: CodeDx, project: str, severities: List[Severity]
+    cdx: CodeDx,
+    project: str,
+    severities: List[Severity]
 ) -> int:
     """
     Get finding count, given the severity levels for a Code Dx project.
@@ -65,9 +80,11 @@ def get_codedx_alert_count_by_severity(
             "status": ["new", "unresolved", "reopened"],
         },
     }
+
     res = cdx.get_finding_count(project, filters)
     if "count" not in res:
-        raise RuntimeError(f"Error fetching count: {res}")
+        raise RuntimeError(f"{ res }")
+
     return res["count"]
 
 
@@ -105,6 +122,7 @@ def get_codedx_report_by_alert_severity(
         "severity": [s.value for s in severities],
         "status": ["new", "unresolved", "reopened"],
     }
+
     cdx.get_pdf(
         project,
         summary_mode="detailed",
@@ -193,53 +211,82 @@ def main():
     - Upload ZAP XML report to GCS, if needed
     - Send a Slack alert with Code Dx report, if needed.
     """
-    # parse env variables
-    zap_port = int(getenv("ZAP_PORT", ""))
+    max_retries = int(getenv("MAX_RETRIES", '5'))
 
-    codedx_project = getenv("CODEDX_PROJECT")
-    codedx_url = getenv("CODEDX_URL")
-    codedx_api_key = getenv("CODEDX_API_KEY")
+    for attempt in range(max_retries):
+        # run Zap scan
+        try:
+            # parse env variables
+            zap_port = int(getenv("ZAP_PORT", ""))
 
-    target_url = getenv("URL")
-    scan_type = ScanType[getenv("SCAN_TYPE").upper()]
+            codedx_project = getenv("CODEDX_PROJECT")
+            codedx_url = getenv("CODEDX_URL")
+            codedx_api_key = getenv("CODEDX_API_KEY")
 
-    bucket_name = getenv("BUCKET_NAME")
+            target_url = getenv("URL")
+            scan_type = ScanType[getenv("SCAN_TYPE").upper()]
 
-    slack_channel = getenv("SLACK_CHANNEL")
-    slack_token = getenv("SLACK_TOKEN")
+            bucket_name = getenv("BUCKET_NAME")
 
-    severities = parse_severities(getenv("SEVERITIES"))
+            slack_channel = getenv("SLACK_CHANNEL")
+            slack_token = getenv("SLACK_TOKEN")
 
-    # configure logging
-    logging.basicConfig(
-        level=logging.INFO,
-        format=f"%(levelname)-8s [{codedx_project} {scan_type}-scan] %(message)s",
-    )
-    logging.info("Severities: %s", ", ".join(s.value for s in severities))
+            severities = parse_severities(getenv("SEVERITIES"))
 
-    # run Zap scan
-    zap_filename = zap_compliance_scan(codedx_project, zap_port, target_url, scan_type)
+            # configure logging
+            logging.basicConfig(
+                level=logging.INFO,
+                format=f"%(levelname)-8s [{codedx_project} {scan_type}-scan] %(message)s",
+            )
+            logging.info("Severities: %s", ", ".join(s.value for s in severities))
 
-    # upload its results to Code Dx
-    cdx = CodeDx(codedx_url, codedx_api_key)
-    codedx_upload(cdx, codedx_project, zap_filename)
+            zap_filename = zap_compliance_scan(codedx_project, zap_port, target_url, scan_type)
 
-    # optionally, upload them to GCS
-    xml_report_url = ""
-    if scan_type == ScanType.UI:
-        xml_report_url = upload_gcs(bucket_name, scan_type, zap_filename)
+            # upload its results to Code Dx
+            cdx = CodeDx(codedx_url, codedx_api_key)
+            codedx_upload(cdx, codedx_project, zap_filename)
 
-    # alert Slack, if needed
-    slack_alert_with_report(
-        cdx,
-        codedx_project,
-        severities,
-        slack_token,
-        slack_channel,
-        target_url,
-        xml_report_url,
-        scan_type,
-    )
+            # optionally, upload them to GCS
+            xml_report_url = ""
+            if scan_type == ScanType.UI:
+                xml_report_url = upload_gcs(
+                    bucket_name,
+                    scan_type,
+                    zap_filename,
+                )
+
+            # alert Slack, if needed
+            slack_alert_with_report(
+                cdx,
+                codedx_project,
+                severities,
+                slack_token,
+                slack_channel,
+                target_url,
+                xml_report_url,
+                scan_type,
+            )
+
+            zap = zap_connect(zap_port)
+            zap.core.shutdown()
+        except Exception as e:
+            error_message = f"[RETRY-{ attempt }] Exception running Zap Scans: { e }"
+            logging.warning(error_message)
+            if attempt == max_retries - 1:
+                error_message = f"Error running Zap Scans. Last known error: { e }"
+                error_slack_alert(error_message, slack_token, slack_channel)
+                try:
+                    zap = zap_connect(zap_port)
+                    zap.core.shutdown()
+                except Exception as zap_e:
+                    error_message = f"Error shutting down zap: { zap_e }"
+                    error_slack_alert(error_message, slack_token, slack_channel)
+                    logging.exception("Error shutting down zap.")
+                logging.exception("Max retries exceeded.")
+                exit(0)
+            sleep(5)
+        else:
+            break
 
 
 if __name__ == "__main__":
