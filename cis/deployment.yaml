@@ -26,6 +26,8 @@ data:
           env:
           - name: BQ_DATASET
             value: ${CIS_DATASET}
+          - name: CIS_CONTROLS_IGNORE
+            value: ${CIS_CONTROLS_IGNORE}
           - name: SLACK_TOKEN
             valueFrom:
               secretKeyRef:
