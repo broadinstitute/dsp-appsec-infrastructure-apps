@@ -112,8 +112,6 @@ steps:
       --context=dir:///workspace/cis
       --destination=$${CIS_IMAGE}
       --cache
-  env:
-  - CIS_CONTROLS_IGNORE=${CIS_CONTROLS_IGNORE}
 
 # build patched CodeDx image
 - id: codedx-image
