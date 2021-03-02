@@ -314,7 +314,7 @@ def main():
     slack_channel = os.getenv('SLACK_CHANNEL')
     slack_results_url = os.getenv('SLACK_RESULTS_URL')
     fs_collection = os.getenv('FIRESTORE_COLLECTION')
-    cis_controls_ignore_list = os.environ['CIS_CONTROLS_IGNORE'].split(", ")
+    cis_controls_ignore_list = os.environ['CIS_CONTROLS_IGNORE'].split(",")
 
     try:
         # define table_id and Firestore doc_ref for reporting success/errors
