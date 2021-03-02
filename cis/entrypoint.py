@@ -24,7 +24,7 @@ BENCHMARK_PROFILES = (
     'inspec-gke-cis-k8s',
 )
 
-EXCLUDE_PROFILES_CONTROL = (
+CIS_CONTROLS_IGNORE = (
     'cis-gcp-1.4-iam',
     'cis-gcp-2.01-logging',
     'cis-gcp-2.02-logging',
@@ -41,8 +41,8 @@ EXCLUDE_PROFILES_CONTROL = (
     'cis-gcp-3.4-networking',
     'cis-gcp-3.5-networking',
     'cis-gcp-4.7-vms',
-    'cis-gcp-5.1.1-container-registry',
-    'cis-gcp-5.3-networking',
+    'cis-gke-5.1.1-container-registry',
+    'cis-gke-5.3-networking',
 )
 
 def benchmark(target_project_id: str, profile: str):
@@ -91,7 +91,7 @@ def parse_profiles(target_project_id: str, profiles):
 
         titles.add(profile['title'])
         for ctrl in profile['controls']:
-            if ctrl['id'] in EXCLUDE_PROFILES_CONTROL:
+            if ctrl['id'] in CIS_CONTROLS_IGNORE:
                 continue
             failures = []
             for res in ctrl['results']:
