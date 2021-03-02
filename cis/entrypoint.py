@@ -24,26 +24,6 @@ BENCHMARK_PROFILES = (
     'inspec-gke-cis-k8s',
 )
 
-# CIS_CONTROLS_IGNORE = (
-#     'cis-gcp-1.4-iam',
-#     'cis-gcp-2.01-logging',
-#     'cis-gcp-2.02-logging',
-#     'cis-gcp-2.03-logging',
-#     'cis-gcp-2.04-logging',
-#     'cis-gcp-2.05-logging',
-#     'cis-gcp-2.06-logging',
-#     'cis-gcp-2.07-logging',
-#     'cis-gcp-2.08-logging',
-#     'cis-gcp-2.09-logging',
-#     'cis-gcp-2.10-logging',
-#     'cis-gcp-2.11-logging',
-#     'cis-gcp-3.3-networking',
-#     'cis-gcp-3.4-networking',
-#     'cis-gcp-3.5-networking',
-#     'cis-gcp-4.7-vms',
-#     'cis-gke-5.1.1-container-registry',
-#     'cis-gke-5.3-networking',
-# )
 
 def benchmark(target_project_id: str, profile: str):
     """
@@ -334,7 +314,7 @@ def main():
     slack_channel = os.getenv('SLACK_CHANNEL')
     slack_results_url = os.getenv('SLACK_RESULTS_URL')
     fs_collection = os.getenv('FIRESTORE_COLLECTION')
-    cis_controls_ignore_list = os.environ['CIS_CONTROLS_IGNORE']
+    cis_controls_ignore_list = os.environ['CIS_CONTROLS_IGNORE'].split(", ")
 
     try:
         # define table_id and Firestore doc_ref for reporting success/errors
@@ -346,7 +326,8 @@ def main():
         validate_project(target_project_id)
 
         # scan and load results into BigQuery
-        title, rows = parse_profiles(*benchmarks(target_project_id), cis_controls_ignore_list)
+        title, rows = parse_profiles(
+            *benchmarks(target_project_id), cis_controls_ignore_list)
         load_bigquery(target_project_id, dataset_id, table_id, title, rows)
 
         # post to Slack, if specified
