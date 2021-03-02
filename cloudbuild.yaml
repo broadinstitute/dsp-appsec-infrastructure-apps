@@ -88,8 +88,6 @@ steps:
   name: *kaniko
   waitFor: ['kaniko']
   entrypoint: sh
-  env:
-  - CIS_CONTROLS_IGNORE=${_CIS_CONTROLS_IGNORE}
   args:
   - -c
   - executor
@@ -226,6 +224,7 @@ steps:
   dir: cis
   env:
   - GCP_SERVICE_ACCOUNT_EMAIL=${_ORG_VIEWER_SA_EMAIL}
+  - CIS_CONTROLS_IGNORE=${_CIS_CONTROLS_IGNORE}
 
 # deploy CodeDx to GKE cluster
 - id: codedx
