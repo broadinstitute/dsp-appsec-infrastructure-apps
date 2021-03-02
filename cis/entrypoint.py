@@ -59,7 +59,7 @@ def benchmarks(target_project_id: str):
     return target_project_id, profiles
 
 
-def parse_profiles(target_project_id: str, profiles, cis_controls_ignore_list):
+def parse_profiles(target_project_id: str, profiles, cis_controls_ignore_final_list):
     """
     Parses scan results into a table structure for BigQuery.
     """
@@ -71,7 +71,7 @@ def parse_profiles(target_project_id: str, profiles, cis_controls_ignore_list):
 
         titles.add(profile['title'])
         for ctrl in profile['controls']:
-            if ctrl['id'] in cis_controls_ignore_list:
+            if ctrl['id'] in cis_controls_ignore_final_list:
                 continue
             failures = []
             for res in ctrl['results']:
@@ -315,6 +315,7 @@ def main():
     slack_results_url = os.getenv('SLACK_RESULTS_URL')
     fs_collection = os.getenv('FIRESTORE_COLLECTION')
     cis_controls_ignore_list = os.environ['CIS_CONTROLS_IGNORE']
+    cis_controls_ignore_final_list = cis_controls_ignore_list.split(",")
 
     try:
         # define table_id and Firestore doc_ref for reporting success/errors
@@ -327,7 +328,7 @@ def main():
 
         # scan and load results into BigQuery
         title, rows = parse_profiles(
-            *benchmarks(target_project_id), cis_controls_ignore_list.split(","))
+            *benchmarks(target_project_id), cis_controls_ignore_final_list)
         load_bigquery(target_project_id, dataset_id, table_id, title, rows)
 
         # post to Slack, if specified
