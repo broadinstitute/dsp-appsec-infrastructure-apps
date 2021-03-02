@@ -37,7 +37,7 @@ options:
   - REGION=us-east1
   - ZONE_1=us-east1-b
   - ZONE_2=us-east1-c
-  - CIS_CONTROLS_IGNORE = (
+  - CIS_CONTROLS_IGNORE=(
     'cis-gcp-1.4-iam',
     'cis-gcp-2.01-logging',
     'cis-gcp-2.02-logging',

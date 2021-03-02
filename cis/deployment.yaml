@@ -26,6 +26,8 @@ data:
           env:
           - name: BQ_DATASET
             value: ${CIS_DATASET}
+          - name: CIS_CONTROLS_IGNORE
+            value: ${CIS_CONTROLS_IGNORE}
           - name: SLACK_TOKEN
             valueFrom:
               secretKeyRef:
@@ -143,6 +145,8 @@ spec:
                 value: ${PROJECT_ID}
               - name: BQ_DATASET
                 value: ${CIS_DATASET}
+              - name: CIS_CONTROLS_IGNORE
+                value: ${CIS_CONTROLS_IGNORE}
               - name: JOB_TOPIC
                 value: ${JOB_TOPIC}
               - name: SLACK_CHANNEL_WEEKLY_REPORT
