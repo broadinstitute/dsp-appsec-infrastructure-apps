@@ -38,7 +38,6 @@ options:
   - REGION=us-east1
   - ZONE_1=us-east1-b
   - ZONE_2=us-east1-c
-  - CIS_CONTROLS_IGNORE=${_CIS_CONTROLS_IGNORE}
 
 steps:
 ### Docker images
@@ -90,7 +89,7 @@ steps:
   waitFor: ['kaniko']
   entrypoint: sh
   env:
-  - CIS_CONTROLS_IGNORE=${CIS_CONTROLS_IGNORE}
+  - CIS_CONTROLS_IGNORE=${_CIS_CONTROLS_IGNORE}
   args:
   - -c
   - executor
