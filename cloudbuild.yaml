@@ -3,25 +3,7 @@ substitutions:
   _ORG_VIEWER_SA_EMAIL: '' # email of an existing Service Account with Org Viewer role
   _DNS_DOMAIN: '' # fully-resolved DNS domain name (e.g. appsec.example.org)
   _DNS_ZONE: '' # DNS zone name to be created/updated (e.g. appsec)
-  _EXCLUDE_PROFILES_CONTROL: (
-    'cis-gcp-1.4-iam',
-    'cis-gcp-2.01-logging',
-    'cis-gcp-2.02-logging',
-    'cis-gcp-2.03-logging',
-    'cis-gcp-2.04-logging',
-    'cis-gcp-2.05-logging',
-    'cis-gcp-2.06-logging',
-    'cis-gcp-2.07-logging',
-    'cis-gcp-2.08-logging',
-    'cis-gcp-2.09-logging',
-    'cis-gcp-2.10-logging',
-    'cis-gcp-2.11-logging',
-    'cis-gcp-3.3-networking',
-    'cis-gcp-3.4-networking',
-    'cis-gcp-3.5-networking',
-    'cis-gcp-4.7-vms',
-    'cis-gcp-5.1.1-container-registry',
-    'cis-gcp-5.3-networking')
+
 
 
 options:
@@ -57,7 +39,25 @@ options:
   - REGION=us-east1
   - ZONE_1=us-east1-b
   - ZONE_2=us-east1-c
-  
+  - EXCLUDE_PROFILES_CONTROL=(
+    'cis-gcp-1.4-iam',
+    'cis-gcp-2.01-logging',
+    'cis-gcp-2.02-logging',
+    'cis-gcp-2.03-logging',
+    'cis-gcp-2.04-logging',
+    'cis-gcp-2.05-logging',
+    'cis-gcp-2.06-logging',
+    'cis-gcp-2.07-logging',
+    'cis-gcp-2.08-logging',
+    'cis-gcp-2.09-logging',
+    'cis-gcp-2.10-logging',
+    'cis-gcp-2.11-logging',
+    'cis-gcp-3.3-networking',
+    'cis-gcp-3.4-networking',
+    'cis-gcp-3.5-networking',
+    'cis-gcp-4.7-vms',
+    'cis-gcp-5.1.1-container-registry',
+    'cis-gcp-5.3-networking')
 
 steps:
 ### Docker images
@@ -109,7 +109,7 @@ steps:
   waitFor: ['kaniko']
   entrypoint: sh
   env:
-  - EXCLUDE_PROFILES_CONTROLS=${_EXCLUDE_PROFILES_CONTROL}
+  - EXCLUDE_PROFILES_CONTROLS=$${EXCLUDE_PROFILES_CONTROL}
   args:
   - -c
   - executor
