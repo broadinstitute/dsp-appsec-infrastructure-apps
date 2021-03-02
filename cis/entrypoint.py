@@ -314,7 +314,7 @@ def main():
     slack_channel = os.getenv('SLACK_CHANNEL')
     slack_results_url = os.getenv('SLACK_RESULTS_URL')
     fs_collection = os.getenv('FIRESTORE_COLLECTION')
-    cis_controls_ignore_list = os.environ['CIS_CONTROLS_IGNORE'].split(",")
+    cis_controls_ignore_list = os.environ['CIS_CONTROLS_IGNORE']
 
     try:
         # define table_id and Firestore doc_ref for reporting success/errors
@@ -327,7 +327,7 @@ def main():
 
         # scan and load results into BigQuery
         title, rows = parse_profiles(
-            *benchmarks(target_project_id), cis_controls_ignore_list)
+            *benchmarks(target_project_id), cis_controls_ignore_list.split(","))
         load_bigquery(target_project_id, dataset_id, table_id, title, rows)
 
         # post to Slack, if specified
