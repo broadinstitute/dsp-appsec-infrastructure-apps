@@ -25,7 +25,7 @@ from flask_api import FlaskAPI
 from flask_cors import cross_origin
 from google.cloud import bigquery, firestore, pubsub_v1
 from jira import JIRA
-from trigger import parse_tags 
+from trigger import parse_tags
 
 import parse_data as parse_json_data
 import slacknotify
@@ -80,7 +80,7 @@ def health():
 
 
 @app.route('/submit/', methods=['POST'])
-@cross_origin(origins=sdarq_host)
+@cross_origin(origins='sdarq_host')
 def submit():
     """
     Send new product to DefectDojo,
@@ -171,7 +171,7 @@ def submit():
 
 
 @app.route('/cis_results/', methods=['POST'])
-@cross_origin(origins=sdarq_host)
+@cross_origin(origins='sdarq_host')
 def cis_results():
     """
     Get CIS results for a specific google project
@@ -203,8 +203,8 @@ def cis_results():
             query_job_table = client.query(sql_query, job_config=job_config)
             query_job_table.result()
             table_data = [dict(row) for row in query_job_table]
-            sql_query_2 = "SELECT * FROM `{0}.cis.{1}` WHERE id!='5.3' AND id!='2.1' AND id!='2.2' ORDER BY id".format(str(pubsub_project_id),
-                                                                                                                                str(project_id_edited))
+            sql_query_2 = "SELECT * FROM `{0}.cis.{1}` ORDER BY id".format(str(pubsub_project_id),
+                                                                           str(project_id_edited))
             query_job = client.query(sql_query_2)
             query_job.result()
             findings = [dict(row) for row in query_job]
@@ -218,11 +218,11 @@ def cis_results():
             You can verify the ID of the project you want to scan by running the following command:
             gcloud config list project --format='value(core.project)'
             """
-            return Response(json.dumps({'statusText': notfound}), status=404, mimetype='application/json')
+            return Response(json.dumps({'statusText': notfound}), status=status_code, mimetype='application/json')
 
 
 @app.route('/cis_scan/', methods=['POST'])
-@cross_origin(origins=sdarq_host)
+@cross_origin(origins='sdarq_host')
 def cis_scan():
     """
     Scans a specific google project
@@ -242,7 +242,7 @@ def cis_scan():
             "Request to assess security posture for project %s ", user_proj)
         db.collection(firestore_collection).document(user_proj)
         if 'slack_channel' in json_data:
-            slack_channel = json_data['slack_channel']
+            slack_channel = f"#{json_data['slack_channel']}"
             publisher.publish(topic_path,
                               data=message,
                               GCP_PROJECT_ID=user_project_id,
@@ -283,7 +283,7 @@ def cis_scan():
 
 
 @app.route('/request_tm/', methods=['POST'])
-@cross_origin(origins=sdarq_host)
+@cross_origin(origins='sdarq_host')
 def request_tm():
     """
     Creates a request for threat model for a specific service
@@ -320,7 +320,7 @@ def request_tm():
 
 
 @app.route('/zap_scan/', methods=['POST'])
-@cross_origin(origins=sdarq_host)
+@cross_origin(origins='sdarq_host')
 def zap_scan():
     """
     Scan a service via ZAP tool
@@ -349,19 +349,21 @@ def zap_scan():
     parsed_user_url = urlparse(user_supplied_url)
     for endpoint in endpoints:
         if endpoint['host'] == parsed_user_url.netloc:
-            service_codex_project, default_slack_channel, service_scan_type = parse_tags(endpoint)
+            service_codex_project, default_slack_channel, service_scan_type = parse_tags(
+                endpoint)
             if endpoint['path'] == None:
                 service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}"
             else:
                 service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}{endpoint['path']}"
-            severities = parse_json_data.parse_severities(json_data['severities'])
+            severities = parse_json_data.parse_severities(
+                json_data['severities'])
             publisher.publish(zap_topic_path,
-                            data=message,
-                            URL=service_full_endpoint,
-                            CODEDX_PROJECT=service_codex_project,
-                            SCAN_TYPE=service_scan_type.name,
-                            SEVERITIES=severities,
-                            SLACK_CHANNEL=dev_slack_channel)
+                              data=message,
+                              URL=service_full_endpoint,
+                              CODEDX_PROJECT=service_codex_project,
+                              SCAN_TYPE=service_scan_type.name,
+                              SEVERITIES=severities,
+                              SLACK_CHANNEL=dev_slack_channel)
 
             return ''
     else:

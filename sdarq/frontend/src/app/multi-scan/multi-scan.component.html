@@ -1,8 +1,11 @@
 <div class="jumbotron">
     <div class="container">
-        <!-- <div class="alert alert-danger animated fadeInRight" role="alert" *ngIf="showModalErr">
-            {{showModalError}}
-        </div> -->
-        <app-survey [json]="json" (submitSurvey)="requestMultiScan($event)"></app-survey>
+        <div class="alert alert-danger animated fadeInRight" role="alert" *ngIf="showModalErrService">
+            {{showModalErrorServiceScan}}
+        </div>
+        <div class="alert alert-danger animated fadeInRight" role="alert" *ngIf="showModalErrProject">
+            {{showModalErrorProjectScan}}
+        </div>
+        <app-survey *ngIf="showForm" [json]="json" (submitSurvey)="requestMultiScan($event)"></app-survey>
     </div>
 </div>
