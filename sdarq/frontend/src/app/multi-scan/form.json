@@ -1,0 +1,63 @@
+{
+    "completedHtml": "When service and project scans are done, you will receive a slack message. \n<br>\nThank you!<br>",
+    "pages": [
+     {
+      "name": "Service Scan",
+      "elements": [
+       {
+        "type": "html",
+        "name": "Important information",
+        "html": "<h4> Important information </h4>\n<hr><hr>\nPlease make sure you are NOT running a security pentest against a service in PRODUCTION. \n<hr>\nAppSec team has a limited list of endpoints that you are allowed to pentest. \n<hr>\nIf you want to run a security pentest against a service that is not whitelisted, please advise with AppSec team.\n<hr>\nSecurity pentest is necessary to assess the security posture of our services, but it is forbidden to run them against random URLs that you can find on the web. \n<hr>\n<hr>\n\n\n\n"
+       },
+       {
+        "type": "text",
+        "name": "project_id",
+        "title": "Enter GCP project",
+        "isRequired": true
+       },
+       {
+        "type": "text",
+        "name": "URL",
+        "title": "Enter service URL",
+        "isRequired": true
+       },
+       {
+        "type": "checkbox",
+        "name": "severities",
+        "title": "Mark which severities you want to be included in the results",
+        "isRequired": true,
+        "choices": [
+         {
+          "value": "Critical",
+          "text": "Critical"
+         },
+         {
+          "value": "High",
+          "text": "High"
+         },
+         {
+          "value": "Medium",
+          "text": "Medium"
+         },
+         {
+          "value": "Low",
+          "text": "Low"
+         },
+         {
+          "value": "Info",
+          "text": "Info"
+         }
+        ]
+       },
+       {
+        "type": "text",
+        "name": "slack_channel",
+        "title": "Enter a public Slack channel to get scan results",
+        "isRequired": true
+       }
+      ],
+      "title": "Service Scan"
+     }
+    ],
+    "showQuestionNumbers": "off"
+   }

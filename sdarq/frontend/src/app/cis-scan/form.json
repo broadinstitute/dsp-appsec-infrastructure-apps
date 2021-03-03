@@ -33,7 +33,7 @@
         "type": "text",
         "name": "slack_channel",
         "visibleIf": "{results_in_slack} = ['Yes']",
-        "title": "Enter a public Slack channel, provide # , e.g #prometheus ",
+        "title": "Enter a public Slack channel",
         "enableIf": "{results_in_slack} = ['Yes']",
         "isRequired": true
        }
