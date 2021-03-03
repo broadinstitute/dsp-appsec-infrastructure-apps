@@ -80,7 +80,7 @@ def health():
 
 
 @app.route('/submit/', methods=['POST'])
-@cross_origin(origins='sdarq_host')
+@cross_origin(origins=sdarq_host)
 def submit():
     """
     Send new product to DefectDojo,
@@ -171,7 +171,7 @@ def submit():
 
 
 @app.route('/cis_results/', methods=['POST'])
-@cross_origin(origins='sdarq_host')
+@cross_origin(origins=sdarq_host)
 def cis_results():
     """
     Get CIS results for a specific google project
@@ -222,7 +222,7 @@ def cis_results():
 
 
 @app.route('/cis_scan/', methods=['POST'])
-@cross_origin(origins='sdarq_host')
+@cross_origin(origins=sdarq_host)
 def cis_scan():
     """
     Scans a specific google project
@@ -283,7 +283,7 @@ def cis_scan():
 
 
 @app.route('/request_tm/', methods=['POST'])
-@cross_origin(origins='sdarq_host')
+@cross_origin(origins=sdarq_host)
 def request_tm():
     """
     Creates a request for threat model for a specific service
@@ -320,7 +320,7 @@ def request_tm():
 
 
 @app.route('/zap_scan/', methods=['POST'])
-@cross_origin(origins='sdarq_host')
+@cross_origin(origins=sdarq_host)
 def zap_scan():
     """
     Scan a service via ZAP tool
