@@ -13,7 +13,14 @@
         "type": "text",
         "name": "URL",
         "title": "URL",
-        "isRequired": true
+        "isRequired": true,
+        "requiredErrorText": "Please enter a valid URL",
+        "validators": [
+         {
+          "type": "regex",
+          "regex": "^(https?://)?[a-z0-9\\.\\-]+(/[a-zA-Z0-9\\-\\/]*)?$"
+         }
+        ]
        },
        {
         "type": "checkbox",
