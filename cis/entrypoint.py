@@ -71,7 +71,6 @@ def parse_profiles(target_project_id: str, profiles, cis_controls_ignore_final_l
 
         titles.add(profile['title'])
         for ctrl in profile['controls']:
-            print(ctrl['id'])
             if ctrl['id'] in cis_controls_ignore_final_list:
                 logging.info("----Skipping control----: %s", ctrl['id'])
                 continue
