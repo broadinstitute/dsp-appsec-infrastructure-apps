@@ -344,3 +344,29 @@ ul.stepper li.completed a .circle {
   background-color: #61b72b !important;
   border-color: #61b72c !important;
 }
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 9rem;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: 0.6rem !important;
+  color: #212529;
+  text-align: left;
+  list-style: none;
+  background-color: #ffffff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.25rem;
+}
+.navbar .dropdown-menu a {
+  padding: 7px 0 2px 14px !important;;
+  font-size: 0.74rem !important;;
+  font-weight: 300;
+  color: #000;
+}

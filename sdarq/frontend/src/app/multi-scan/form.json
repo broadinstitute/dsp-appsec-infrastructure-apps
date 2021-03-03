@@ -5,11 +5,6 @@
       "name": "Service Scan",
       "elements": [
        {
-        "type": "html",
-        "name": "Important information",
-        "html": "<h4> Important information </h4>\n<hr><hr>\nPlease make sure you are NOT running a security pentest against a service in PRODUCTION. \n<hr>\nAppSec team has a limited list of endpoints that you are allowed to pentest. \n<hr>\nIf you want to run a security pentest against a service that is not whitelisted, please advise with AppSec team.\n<hr>\nSecurity pentest is necessary to assess the security posture of our services, but it is forbidden to run them against random URLs that you can find on the web. \n<hr>\n<hr>\n\n\n\n"
-       },
-       {
         "type": "text",
         "name": "project_id",
         "title": "Enter GCP project",
@@ -56,7 +51,7 @@
         "isRequired": true
        }
       ],
-      "title": "Service Scan"
+      "title": "Service & GCP Project Scan"
      }
     ],
     "showQuestionNumbers": "off"
