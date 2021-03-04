@@ -302,8 +302,7 @@ ul.stepper li.completed a .circle {
 .jumbotron {
   border-radius: 0.125rem;
   box-shadow: none !important;
-  height: 85.5vh;
-  overflow: auto;
+  overflow: hidden;
   margin-bottom: 0px;
 }
 
@@ -376,4 +375,9 @@ hr {
   background-color: currentColor;
   border: 0;
   opacity: 0 !important;
+}
+
+footer {
+bottom:auto;
+width:100%;
 }

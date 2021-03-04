@@ -1,9 +1,8 @@
 .jumbotron {
   border-radius: 0.125rem;
   background: linear-gradient(87deg, #2438a2 0, #2196F3 100%) !important;
-  overflow: hidden;
-  height: 85vh;
-  overflow: scroll;
+  overflow-y: auto;
+  height: 85.5vh;
   margin-bottom: 0px;
 }
 
@@ -28,3 +27,8 @@
 .card .card-body h4 {
   font-weight: 200;
 }
+
+footer {
+  position:absolute;
+  bottom:0;
+  }
