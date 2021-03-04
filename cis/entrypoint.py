@@ -204,7 +204,6 @@ def slack_notify(target_project_id: str, slack_token: str, slack_channel: str, r
 def find_highs(rows: List[Any], slack_channel: str, slack_token: str, target_project_id: str):
     """
     Find high vulnerabilities from GCP project scan.
-
     Args:
        List of project findings, slack channel, slack token
     Returns:

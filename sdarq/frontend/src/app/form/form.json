@@ -116,7 +116,7 @@
                 },
                 {
                     "type": "text",
-                    "name": "Google project",
+                    "name": "project_id",
                     "visibleIf": "{Architecture} = 'GKE' or {Architecture} = 'GCF' or {Architecture} = 'GAE'",
                     "title": "Google project name"
                 },

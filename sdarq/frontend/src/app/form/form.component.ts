@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SendFormDataService } from '../services/send-form-data.service';
+import { CisProjectService } from '../services/cis-project.service';
 import formJson from './form.json';
 
 @Component({
@@ -8,7 +9,7 @@ import formJson from './form.json';
   styleUrls: ['./form.component.css']
 })
 export class FormComponent implements OnInit {
-  constructor(private sendForm: SendFormDataService) { }
+  constructor(private sendForm: SendFormDataService, private scanGCPproject: CisProjectService) { }
 
   ngOnInit() { }
 
@@ -16,8 +17,12 @@ export class FormComponent implements OnInit {
 
   sendData(result) {
     this.sendForm.sendFormData(result).subscribe((res) => {
-      console.log('Form sent');
     },
       (res) => { });
+    if (result.project_id) {
+      this.scanGCPproject.sendCisProject(result).subscribe((res1) => {
+      },
+        (res1) => { });
+    }
   }
 }

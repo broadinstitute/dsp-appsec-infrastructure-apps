@@ -141,7 +141,7 @@
   text-align: center !important;
   margin-top: 2.1em !important;
   letter-spacing: 0.05em;
-  color: #5885d0 !important;
+  color: #253ca5 !important;
   margin-bottom: 2.1em !important;
   font-weight: 300 !important;
 }
@@ -276,7 +276,7 @@ body {
 }
 
 .navbar {
-  box-shadow: none !important;
+  /* box-shadow: none !important; */
   font-weight: 300;
 }
 
@@ -302,7 +302,6 @@ ul.stepper li.completed a .circle {
 .jumbotron {
   border-radius: 0.125rem;
   box-shadow: none !important;
-  height: 85.5vh;
   overflow: auto;
   margin-bottom: 0px;
 }
@@ -343,4 +342,42 @@ ul.stepper li.completed a .circle {
   color: #ffffff !important;
   background-color: #61b72b !important;
   border-color: #61b72c !important;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 9rem;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: 0.6rem !important;
+  color: #212529;
+  text-align: left;
+  list-style: none;
+  background-color: #ffffff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.25rem;
+}
+.navbar .dropdown-menu a {
+  padding: 7px 0 2px 14px !important;;
+  font-size: 0.74rem !important;;
+  font-weight: 300;
+  color: #000;
+}
+hr {
+  margin: 1rem 0;
+  color: inherit;
+  background-color: currentColor;
+  border: 0;
+  opacity: 0 !important;
+}
+
+footer {
+bottom:auto;
+width:100%;
 }

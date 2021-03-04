@@ -1,8 +1,8 @@
-<div class="jumbotron">
+<div class="jumbotron min-vh-100">
   <div class="container">
     <div class="row">
       <div class="col"></div>
-      <div class="colalign-self-center">
+      <div class="col text-center">
         <div class="spinner-grow text-primary" role="status" *ngIf="showSpinner">
           <span class="sr-only">Loading...</span>
         </div>
@@ -63,7 +63,7 @@
             <td style="white-space: pre-wrap;">{{ findings.rationale }}</td>
             <td>
               <ul *ngFor="let link of findings.refs">
-                <li><a href="{{ link }}" target="_blank">Ref</a></li>
+                <li><a href="{{ link }}" target="_blank" rel="noreferrer noopener">Ref</a></li>
               </ul>
             </td>
           </tr>

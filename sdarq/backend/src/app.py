@@ -203,8 +203,8 @@ def cis_results():
             query_job_table = client.query(sql_query, job_config=job_config)
             query_job_table.result()
             table_data = [dict(row) for row in query_job_table]
-            sql_query_2 = "SELECT * FROM `{0}.cis.{1}` ORDER BY id".format(
-                str(pubsub_project_id), str(project_id_edited))
+            sql_query_2 = "SELECT * FROM `{0}.cis.{1}` ORDER BY id".format(str(pubsub_project_id),
+                                                                           str(project_id_edited))
             query_job = client.query(sql_query_2)
             query_job.result()
             findings = [dict(row) for row in query_job]
@@ -218,7 +218,7 @@ def cis_results():
             You can verify the ID of the project you want to scan by running the following command:
             gcloud config list project --format='value(core.project)'
             """
-            return Response(json.dumps({'statusText': notfound}), status=404, mimetype='application/json')
+            return Response(json.dumps({'statusText': notfound}), status=status_code, mimetype='application/json')
 
 
 @app.route('/cis_scan/', methods=['POST'])
@@ -242,7 +242,7 @@ def cis_scan():
             "Request to assess security posture for project %s ", user_proj)
         db.collection(firestore_collection).document(user_proj)
         if 'slack_channel' in json_data:
-            slack_channel = json_data['slack_channel']
+            slack_channel = f"#{json_data['slack_channel']}"
             publisher.publish(topic_path,
                               data=message,
                               GCP_PROJECT_ID=user_project_id,

@@ -7,13 +7,21 @@
        {
         "type": "html",
         "name": "Important information",
-        "html": "<h4> Important information </h4>\n<hr><hr>\nPlease make sure you are NOT running a security pentest against a service in PRODUCTION. \n<hr>\nAppSec team has a limited list of endpoints that you are allowed to pentest. \n<hr>\nIf you want to run a security pentest against a service that is not whitelisted, please advise with AppSec team.\n<hr>\nSecurity pentest is necessary to assess the security posture of our services, but it is forbidden to run them against random URLs that you can find on the web. \n<hr>\n<hr>\n\n\n\n"
+        "html": "<h4> Important information </h4><br>\n\n- Please make sure you are NOT running a security pentest against a service in PRODUCTION.<br>\n\n- AppSec team has a limited list of endpoints that you are allowed to pentest. <br>\n- If you want to run a security pentest against a service that is not whitelisted, please advise with AppSec team.<br>\n- Security pentest is necessary to assess the security posture of our services, but it is forbidden to run them against random URLs that you can find on the web. <br>\n\n\n\n\n"
        },
        {
         "type": "text",
         "name": "URL",
         "title": "URL",
-        "isRequired": true
+        "isRequired": true,
+        "requiredErrorText": "Please enter a valid URL",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please enter a valid URL",
+          "regex": "^(https?://)?[a-z0-9\\.\\-]+(/[a-zA-Z0-9\\-\\/]*)?$"
+         }
+        ]
        },
        {
         "type": "checkbox",

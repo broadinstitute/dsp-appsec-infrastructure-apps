@@ -1,14 +1,21 @@
-<!--Navbar-->
 <mdb-navbar SideClass="navbar navbar-expand-lg navbar-dark primary-color">
   <mdb-navbar-brand><a class="navbar-brand" href="#"><span style="font-weight: bolder;">DSP</span> AppSec Portal</a>
   </mdb-navbar-brand>
   <links>
-    <ul class="navbar-nav mr-auto">
+    <ul class="navbar-nav">
       <li class="nav-item">
         <a class="nav-link waves-light" href="/newservice" mdbWavesEffect>New Service</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link waves-light" href="/scan" mdbWavesEffect>Scan Project</a>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-mdb-toggle="dropdown"
+          aria-expanded="false">
+          Scan
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <li><a class="dropdown-item" href="/scan-service">Scan service</a></li>
+          <li><a class="dropdown-item" href="/cis/scan">Scan GCP project</a></li>
+          <li><a class="dropdown-item" href="/multi-scan">Multi-scan</a></li>
+        </ul>
       </li>
       <li class="nav-item">
         <a class="nav-link waves-light" href="/jira-ticket-risk-assesment" mdbWavesEffect>Jira Ticket Risk Assesment</a>
@@ -26,4 +33,3 @@
     </ul>
   </links>
 </mdb-navbar>
-<!--/.Navbar-->
