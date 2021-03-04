@@ -370,3 +370,10 @@ ul.stepper li.completed a .circle {
   font-weight: 300;
   color: #000;
 }
+hr {
+  margin: 1rem 0;
+  color: inherit;
+  background-color: currentColor;
+  border: 0;
+  opacity: 0 !important;
+}
