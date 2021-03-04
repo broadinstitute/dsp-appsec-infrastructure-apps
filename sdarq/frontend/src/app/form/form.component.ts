@@ -20,7 +20,7 @@ export class FormComponent implements OnInit {
     },
       (res) => { });
     if (result.project_id) {
-      this.scanGCPproject.sendCisProject(result.project_id).subscribe((res1) => {
+      this.scanGCPproject.sendCisProject(result).subscribe((res1) => {
       },
         (res1) => { });
     }
