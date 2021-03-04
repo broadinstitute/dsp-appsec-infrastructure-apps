@@ -276,7 +276,7 @@ body {
 }
 
 .navbar {
-  box-shadow: none !important;
+  /* box-shadow: none !important; */
   font-weight: 300;
 }
 
