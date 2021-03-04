@@ -9,26 +9,28 @@ import google.auth
 from google.auth.transport.requests import Request as GoogleAuthRequest
 from zapv2 import ZAPv2
 
-from zap_common import (
-    wait_for_zap_start,
-    write_report,
-    zap_access_target,
-    zap_active_scan,
-    zap_ajax_spider,
-    zap_spider,
-    zap_wait_for_passive_scan,
-)
+from zap_common import (wait_for_zap_start, write_report, zap_access_target,
+                        zap_active_scan, zap_ajax_spider, zap_spider,
+                        zap_wait_for_passive_scan)
 
 TIMEOUT_MINS = 5
+
+
+def zap_connect(zap_port: int):
+    """
+    Connect to the Zap instance
+    """
+    proxy = f"http://localhost:{zap_port}"
+    zap = ZAPv2(proxies={"http": proxy, "https": proxy})
+    wait_for_zap_start(zap, timeout_in_secs=TIMEOUT_MINS * 60)
+    return zap
 
 
 def zap_init(zap_port: int, target_url: str):
     """
     Connect to ZAP service running on localhost.
     """
-    proxy = f"http://localhost:{zap_port}"
-    zap = ZAPv2(proxies={"http": proxy, "https": proxy})
-    wait_for_zap_start(zap, timeout_in_secs=TIMEOUT_MINS * 60)
+    zap = zap_connect(zap_port)
 
     logging.info("Accessing target %s", target_url)
     zap_access_target(zap, target_url)
@@ -138,6 +140,5 @@ def zap_compliance_scan(
         zap_active_scan(zap, target_url, None)
 
     filename = zap_report(zap, project, scan_type)
-    zap.core.shutdown()
 
     return filename
