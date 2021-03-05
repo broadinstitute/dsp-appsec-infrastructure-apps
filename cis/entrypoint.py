@@ -173,8 +173,7 @@ def slack_notify(target_project_id: str, slack_token: str, slack_channel: str, r
     """
     Posts a notification about results to Slack.
     """
-    slack = WebClient(token=slack_token)
-    client = slack.WebClient(slack_token)
+    client = WebClient(token=slack_token)
     client.chat_postMessage(
         channel=slack_channel,
         attachments=[{"blocks": [
@@ -228,8 +227,7 @@ def slack_notify_high(records: List[Any], slack_token: str,
     Post notifications in Slack
     about high findings
     """
-    slack = WebClient(token=slack_token)
-    client = slack.WebClient(slack_token)
+    client = WebClient(token=slack_token)
     for row in records:
         client.chat_postMessage(
             channel=slack_channel,

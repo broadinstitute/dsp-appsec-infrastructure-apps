@@ -203,7 +203,7 @@ def cis_results():
             query_job_table = client.query(sql_query, job_config=job_config)
             query_job_table.result()
             table_data = [dict(row) for row in query_job_table]
-            sql_query_2 = "SELECT * FROM `{0}.cis.{1}` ORDER BY id".format(str(pubsub_project_id),
+            sql_query_2 = "SELECT * FROM `{0}.cis.{1}` ORDER BY ORDER BY benchmark, id".format(str(pubsub_project_id),
                                                                            str(project_id_edited))
             query_job = client.query(sql_query_2)
             query_job.result()
