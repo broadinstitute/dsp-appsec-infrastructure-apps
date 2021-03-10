@@ -146,23 +146,26 @@ def cleanup(subscription: str, namespace: str) -> None:
     However, that feature is currently hidden behind an `alpha` flag,
     so we do the cleanup explicitly here instead.
     """
-    events = get_batch_api().list_namespaced_job(
-        namespace,
-        label_selector=f"subscription={subscription}",
-        watch=True,
-    )
-    for event in events:
-        if event["type"] == "DELETED":
-            continue
-        job: V1Job = event["object"]
-        if is_job_terminated(job):
-            meta = job.metadata
-            get_batch_api().delete_namespaced_job(
-                meta.name,
-                meta.namespace,
-                propagation_policy="Background",
-            )
-            log.info("Deleted job %s", meta.name)
+    try:
+        events = get_batch_api().list_namespaced_job(
+            namespace,
+            label_selector=f"subscription={subscription}",
+            watch=True,
+        )
+        for event in events:
+            if event["type"] == "DELETED":
+                continue
+            job: V1Job = event["object"]
+            if is_job_terminated(job):
+                meta = job.metadata
+                get_batch_api().delete_namespaced_job(
+                    meta.name,
+                    meta.namespace,
+                    propagation_policy="Background",
+                )
+                log.info("Deleted job %s", meta.name)
+    except Exception as e:  # pylint: disable=broad-except
+        log.info("Error cleaning up job %s: %s", meta.name, e)
 
 
 def schedule_cleanup(subscription: str, namespace: str) -> None:
