@@ -17,6 +17,7 @@ from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.subscriber.message import Message
 from kubernetes.client import ApiException, BatchV1Api, V1Job, V1ObjectMeta
 from kubernetes.config import config_exception, load_incluster_config, load_kube_config
+from kubernetes.watch import Watch
 
 JobInputs = Dict[str, str]
 
@@ -160,10 +161,10 @@ def cleanup(batch_api: BatchV1Api, subscription: str, namespace: str):
     so we do the cleanup explicitly here instead.
     """
     try:
-        events = batch_api.list_namespaced_job(
+        events = Watch().stream(
+            batch_api.list_namespaced_job,
             namespace,
             label_selector=f"subscription={subscription}",
-            watch=True,
         )
         log.info("Listening for Job events: %s", events)
         for event in events:
