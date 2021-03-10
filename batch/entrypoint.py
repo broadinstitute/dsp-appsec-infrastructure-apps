@@ -164,8 +164,8 @@ def cleanup(subscription: str, namespace: str) -> None:
                     propagation_policy="Background",
                 )
                 log.info("Deleted job %s", meta.name)
-    except Exception as err:  # pylint: disable=broad-except
-        log.info("Error cleaning up job %s: %s", meta.name, err)
+    except:  # pylint: disable=bare-except
+        log.exception("Error cleaning up job %s", meta.name)
 
 
 def schedule_cleanup(subscription: str, namespace: str) -> None:
