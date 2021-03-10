@@ -5,6 +5,7 @@ and submits a Kubernetes Job for each message.
 """
 
 import logging as log
+import os
 from copy import deepcopy
 from hashlib import sha256
 from os import environ
@@ -18,6 +19,14 @@ from kubernetes.client import ApiException, BatchV1Api, V1Job, V1ObjectMeta
 from kubernetes.config import config_exception, load_incluster_config, load_kube_config
 
 JobInputs = Dict[str, str]
+
+
+def raise_from_thread(msg: str, *args):
+    """
+    Logs an exception raised in a thread and exits the program.
+    """
+    log.exception(msg, *args)
+    os._exit(1)  # pylint: disable=protected-access
 
 
 def get_job(job: V1Job, name: str, inputs: JobInputs):
@@ -60,7 +69,7 @@ def get_pubsub_callback(
             log.info("Submitted job %s", job_name)
 
         except (UnicodeError, ApiException):
-            log.exception("PubSub subscriber callback")
+            raise_from_thread("Error in PubSub subscriber callback")
 
         msg.ack()
 
@@ -171,7 +180,7 @@ def cleanup(batch_api: BatchV1Api, subscription: str, namespace: str):
                 )
                 log.info("Deleted job %s", meta.name)
     except:  # pylint: disable=bare-except
-        log.exception("Error in cleanup()")
+        raise_from_thread("Error in Job cleanup")
 
 
 def schedule_cleanup(batch_api: BatchV1Api, subscription: str, namespace: str):
