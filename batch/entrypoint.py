@@ -166,9 +166,7 @@ def cleanup(batch_api: BatchV1Api, subscription: str, namespace: str):
             namespace,
             label_selector=f"subscription={subscription}",
         )
-        log.info("Listening for Job events: %s", events)
         for event in events:
-            log.info("Got a Job event: %s", event)
             if event["type"] == "DELETED":
                 continue
             job: V1Job = event["object"]
