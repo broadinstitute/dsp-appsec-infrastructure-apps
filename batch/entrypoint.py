@@ -20,7 +20,7 @@ from kubernetes.config import config_exception, load_incluster_config, load_kube
 JobInputs = Dict[str, str]
 
 
-def get_job(job: V1Job, name: str, inputs: JobInputs) -> V1Job:
+def get_job(job: V1Job, name: str, inputs: JobInputs):
     """
     Returns a copy of the Job object with job `name`, where
     template annotations are set/updated with job `inputs`.
@@ -33,7 +33,7 @@ def get_job(job: V1Job, name: str, inputs: JobInputs) -> V1Job:
 
 
 def get_pubsub_callback(
-    subscription: str, namespace: str, job: V1Job
+    batch_api: BatchV1Api, subscription: str, namespace: str, job: V1Job
 ) -> Callable[[Message], None]:
     """
     Returns `callback` function to be called on every PubSub message
@@ -56,7 +56,7 @@ def get_pubsub_callback(
             log.info("Submitting job %s with input(s) %s", job_name, job_inputs)
 
             new_job = get_job(job, job_name, job_inputs)
-            get_batch_api().create_namespaced_job(namespace, new_job)
+            batch_api.create_namespaced_job(namespace, new_job)
             log.info("Submitted job %s", job_name)
 
         except (UnicodeError, ApiException):
@@ -68,8 +68,12 @@ def get_pubsub_callback(
 
 
 def listen_pubsub(
-    project_id: str, subscription: str, namespace: str, job: V1Job
-) -> None:
+    batch_api: BatchV1Api,
+    project_id: str,
+    subscription: str,
+    namespace: str,
+    job: V1Job,
+):
     """
     Subscribes callback function to messages in the PubSub Subscription.
 
@@ -78,7 +82,7 @@ def listen_pubsub(
     with pubsub_v1.SubscriberClient() as subscriber:
         # https://github.com/googleapis/python-pubsub/issues/67
         subscription_path = f"projects/{project_id}/subscriptions/{subscription}"
-        callback = get_pubsub_callback(subscription, namespace, job)
+        callback = get_pubsub_callback(batch_api, subscription, namespace, job)
         streaming_pull = subscriber.subscribe(subscription_path, callback)
         log.info("Listening to subscription %s", subscription)
         try:
@@ -88,7 +92,7 @@ def listen_pubsub(
             raise err
 
 
-def load_job(subscription: str, spec_path: str) -> V1Job:
+def load_job(subscription: str, spec_path: str):
     """
     Reads job spec from `spec_path` into a YAML object.
 
@@ -110,7 +114,7 @@ def load_job(subscription: str, spec_path: str) -> V1Job:
         )
 
 
-def get_batch_api() -> BatchV1Api:
+def get_batch_api():
     """
     Attempts to load Kubernetes config from in-cluster config (when run as a Pod),
     or otherwise loads it from kube_config.
@@ -124,7 +128,7 @@ def get_batch_api() -> BatchV1Api:
     return BatchV1Api()
 
 
-def is_job_terminated(job: V1Job) -> bool:
+def is_job_terminated(job: V1Job):
     """
     Detects if a Job was terminated.
     """
@@ -137,7 +141,7 @@ def is_job_terminated(job: V1Job) -> bool:
     return False
 
 
-def cleanup(subscription: str, namespace: str) -> None:
+def cleanup(batch_api: BatchV1Api, subscription: str, namespace: str):
     """
     Watches for events from `list_namespaced_job` API call,
     and deletes terminated Jobs.
@@ -147,7 +151,7 @@ def cleanup(subscription: str, namespace: str) -> None:
     so we do the cleanup explicitly here instead.
     """
     try:
-        events = get_batch_api().list_namespaced_job(
+        events = batch_api.list_namespaced_job(
             namespace,
             label_selector=f"subscription={subscription}",
             watch=True,
@@ -158,7 +162,7 @@ def cleanup(subscription: str, namespace: str) -> None:
             job: V1Job = event["object"]
             if is_job_terminated(job):
                 meta = job.metadata
-                get_batch_api().delete_namespaced_job(
+                batch_api.delete_namespaced_job(
                     meta.name,
                     meta.namespace,
                     propagation_policy="Background",
@@ -168,14 +172,14 @@ def cleanup(subscription: str, namespace: str) -> None:
         log.exception("Error in cleanup()")
 
 
-def schedule_cleanup(subscription: str, namespace: str) -> None:
+def schedule_cleanup(batch_api: BatchV1Api, subscription: str, namespace: str):
     """
     Schedules :func:`cleanup` to run on a background thread.
     """
-    Thread(target=cleanup, args=(subscription, namespace)).start()
+    Thread(target=cleanup, args=(batch_api, subscription, namespace)).start()
 
 
-def main() -> None:
+def main():
     """
     Parses inputs from environmental variables.
     Configures basic logging.
@@ -192,9 +196,10 @@ def main() -> None:
 
     log.basicConfig(level=log_level)
 
-    schedule_cleanup(subscription, namespace)
+    batch_api = get_batch_api()
+    schedule_cleanup(batch_api, subscription, namespace)
     job = load_job(subscription, spec_path)
-    listen_pubsub(project_id, subscription, namespace, job)
+    listen_pubsub(batch_api, project_id, subscription, namespace, job)
 
 
 if __name__ == "__main__":
