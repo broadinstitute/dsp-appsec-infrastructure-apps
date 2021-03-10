@@ -14,7 +14,7 @@ from typing import Callable, Dict
 import yaml
 from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.subscriber.message import Message
-from kubernetes.client import BatchV1Api, V1Job, V1ObjectMeta, rest
+from kubernetes.client import ApiException, BatchV1Api, V1Job, V1ObjectMeta
 from kubernetes.config import config_exception, load_incluster_config, load_kube_config
 
 JobInputs = Dict[str, str]
@@ -59,7 +59,7 @@ def get_pubsub_callback(
             get_batch_api().create_namespaced_job(namespace, new_job)
             log.info("Submitted job %s", job_name)
 
-        except (UnicodeError, rest.ApiException):
+        except (UnicodeError, ApiException):
             log.exception("PubSub subscriber callback")
 
         msg.ack()
@@ -165,7 +165,7 @@ def cleanup(subscription: str, namespace: str) -> None:
                 )
                 log.info("Deleted job %s", meta.name)
     except:  # pylint: disable=bare-except
-        log.exception("Error cleaning up job %s", meta.name)
+        log.exception("Error in cleanup()")
 
 
 def schedule_cleanup(subscription: str, namespace: str) -> None:
