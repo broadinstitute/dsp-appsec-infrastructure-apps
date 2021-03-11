@@ -138,8 +138,6 @@ spec:
             env:
               - name: DATASET_PROJECT_ID
                 value: ${PROJECT_ID}
-              - name: CIS_CONTROLS_IGNORE
-                value: ${CIS_CONTROLS_IGNORE}
               - name: BQ_DATASET
                 value: ${CIS_DATASET}
               - name: JOB_TOPIC
