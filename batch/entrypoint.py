@@ -25,6 +25,8 @@ JobInputs = Dict[str, str]
 def raise_from_thread(msg: str, *args):
     """
     Logs an exception raised in a thread and exits the program.
+    When running inside Kubernetes, this forces the Pod to auto-restart,
+    which is desirable to handle any transient errors.
     """
     log.exception(msg, *args)
     os._exit(1)  # pylint: disable=protected-access
@@ -62,7 +64,7 @@ def get_pubsub_callback(
                 + "-"
                 + sha256(msg.message_id.encode("utf-8")).hexdigest()[:16]
             )
-            job_inputs = msg.attributes
+            job_inputs: JobInputs = msg.attributes
             log.info("Submitting job %s with input(s) %s", job_name, job_inputs)
 
             new_job = get_job(job, job_name, job_inputs)
