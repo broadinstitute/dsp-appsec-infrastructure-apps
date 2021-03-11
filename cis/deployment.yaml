@@ -8,7 +8,7 @@ data:
   spec: |
     template:
       spec:
-        serviceAccountName: ${K8S_SERVICE_ACCOUNT}
+        serviceAccountName: ${JOB_SERVICE_ACCOUNT}
         #runtimeClassName: gvisor
         restartPolicy: OnFailure
         nodeSelector:
@@ -53,14 +53,6 @@ data:
             requests:
               memory: 2Gi
 ---
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: ${K8S_SERVICE_ACCOUNT}
-  namespace: ${NAMESPACE}
-  annotations:
-    iam.gke.io/gcp-service-account: ${GCP_SERVICE_ACCOUNT_EMAIL}
----
 apiVersion: bigquery.cnrm.cloud.google.com/v1beta1
 kind: BigQueryDataset
 metadata:
@@ -73,18 +65,20 @@ spec:
   access:
   - role: OWNER
     specialGroup: projectOwners
+  - role: READER
+    userByEmail: ${CRON_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
   - role: WRITER
-    userByEmail: ${GCP_SERVICE_ACCOUNT_EMAIL}
+    userByEmail: ${JOB_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
   - role: WRITER
     userByEmail: ${SDARQ_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember
 metadata:
-  name: ${K8S_SERVICE_ACCOUNT}-sa-bq-policy
+  name: ${JOB_SERVICE_ACCOUNT}-sa-bq-policy
   namespace: ${NAMESPACE}
 spec:
-  member: serviceAccount:${GCP_SERVICE_ACCOUNT_EMAIL}
+  member: serviceAccount:${JOB_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
   role: roles/bigquery.jobUser
   resourceRef:
     apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
@@ -94,10 +88,10 @@ spec:
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember
 metadata:
-  name: ${K8S_SERVICE_ACCOUNT}-sa-firestore-policy
+  name: ${JOB_SERVICE_ACCOUNT}-sa-firestore-policy
   namespace: ${NAMESPACE}
 spec:
-  member: serviceAccount:${GCP_SERVICE_ACCOUNT_EMAIL}
+  member: serviceAccount:${JOB_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
   role: roles/datastore.user
   resourceRef:
     apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
@@ -117,8 +111,8 @@ spec:
   bindings:
   - role: roles/pubsub.publisher
     members:
+    - serviceAccount:${CRON_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
     - serviceAccount:${SDARQ_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
-    - serviceAccount:${GCP_SERVICE_ACCOUNT_EMAIL}
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
@@ -131,11 +125,12 @@ spec:
     spec:
       template:
         spec:
-          serviceAccountName: ${K8S_SERVICE_ACCOUNT}
+          serviceAccountName: ${CRON_SERVICE_ACCOUNT}
           runtimeClassName: gvisor
           nodeSelector:
             cloud.google.com/gke-nodepool: batch
           restartPolicy: OnFailure
+
           containers:
           - name: cis-scan
             image: ${CIS_IMAGE}
@@ -143,8 +138,6 @@ spec:
             env:
               - name: DATASET_PROJECT_ID
                 value: ${PROJECT_ID}
-              - name: CIS_CONTROLS_IGNORE
-                value: ${CIS_CONTROLS_IGNORE}
               - name: BQ_DATASET
                 value: ${CIS_DATASET}
               - name: JOB_TOPIC
