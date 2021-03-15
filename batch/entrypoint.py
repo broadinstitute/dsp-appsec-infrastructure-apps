@@ -71,8 +71,11 @@ def get_pubsub_callback(
             batch_api.create_namespaced_job(namespace, new_job)
             log.info("Submitted job %s", job_name)
 
-        except (UnicodeError, ApiException):
-            raise_from_thread("Error in PubSub subscriber callback")
+        except (UnicodeError, ApiException) as err:
+            if isinstance(err, ApiException) and err.status == 409:
+                log.error("Skipped duplicate job %s", job_name)
+            else:
+                raise_from_thread("Error in PubSub subscriber callback")
 
         msg.ack()
 
