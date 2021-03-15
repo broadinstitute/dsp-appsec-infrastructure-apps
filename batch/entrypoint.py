@@ -8,6 +8,7 @@ import logging as log
 import os
 from copy import deepcopy
 from hashlib import sha256
+from http import HTTPStatus
 from os import environ
 from threading import Thread
 from typing import Callable, Dict
@@ -72,7 +73,7 @@ def get_pubsub_callback(
             log.info("Submitted job %s", job_name)
 
         except (UnicodeError, ApiException) as err:
-            if isinstance(err, ApiException) and err.status == 409:
+            if isinstance(err, ApiException) and err.status == HTTPStatus.CONFLICT:
                 log.error("Skipped duplicate job %s", job_name)
             else:
                 raise_from_thread("Error in PubSub subscriber callback")
