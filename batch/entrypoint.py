@@ -8,6 +8,7 @@ import logging as log
 import os
 from copy import deepcopy
 from hashlib import sha256
+from http import HTTPStatus
 from os import environ
 from threading import Thread
 from typing import Callable, Dict
@@ -71,8 +72,11 @@ def get_pubsub_callback(
             batch_api.create_namespaced_job(namespace, new_job)
             log.info("Submitted job %s", job_name)
 
-        except (UnicodeError, ApiException):
-            raise_from_thread("Error in PubSub subscriber callback")
+        except (BaseException, ApiException) as err:  # pylint: disable=broad-except
+            if isinstance(err, ApiException) and err.status == HTTPStatus.CONFLICT:
+                log.error("Skipped duplicate job %s", job_name)
+            else:
+                raise_from_thread("Error in PubSub subscriber callback")
 
         msg.ack()
 
@@ -99,7 +103,7 @@ def listen_pubsub(
         log.info("Listening to subscription %s", subscription)
         try:
             streaming_pull.result()
-        except (TimeoutError, Exception) as err:
+        except (BaseException, TimeoutError) as err:
             streaming_pull.cancel()
             raise err
 
