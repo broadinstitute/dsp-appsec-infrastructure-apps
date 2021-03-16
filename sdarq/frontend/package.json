@@ -27,6 +27,7 @@
     "@types/chart.js": "^2.9.24",
     "angular-bootstrap-md": "^9.4.0",
     "animate.css": "^4.1.1",
+    "babel-loader": "^7.1.5",
     "bootstrap": "^4.5.2",
     "chart.js": "^2.9.3",
     "ckeditor": "^4.12.1",
