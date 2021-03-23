@@ -24,7 +24,7 @@
                  {
                   "type": "regex",
                   "text": "Please enter a valid URL",
-                  "regex": "^(https?://)?[a-z0-9\\.\\-]+(/[a-zA-Z0-9\\-\\/]*)?$"
+                  "regex": "^(https?://)?[a-z0-9/\\./\\-]+(/[a-zA-Z0-9/\\-/\\/]*)?$"
                  }
                 ]
                },
@@ -53,7 +53,8 @@
                         "value": "Info",
                         "text": "Info"
                     }
-                ]
+                ],
+                "colCount": 5
             },
             {
                 "type": "text",
