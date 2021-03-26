@@ -75,6 +75,12 @@ data:
           resources:
             requests:
               memory: 50Mi
+        - name: cat-hosts
+          image: busybox
+          command:
+          - cat
+          args:
+          - "/etc/hosts"
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicy
