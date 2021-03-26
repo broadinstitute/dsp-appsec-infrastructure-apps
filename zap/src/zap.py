@@ -90,6 +90,7 @@ class ScanType(str, Enum):
     AUTH = "Authenticated"
     BASELINE = "Baseline"
     UI = "UI"
+    FIAB = "Fiab"
 
     def __str__(self):
         return str(self.name).lower()
@@ -137,6 +138,11 @@ def zap_compliance_scan(
     zap_wait_for_passive_scan(zap, timeout_in_secs=TIMEOUT_MINS * 60)
 
     if scan_type == ScanType.UI:
+        zap_active_scan(zap, target_url, None)
+
+    if scan_type == ScanType.FIAB:
+        scan_policy = 'Default Policy'
+        zap.ascan.enable_all_scanners(scanpolicyname=scan_policy)
         zap_active_scan(zap, target_url, None)
 
     filename = zap_report(zap, project, scan_type)

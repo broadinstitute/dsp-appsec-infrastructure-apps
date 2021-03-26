@@ -17,6 +17,8 @@ export CODEDX_URL="http://${CODEDX_SERVICE}.${CODEDX_NAMESPACE}.svc.cluster.loca
 export DEFECT_DOJO_URL="http://${DOJO_SERVICE}.${DOJO_NAMESPACE}.svc.cluster.local"
 export ZAP_PORT='8008'
 export BUCKET_NAME="${PROJECT_ID}-vuln-reports"
+export FIAB_HOST="firecloud-fiab.dsde-dev.broadinstitute.org"
+export FIAB_IP="35.226.100.57"
 
 ./kube-apply.py \
   "namespace.yaml" \

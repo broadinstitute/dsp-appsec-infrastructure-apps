@@ -13,7 +13,10 @@ data:
         restartPolicy: Never
         nodeSelector:
           cloud.google.com/gke-nodepool: batch
-
+        hostAliases:
+        - ip: "${FIAB_IP}"
+          hostnames:
+          - "${FIAB_HOST}"
         containers:
         - name: zap
           image: owasp/zap2docker-weekly
@@ -28,7 +31,6 @@ data:
           resources:
             requests:
               memory: 950Mi
-
         - name: zap-scan
           image: ${ZAP_IMAGE}
           imagePullPolicy: Always
@@ -145,6 +147,20 @@ items:
             containers:
             - << : *cron-job-container
               args: ['trigger', '-s', 'ui']
+- << : *cron-job
+  metadata:
+    name: ${CRON_JOB}-yearly
+    namespace: ${NAMESPACE}
+  spec:
+    schedule: "0 0 1 1 *"
+    jobTemplate:
+      spec:
+        template:
+          spec:
+            << : *cron-job-spec
+            containers:
+            - << : *cron-job-container
+              args: ['trigger', '-s', 'fiab']
 ---
 apiVersion: storage.cnrm.cloud.google.com/v1beta1
 kind: StorageBucket
