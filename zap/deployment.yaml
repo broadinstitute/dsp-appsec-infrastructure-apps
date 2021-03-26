@@ -5,6 +5,8 @@ metadata:
   name: ${JOB_CONFIG_MAP}
   namespace: ${NAMESPACE}
 data:
+  hosts: |-
+    ${FIAB_IP} ${FIAB_HOST}
   spec: |
     template:
       spec:
@@ -13,10 +15,6 @@ data:
         restartPolicy: Never
         nodeSelector:
           cloud.google.com/gke-nodepool: batch
-        hostAliases:
-        - ip: "${FIAB_IP}"
-          hostnames:
-          - "${FIAB_HOST}"
         containers:
         - name: zap
           image: owasp/zap2docker-weekly
