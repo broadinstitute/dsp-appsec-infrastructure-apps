@@ -149,7 +149,7 @@ def load_bigquery(target_project_id: str, dataset_id: str, table_id: str,
     )
     job_config = bigquery.LoadJobConfig(
         schema=schema,
-        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+        write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
         time_partitioning=bigquery.TimePartitioning(
             type_=bigquery.TimePartitioningType.DAY,
         ),
