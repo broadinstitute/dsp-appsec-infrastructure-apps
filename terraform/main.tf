@@ -27,18 +27,6 @@ resource "google_project_service" "servicenetworking" {
 data "google_project" "project" {}
 data "google_client_config" "client" {}
 
-locals {
-  google_token = data.google_client_config.client.access_token
-}
-
-provider "kubernetes" {
-  host  = "https://${google_container_cluster.cluster.endpoint}"
-  token = local.google_token
-  cluster_ca_certificate = base64decode(
-    google_container_cluster.cluster.master_auth[0].cluster_ca_certificate,
-  )
-}
-
 data "http" "cloudbuild-ip" {
   url = "https://ipinfo.io/ip"
 }
@@ -386,11 +374,16 @@ resource "google_service_account_iam_member" "cnrm_sa_ksa_binding" {
 data "http" "iap_brand" {
   url = "https://iap.googleapis.com/v1/projects/${var.project}/brands"
   request_headers = {
-    Authorization = "Bearer ${local.google_token}"
+    Authorization = "Bearer ${data.google_client_config.client.access_token}"
   }
   depends_on = [
     google_project_iam_member.oauth_cloudbuild
   ]
+}
+
+resource "google_project_iam_member" "oauth_cloudbuild" {
+  role   = "roles/oauthconfig.editor"
+  member = local.cloudbuild_sa
 }
 
 resource "google_iap_client" "iap" {
@@ -398,20 +391,22 @@ resource "google_iap_client" "iap" {
   brand        = jsondecode(data.http.iap_brand.body).brands[0].name
 }
 
-resource "kubernetes_secret" "iap" {
-  metadata {
-    namespace = var.global_namespace
-    name      = "iap-client"
-  }
-  data = {
-    client_id     = google_iap_client.iap.client_id
-    client_secret = google_iap_client.iap.secret
-  }
-}
-
-resource "google_project_iam_member" "oauth_cloudbuild" {
-  role   = "roles/oauthconfig.editor"
-  member = local.cloudbuild_sa
+resource "local_file" "iap_secret" {
+  filename        = "${path.cwd}/.iap-secret.yaml"
+  file_permission = "0600"
+  sensitive_content = yamlencode({
+    apiVersion = "v1"
+    kind       = "Secret"
+    type       = "Opaque"
+    metadata = {
+      namespace = "$${NAMESPACE}"
+      name      = "iap-client"
+    }
+    data = {
+      client_id     = base64encode(google_iap_client.iap.client_id)
+      client_secret = base64encode(google_iap_client.iap.secret)
+    }
+  })
 }
 
 ### Outputs
@@ -436,6 +431,6 @@ output "nat_cidr" {
   value = local.nat_cidr
 }
 
-output "iap_secret" {
-  value = kubernetes_secret.iap.metadata[0].name
+output "iap_secret_yaml" {
+  value = local_file.iap_secret.filename
 }
