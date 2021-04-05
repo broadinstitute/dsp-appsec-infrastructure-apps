@@ -25,6 +25,19 @@ resource "google_project_service" "servicenetworking" {
 }
 
 data "google_project" "project" {}
+data "google_client_config" "client" {}
+
+locals {
+  google_token = data.google_client_config.client.access_token
+}
+
+provider "kubernetes" {
+  host  = "https://${google_container_cluster.cluster.endpoint}"
+  token = local.google_token
+  cluster_ca_certificate = base64decode(
+    google_container_cluster.cluster.master_auth[0].cluster_ca_certificate,
+  )
+}
 
 data "http" "cloudbuild-ip" {
   url = "https://ipinfo.io/ip"
@@ -366,6 +379,31 @@ resource "google_service_account_iam_member" "cnrm_sa_ksa_binding" {
   service_account_id = module.cnrm_sa.name
   role               = "roles/iam.workloadIdentityUser"
   member             = "serviceAccount:${var.project}.svc.id.goog[cnrm-system/cnrm-controller-manager-${var.global_namespace}]"
+}
+
+### IAP
+
+data "http" "iap_brand" {
+  url = "https://iap.googleapis.com/v1/projects/${var.project}/brands"
+  request_headers = {
+    Authorization = "Bearer ${local.google_token}"
+  }
+}
+
+resource "google_iap_client" "iap" {
+  display_name = var.cluster_name
+  brand        = jsondecode(data.http.iap_brand.body).brands[0].name
+}
+
+resource "kubernetes_secret" "iap" {
+  metadata {
+    namespace = var.global_namespace
+    name      = "iap-client"
+  }
+  data = {
+    client_id     = google_iap_client.iap.client_id
+    client_secret = google_iap_client.iap.secret
+  }
 }
 
 ### Outputs
