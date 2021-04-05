@@ -388,6 +388,9 @@ data "http" "iap_brand" {
   request_headers = {
     Authorization = "Bearer ${local.google_token}"
   }
+  depends_on = [
+    google_project_iam_member.oauth_cloudbuild
+  ]
 }
 
 resource "google_iap_client" "iap" {
@@ -404,6 +407,11 @@ resource "kubernetes_secret" "iap" {
     client_id     = google_iap_client.iap.client_id
     client_secret = google_iap_client.iap.secret
   }
+}
+
+resource "google_project_iam_member" "oauth_cloudbuild" {
+  role   = "roles/oauthconfig.editor"
+  member = local.cloudbuild_sa
 }
 
 ### Outputs
