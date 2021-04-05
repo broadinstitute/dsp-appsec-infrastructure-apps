@@ -36,7 +36,7 @@ spec:
   iap:
     enabled: true
     oauthclientCredentials:
-      secretName: ${iap_secret}
+      secretName: ${iap_secret_name}
 ---
 apiVersion: v1
 kind: Service

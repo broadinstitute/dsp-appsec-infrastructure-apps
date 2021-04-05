@@ -400,13 +400,17 @@ resource "local_file" "iap_secret" {
     type       = "Opaque"
     metadata = {
       namespace = "$${NAMESPACE}"
-      name      = "iap-client"
+      name      = local.iap_secret_name
     }
     data = {
       client_id     = base64encode(google_iap_client.iap.client_id)
       client_secret = base64encode(google_iap_client.iap.secret)
     }
   })
+}
+
+locals {
+  iap_secret_name = "iap-client"
 }
 
 ### Outputs
@@ -433,4 +437,8 @@ output "nat_cidr" {
 
 output "iap_secret_yaml" {
   value = local_file.iap_secret.filename
+}
+
+output "iap_secret_name" {
+  value = local.iap_secret_name
 }
