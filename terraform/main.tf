@@ -437,5 +437,5 @@ output "nat_cidr" {
 }
 
 output "iap_secret" {
-  value = kubernetes_secret.iap.metadata.name
+  value = kubernetes_secret.iap.metadata[0].name
 }
