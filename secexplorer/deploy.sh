@@ -57,4 +57,5 @@ export BOLT_PORT="bolt"
 
 ./host.sh
 
+./iap-secret.sh
 ./kube-apply.py "${CWD}/ingress.yaml"

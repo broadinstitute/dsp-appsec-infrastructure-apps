@@ -35,4 +35,5 @@ export BACKEND_PORT="backend"
 
 ./host.sh
 
+./iap-secret.sh
 ./kube-apply.py "${CWD}/ingress.yaml"

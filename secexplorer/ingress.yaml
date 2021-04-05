@@ -33,6 +33,10 @@ metadata:
 spec:
   securityPolicy:
     name: ${BROAD_INGRESS_CSP}
+  iap:
+    enabled: true
+    oauthclientCredentials:
+      secretName: ${iap_secret}
 ---
 apiVersion: v1
 kind: Service
@@ -44,7 +48,7 @@ metadata:
       {
         "ingress": true
       }
-    beta.cloud.google.com/backend-config: |
+    cloud.google.com/backend-config: |
       {
         "ports": {
           "${HTTP_PORT}": "${BACKEND_CONFIG}"

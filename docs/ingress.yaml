@@ -44,7 +44,7 @@ metadata:
       {
         "ingress": true
       }
-    beta.cloud.google.com/backend-config: |
+    cloud.google.com/backend-config: |
       {
         "ports": {
           "${SERVICE_PORT}": "${BACKEND_CONFIG}"

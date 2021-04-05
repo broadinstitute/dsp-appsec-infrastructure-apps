@@ -435,3 +435,7 @@ output "sql_network" {
 output "nat_cidr" {
   value = local.nat_cidr
 }
+
+output "iap_secret" {
+  value = kubernetes_secret.iap.metadata.name
+}

@@ -70,5 +70,6 @@ export TARGET_PORT="http"
 
 ./host.sh
 
+./iap-secret.sh
 ./kube-apply.py \
   "ingress.yaml"
