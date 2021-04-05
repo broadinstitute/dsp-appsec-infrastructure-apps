@@ -1,5 +1,7 @@
 .terraform/
 .terraform.lock.hcl
+tfplan
 
 *.out
 *.tfvars
+*secret*

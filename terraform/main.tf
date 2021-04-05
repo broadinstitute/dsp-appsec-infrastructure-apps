@@ -25,6 +25,7 @@ resource "google_project_service" "servicenetworking" {
 }
 
 data "google_project" "project" {}
+data "google_client_config" "client" {}
 
 data "http" "cloudbuild-ip" {
   url = "https://ipinfo.io/ip"
@@ -368,6 +369,50 @@ resource "google_service_account_iam_member" "cnrm_sa_ksa_binding" {
   member             = "serviceAccount:${var.project}.svc.id.goog[cnrm-system/cnrm-controller-manager-${var.global_namespace}]"
 }
 
+### IAP
+
+data "http" "iap_brand" {
+  url = "https://iap.googleapis.com/v1/projects/${var.project}/brands"
+  request_headers = {
+    Authorization = "Bearer ${data.google_client_config.client.access_token}"
+  }
+  depends_on = [
+    google_project_iam_member.oauth_cloudbuild
+  ]
+}
+
+resource "google_project_iam_member" "oauth_cloudbuild" {
+  role   = "roles/oauthconfig.editor"
+  member = local.cloudbuild_sa
+}
+
+resource "google_iap_client" "iap" {
+  display_name = var.cluster_name
+  brand        = jsondecode(data.http.iap_brand.body).brands[0].name
+}
+
+resource "local_file" "iap_secret" {
+  filename        = "${path.cwd}/.iap-secret.yaml"
+  file_permission = "0600"
+  sensitive_content = yamlencode({
+    apiVersion = "v1"
+    kind       = "Secret"
+    type       = "Opaque"
+    metadata = {
+      namespace = "$${NAMESPACE}"
+      name      = local.iap_secret_name
+    }
+    data = {
+      client_id     = base64encode(google_iap_client.iap.client_id)
+      client_secret = base64encode(google_iap_client.iap.secret)
+    }
+  })
+}
+
+locals {
+  iap_secret_name = "iap-client"
+}
+
 ### Outputs
 
 output "region" {
@@ -388,4 +433,12 @@ output "sql_network" {
 
 output "nat_cidr" {
   value = local.nat_cidr
+}
+
+output "iap_secret_yaml" {
+  value = local_file.iap_secret.filename
+}
+
+output "iap_secret_name" {
+  value = local.iap_secret_name
 }
