@@ -2,7 +2,7 @@ FROM python:slim AS base
 
 FROM owasp/zap2docker-weekly AS zap
 
-FROM  DefectDojo/defectdojo_api/defectdojo_api as dojo
+FROM  defectdojo/defectdojo-django as dojo
 
 # Set up a Python virtualenv in a "build" stage
 FROM base AS build
