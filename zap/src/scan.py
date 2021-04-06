@@ -15,6 +15,7 @@ from codedx_api.CodeDxAPI import CodeDx
 from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
 
+import defectdojo_apiv2 as defectdojo
 from zap import ScanType, zap_compliance_scan, zap_connect
 
 
@@ -52,6 +53,23 @@ def codedx_upload(cdx: CodeDx, project: str, filename: str):
         cdx.update_projects()
 
     cdx.analyze(project, filename)
+
+def defectdojo_upload(engagement_id, zap_filename, dd):
+    """
+    Upload Zap results in DefectDojo engagement
+    """
+
+    dd.upload_scan(engagement_id=engagement_id,
+                scan_type="ZAP Scan",
+                file=zap_filename,
+                active=True,
+                verified=False,
+                close_old_findings=False,
+                skip_duplicates=False,
+                scan_date=datetime.datetime.now().strftime('%Y-%m-%d'),
+                tags='Zap Scan',
+                build=None,
+                minimum_severity='Critical')
 
 
 class Severity(str, Enum):
@@ -233,6 +251,11 @@ def main():
 
             severities = parse_severities(getenv("SEVERITIES"))
 
+            # variables needed for DefectDojo
+            defect_dojo_key = getenv("DEFECT_DOJO_KEY")
+            defect_dojo_url = getenv("DEFECT_DOJO_URL")
+            engagement_id = getenv("ENGAGEMENT_ID")
+
             # configure logging
             logging.basicConfig(
                 level=logging.INFO,
@@ -245,6 +268,11 @@ def main():
             # upload its results to Code Dx
             cdx = CodeDx(codedx_url, codedx_api_key)
             codedx_upload(cdx, codedx_project, zap_filename)
+
+            # upload results in defectDojo
+            dd = defectdojo.DefectDojoAPIv2(defect_dojo_url, defect_dojo_key, 'zbedo', debug=False)
+            defectdojo_upload(engagement_id, zap_filename, dd)
+
 
             # optionally, upload them to GCS
             xml_report_url = ""

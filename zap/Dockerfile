@@ -2,6 +2,8 @@ FROM python:slim AS base
 
 FROM owasp/zap2docker-weekly AS zap
 
+FROM  DefectDojo/defectdojo_api/defectdojo_api as dojo
+
 # Set up a Python virtualenv in a "build" stage
 FROM base AS build
 
@@ -23,6 +25,7 @@ FROM build
 RUN /venv/bin/pip3 install -U git+https://github.com/PyCQA/pylint.git
 
 COPY --from=zap /zap/zap_common.py ./
+COPY --from=dojo /dojo/defectdojo_apiv2.py ./
 COPY src/*.py ./
 
 RUN /venv/bin/pylint --fail-under=9 --ignore=zap_common.py ./*.py
@@ -33,6 +36,7 @@ FROM base
 
 COPY --from=build /venv /venv
 COPY --from=zap /zap/zap_common.py ./
+COPY --from=dojo /dojo/defectdojo_api ./
 COPY src/*.py ./
 
 ENTRYPOINT ["/venv/bin/python3", "-u", "-m"]

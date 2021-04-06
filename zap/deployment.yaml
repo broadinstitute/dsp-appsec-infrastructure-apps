@@ -66,6 +66,10 @@ data:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.annotations['SLACK_CHANNEL']
+          - name: ENGAGEMENT_ID
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.annotations['ENGAGEMENT_ID']
           - name: SEVERITIES
             valueFrom:
               fieldRef:
