@@ -27,3 +27,8 @@ p{
     color: #2544ac;
     font-weight: bolder;
 }
+
+.emailblock {
+  background-color: rgba(12, 3, 126, 0.815);
+  padding: 1em;
+}
