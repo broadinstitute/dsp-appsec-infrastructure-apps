@@ -270,7 +270,7 @@ def main():
             codedx_upload(cdx, codedx_project, zap_filename)
 
             # upload results in defectDojo
-            dd = defectdojo.DefectDojoAPIv2(defect_dojo_url, defect_dojo_key, 'zbedo', debug=False)
+            dd = defectdojo.DefectDojoAPIv2(defect_dojo_url, defect_dojo_key, 'ssymonds', debug=False)
             defectdojo_upload(engagement_id, zap_filename, dd)
 
 
