@@ -54,11 +54,11 @@ def codedx_upload(cdx: CodeDx, project: str, filename: str):
 
     cdx.analyze(project, filename)
 
-def defectdojo_upload(engagement_id, zap_filename, defect_dojo_url, defect_dojo_key):
+def defectdojo_upload(engagement_id, zap_filename, host, defect_dojo_key):
     """
     Upload Zap results in DefectDojo engagement
     """
-    dd = defectdojo.DefectDojoAPIv2(defect_dojo_url, defect_dojo_key, 'ssymonds', debug=False)
+    dd = defectdojo.DefectDojoAPIv2(host, defect_dojo_key, 'ssymonds', debug=False)
 
     dd.upload_scan(engagement_id=engagement_id,
                 scan_type="ZAP Scan",
@@ -253,8 +253,8 @@ def main():
             severities = parse_severities(getenv("SEVERITIES"))
 
             # variables needed for DefectDojo
-            defect_dojo_key = getenv("DEFECT_DOJO_KEY")
             defect_dojo_url = getenv("DEFECT_DOJO_URL")
+            defect_dojo_key = getenv("DEFECT_DOJO_KEY")
             engagement_id = getenv("ENGAGEMENT_ID")
 
             # configure logging
