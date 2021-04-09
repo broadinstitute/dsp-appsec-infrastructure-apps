@@ -103,7 +103,7 @@ def parse_tags(endpoint: Endpoint):
         if tag_key == "slack":
             slack_channel = tag_val
         if tag_key == "engagement_id":
-            engagement_id = tag_key
+            engagement_id = tag_val
     return codedx_project, slack_channel, scan_type, engagement_id
 
 
