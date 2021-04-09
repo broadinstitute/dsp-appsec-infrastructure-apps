@@ -67,9 +67,8 @@ def defectdojo_upload(engagement_id, zap_filename, defect_dojo_key):
                 verified=False,
                 close_old_findings=False,
                 skip_duplicates=False,
-                scan_date=f'{datetime.today().strftime("%Y-%m-%d")}',
+                scan_date=datetime.today().strftime('%Y-%m-%d'),
                 tags='Zap Scan',
-                build=None,
                 minimum_severity='Critical')
 
 
