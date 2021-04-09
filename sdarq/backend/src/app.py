@@ -349,7 +349,7 @@ def zap_scan():
     parsed_user_url = urlparse(user_supplied_url)
     for endpoint in endpoints:
         if endpoint['host'] == parsed_user_url.netloc:
-            service_codex_project, default_slack_channel, service_scan_type = parse_tags(
+            service_codex_project, default_slack_channel, service_scan_type, engagement_id = parse_tags(
                 endpoint)
             if endpoint['path'] == None:
                 service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}"
@@ -363,7 +363,8 @@ def zap_scan():
                               CODEDX_PROJECT=service_codex_project,
                               SCAN_TYPE=service_scan_type.name,
                               SEVERITIES=severities,
-                              SLACK_CHANNEL=dev_slack_channel)
+                              SLACK_CHANNEL=dev_slack_channel,
+                              ENGAGEMENT_ID=engagement_id)
 
             return ''
     else:
