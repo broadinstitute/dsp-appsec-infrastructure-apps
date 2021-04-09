@@ -271,7 +271,7 @@ def main():
             codedx_upload(cdx, codedx_project, zap_filename)
 
             # upload results in defectDojo
-            defectdojo_upload(engagement_id, zap_filename, defect_dojo_url, defect_dojo_key)
+            defectdojo_upload(engagement_id, zap_filename, defect_dojo_key)
 
 
             # optionally, upload them to GCS
