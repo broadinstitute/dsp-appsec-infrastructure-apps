@@ -54,10 +54,11 @@ def codedx_upload(cdx: CodeDx, project: str, filename: str):
 
     cdx.analyze(project, filename)
 
-def defectdojo_upload(engagement_id, zap_filename, dd):
+def defectdojo_upload(engagement_id, zap_filename, defect_dojo_url, defect_dojo_key):
     """
     Upload Zap results in DefectDojo engagement
     """
+    dd = defectdojo.DefectDojoAPIv2(defect_dojo_url, defect_dojo_key, 'ssymonds', debug=False)
 
     dd.upload_scan(engagement_id=engagement_id,
                 scan_type="ZAP Scan",
@@ -270,8 +271,7 @@ def main():
             codedx_upload(cdx, codedx_project, zap_filename)
 
             # upload results in defectDojo
-            dd = defectdojo.DefectDojoAPIv2(defect_dojo_url, defect_dojo_key, 'ssymonds', debug=False)
-            defectdojo_upload(engagement_id, zap_filename, dd)
+            defectdojo_upload(engagement_id, zap_filename, defect_dojo_url, defect_dojo_key)
 
 
             # optionally, upload them to GCS
