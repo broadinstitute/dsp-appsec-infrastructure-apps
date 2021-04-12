@@ -58,16 +58,17 @@ def defectdojo_upload(engagement_id, zap_filename, defect_dojo_key):
     """
     Upload Zap results in DefectDojo engagement
     """
-    dd = defectdojo.DefectDojoAPIv2('https://defectdojo.dsp-appsec-dev.broadinstitute.org/',defect_dojo_key, 'ssymonds', debug=False)
+    dd = defectdojo.DefectDojoAPIv2('https://defectdojo.dsp-appsec-dev.broadinstitute.org/',defect_dojo_key, 'ssymonds', debug=True)
 
-    dd.upload_scan(engagement_id=engagement_id,
+    dd.upload_scan(engagement_id=34,
                 scan_type="ZAP Scan",
                 file=zap_filename,
                 active=True,
                 verified=False,
                 close_old_findings=False,
                 skip_duplicates=False,
-                scan_date=datetime.today().strftime('%Y-%m-%d'))
+                scan_date=str(datetime.today().strftime('%Y-%m-%d')),
+                tags="Zap Scan")
 
 
 class Severity(str, Enum):
@@ -266,10 +267,6 @@ def main():
             cdx = CodeDx(codedx_url, codedx_api_key)
             codedx_upload(cdx, codedx_project, zap_filename)
 
-            # upload results in defectDojo
-            defectdojo_upload(engagement_id, zap_filename, defect_dojo_key)
-
-
             # optionally, upload them to GCS
             xml_report_url = ""
             if scan_type == ScanType.UI:
@@ -290,6 +287,10 @@ def main():
                 xml_report_url,
                 scan_type,
             )
+
+            # upload results in defectDojo
+            defectdojo_upload(engagement_id, zap_filename, defect_dojo_key)
+
 
             zap = zap_connect(zap_port)
             zap.core.shutdown()
