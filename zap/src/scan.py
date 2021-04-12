@@ -252,7 +252,7 @@ def main():
 
             # variables needed for DefectDojo
             defect_dojo_key = getenv("DEFECT_DOJO_KEY")
-            engagement_id = getenv("ENGAGEMENT_ID")
+            engagement_id = int(getenv("ENGAGEMENT_ID", ""))
 
             # configure logging
             logging.basicConfig(
