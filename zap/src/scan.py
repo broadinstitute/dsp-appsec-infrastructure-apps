@@ -60,7 +60,7 @@ def defectdojo_upload(engagement_id, zap_filename, defect_dojo_key):
     """
     dd = defectdojo.DefectDojoAPIv2('https://defectdojo.dsp-appsec-dev.broadinstitute.org/',defect_dojo_key, 'ssymonds', debug=True)
 
-    dd.upload_scan(engagement_id=int(engagement_id),
+    dd.upload_scan(engagement_id=engagement_id,
                 scan_type="ZAP Scan",
                 file=zap_filename,
                 active=True,
