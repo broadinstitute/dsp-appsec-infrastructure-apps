@@ -62,14 +62,7 @@ def defectdojo_upload(engagement_id, zap_filename, defect_dojo_key):
 
     dd.upload_scan(engagement_id=engagement_id,
                 scan_type="ZAP Scan",
-                file=zap_filename,
-                active=True,
-                verified=False,
-                close_old_findings=False,
-                skip_duplicates=False,
-                scan_date=datetime.today().strftime('%Y-%m-%d'),
-                tags='Zap Scan',
-                minimum_severity='Critical')
+                file=zap_filename)
 
 
 class Severity(str, Enum):
