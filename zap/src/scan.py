@@ -29,7 +29,7 @@ def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str):
     path = f"{scan_type}-scans/{date}/{filename}"
     blob = bucket.blob(path)
     blob.upload_from_filename(filename)
-    return f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}", f"https://storage.cloud.google.com/dsp-appsec-dev-vuln-reports/ui-scans/{bucket_name}/{path}"
+    return f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}", f"https://storage.cloud.google.com/{bucket_name}/{path}"
 
 def error_slack_alert(error: str, token: str, channel: str):
     """
