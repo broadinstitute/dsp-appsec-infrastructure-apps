@@ -289,7 +289,7 @@ def main():
             )
 
             # upload results in defectDojo
-            defectdojo_upload(engagement_id, zap_filename, defect_dojo_key)
+            defectdojo_upload(engagement_id, xml_report_url, defect_dojo_key)
 
 
             zap = zap_connect(zap_port)
