@@ -29,7 +29,7 @@ def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str):
     path = f"{scan_type}-scans/{date}/{filename}"
     blob = bucket.blob(path)
     blob.upload_from_filename(filename)
-    return f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}"
+    return f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}", f"https://storage.cloud.google.com/dsp-appsec-dev-vuln-reports/ui-scans/{bucket_name}/{path}"
 
 def error_slack_alert(error: str, token: str, channel: str):
     """
@@ -270,7 +270,7 @@ def main():
             # optionally, upload them to GCS
             xml_report_url = ""
             if scan_type == ScanType.UI:
-                xml_report_url = upload_gcs(
+                xml_report_url, auth_report_url = upload_gcs(
                     bucket_name,
                     scan_type,
                     zap_filename,
@@ -289,7 +289,7 @@ def main():
             )
 
             # upload results in defectDojo
-            defectdojo_upload(engagement_id, xml_report_url, defect_dojo_key)
+            defectdojo_upload(engagement_id, auth_report_url, defect_dojo_key)
 
 
             zap = zap_connect(zap_port)
