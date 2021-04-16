@@ -29,7 +29,7 @@ def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str):
     path = f"{scan_type}-scans/{date}/{filename}"
     blob = bucket.blob(path)
     blob.upload_from_filename(filename)
-    return f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}", f"https://storage.cloud.google.com/{bucket_name}/{path}"
+    return f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}"
 
 def error_slack_alert(error: str, token: str, channel: str):
     """
@@ -54,7 +54,7 @@ def codedx_upload(cdx: CodeDx, project: str, filename: str):
 
     cdx.analyze(project, filename)
 
-def defectdojo_upload(engagement_id, zap_filename, defect_dojo_key):
+def defectdojo_upload(engagement_id, zap_filepath, defect_dojo_key):
     """
     Upload Zap results in DefectDojo engagement
     """
@@ -62,7 +62,7 @@ def defectdojo_upload(engagement_id, zap_filename, defect_dojo_key):
 
     dd.upload_scan(engagement_id=engagement_id,
                 scan_type="ZAP Scan",
-                file=zap_filename,
+                file=zap_filepath,
                 active=True,
                 verified=False,
                 close_old_findings=False,
@@ -261,7 +261,7 @@ def main():
             )
             logging.info("Severities: %s", ", ".join(s.value for s in severities))
 
-            zap_filename = zap_compliance_scan(codedx_project, zap_port, target_url, scan_type)
+            zap_filename, zap_filepath = zap_compliance_scan(codedx_project, zap_port, target_url, scan_type)
 
             # upload its results to Code Dx
             cdx = CodeDx(codedx_url, codedx_api_key)
@@ -270,10 +270,10 @@ def main():
             # optionally, upload them to GCS
             xml_report_url = ""
             if scan_type == ScanType.UI:
-                xml_report_url, auth_report_url = upload_gcs(
+                xml_report_url = upload_gcs(
                     bucket_name,
                     scan_type,
-                    zap_filename,
+                    zap_filename
                 )
 
             # alert Slack, if needed
@@ -289,7 +289,7 @@ def main():
             )
 
             # upload results in defectDojo
-            defectdojo_upload(engagement_id, auth_report_url, defect_dojo_key)
+            defectdojo_upload(engagement_id, zap_filepath, defect_dojo_key)
 
 
             zap = zap_connect(zap_port)

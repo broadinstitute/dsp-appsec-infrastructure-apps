@@ -3,6 +3,7 @@ Provides high-level methods to interface with ZAP.
 """
 
 import logging
+import os
 from enum import Enum
 
 import google.auth
@@ -108,8 +109,10 @@ def zap_report(zap: ZAPv2, project: str, scan_type: ScanType):
     filename = f"{project}_{scan_type}-scan_report.xml"
     filename = filename.replace("-", "_").replace(" ", "")
     write_report(filename, zap.core.xmlreport())
-
-    return filename
+    open_filename = open(filename)
+    filepath = os.path.dirname(open_filename.name)
+    print(filepath)
+    return filename, filepath
 
 
 def zap_compliance_scan(
@@ -139,6 +142,6 @@ def zap_compliance_scan(
     if scan_type == ScanType.UI:
         zap_active_scan(zap, target_url, None)
 
-    filename = zap_report(zap, project, scan_type)
+    filename, filepath = zap_report(zap, project, scan_type)
 
-    return filename
+    return filename, filepath
