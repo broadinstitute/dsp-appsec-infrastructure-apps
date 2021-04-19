@@ -4,6 +4,7 @@ Runs ZAP scan, uploads results to Code Dx and GCS, and alerts Slack.
 """
 
 import logging
+import os
 from datetime import datetime
 from enum import Enum
 from os import getenv
@@ -60,20 +61,30 @@ def defectdojo_upload(engagement_id, zap_filename, defect_dojo_key):
     """
     dd = defectdojo.DefectDojoAPIv2('https://defectdojo.dsp-appsec-dev.broadinstitute.org/',defect_dojo_key, 'ssymonds', debug=True)
     f = open(zap_filename)
-    filepath = f.name
-    logging.info("-----FILEPATH-----: %s", filepath)
-    logging.info("-----FILENAME-----: %s", zap_filename)
-    logging.info("----------: %s", f)
+    filepath = f'./{f.name}'
+
+    absolute_path = os.path.abspath(zap_filename)
+    logging.info("aboslute path: %s",absolute_path)
 
     dd.upload_scan(engagement_id=engagement_id,
                 scan_type="ZAP Scan",
-                file=str(filepath),
+                file=filepath,
                 active=True,
                 verified=False,
                 close_old_findings=False,
                 skip_duplicates=False,
                 scan_date=str(datetime.today().strftime('%Y-%m-%d')),
                 tags="Zap")
+
+    dd.upload_scan(engagement_id=engagement_id,
+            scan_type="ZAP Scan",
+            file=absolute_path,
+            active=True,
+            verified=False,
+            close_old_findings=False,
+            skip_duplicates=False,
+            scan_date=str(datetime.today().strftime('%Y-%m-%d')),
+            tags="Zap")
 
 
 class Severity(str, Enum):
