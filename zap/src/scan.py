@@ -61,6 +61,10 @@ def defectdojo_upload(engagement_id, zap_filename, defect_dojo_key):
     dd = defectdojo.DefectDojoAPIv2('https://defectdojo.dsp-appsec-dev.broadinstitute.org/',defect_dojo_key, 'ssymonds', debug=True)
     f = open(zap_filename)
     filepath = f.name
+    logging.info("-----FILEPATH-----: %s", filepath)
+    logging.info("-----FILENAME-----: %s", zap_filename)
+    logging.info("----------: %s", f)
+
     dd.upload_scan(engagement_id=engagement_id,
                 scan_type="ZAP Scan",
                 file=filepath,
