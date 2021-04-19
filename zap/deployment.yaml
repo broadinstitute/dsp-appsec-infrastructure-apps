@@ -45,6 +45,11 @@ data:
               secretKeyRef:
                 name: ${JOB_SECRET}
                 key: CODEDX_API_KEY
+          - name: DEFECT_DOJO_KEY
+            valueFrom:
+              secretKeyRef:
+                name: ${JOB_SECRET}
+                key: DEFECT_DOJO_KEY
           - name: SLACK_TOKEN
             valueFrom:
               secretKeyRef:
