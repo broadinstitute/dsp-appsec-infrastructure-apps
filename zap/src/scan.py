@@ -67,7 +67,7 @@ def defectdojo_upload(engagement_id, zap_filename, defect_dojo_key):
 
     dd.upload_scan(engagement_id=engagement_id,
                 scan_type="ZAP Scan",
-                file=filepath,
+                file=str(filepath),
                 active=True,
                 verified=False,
                 close_old_findings=False,
