@@ -54,15 +54,16 @@ def codedx_upload(cdx: CodeDx, project: str, filename: str):
 
     cdx.analyze(project, filename)
 
-def defectdojo_upload(engagement_id, zap_filepath, defect_dojo_key):
+def defectdojo_upload(engagement_id, zap_filename, defect_dojo_key):
     """
     Upload Zap results in DefectDojo engagement
     """
     dd = defectdojo.DefectDojoAPIv2('https://defectdojo.dsp-appsec-dev.broadinstitute.org/',defect_dojo_key, 'ssymonds', debug=True)
-
+    f = open(zap_filename)
+    filepath = f.name
     dd.upload_scan(engagement_id=engagement_id,
                 scan_type="ZAP Scan",
-                file=zap_filepath,
+                file=filepath,
                 active=True,
                 verified=False,
                 close_old_findings=False,
@@ -261,7 +262,7 @@ def main():
             )
             logging.info("Severities: %s", ", ".join(s.value for s in severities))
 
-            zap_filename, zap_filepath = zap_compliance_scan(codedx_project, zap_port, target_url, scan_type)
+            zap_filename = zap_compliance_scan(codedx_project, zap_port, target_url, scan_type)
 
             # upload its results to Code Dx
             cdx = CodeDx(codedx_url, codedx_api_key)
@@ -273,7 +274,7 @@ def main():
                 xml_report_url = upload_gcs(
                     bucket_name,
                     scan_type,
-                    zap_filename
+                    zap_filename,
                 )
 
             # alert Slack, if needed
@@ -289,7 +290,7 @@ def main():
             )
 
             # upload results in defectDojo
-            defectdojo_upload(engagement_id, zap_filepath, defect_dojo_key)
+            defectdojo_upload(engagement_id, zap_filename, defect_dojo_key)
 
 
             zap = zap_connect(zap_port)
