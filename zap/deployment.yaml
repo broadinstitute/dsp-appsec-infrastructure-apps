@@ -50,6 +50,16 @@ data:
               secretKeyRef:
                 name: ${JOB_SECRET}
                 key: DEFECT_DOJO_KEY
+          - name: DEFECT_DOJO_URL
+            valueFrom:
+              secretKeyRef:
+                name: ${JOB_SECRET}
+                key: DEFECT_DOJO_URL
+          - name: DEFECT_DOJO_USER
+            valueFrom:
+              secretKeyRef:
+                name: ${JOB_SECRET}
+                key: DEFECT_DOJO_USER
           - name: SLACK_TOKEN
             valueFrom:
               secretKeyRef:

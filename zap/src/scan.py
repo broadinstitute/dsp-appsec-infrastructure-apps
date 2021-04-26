@@ -8,13 +8,13 @@ import os
 from datetime import datetime
 from enum import Enum
 from os import getenv
-from sys import exit
+from sys import exit  # pylint: disable=redefined-builtin
 from time import sleep
 from typing import List
 
-from codedx_api.CodeDxAPI import CodeDx
 from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
+from codedx_api.CodeDxAPI import CodeDx # pylint: disable=import-error
 
 import defectdojo_apiv2 as defectdojo
 from zap import ScanType, zap_compliance_scan, zap_connect
@@ -31,6 +31,7 @@ def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str):
     blob = bucket.blob(path)
     blob.upload_from_filename(filename)
     return f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}"
+
 
 def error_slack_alert(error: str, token: str, channel: str):
     """
@@ -55,24 +56,26 @@ def codedx_upload(cdx: CodeDx, project: str, filename: str):
 
     cdx.analyze(project, filename)
 
-def defectdojo_upload(engagement_id, zap_filename, defect_dojo_key):
+
+def defectdojo_upload(engagement_id: int, zap_filename: str, defect_dojo_key: str, defect_dojo_user: str, defect_dojo_url: str):  # pylint: disable=line-too-long
     """
     Upload Zap results in DefectDojo engagement
     """
-    dd = defectdojo.DefectDojoAPIv2('https://defectdojo.dsp-appsec-dev.broadinstitute.org/',defect_dojo_key, 'ssymonds', debug=True)
+    dojo = defectdojo.DefectDojoAPIv2(
+        defect_dojo_url, defect_dojo_key, defect_dojo_user, debug=True)
 
     absolute_path = os.path.abspath(zap_filename)
-    logging.info("aboslute path: %s",absolute_path)
+    logging.info("aboslute path: %s", absolute_path)
 
-    dd.upload_scan(engagement_id=engagement_id,
-            scan_type="ZAP Scan",
-            file=absolute_path,
-            active=True,
-            verified=False,
-            close_old_findings=False,
-            skip_duplicates=False,
-            scan_date=str(datetime.today().strftime('%Y-%m-%d')),
-            tags="Zap")
+    dojo.upload_scan(engagement_id=engagement_id,
+                     scan_type="ZAP Scan",
+                     file=absolute_path,
+                     active=True,
+                     verified=False,
+                     close_old_findings=False,
+                     skip_duplicates=False,
+                     scan_date=str(datetime.today().strftime('%Y-%m-%d')),
+                     tags="Zap")
 
 
 class Severity(str, Enum):
@@ -88,9 +91,9 @@ class Severity(str, Enum):
 
 
 def get_codedx_alert_count_by_severity(
-    cdx: CodeDx,
-    project: str,
-    severities: List[Severity]
+        cdx: CodeDx,
+        project: str,
+        severities: List[Severity]
 ) -> int:
     """
     Get finding count, given the severity levels for a Code Dx project.
@@ -131,7 +134,7 @@ def get_alerts_string(cdx: CodeDx, project: str, severities: List[Severity]):
 
 
 def get_codedx_report_by_alert_severity(
-    cdx: CodeDx, project: str, severities: List[Severity]
+        cdx: CodeDx, project: str, severities: List[Severity]
 ):
     """
     Generate a PDF report, given the severity levels for a Code Dx project.
@@ -173,14 +176,14 @@ def parse_severities(severities: str):
 
 
 def slack_alert_with_report(  # pylint: disable=too-many-arguments
-    cdx: CodeDx,
-    codedx_project: str,
-    severities: List[Severity],
-    token: str,
-    channel: str,
-    target_url: str,
-    xml_report_url: str,
-    scan_type: ScanType,
+        cdx: CodeDx,
+        codedx_project: str,
+        severities: List[Severity],
+        token: str,
+        channel: str,
+        target_url: str,
+        xml_report_url: str,
+        scan_type: ScanType,
 ):
     """
     Alert Slack on requested findings, if any.
@@ -225,7 +228,7 @@ def slack_alert_with_report(  # pylint: disable=too-many-arguments
     logging.info("Alert sent to Slack channel: %s", channel)
 
 
-def main():
+def main(): # pylint: disable=too-many-locals
     """
     - Run ZAP scan
     - Upload results to Code Dx
@@ -257,15 +260,19 @@ def main():
             # variables needed for DefectDojo
             defect_dojo_key = getenv("DEFECT_DOJO_KEY")
             engagement_id = int(getenv("ENGAGEMENT_ID"))
+            defect_dojo_user = getenv("DEFECT_DOJO_USER")
+            defect_dojo_url = getenv("DEFECT_DOJO_URL")
 
             # configure logging
             logging.basicConfig(
                 level=logging.INFO,
                 format=f"%(levelname)-8s [{codedx_project} {scan_type}-scan] %(message)s",
             )
-            logging.info("Severities: %s", ", ".join(s.value for s in severities))
+            logging.info("Severities: %s", ", ".join(
+                s.value for s in severities))
 
-            zap_filename = zap_compliance_scan(codedx_project, zap_port, target_url, scan_type)
+            zap_filename = zap_compliance_scan(
+                codedx_project, zap_port, target_url, scan_type)
 
             # upload its results to Code Dx
             cdx = CodeDx(codedx_url, codedx_api_key)
@@ -293,23 +300,24 @@ def main():
             )
 
             # upload results in defectDojo
-            defectdojo_upload(engagement_id, zap_filename, defect_dojo_key)
-
+            defectdojo_upload(engagement_id, zap_filename,
+                              defect_dojo_key, defect_dojo_user, defect_dojo_url)
 
             zap = zap_connect(zap_port)
             zap.core.shutdown()
-        except Exception as e:
-            error_message = f"[RETRY-{ attempt }] Exception running Zap Scans: { e }"
+        except Exception as error: # pylint: disable=broad-except
+            error_message = f"[RETRY-{ attempt }] Exception running Zap Scans: { error }"
             logging.warning(error_message)
             if attempt == max_retries - 1:
-                error_message = f"Error running Zap Scans. Last known error: { e }"
+                error_message = f"Error running Zap Scans. Last known error: { error }"
                 error_slack_alert(error_message, slack_token, slack_channel)
                 try:
                     zap = zap_connect(zap_port)
                     zap.core.shutdown()
-                except Exception as zap_e:
+                except Exception as zap_e: # pylint: disable=broad-except
                     error_message = f"Error shutting down zap: { zap_e }"
-                    error_slack_alert(error_message, slack_token, slack_channel)
+                    error_slack_alert(
+                        error_message, slack_token, slack_channel)
                     logging.exception("Error shutting down zap.")
                 logging.exception("Max retries exceeded.")
                 exit(0)
