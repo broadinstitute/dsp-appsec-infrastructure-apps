@@ -50,11 +50,11 @@ data:
               secretKeyRef:
                 name: ${JOB_SECRET}
                 key: DEFECT_DOJO_KEY
-          - name: DEFECT_DOJO_URL
+          - name: DEFECT_DOJO
             valueFrom:
               secretKeyRef:
                 name: ${JOB_SECRET}
-                key: DEFECT_DOJO_URL
+                key: DEFECT_DOJO
           - name: DEFECT_DOJO_USER
             valueFrom:
               secretKeyRef:

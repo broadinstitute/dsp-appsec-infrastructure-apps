@@ -57,12 +57,12 @@ def codedx_upload(cdx: CodeDx, project: str, filename: str):
     cdx.analyze(project, filename)
 
 
-def defectdojo_upload(engagement_id: int, zap_filename: str, defect_dojo_key: str, defect_dojo_user: str, defect_dojo_url: str):  # pylint: disable=line-too-long
+def defectdojo_upload(engagement_id: int, zap_filename: str, defect_dojo_key: str, defect_dojo_user: str, defect_dojo: str):  # pylint: disable=line-too-long
     """
     Upload Zap results in DefectDojo engagement
     """
     dojo = defectdojo.DefectDojoAPIv2(
-        defect_dojo_url, defect_dojo_key, defect_dojo_user, debug=True)
+        defect_dojo, defect_dojo_key, defect_dojo_user, debug=True)
 
     absolute_path = os.path.abspath(zap_filename)
     logging.info("aboslute path: %s", absolute_path)
@@ -261,7 +261,7 @@ def main(): # pylint: disable=too-many-locals
             defect_dojo_key = getenv("DEFECT_DOJO_KEY")
             engagement_id = int(getenv("ENGAGEMENT_ID"))
             defect_dojo_user = getenv("DEFECT_DOJO_USER")
-            defect_dojo_url = getenv("DEFECT_DOJO_URL")
+            defect_dojo = getenv("DEFECT_DOJO")
 
             # configure logging
             logging.basicConfig(
@@ -301,7 +301,7 @@ def main(): # pylint: disable=too-many-locals
 
             # upload results in defectDojo
             defectdojo_upload(engagement_id, zap_filename,
-                              defect_dojo_key, defect_dojo_user, defect_dojo_url)
+                              defect_dojo_key, defect_dojo_user, defect_dojo)
 
             zap = zap_connect(zap_port)
             zap.core.shutdown()
