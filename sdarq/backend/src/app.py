@@ -367,12 +367,12 @@ def zap_scan():
                               ENGAGEMENT_ID=engagement_id)
 
             return ''
-        else:
-            status_code = 404
-            text_message = f"""
-            You should NOT run a security pentest against the URL you entered, or maybe it doesn't exist in AppSec list.
-            """
-            return Response(json.dumps({'statusText': text_message}), status=status_code, mimetype='application/json')
+    else:
+        status_code = 404
+        text_message = f"""
+        You should NOT run a security pentest against the URL you entered, or maybe it doesn't exist in AppSec list.
+        """
+        return Response(json.dumps({'statusText': text_message}), status=status_code, mimetype='application/json')
 
 
 if __name__ == "__main__":
