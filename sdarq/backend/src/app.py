@@ -334,7 +334,7 @@ def zap_scan():
     message = b""
     user_supplied_url = json_data['URL']
     dev_slack_channel = f"#{json_data['slack_channel']}"
-    endpoint = f"{dojo_host}api/v2/endpoints/"
+    endpoint = f"{dojo_host}api/v2/endpoints/?limit=1000"
 
     publisher = pubsub_v1.PublisherClient()
     zap_topic_path = publisher.topic_path(pubsub_project_id, zap_topic_name)
@@ -347,16 +347,18 @@ def zap_scan():
         user_supplied_url = 'https://' + user_supplied_url
 
     parsed_user_url = urlparse(user_supplied_url)
+    print(parsed_user_url)
     for endpoint in endpoints:
-        if endpoint['host'] == parsed_user_url.netloc:
+        if endpoint['host'] == parsed_user_url.netloc and endpoint['host'] == parsed_user_url.path:
             service_codex_project, default_slack_channel, service_scan_type = parse_tags(
                 endpoint)
             if endpoint['path'] == None:
-                service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}"
+                service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}/"
             else:
-                service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}{endpoint['path']}"
+                service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}{endpoint['path']}/"
             severities = parse_json_data.parse_severities(
                 json_data['severities'])
+            print(service_full_endpoint)
             publisher.publish(zap_topic_path,
                               data=message,
                               URL=service_full_endpoint,
