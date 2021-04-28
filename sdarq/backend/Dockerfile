@@ -1,4 +1,4 @@
-FROM python:slim
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:distroless
 
 RUN  pip install --upgrade pip 
 
