@@ -13,7 +13,6 @@ ENV PORT 8080
 ENTRYPOINT [ \
   "gunicorn", \
   "--workers", "5", \
-  "--worker-tmp-dir", "local", \
   "--worker-connections", "1000", \
   "--timeout", "360", \
   "--graceful-timeout", "360", \
