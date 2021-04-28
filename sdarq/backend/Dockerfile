@@ -1,4 +1,4 @@
-FROM us.gcr.io/broad-dsp-gcr-public/base/python:distroless
+FROM python:slim
 
 RUN  pip install --upgrade pip 
 
@@ -13,6 +13,7 @@ ENV PORT 8080
 ENTRYPOINT [ \
   "gunicorn", \
   "--workers", "5", \
+  "--user", \
   "--worker-connections", "1000", \
   "--timeout", "360", \
   "--graceful-timeout", "360", \
