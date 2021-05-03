@@ -35,7 +35,14 @@
         "visibleIf": "{results_in_slack} = ['Yes']",
         "title": "Enter a public Slack channel",
         "enableIf": "{results_in_slack} = ['Yes']",
-        "isRequired": true
+        "isRequired": true,
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please enter a valid channel",
+          "regex": "^[a-z0-9-_]{1}[a-z0-9-_]{0,20}$"
+         }
+        ]
        }
       ],
       "title": "Scan GCP Project"
