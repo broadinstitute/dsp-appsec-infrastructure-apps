@@ -142,25 +142,53 @@
         "type": "text",
         "name": "Cluster",
         "visibleIf": "{Architecture} = 'GKE'",
-        "title": "Cluster name"
+        "title": "Cluster name",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please start with an alphabetic character and include only '-' , '_' , numbers and alphabetic characters.",
+          "regex": "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
+         }
+        ]
        },
        {
         "type": "text",
         "name": "Function Name",
         "visibleIf": "{Architecture} = 'GCF'",
-        "title": "Function name"
+        "title": "Function name",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please start with an alphabetic character and include only '-' , '_' , numbers and alphabetic characters.",
+          "regex": "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
+         }
+        ]
        },
        {
         "type": "text",
         "name": "GAE Service",
         "visibleIf": "{Architecture} = 'GAE'",
-        "title": "Service name"
+        "title": "Service name",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please start with an alphabetic character and include only '-' , '_' , numbers and alphabetic characters.",
+          "regex": "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
+         }
+        ]
        },
        {
         "type": "text",
         "name": "project_id",
         "visibleIf": "{Architecture} = 'GKE' or {Architecture} = 'GCF' or {Architecture} = 'GAE'",
-        "title": "Google project name"
+        "title": "Google project name",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please start with an alphabetic character and include only '-' , '_' , numbers and alphabetic characters.",
+          "regex": "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
+         }
+        ]
        },
        {
         "type": "radiogroup",
@@ -469,7 +497,14 @@
        {
         "type": "comment",
         "name": "Notes",
-        "title": "Provide any additional information that you think it's important in regards to your application/service"
+        "title": "Provide any additional information that you think it's important in regards to your application/service",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please include numbers, a-z characters, _,- (4-200 long).",
+          "regex": "[a-zA-Z0-9][a-zA-Z0-9,.!?-_\\s]{1,200}[a-zA-Z0-9]"
+         }
+        ]
        }
       ],
       "title": "Notes"
