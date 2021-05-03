@@ -60,8 +60,15 @@
                 "type": "text",
                 "name": "slack_channel",
                 "title": "Enter a public Slack channel to get scan results",
-                "isRequired": true
-            }
+                "isRequired": true,
+                "validators": [
+                 {
+                  "type": "regex",
+                  "text": "Please enter a valid channel",
+                  "regex": "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
+                 }
+                ]
+               }
         ],
         "title": "Service & GCP Project Scan"
     }],
