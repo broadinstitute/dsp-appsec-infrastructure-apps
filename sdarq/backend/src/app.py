@@ -96,7 +96,7 @@ def submit():
     security_champion = json_data['Security champion']
     product_type = 1
     products_endpoint = f"{dojo_host}api/v2/products/"
-    slack_channels_list = ['#dsp-security', '#appsec-internal']
+    slack_channels_list = ['#zap-test']
     jira_project_key = "DSEC"
 
     # Create a Jira ticket for Threat Model in Appsec team board
@@ -204,7 +204,7 @@ def cis_results():
             query_job_table.result()
             table_data = [dict(row) for row in query_job_table]
             sql_query_2 = "SELECT * FROM `{0}.cis.{1}` ORDER BY benchmark, id".format(str(pubsub_project_id),
-                                                                           str(project_id_edited))
+                                                                                      str(project_id_edited))
             query_job = client.query(sql_query_2)
             query_job.result()
             findings = [dict(row) for row in query_job]
@@ -295,7 +295,7 @@ def request_tm():
     security_champion = user_data['Eng']
     request_type = user_data['Type']
     project_name = user_data['Name']
-    slack_channels_list = ['#dsp-security', '#appsec-internal']
+    slack_channels_list = ['#zap-test']
     jira_project_key = "DSEC"
 
     appsec_jira_ticket_summury = user_data['Type'] + user_data['Name']
@@ -357,7 +357,6 @@ def zap_scan():
                 service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}{endpoint['path']}"
             severities = parse_json_data.parse_severities(
                 json_data['severities'])
-                
             publisher.publish(zap_topic_path,
                               data=message,
                               URL=service_full_endpoint,
