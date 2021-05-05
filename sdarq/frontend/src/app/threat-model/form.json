@@ -23,31 +23,66 @@
         "type": "text",
         "name": "Name",
         "title": "Service name",
-        "isRequired": true
+        "isRequired": true,
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please include numbers, a-z characters, _,- (3-20 long).",
+          "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_\\s]{1,20}[a-zA-Z0-9]$"
+         }
+        ]
        },
        {
         "type": "text",
         "name": "Github",
         "title": "Github link",
-        "isRequired": true
+        "isRequired": true,
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please include numbers, a-z characters, _,-,/,: (3-60 long).",
+          "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\/:]{1,60}[a-zA-Z0-9\\/]$"
+         }
+        ]
        },
        {
         "type": "text",
         "name": "Diagram",
         "title": "Architecture diagram",
-        "isRequired": true
+        "isRequired": true,
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please include numbers, a-z characters, _,-,/,: (3-60 long).",
+          "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\/:]{1,60}[a-zA-Z0-9\\/]$"
+         }
+        ]
        },
        {
         "type": "text",
         "name": "Document",
         "title": "Architecture document",
-        "isRequired": true
+        "isRequired": true,
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please include numbers, a-z characters, _,-,/,: (3-60 long).",
+          "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\/:]{1,60}[a-zA-Z0-9\\/]$"
+         }
+        ]
        },
        {
         "type": "text",
         "name": "Eng",
         "title": "Security Champion",
-        "isRequired": true
+        "isRequired": true,
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please include numbers, a-z characters, _,- (4-20 long).",
+          "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{4,20}[a-zA-Z0-9]$"
+         }
+        ]
        }
       ]
      }
