@@ -12,7 +12,7 @@
                      {
                          "type": "regex",
                          "text": "Please include numbers, a-z characters, _,- (3-20 long).",
-                         "regex": "[a-zA-Z0-9][a-zA-Z0-9-_\\s]{1,20}[a-zA-Z0-9]"
+                         "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_\\s]{1,20}[a-zA-Z0-9]$"
                      }
                      ]
         },
@@ -26,7 +26,7 @@
                         {
                             "type": "regex",
                             "text": "Please include numbers, a-z characters, _,- (4-200 long).",
-                            "regex": "[a-zA-Z0-9][a-zA-Z0-9,.!?-_\\s]{4,200}[a-zA-Z0-9]"
+                            "regex": "^[a-zA-Z0-9][a-zA-Z0-9,.!?-_\\s]{4,200}[a-zA-Z0-9,.!?-_\\s]$"
                         }
                     ]
         },
@@ -40,7 +40,7 @@
                         {
                             "type": "regex",
                             "text": "Please include numbers, a-z characters, _,- (4-20 long).",
-                            "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_\\s]{4,20}[a-zA-Z0-9]$"
+                            "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{4,20}[a-zA-Z0-9]$"
                         }
                     ]
         },
@@ -54,7 +54,7 @@
                         {
                             "type": "regex",
                             "text": "Please include numbers, a-z characters, _,-,/,: (3-60 long).",
-                            "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_\\/:]{1,60}[a-zA-Z0-9\\/]$"
+                            "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\/:]{1,60}[a-zA-Z0-9\\/]$"
                         }
                     ]
         },
@@ -68,7 +68,7 @@
                         {
                             "type": "regex",
                             "text": "Please include numbers, a-z characters, _,-,/,: (3-60 long).",
-                            "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_\\/:]{1,60}[a-zA-Z0-9\\/]$"
+                            "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\/:]{1,60}[a-zA-Z0-9\\/]$"
                         }
                     ]
         }
@@ -208,7 +208,7 @@
                         {
                             "type": "regex",
                             "text": "Please include numbers, a-z characters, _,- (4-200 long).",
-                            "regex": "[a-zA-Z0-9][a-zA-Z0-9,.!?-_\\s]{4,200}[a-zA-Z0-9]"
+                            "regex": "^[a-zA-Z0-9][a-zA-Z0-9,.!?-_\\s]{4,200}[a-zA-Z0-9,.!?-_\\s]$"
                         }
                     ]
             },
@@ -421,7 +421,7 @@
                     {
                         "type": "regex",
                         "text": "Please include numbers, a-z characters, _,- (4-200 long).",
-                        "regex": "[a-zA-Z0-9][a-zA-Z0-9,.!?-_\\s]{4,200}[a-zA-Z0-9]"
+                        "regex": "^[a-zA-Z0-9][a-zA-Z0-9,.!?-_\\s]{4,200}[a-zA-Z0-9,.!?-_\\s]$"
                     }
                 ]
             }],
