@@ -89,7 +89,7 @@ spec:
           subPath: mysql
         resources:
           requests:
-            memory: 2500M
+            memory: 1500M
 
       # - name: cloudsql-proxy
       #   image: gcr.io/cloudsql-docker/gce-proxy
