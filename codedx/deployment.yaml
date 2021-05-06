@@ -85,7 +85,7 @@ spec:
               key: DB_PASSWORD
         volumeMounts:
         - name: ${SERVICE_VOLUME}
-          mountPath: /var/lib
+          mountPath: /var/lib/mysql
           subPath: mysql
         resources:
           requests:
