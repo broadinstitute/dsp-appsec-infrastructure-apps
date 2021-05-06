@@ -60,7 +60,7 @@ spec:
           requests:
             memory: 2500M
 
-      - name: codedx-mariadb
+      - name: codedx-db
         image: mariadb:10.3
         imagePullPolicy: Always
         args:
@@ -76,10 +76,20 @@ spec:
             secretKeyRef:
               name: ${SERVICE_SECRET}
               key: DB_ROOT_PASSWORD
+        - name: MYSQL_USER
+          value: ${DB_USER}
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ${SERVICE_SECRET}
+              key: DB_PASSWORD
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /var/lib
           subPath: mysql
+        resources:
+          requests:
+            memory: 2500M
 
       # - name: cloudsql-proxy
       #   image: gcr.io/cloudsql-docker/gce-proxy
