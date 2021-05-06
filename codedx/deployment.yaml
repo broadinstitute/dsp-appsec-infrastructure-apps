@@ -86,7 +86,7 @@ spec:
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /var/lib/mysql
-          subPath: mysql
+          subPath: mariadb
         resources:
           requests:
             memory: 1500M
