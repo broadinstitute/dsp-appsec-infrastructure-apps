@@ -60,12 +60,33 @@ spec:
           requests:
             memory: 2500M
 
-      - name: cloudsql-proxy
-        image: gcr.io/cloudsql-docker/gce-proxy
+      - name: codedx-mariadb
+        image: mariadb:10.3
         imagePullPolicy: Always
-        command:
-        - /cloud_sql_proxy
-        - -instances=${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:3306
+        args:
+        - --optimizer_search_depth=0
+        - --character-set-server=utf8mb4
+        - --collation-server=utf8mb4_general_ci
+        - --lower_case_table_names=1
+        env:
+        - name: MARIADB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ${SERVICE_SECRET}
+              key: DB_PASSWORD
+        - name: MARIADB_DATABASE
+          value: ${DB_NAME}
+        volumeMounts:
+        - name: ${SERVICE_VOLUME}
+          mountPath: /var/lib
+          subPath: mysql
+
+      # - name: cloudsql-proxy
+      #   image: gcr.io/cloudsql-docker/gce-proxy
+      #   imagePullPolicy: Always
+      #   command:
+      #   - /cloud_sql_proxy
+      #   - -instances=${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:3306
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember
