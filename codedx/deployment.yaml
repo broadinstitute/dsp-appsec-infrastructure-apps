@@ -99,6 +99,13 @@ spec:
       ipv4Enabled: false
       privateNetworkRef:
         external: ${sql_network}
+    databaseFlags:
+    - name: optimizer_search_depth
+      value: '0'
+    - name: character_set_server
+      value: utf8mb4
+    - name: lower_case_table_names
+      value: '1'
 ---
 apiVersion: sql.cnrm.cloud.google.com/v1beta1
 kind: SQLDatabase
