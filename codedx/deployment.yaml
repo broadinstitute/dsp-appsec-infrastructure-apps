@@ -69,13 +69,13 @@ spec:
         - --collation-server=utf8mb4_general_ci
         - --lower_case_table_names=1
         env:
-        - name: MARIADB_ROOT_PASSWORD
+        - name: MYSQL_DATABASE
+          value: ${DB_NAME}
+        - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: ${SERVICE_SECRET}
               key: DB_PASSWORD
-        - name: MARIADB_DATABASE
-          value: ${DB_NAME}
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /var/lib
