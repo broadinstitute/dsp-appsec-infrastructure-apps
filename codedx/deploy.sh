@@ -21,6 +21,7 @@ export SERVICE_SECRET="${SERVICE}"
 
 ./gen-secret.sh "${SERVICE_SECRET}" \
   DB_PASSWORD 32 \
+  DB_ROOT_PASSWORD 32 \
   SUPERUSER_PASSWORD 32
 
 # Deploy the service

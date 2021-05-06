@@ -75,7 +75,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: ${SERVICE_SECRET}
-              key: DB_PASSWORD
+              key: DB_ROOT_PASSWORD
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /var/lib
