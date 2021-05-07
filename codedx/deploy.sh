@@ -26,16 +26,12 @@ export SERVICE_SECRET="${SERVICE}"
 
 # Deploy the service
 
-export SERVICE_ACCOUNT="${NAMESPACE}"
 export SERVICE_DISK="${NAMESPACE}"
 export SERVICE_VOLUME="${SERVICE}"
 export STATEFUL_SET="${SERVICE}"
 
 export DB_NAME="${SERVICE}"
 export DB_USER="${SERVICE}"
-
-export SQL_REGION="us-east1"
-export SQL_INSTANCE="${NAMESPACE}-db"
 
 export IP_NAME="${NAMESPACE}"
 export DNS_HOSTNAME="${NAMESPACE}.${DNS_DOMAIN}"
@@ -50,7 +46,6 @@ export TARGET_PORT="http"
 ./volume.sh
 
 ./kube-apply.py \
-  "service-account.yaml" \
   "${CWD}/deployment.yaml"
 
 ./host.sh

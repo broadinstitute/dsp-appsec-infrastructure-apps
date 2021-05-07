@@ -13,7 +13,6 @@ spec:
       labels:
         service: ${SERVICE}
     spec:
-      serviceAccountName: ${SERVICE_ACCOUNT}
       runtimeClassName: gvisor
       nodeSelector:
         cloud.google.com/gke-nodepool: apps
@@ -90,76 +89,3 @@ spec:
         resources:
           requests:
             memory: 1500M
-
-      # - name: cloudsql-proxy
-      #   image: gcr.io/cloudsql-docker/gce-proxy
-      #   imagePullPolicy: Always
-      #   command:
-      #   - /cloud_sql_proxy
-      #   - -instances=${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:3306
----
-apiVersion: iam.cnrm.cloud.google.com/v1beta1
-kind: IAMPolicyMember
-metadata:
-  name: ${SERVICE_ACCOUNT}-sa-sql-policy
-  namespace: ${NAMESPACE}
-spec:
-  member: serviceAccount:${SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
-  role: roles/cloudsql.client
-  resourceRef:
-    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
-    kind: Project
-    external: projects/${PROJECT_ID}
----
-apiVersion: sql.cnrm.cloud.google.com/v1beta1
-kind: SQLInstance
-metadata:
-  name: ${SQL_INSTANCE}
-  namespace: ${NAMESPACE}
-  annotations:
-    cnrm.cloud.google.com/deletion-policy: abandon
-spec:
-  databaseVersion: MYSQL_8_0
-  region: ${SQL_REGION}
-  settings:
-    tier: db-custom-1-3840
-    backupConfiguration:
-      enabled: true
-    ipConfiguration:
-      requireSsl: true
-      ipv4Enabled: false
-      privateNetworkRef:
-        external: ${sql_network}
-    databaseFlags:
-    - name: optimizer_search_depth
-      value: '0'
-    - name: character_set_server
-      value: utf8mb4
----
-apiVersion: sql.cnrm.cloud.google.com/v1beta1
-kind: SQLDatabase
-metadata:
-  name: ${DB_NAME}
-  namespace: ${NAMESPACE}
-  annotations:
-    cnrm.cloud.google.com/deletion-policy: abandon
-spec:
-  instanceRef:
-    name: ${SQL_INSTANCE}
----
-apiVersion: sql.cnrm.cloud.google.com/v1beta1
-kind: SQLUser
-metadata:
-  name: ${DB_USER}
-  namespace: ${NAMESPACE}
-  annotations:
-    cnrm.cloud.google.com/deletion-policy: abandon
-spec:
-  instanceRef:
-    name: ${SQL_INSTANCE}
-  host: cloudsqlproxy~%
-  password:
-    valueFrom:
-      secretKeyRef:
-        name: ${SERVICE_SECRET}
-        key: DB_PASSWORD
