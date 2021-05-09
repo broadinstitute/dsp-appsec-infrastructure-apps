@@ -1,5 +1,5 @@
 aiohttp
-codedx-api @ git+https://github.com/broadinstitute/dsp-appsec-codedx-api-client-python.git@0d7c8d0d92d3fdecc8a45d066c4b7d7e8cbd02e01
+codedx-api @ git+https://github.com/broadinstitute/dsp-appsec-codedx-api-client-python.git@d7c8d0d92d3fdecc8a45d066c4b7d7e8cbd02e01
 google-auth
 google-cloud-pubsub
 google-cloud-storage
