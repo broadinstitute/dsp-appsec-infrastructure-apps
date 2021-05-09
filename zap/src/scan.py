@@ -46,11 +46,9 @@ def codedx_upload(cdx: CodeDx, project: str, filename: str):
     """
     Create CodeDx project if needed and trigger analysis on the uploaded file.
     """
-    cdx.update_projects()
-    if project not in list(cdx.projects):
+    if not cdx.get_project_id(project):
         cdx.create_project(project)
-        cdx.update_projects()
-
+        
     cdx.analyze(project, filename)
 
 
