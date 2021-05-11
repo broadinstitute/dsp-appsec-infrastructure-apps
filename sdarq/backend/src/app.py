@@ -47,6 +47,7 @@ sdarq_host = os.getenv('sdarq_host')
 dojo_host_url = os.getenv('dojo_host_url')
 firestore_collection = os.getenv('firestore_collection')
 topic_name = os.environ['JOB_TOPIC']
+sdarq_sct_dataset_id = os.environ['SDARQ_SCT_BQ_DATASET']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
 zap_topic_name = os.environ['ZAP_JOB_TOPIC']
 
@@ -373,6 +374,44 @@ def zap_scan():
         You should NOT run a security pentest against the URL you entered, or maybe it doesn't exist in AppSec list.
         """
         return Response(json.dumps({'statusText': text_message}), status=status_code, mimetype='application/json')
+
+
+@app.route('/create_sec_control_template/', methods=['POST'])
+@cross_origin(origins=sdarq_host)
+def create_sec_control_template():
+    """
+    Load results into a BQ
+    """
+    json_data = request.get_json()
+    table_ref = client.dataset(sdarq_sct_dataset_id).table(json_data['service'])  
+    f = bigquery.SchemaField
+    schema = (
+        f('product', 'STRING', mode='REQUIRED'),
+        f('service', 'STRING', mode='REQUIRED'),
+        f('github', 'STRING', mode='REQUIRED'),
+        f('dev_url', 'STRING', mode='REQUIRED'),
+        f('zap', 'BOOLEAN', mode='REQUIRED'),
+        f('sourceclear', 'BOOLEAN', mode='REPEATED'),
+        f('trivy', 'BOOLEAN', mode='REQUIRED'),
+        f('cis_scanner', 'BOOLEAN', mode='REQUIRED'),
+        f('burp', 'BOOLEAN', mode='REQUIRED'),
+        f('threat_model', 'BOOLEAN', mode='REQUIRED'),
+    )
+    job_config = bigquery.LoadJobConfig(
+        schema=schema,
+        write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
+        time_partitioning=bigquery.TimePartitioning(
+            type_=bigquery.TimePartitioningType.DAY,
+        ),
+        labels={
+            'service': json_data['service'],
+        },
+    )
+    job = client.load_table_from_json(json_data, table_ref, job_config=job_config)
+    job.result()  # wait for completion
+    logging.info("Loaded %s rows into %s.%s",
+                 job.output_rows, sdarq_sct_dataset_id, json_data['service'])
+
 
 
 if __name__ == "__main__":
