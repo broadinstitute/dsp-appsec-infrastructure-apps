@@ -1,0 +1,148 @@
+{
+    "pages": [
+     {
+      "name": "Security Controls Template",
+      "elements": [
+       {
+        "type": "text",
+        "name": "product",
+        "title": "Product name",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "text",
+        "name": "service",
+        "title": "Service name",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "text",
+        "name": "github",
+        "title": "Github link",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "text",
+        "name": "dev_url",
+        "title": "Dev URL",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "text",
+        "name": "jira",
+        "title": "Jira board key",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "checkbox",
+        "name": "zap",
+        "title": "Service scan via Zap scanner",
+        "hideNumber": true,
+        "isRequired": true,
+        "choices": [
+         {
+          "value": "yes",
+          "text": "Yes"
+         },
+         {
+          "value": "no",
+          "text": "No"
+         }
+        ]
+       },
+       {
+        "type": "checkbox",
+        "name": "souceclear",
+        "title": "Downstream dependency scan via Sourceclear ",
+        "hideNumber": true,
+        "isRequired": true,
+        "choices": [
+         {
+          "value": "yes",
+          "text": "Yes"
+         },
+         {
+          "value": "no",
+          "text": "No"
+         }
+        ]
+       },
+       {
+        "type": "radiogroup",
+        "name": "trivy",
+        "title": "Docker image scan via Trivy",
+        "hideNumber": true,
+        "isRequired": true,
+        "choices": [
+         {
+          "value": "yes",
+          "text": "Yes"
+         },
+         {
+          "value": "no",
+          "text": "No"
+         }
+        ]
+       },
+       {
+        "type": "checkbox",
+        "name": "cis_scanner",
+        "title": "GCP project scanned via CIS scanner",
+        "hideNumber": true,
+        "isRequired": true,
+        "choices": [
+         {
+          "value": "yes",
+          "text": "Yes"
+         },
+         {
+          "value": "no",
+          "text": "No"
+         }
+        ]
+       },
+       {
+        "type": "radiogroup",
+        "name": "burp",
+        "title": "Have you performed any manual security pentest via Burp",
+        "hideNumber": true,
+        "isRequired": true,
+        "choices": [
+         {
+          "value": "yes",
+          "text": "Yes"
+         },
+         {
+          "value": "no",
+          "text": "No"
+         }
+        ]
+       },
+       {
+        "type": "radiogroup",
+        "name": "threat_model",
+        "title": "Do you have a threat model for this service?",
+        "hideNumber": true,
+        "isRequired": true,
+        "choices": [
+         {
+          "value": "yes",
+          "text": "Yes"
+         },
+         {
+          "value": "no",
+          "text": "No"
+         }
+        ]
+       }
+      ],
+      "questionTitleLocation": "top",
+      "title": "Security Controls Template"
+     }
+    ]
+   }

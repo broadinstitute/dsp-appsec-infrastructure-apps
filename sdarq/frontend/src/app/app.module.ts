@@ -31,7 +31,8 @@ import { ServiceScanComponent } from './service-scan/service-scan.component'
 import { ScanServiceService} from './services/scan-service.service';
 import { MultiScanComponent } from './multi-scan/multi-scan.component';
 import { NotfoundComponent } from './notfound/notfound.component';
-
+import { SecurityControlsFormComponent } from './security-controls-form/security-controls-form.component';
+import { CreateNewSctService } from './services/create-new-sct.service'
 
 
 @NgModule({
@@ -56,7 +57,8 @@ import { NotfoundComponent } from './notfound/notfound.component';
     AboutPageComponent,
     ServiceScanComponent,
     MultiScanComponent,
-    NotfoundComponent
+    NotfoundComponent,
+    SecurityControlsFormComponent
   ],
   imports: [
     BrowserModule,
@@ -72,7 +74,8 @@ import { NotfoundComponent } from './notfound/notfound.component';
     GetCisScanService,
     RequestTmService,
     CsvDataService,
-    ScanServiceService
+    ScanServiceService,
+    CreateNewSctService
     ],
   bootstrap: [
     AppComponent
