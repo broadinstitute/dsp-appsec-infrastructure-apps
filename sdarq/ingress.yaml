@@ -36,6 +36,10 @@ spec:
         backend:
           serviceName: ${SERVICE}
           servicePort: ${BACKEND_PORT}
+      - path: /create_sec_control_template/
+        backend:
+          serviceName: ${SERVICE}
+          servicePort: ${BACKEND_PORT}
 ---
 apiVersion: networking.gke.io/v1beta1
 kind: FrontendConfig
