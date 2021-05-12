@@ -32,7 +32,7 @@ def zap_init(zap_port: int, target_url: str):
     """
     zap = zap_connect(zap_port)
     sessionName = f'{target_url}_session'
-    zap.core.new_session(name=sessionName, overwrite=True)
+    zap.core.new_session(name='zap_session', overwrite=True)
     logging.info("Accessing target %s", target_url)
     zap_access_target(zap, target_url)
 
