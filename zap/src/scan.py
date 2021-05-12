@@ -78,8 +78,11 @@ def get_codedx_alert_count_by_severity(
             "status": ["new", "unresolved", "reopened"],
         },
     }
-
-    res = cdx.get_finding_count(project, filters)
+    pid = cdx.get_project_id(project)
+    if not pid:
+        new_project = cdx.create_project(project)
+        pid = new_project["id"]
+    res = cdx.get_finding_count(pid, filters)
     if "count" not in res:
         raise RuntimeError(f"{ res }")
 
@@ -120,9 +123,12 @@ def get_codedx_report_by_alert_severity(
         "severity": [s.value for s in severities],
         "status": ["new", "unresolved", "reopened"],
     }
-
+    pid = cdx.get_project_id(project)
+    if not pid:
+        new_project = cdx.create_project(project)
+        pid = new_project["id"]
     cdx.get_pdf(
-        project,
+        pid,
         summary_mode="detailed",
         details_mode="with-source",
         include_result_details=True,
