@@ -4,6 +4,7 @@ Triggers ZAP scans for endpoints from DefectDojo.
 """
 
 import argparse
+import logging
 import re
 from asyncio import Future
 from os import getenv
@@ -130,6 +131,11 @@ def main():
     - Fetch the list of endpoints from DefectDojo
     - Trigger the scans for all endpoints
     """
+    logging.basicConfig(
+        level=logging.INFO,
+        format=f"%(levelname)-8s [zap-trigger] %(message)s",
+    )
+    logging.info("Cron job running.")
     defect_dojo_url = getenv("DEFECT_DOJO_URL")
     defect_dojo_key = getenv("DEFECT_DOJO_KEY")
     zap_topic = getenv("ZAP_TOPIC_NAME")
@@ -146,8 +152,11 @@ def main():
     )
     args = parser.parse_args()
     scan_types = set(ScanType[s.upper()] for s in args.scans)
+    logging.info(f"Scan types: { scan_types }")
 
     endpoints = get_defect_dojo_endpoints(defect_dojo_url, defect_dojo_key)
+    logging.info("Defect Dojo endpoints fetched.")
+    
     trigger_scans(endpoints, gcp_project, zap_topic, scan_types)
 
 
