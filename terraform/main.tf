@@ -233,8 +233,8 @@ module "system_node_pool" {
   cluster         = google_container_cluster.cluster.name
   service_account = module.node_sa.email
 
-  initial_node_count = 4
-  machine_type       = "e2-small"
+  initial_node_count = 3
+  machine_type       = "e2-medium"
 }
 
 # This pool will be used for the application Pods,
