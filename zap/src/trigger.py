@@ -32,7 +32,7 @@ def get_defect_dojo_endpoints(base_url: str, api_key: str) -> List[Endpoint]:
     """
     Fetch endpoints from DefectDojo.
     """
-    endpoint = base_url + "/api/v2/endpoints/?limit=1000"
+    endpoint = base_url + "/api/v2/endpoints?limit=1000"
     headers = {
         "content-type": "application/json",
         "Authorization": f"Token {api_key}",
@@ -49,9 +49,9 @@ def pubsub_callback(endpoint: Endpoint):
 
     def callback(future: Future):
         try:
-            print(future.result())
+            logging.info(future.result())
         except ConnectionRefusedError as err:
-            print(f"Please handle {err} for {endpoint}.")
+            logging.error(f"Please handle {err} for {endpoint}.")
 
     return callback
 
@@ -77,6 +77,7 @@ def trigger_scan(  # pylint: disable=too-many-arguments
         SCAN_TYPE=scan_type.name,
         SLACK_CHANNEL=slack_channel,
     )
+    
     future.add_done_callback(pubsub_callback(endpoint))
 
 
@@ -156,7 +157,7 @@ def main():
 
     endpoints = get_defect_dojo_endpoints(defect_dojo_url, defect_dojo_key)
     logging.info("Defect Dojo endpoints fetched.")
-    
+
     trigger_scans(endpoints, gcp_project, zap_topic, scan_types)
 
 
