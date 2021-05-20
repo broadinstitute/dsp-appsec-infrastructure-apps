@@ -8,6 +8,7 @@ import logging
 import re
 from asyncio import Future
 from os import getenv
+from time import sleep
 from typing import List, Literal, Optional, Set, TypedDict
 
 import requests
@@ -77,8 +78,9 @@ def trigger_scan(  # pylint: disable=too-many-arguments
         SCAN_TYPE=scan_type.name,
         SLACK_CHANNEL=slack_channel,
     )
-    
     future.add_done_callback(pubsub_callback(endpoint))
+    return future
+
 
 
 TAG_MATCHER = re.compile(r"^([^:]+):(.*)$")
@@ -118,13 +120,19 @@ def trigger_scans(
     """
     publisher = PublisherClient()
     topic = publisher.topic_path(gcp_project, topic_name)  # pylint: disable=no-member
-
+    futures = []
     for endpoint in endpoints:
         codedx_project, slack_channel, scan_type = parse_tags(endpoint)
         if codedx_project and (scan_type in scan_types):
-            trigger_scan(
+            future = trigger_scan(
                 publisher, endpoint, topic, codedx_project, scan_type, slack_channel
             )
+            futures.append(future)
+
+    while futures:
+        futures = [future for future in futures if future.running()]
+        sleep(2)
+
 
 
 def main():
