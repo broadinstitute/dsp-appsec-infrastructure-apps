@@ -82,7 +82,6 @@ def trigger_scan(  # pylint: disable=too-many-arguments
     return future
 
 
-
 TAG_MATCHER = re.compile(r"^([^:]+):(.*)$")
 
 
@@ -120,6 +119,7 @@ def trigger_scans(
     """
     publisher = PublisherClient()
     topic = publisher.topic_path(gcp_project, topic_name)  # pylint: disable=no-member
+    
     futures = []
     for endpoint in endpoints:
         codedx_project, slack_channel, scan_type = parse_tags(endpoint)
@@ -132,7 +132,6 @@ def trigger_scans(
     while futures:
         futures = [future for future in futures if future.running()]
         sleep(2)
-
 
 
 def main():
