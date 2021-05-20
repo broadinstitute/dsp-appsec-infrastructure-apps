@@ -234,7 +234,7 @@ module "system_node_pool" {
   service_account = module.node_sa.email
 
   initial_node_count = 3
-  machine_type       = "e2-medium"
+  machine_type       = "e2-standard-2"
 }
 
 # This pool will be used for the application Pods,
