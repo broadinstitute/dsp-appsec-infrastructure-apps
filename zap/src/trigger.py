@@ -133,7 +133,7 @@ def trigger_scans(
                 )
                 futures.append(future)
         except Exception as e:
-            msg = f"Error triggering scan { scan_type.label() } for { endpoint }: { e.message }."
+            msg = f"Error triggering scan { scan_type.label() } for { endpoint }: { e }."
             logging.error(msg)
             error_slack_alert(msg, slack_token, slack_channel)
 
