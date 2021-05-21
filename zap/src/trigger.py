@@ -4,11 +4,11 @@ Triggers ZAP scans for endpoints from DefectDojo.
 """
 
 import argparse
+import concurrent
 import logging
 import re
 from asyncio import Future
 from os import getenv
-from time import sleep
 from typing import List, Literal, Optional, Set, TypedDict
 
 import requests
@@ -129,9 +129,7 @@ def trigger_scans(
             )
             futures.append(future)
 
-    while futures:
-        futures = [future for future in futures if future.running()]
-        sleep(2)
+    concurrent.futures.wait(futures)
 
 
 def main():
