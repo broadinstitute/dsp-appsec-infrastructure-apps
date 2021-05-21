@@ -7,6 +7,7 @@ import argparse
 import concurrent
 import logging
 import re
+import traceback
 from asyncio import Future
 from os import getenv
 from typing import List, Literal, Optional, Set, TypedDict
@@ -14,7 +15,6 @@ from typing import List, Literal, Optional, Set, TypedDict
 import requests
 from google.cloud.pubsub_v1 import PublisherClient
 
-from scan import error_slack_alert
 from zap import ScanType
 
 
@@ -113,7 +113,6 @@ def trigger_scans(
     gcp_project: str,
     topic_name: str,
     scan_types: Set[ScanType],
-    slack_token: str,
 ):
     """
     Scan multiple endpoints by publishing multiple
@@ -121,7 +120,7 @@ def trigger_scans(
     """
     publisher = PublisherClient()
     topic = publisher.topic_path(gcp_project, topic_name)  # pylint: disable=no-member
-    
+
     futures = []
     for endpoint in endpoints:
         slack_channel = None
@@ -132,10 +131,10 @@ def trigger_scans(
                     publisher, endpoint, topic, codedx_project, scan_type, slack_channel
                 )
                 futures.append(future)
-        except Exception as e:
-            msg = f"Error triggering scan { scan_type.label() } for { endpoint }: { e }."
-            logging.error(msg)
-            error_slack_alert(msg, slack_token, slack_channel)
+            raise BaseException("testing")
+        except BaseException as error:
+            logging.error(f"Error triggering scan for: { endpoint }.")
+            print(traceback.print_exc())
 
     concurrent.futures.wait(futures)
 
@@ -152,7 +151,6 @@ def main():
     logging.info("Cron job running.")
     defect_dojo_url = getenv("DEFECT_DOJO_URL")
     defect_dojo_key = getenv("DEFECT_DOJO_KEY")
-    slack_token = getenv("SLACK_TOKEN")
     zap_topic = getenv("ZAP_TOPIC_NAME")
     gcp_project = getenv("GCP_PROJECT_ID")
 
@@ -167,12 +165,12 @@ def main():
     )
     args = parser.parse_args()
     scan_types = set(ScanType[s.upper()] for s in args.scans)
-    logging.info(f"Scan types: { scan_types }")
+    logging.info(f"Scan types: { args.scans }")
 
     endpoints = get_defect_dojo_endpoints(defect_dojo_url, defect_dojo_key)
     logging.info("Defect Dojo endpoints fetched.")
 
-    trigger_scans(endpoints, gcp_project, zap_topic, scan_types, slack_token)
+    trigger_scans(endpoints, gcp_project, zap_topic, scan_types)
 
 
 if __name__ == "__main__":
