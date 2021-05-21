@@ -131,7 +131,6 @@ def trigger_scans(
                     publisher, endpoint, topic, codedx_project, scan_type, slack_channel
                 )
                 futures.append(future)
-            raise BaseException("testing full error")
         except BaseException as error:
             logging.error(f"Error triggering scan for: { endpoint }\n{ traceback.print_exc() }")
 
