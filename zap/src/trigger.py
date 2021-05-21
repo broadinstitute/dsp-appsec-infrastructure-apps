@@ -124,10 +124,13 @@ def trigger_scans(
     for endpoint in endpoints:
         codedx_project, slack_channel, scan_type = parse_tags(endpoint)
         if codedx_project and (scan_type in scan_types):
-            future = trigger_scan(
-                publisher, endpoint, topic, codedx_project, scan_type, slack_channel
-            )
-            futures.append(future)
+            try:
+                future = trigger_scan(
+                    publisher, endpoint, topic, codedx_project, scan_type, slack_channel
+                )
+                futures.append(future)
+            except Exception as e:
+                logging.error(f"Error triggering scan { scan_type.label() } for { endpoint }: {e.message}")
 
     concurrent.futures.wait(futures)
 
