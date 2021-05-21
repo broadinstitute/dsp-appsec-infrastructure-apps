@@ -134,7 +134,7 @@ def trigger_scans(
             raise BaseException("testing")
         except BaseException as error:
             logging.error(f"Error triggering scan for: { endpoint }.")
-            print(traceback.print_exc())
+            print(f"{ error }: { traceback.print_exc() })
 
     concurrent.futures.wait(futures)
 
