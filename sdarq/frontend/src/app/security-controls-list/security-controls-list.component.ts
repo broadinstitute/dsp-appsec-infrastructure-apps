@@ -11,7 +11,7 @@ export class SecurityControlsListComponent implements OnInit {
 
   securityControls: any[];
 
-  constructor(private getSecurityControls: GetSecurityControlsService, private router: ActivatedRoute,) { }
+  constructor(private getSecurityControls: GetSecurityControlsService, private router: ActivatedRoute) { }
 
   ngOnInit() {
     this.router.queryParams.subscribe(params => {
