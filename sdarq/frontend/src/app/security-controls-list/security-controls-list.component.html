@@ -1,0 +1,16 @@
+<div class="jumbotron min-vh-100">
+    <div class="container">
+        <div class="row" *ngFor="let controls of securityControls">
+            {{ controls.product | uppercase }}
+            {{ controls.service | uppercase }}
+            {{ controls.trivy  }}
+            {{ controls.burp  }}
+            {{ controls.threat_model  }}
+            {{ controls.dev_url  }}
+            {{ controls.zap  }}
+            {{ controls.cis_scanner  }}
+            {{ controls.sourceclear  }}
+            {{ controls.github  }}
+        </div>
+</div>
+</div>

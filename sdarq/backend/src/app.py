@@ -47,9 +47,9 @@ sdarq_host = os.getenv('sdarq_host')
 dojo_host_url = os.getenv('dojo_host_url')
 firestore_collection = os.getenv('firestore_collection')
 topic_name = os.environ['JOB_TOPIC']
-sdarq_sct_dataset_id = os.environ['SDARQ_SCT_BQ_DATASET']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
 zap_topic_name = os.environ['ZAP_JOB_TOPIC']
+
 
 # Create headers for DefectDojo API call
 headers = {
@@ -380,37 +380,33 @@ def zap_scan():
 @cross_origin(origins=sdarq_host)
 def create_sec_control_template():
     """
-    Load results into a BQ
+    Store data to Firestore
     """
     json_data = request.get_json()
-    table_ref = client.dataset(sdarq_sct_dataset_id).table(json_data['service'])  
-    f = bigquery.SchemaField
-    schema = (
-        f('product', 'STRING', mode='REQUIRED'),
-        f('service', 'STRING', mode='REQUIRED'),
-        f('github', 'STRING', mode='REQUIRED'),
-        f('dev_url', 'STRING', mode='REQUIRED'),
-        f('zap', 'BOOLEAN', mode='REQUIRED'),
-        f('sourceclear', 'BOOLEAN', mode='REPEATED'),
-        f('trivy', 'BOOLEAN', mode='REQUIRED'),
-        f('cis_scanner', 'BOOLEAN', mode='REQUIRED'),
-        f('burp', 'BOOLEAN', mode='REQUIRED'),
-        f('threat_model', 'BOOLEAN', mode='REQUIRED'),
-    )
-    job_config = bigquery.LoadJobConfig(
-        schema=schema,
-        write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
-        time_partitioning=bigquery.TimePartitioning(
-            type_=bigquery.TimePartitioningType.DAY,
-        ),
-        labels={
-            'service': json_data['service'],
-        },
-    )
-    job = client.load_table_from_json(json_data, table_ref, job_config=job_config)
-    job.result()  # wait for completion
-    logging.info("Loaded %s rows into %s.%s",
-                 job.output_rows, sdarq_sct_dataset_id, json_data['service'])
+    table_ref = json_data['service']
+    pattern = "^[a-z0-9][a-z0-9-_]{1,28}[a-z0-9]$"
+
+    if re.match(pattern, table_ref):
+        db.collection('security-controls').document(table_ref).set(json_data)  # set collection name as variable
+        return ''
+    else:
+        return Response(json.dumps({'statusText': 'Please use only numbers, latin characters, - and _'}), status=404, mimetype='application/json')
+
+
+@app.route('/get_sec_controls/', methods=['GET'])
+@cross_origin(origins=sdarq_host)
+def get_sec_controls():
+    """
+    Get all data from Firestore
+    """
+    data=[]
+    docs = db.collection(u'security-controls').stream()
+    for doc in docs:
+        data.append(doc.to_dict())
+ 
+    return data
+    
+
 
 
 

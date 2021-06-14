@@ -16,6 +16,7 @@ import { ServiceScanComponent } from './service-scan/service-scan.component'
 import { MultiScanComponent } from './multi-scan/multi-scan.component';
 import { NotfoundComponent} from './notfound/notfound.component'
 import { SecurityControlsFormComponent} from './security-controls-form/security-controls-form.component'
+import { SecurityControlsListComponent } from './security-controls-list/security-controls-list.component';
 
 
 
@@ -34,7 +35,8 @@ const routes: Routes = [
   { path: 'threat-model/request', component: ThreatModelComponent },
   { path: 'scan-service', component: ServiceScanComponent},
   { path: 'multi-scan', component: MultiScanComponent},
-  { path: 'security-control-template/create', component: SecurityControlsFormComponent},
+  { path: 'security-control/create', component: SecurityControlsFormComponent},
+  { path: 'security-control/view', component: SecurityControlsListComponent},
   { path: '404', component: NotfoundComponent},
   { path: '**', redirectTo: '/404'}
 ];
