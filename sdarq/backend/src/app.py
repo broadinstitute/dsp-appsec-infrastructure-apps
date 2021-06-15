@@ -383,14 +383,22 @@ def create_sec_control_template():
     Store data to Firestore
     """
     json_data = request.get_json()
-    table_ref = json_data['service']
+    service_name = json_data['service']
     pattern = "^[a-z0-9][a-z0-9-_]{1,28}[a-z0-9]$"
 
-    if re.match(pattern, table_ref):
-        db.collection('security-controls').document(table_ref).set(json_data)  # set collection name as variable
-        return ''
+    if re.match(pattern, service_name):
+        doc_ref = db.collection('security-controls').document(service_name) # set collection name as variable
+        doc = doc_ref.get()
+        if bool(doc.to_dict()) is True:
+            logging.info("This service exists, if you want to edit it, go to edit page")
+            return Response(json.dumps({'statusText': 'This service exists, if you want to edit it, go to edit page'}), status=404, mimetype='application/json')
+        else:
+            db.collection('security-controls').document(service_name).set(json_data)  # set collection name as variable
+            logging.info("A new security controls template is create")
+            return ''
     else:
-        return Response(json.dumps({'statusText': 'Please use only numbers, latin characters, - and _'}), status=404, mimetype='application/json')
+        logging.info("Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.")
+        return Response(json.dumps({'statusText': 'Invalid input!'}), status=404, mimetype='application/json')
 
 
 @app.route('/get_sec_controls/', methods=['GET'])
