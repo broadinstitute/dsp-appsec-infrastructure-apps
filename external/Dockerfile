@@ -1,0 +1,10 @@
+FROM node:latest as node
+WORKDIR /app/website
+COPY base/. .
+COPY docusaurus.config.js .
+COPY modules/codedx docs/SDARQ/Modules/.
+RUN yarn install
+RUN npm run build
+
+FROM nginx:alpine
+COPY --from=node /app/website/build/ /usr/share/nginx/html/

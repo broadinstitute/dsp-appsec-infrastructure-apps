@@ -1,0 +1,12 @@
+{
+    "modules": [
+        "codedx"
+    ],
+    "company": "Broad Institute",
+    "github": "",
+    "url": "https://broadinstitute.github.io/",
+    "org": "broadinstitute",
+    "repo": "dsp-appsec-infrastructure-apps",
+    "email": "appsec@broadinstitute.org"
+
+}
