@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
+import { ServiceSecurityControl } from '../models/service-security-control.model';
 
 
 @Injectable({
@@ -14,11 +14,12 @@ export class GetSecurityControlsService {
 
   constructor(private http: HttpClient) { }
 
-  getAllSecurityControls(): Observable<any> {
+  getAllSecurityControls(): Observable<ServiceSecurityControl[]> {
     const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
-    return this.http.get(this.Url, options).pipe(
+    return this.http.get<ServiceSecurityControl[]>(this.Url, options).pipe(
+      map(res => res.map((serviceSecurityControl: ServiceSecurityControl) => new ServiceSecurityControl().deserialize(serviceSecurityControl))),
       catchError(this.handleError)
     )
   }

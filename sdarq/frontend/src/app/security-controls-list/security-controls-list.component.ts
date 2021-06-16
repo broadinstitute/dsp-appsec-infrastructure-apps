@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { GetSecurityControlsService } from '../services/get-security-controls.service'
 import { ActivatedRoute } from '@angular/router';
+import { ServiceSecurityControl } from '../models/service-security-control.model';
+
 
 @Component({
   selector: 'app-security-controls-list',
@@ -9,9 +11,9 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class SecurityControlsListComponent implements OnInit {
 
-  securityControls: any[];
+   serviceSecurityControl: ServiceSecurityControl[];
 
-  constructor(private getSecurityControls: GetSecurityControlsService, private router: ActivatedRoute) { }
+  constructor(private getSecurityControls: GetSecurityControlsService, private router: ActivatedRoute ) { }
 
   ngOnInit() {
     this.router.queryParams.subscribe(params => {
@@ -20,10 +22,11 @@ export class SecurityControlsListComponent implements OnInit {
   }
 
   getResults() {
-    this.getSecurityControls.getAllSecurityControls().subscribe((data: any) => {
-      this.securityControls = data;
+    this.getSecurityControls.getAllSecurityControls().subscribe((serviceSecurityControl) => {
+      this.serviceSecurityControl = serviceSecurityControl
     },
       (data) => {
       });
   }
+
 }
