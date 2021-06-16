@@ -381,6 +381,9 @@ def zap_scan():
 def create_sec_control_template():
     """
     Store data to Firestore
+    Args: Provided json data from user
+    Returns: 200 if data stored to Firestore
+             404 if input is invalid/ service already exists 
     """
     json_data = request.get_json()
     service_name = json_data['service']
@@ -398,7 +401,7 @@ def create_sec_control_template():
             return ''
     else:
         logging.info("Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.")
-        return Response(json.dumps({'statusText': 'Invalid input!'}), status=404, mimetype='application/json')
+        return Response(json.dumps({'statusText': 'Invalid input!Please make sure you include numbers, -, _ and alphabetical characters'}), status=404, mimetype='application/json')
 
 
 @app.route('/get_sec_controls/', methods=['GET'])
@@ -406,6 +409,8 @@ def create_sec_control_template():
 def get_sec_controls():
     """
     Get all data from Firestore
+    Args: None
+    Returns: Json data
     """
     data=[]
     docs = db.collection(u'security-controls').stream()
