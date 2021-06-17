@@ -34,6 +34,7 @@ import { NotfoundComponent } from './notfound/notfound.component';
 import { SecurityControlsFormComponent } from './security-controls-form/security-controls-form.component';
 import { CreateNewSctService } from './services/create-new-sct.service';
 import { SecurityControlsListComponent } from './security-controls-list/security-controls-list.component'
+import { GetSecurityControlsService } from './services/get-security-controls.service';
 
 
 @NgModule({
@@ -77,7 +78,8 @@ import { SecurityControlsListComponent } from './security-controls-list/security
     RequestTmService,
     CsvDataService,
     ScanServiceService,
-    CreateNewSctService
+    CreateNewSctService,
+    GetSecurityControlsService
     ],
   bootstrap: [
     AppComponent

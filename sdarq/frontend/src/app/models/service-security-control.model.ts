@@ -1,6 +1,6 @@
-import {Deserializable} from "./deserializable.model";
+import {Deserializable} from './deserializable.model';
 
-export class ServiceSecurityControl implements Deserializable{
+export class ServiceSecurityControl implements Deserializable {
     deserialize(input: any): this {
         Object.assign(this, input);
         return this;
