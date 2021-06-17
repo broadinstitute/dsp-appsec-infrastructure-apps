@@ -1,16 +1,32 @@
 <div class="jumbotron min-vh-100">
     <div class="container">
-        <div class="row" *ngFor="let controls of serviceSecurityControl">
-            {{ controls.product | uppercase }}
-            {{ controls.service | uppercase }}
-            {{ controls.trivy  }}
-            {{ controls.burp  }}
-            {{ controls.threat_model  }}
-            {{ controls.dev_url  }}
-            {{ controls.zap  }}
-            {{ controls.cis_scanner  }}
-            {{ controls.sourceclear  }}
-            {{ controls.github  }}
-        </div>
+        <table class="table table-hover">
+        <thead>
+            <th>Service</th>
+            <th>Product</th>
+            <th>URL</th>
+            <th>Sourcecode</th> 
+            <th>Trivy</th>
+            <th>Burp</th>
+            <th>Threat model</th>
+            <th>ZAP scan</th>
+            <th>CIS scan</th>
+            <th>Sourceclear</th> 
+        </thead>
+        <tbody #row>
+        <tr *ngFor="let controls of serviceSecurityControl">
+            <td>{{ controls.service | uppercase }}</td>
+            <td>{{ controls.product | uppercase }}</td>
+            <td><a href="{{ controls.dev_url }}" target="_blank" rel="noreferrer noopener">Dev URL</a></td>
+            <td><a href="{{ controls.github }}" target="_blank" rel="noreferrer noopener"><mdb-icon fab icon="github" size="2x"></mdb-icon></a></td> 
+            <td>{{ controls.trivy }}</td>
+            <td>{{ controls.burp }}</td>
+            <td>{{ controls.threat_model }}</td>
+            <td>{{ controls.zap }}</td>
+            <td>{{ controls.cis_scanner }}</td>
+            <td>{{ controls.sourceclear }}</td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 </div>
