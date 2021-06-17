@@ -377,7 +377,7 @@ def zap_scan():
 
 
 @app.route('/create_sec_control_template/', methods=['POST'])
-@cross_origin(origins=sdarq_host)
+@cross_origin(origins='http://127.0.0.1:4200')
 def create_sec_control_template():
     """
     Store data to Firestore
@@ -413,13 +413,11 @@ def get_sec_controls():
     Returns: Json data
     """
     data=[]
-    docs = db.collection(u'security-controls').stream()
+    docs = db.collection(u'security-controls').stream()  # set collection name as variable
     for doc in docs:
         data.append(doc.to_dict())
  
     return data
-    
-
 
 
 
