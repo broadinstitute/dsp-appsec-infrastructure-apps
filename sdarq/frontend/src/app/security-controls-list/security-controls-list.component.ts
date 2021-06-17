@@ -25,8 +25,7 @@ export class SecurityControlsListComponent implements OnInit {
     this.getSecurityControls.getAllSecurityControls().subscribe((serviceSecurityControl) => {
       this.serviceSecurityControl = serviceSecurityControl
     },
-      (data) => {
+      (serviceSecurityControl) => {
       });
   }
-
 }
