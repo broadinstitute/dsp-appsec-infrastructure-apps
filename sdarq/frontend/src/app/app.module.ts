@@ -24,11 +24,11 @@ import { CisLandingPageComponent } from './cis-landing-page/cis-landing-page.com
 import { FilterPipe } from './pipes/filter.pipe';
 import { JiraTicketRiskAssesmentComponent } from './jira-ticket-risk-assesment/jira-ticket-risk-assesment.component';
 import { ThreatModelComponent } from './threat-model/threat-model.component';
-import { RequestTmService} from './services/request-tm.service';
+import { RequestTmService } from './services/request-tm.service';
 import { AboutPageComponent } from './about-page/about-page.component'
 import { CsvDataService } from './services/csv-data.service';
 import { ServiceScanComponent } from './service-scan/service-scan.component'
-import { ScanServiceService} from './services/scan-service.service';
+import { ScanServiceService } from './services/scan-service.service';
 import { MultiScanComponent } from './multi-scan/multi-scan.component';
 import { NotfoundComponent } from './notfound/notfound.component';
 import { SecurityControlsFormComponent } from './security-controls-form/security-controls-form.component';
