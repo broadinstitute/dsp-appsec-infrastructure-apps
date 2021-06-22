@@ -20,15 +20,15 @@
                     <tr *ngFor="let controls of serviceSecurityControl | filtersct: searchString">
                         <td>{{ controls.service }}</td>
                         <td>{{ controls.product }}</td>
-                        <td><a href="{{ controls.dev_url }}" target="_blank"
-                                rel="noreferrer noopener">{{ controls.service | lowercase}}-dev-url</a></td>
-                        <td><a href="{{ controls.github }}" target="_blank" rel="noreferrer noopener">
+                       <td><a href="{{ controls.dev_url }}" target="_blank"  rel="noreferrer noopener"> <!-- nosemgrep-->
+                           {{ controls.service | lowercase}}-dev-url</a></td>
+                        <td><a href="{{ controls.github }}" target="_blank" rel="noreferrer noopener"> <!-- nosemgrep-->
                                 <mdb-icon fab icon="github" size="2x"></mdb-icon>
                             </a></td>
-                        <td><a href="{{ controls.codedx }}" target="_blank" rel="noreferrer noopener"><img
-                                    src="../assets/codedx.png" width="30px"></a></td>
-                        <td><a href="{{ controls.defectdojo }}" target="_blank" rel="noreferrer noopener"><img
-                                    src="../assets/defectdojo.png" width="25px"></a></td>
+                        <td><a href="{{ controls.codedx }}" target="_blank" rel="noreferrer noopener"> <!-- nosemgrep-->
+                            <img src="../assets/codedx.png" width="30px"></a></td>
+                        <td><a href="{{ controls.defectdojo }}" target="_blank" rel="noreferrer noopener"> <!-- nosemgrep-->
+                            <img src="../assets/defectdojo.png" width="25px"></a></td>
                         <td>
                             <div [innerHTML]="trivyShowValue(controls.trivy)"></div>
                         </td>
