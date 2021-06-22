@@ -9,7 +9,9 @@ import { catchError } from 'rxjs/operators';
 })
 export class CreateNewSctService {
 
-  private Url = location.origin + '/create_sec_control_template/';
+  // private Url = location.origin + '/create_sec_control_template/';
+
+  private Url = 'http://127.0.0.1:8080' + '/create_sec_control_template/';
 
   constructor(private http: HttpClient) { }
 

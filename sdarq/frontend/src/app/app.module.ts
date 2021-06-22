@@ -21,7 +21,6 @@ import { FooterComponent } from './footer/footer.component';
 import { CisResultsComponent } from './cis-results/cis-results.component';
 import { CisScanComponent } from './cis-scan/cis-scan.component';
 import { CisLandingPageComponent } from './cis-landing-page/cis-landing-page.component';
-import { FilterPipe } from './pipes/filter.pipe';
 import { JiraTicketRiskAssesmentComponent } from './jira-ticket-risk-assesment/jira-ticket-risk-assesment.component';
 import { ThreatModelComponent } from './threat-model/threat-model.component';
 import { RequestTmService } from './services/request-tm.service';
@@ -35,6 +34,9 @@ import { SecurityControlsFormComponent } from './security-controls-form/security
 import { CreateNewSctService } from './services/create-new-sct.service';
 import { SecurityControlsListComponent } from './security-controls-list/security-controls-list.component'
 import { GetSecurityControlsService } from './services/get-security-controls.service';
+import { FilterPipe } from './pipes/filter.pipe';
+import { FiltersctPipe } from './pipes/filtersct.pipe';
+
 
 
 @NgModule({
@@ -54,6 +56,7 @@ import { GetSecurityControlsService } from './services/get-security-controls.ser
     CisScanComponent,
     CisLandingPageComponent,
     FilterPipe,
+    FiltersctPipe,
     JiraTicketRiskAssesmentComponent,
     ThreatModelComponent,
     AboutPageComponent,
@@ -85,7 +88,8 @@ import { GetSecurityControlsService } from './services/get-security-controls.ser
     AppComponent
   ],
   exports: [
-    FilterPipe
+    FilterPipe,
+    FiltersctPipe
   ]
 })
 export class AppModule { }

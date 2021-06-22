@@ -6,7 +6,6 @@
        {
         "type": "text",
         "name": "product",
-        "indent": -13,
         "title": "Product name",
         "hideNumber": true,
         "isRequired": true
@@ -35,28 +34,28 @@
        {
         "type": "boolean",
         "name": "zap",
-        "title": "Service scan via Zap scanner",
+        "title": "Service scan (Zap)",
         "hideNumber": true,
         "isRequired": true
        },
        {
         "type": "boolean",
         "name": "sourceclear",
-        "title": "Downstream dependency scan via Sourceclear ",
+        "title": "Downstream dependency scan (Sourceclear)",
         "hideNumber": true,
         "isRequired": true
        },
        {
         "type": "boolean",
-        "name": "trivy",
-        "title": "Docker image scan via Trivy",
+        "name": "docker scan",
+        "title": "Docker image scan (Trivy)",
         "hideNumber": true,
         "isRequired": true
        },
        {
         "type": "boolean",
         "name": "cis_scanner",
-        "title": "GCP project scanned via CIS scanner",
+        "title": "GCP project scan (CIS scanner)",
         "hideNumber": true,
         "isRequired": true
        },
@@ -68,9 +67,16 @@
         "isRequired": true
        },
        {
-        "type": "boolean",
-        "name": "threat_model",
-        "title": "Do you have a threat model for this service?",
+        "type": "text",
+        "name": "CodeDx",
+        "title": "CodeDx URL",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "text",
+        "name": "Defect Dojo",
+        "title": "Defect Dojo URL",
         "hideNumber": true,
         "isRequired": true
        }

@@ -1,32 +1,52 @@
 <div class="jumbotron min-vh-100">
     <div class="container">
-        <table class="table table-hover">
-        <thead>
-            <th>Service</th>
-            <th>Product</th>
-            <th>URL</th>
-            <th>Sourcecode</th> 
-            <th>Trivy</th>
-            <th>Burp</th>
-            <th>Threat model</th>
-            <th>ZAP scan</th>
-            <th>CIS scan</th>
-            <th>Sourceclear</th> 
-        </thead>
-        <tbody #row>
-        <tr *ngFor="let controls of serviceSecurityControl">
-            <td>{{ controls.service | uppercase }}</td>
-            <td>{{ controls.product | uppercase }}</td>
-            <td><a href="{{ controls.dev_url }}" target="_blank" rel="noreferrer noopener">Dev URL</a></td>
-            <td><a href="{{ controls.github }}" target="_blank" rel="noreferrer noopener"><mdb-icon fab icon="github" size="2x"></mdb-icon></a></td> 
-            <td>{{ controls.trivy }}</td>
-            <td>{{ controls.burp }}</td>
-            <td>{{ controls.threat_model }}</td>
-            <td>{{ controls.zap }}</td>
-            <td>{{ controls.cis_scanner }}</td>
-            <td>{{ controls.sourceclear }}</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+        <div class="row">
+            <div class="col animated fadeIn">
+            </div>
+            <div class="col">
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" name="searchString" placeholder="Search..."
+                    [(ngModel)]="searchString" />
+            </div>
+        </div>
+    <br>
+        <div class="row">
+            <table class="table table-hover">
+                <th *ngFor="let head of headElements">
+                    {{ head }}
+                </th>
+                <tbody #row>
+                    <tr *ngFor="let controls of serviceSecurityControl | filtersct: searchString">
+                        <td>{{ controls.service }}</td>
+                        <td>{{ controls.product }}</td>
+                        <td><a href="{{ controls.dev_url }}" target="_blank"
+                                rel="noreferrer noopener">{{ controls.service | lowercase}}-dev-url</a></td>
+                        <td><a href="{{ controls.github }}" target="_blank" rel="noreferrer noopener">
+                                <mdb-icon fab icon="github" size="2x"></mdb-icon>
+                            </a></td>
+                        <td><a href="{{ controls.codedx }}" target="_blank" rel="noreferrer noopener"><img
+                                    src="../assets/codedx.png" width="30px"></a></td>
+                        <td><a href="{{ controls.defectdojo }}" target="_blank" rel="noreferrer noopener"><img
+                                    src="../assets/defectdojo.png" width="25px"></a></td>
+                        <td>
+                            <div [innerHTML]="trivyShowValue(controls.trivy)"></div>
+                        </td>
+                        <td>
+                            <div [innerHTML]="burpShowValue(controls.burp)"></div>
+                        </td>
+                        <td>
+                            <div [innerHTML]="zapShowValue(controls.zap)"></div>
+                        </td>
+                        <td>
+                            <div [innerHTML]="cisscannerShowValue(controls.cis_scanner)"></div>
+                        </td>
+                        <td>
+                            <div [innerHTML]="sourceclearShowValue(controls.sourceclear)"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

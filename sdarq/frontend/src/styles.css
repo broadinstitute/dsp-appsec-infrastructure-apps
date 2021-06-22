@@ -381,3 +381,11 @@ footer {
 bottom:auto;
 width:100%;
 }
+
+.fa-times {
+  color: #ec0202 !important;
+}
+
+.fa-check{
+color: #17af17 !important
+}
