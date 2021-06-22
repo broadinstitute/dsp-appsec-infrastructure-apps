@@ -12,67 +12,62 @@ import { BooleanLiteral } from 'typescript';
 })
 export class SecurityControlsListComponent implements OnInit {
 
-   serviceSecurityControl: ServiceSecurityControl[];
-   headElements = ['Service', 'Product', 'URL', 'Sourcecode', 'CodeDX', 'DefectDojo', 'Trivy', 'Burp', 'ZAP scan', 'CIS scan', 'Sourceclear'];
+  serviceSecurityControl: ServiceSecurityControl[];
+  // tslint:disable-next-line
+  headElements = ['Service', 'Product', 'URL', 'Sourcecode', 'CodeDX', 'DefectDojo', 'Trivy', 'Burp', 'ZAP scan', 'CIS scan', 'Sourceclear'];
 
-  constructor(private getSecurityControls: GetSecurityControlsService, private router: ActivatedRoute ) { }
+  constructor(private getSecurityControls: GetSecurityControlsService, private router: ActivatedRoute) { }
 
   ngOnInit() {
-      this.getResults()
+    this.getResults()
   }
 
-  trivyShowValue(trivy){
-    if (trivy == true){
-    return '<i class="fas fa-check fa-1x" ></i>'
-    }
-    else{
+  trivyShowValue(trivy) {
+    if (trivy === true) {
+      return '<i class="fas fa-check fa-1x" ></i>'
+    } else {
       return '<i class="fas fa-times fa-1x color"></i>'
     }
   }
 
-  burpShowValue(burp){
-    if (burp == true){
+  burpShowValue(burp) {
+    if (burp === true) {
       return '<i class="fas fa-check fa-1x "></i>'
-      }
-      else{
-        return '<i class="fas fa-times fa-1x"></i>'
-      }
+    } else {
+      return '<i class="fas fa-times fa-1x"></i>'
     }
-
-  threatmodelShowValue(threat_model){
-    if (threat_model == true){
-      return '<i class="fas fa-check fa-1x"></i>'
-      }
-      else{
-        return '<i class="fas fa-times fa-1x"></i>'
-      }
-    }
-
-  zapShowValue(zap){
-    if (zap == true){
-      return '<i class="fas fa-check fa-1x"></i>'
-      }
-      else{
-        return '<i class="fas fa-times fa-1x"></i>'
-      }
   }
 
-  cisscannerShowValue(cis_scanner){
-    if (cis_scanner == true){
+  threatmodelShowValue(threat_model) {
+    if (threat_model === true) {
       return '<i class="fas fa-check fa-1x"></i>'
-      }
-      else{
-        return '<i class="fas fa-times fa-1x"></i>'
-      }
+    } else {
+      return '<i class="fas fa-times fa-1x"></i>'
+    }
   }
 
-  sourceclearShowValue(sourceclear){
-    if (sourceclear == true){
+  zapShowValue(zap) {
+    if (zap === true) {
       return '<i class="fas fa-check fa-1x"></i>'
-      }
-      else{
-        return '<i class="fas fa-times fa-1x"></i>'
-      }
+    } else {
+      return '<i class="fas fa-times fa-1x"></i>'
+    }
+  }
+
+  cisscannerShowValue(cis_scanner) {
+    if (cis_scanner === true) {
+      return '<i class="fas fa-check fa-1x"></i>'
+    } else {
+      return '<i class="fas fa-times fa-1x"></i>'
+    }
+  }
+
+  sourceclearShowValue(sourceclear) {
+    if (sourceclear === true) {
+      return '<i class="fas fa-check fa-1x"></i>'
+    } else {
+      return '<i class="fas fa-times fa-1x"></i>'
+    }
   }
 
   getResults() {
