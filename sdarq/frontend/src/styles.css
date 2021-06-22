@@ -389,3 +389,6 @@ width:100%;
 .fa-check{
 color: #17af17 !important
 }
+.sv_main.sv_main .sv-boolean__switch {
+  background-color: rgb(39 99 198) !important;
+}

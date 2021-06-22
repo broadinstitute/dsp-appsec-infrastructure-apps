@@ -22,8 +22,8 @@ export class SecurityControlsListComponent implements OnInit {
     this.getResults()
   }
 
-  trivyShowValue(trivy) {
-    if (trivy === true) {
+  trivyShowValue(docker_scan) {
+    if (docker_scan === true) {
       return '<i class="fas fa-check fa-1x" ></i>'
     } else {
       return '<i class="fas fa-times fa-1x color"></i>'

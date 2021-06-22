@@ -32,6 +32,20 @@
         "isRequired": true
        },
        {
+        "type": "text",
+        "name": "CodeDx",
+        "title": "CodeDx URL",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "text",
+        "name": "defect_dojo",
+        "title": "Defect Dojo URL",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
         "type": "boolean",
         "name": "zap",
         "title": "Service scan (Zap)",
@@ -47,7 +61,7 @@
        },
        {
         "type": "boolean",
-        "name": "docker scan",
+        "name": "docker_scan",
         "title": "Docker image scan (Trivy)",
         "hideNumber": true,
         "isRequired": true
@@ -63,20 +77,6 @@
         "type": "boolean",
         "name": "burp",
         "title": "Have you performed any manual security pentest via Burp",
-        "hideNumber": true,
-        "isRequired": true
-       },
-       {
-        "type": "text",
-        "name": "CodeDx",
-        "title": "CodeDx URL",
-        "hideNumber": true,
-        "isRequired": true
-       },
-       {
-        "type": "text",
-        "name": "Defect Dojo",
-        "title": "Defect Dojo URL",
         "hideNumber": true,
         "isRequired": true
        }
