@@ -5,9 +5,9 @@
             </div>
             <div class="col">
             </div>
-            <div class="col">
-                <input type="text" class="form-control" name="searchString" placeholder="Search..."
-                    [(ngModel)]="searchString" />
+            <div class="col"> 
+                 <!-- tslint:disable-next-line -->
+                <input type="text" class="form-control" name="searchString" placeholder="Search..." [(ngModel)]="searchString" />
             </div>
         </div>
     <br>
@@ -17,6 +17,7 @@
                     {{ head }}
                 </th>
                 <tbody #row>
+                     <!-- tslint:disable-next-line -->
                     <tr *ngFor="let controls of serviceSecurityControl | filtersct: searchString">
                         <td>{{ controls.service }}</td>
                         <td>{{ controls.product }}</td>
