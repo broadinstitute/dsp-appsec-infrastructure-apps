@@ -39,7 +39,7 @@ import { SendFormDataService } from './services/send-form-data.service';
 import { FilterPipe } from './pipes/filter.pipe';
 import { FiltersctPipe } from './pipes/filtersct.pipe';
 // Router
-import { AppRoutingModule } from './app-routing.module'; 
+import { AppRoutingModule } from './app-routing.module';
 
 
 @NgModule({

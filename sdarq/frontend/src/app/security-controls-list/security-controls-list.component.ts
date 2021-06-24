@@ -66,9 +66,8 @@ export class SecurityControlsListComponent implements OnInit {
   sourceclearShowValue(sourceclear) {
     if (sourceclear === true) {
       this.sourceclear_results = true;
-      // return '<i class="fas fa-check fa-1x"></i>'
     } else {
-      this.sourceclear_results = false;  
+      this.sourceclear_results = false;
       return '<i class="fas fa-times fa-1x"></i>'
     }
   }

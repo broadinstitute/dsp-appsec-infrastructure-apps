@@ -17,5 +17,5 @@ export class ServiceSecurityControl implements Deserializable {
     docker_scan: boolean;
     zap: boolean;
     CodeDx: string;
-    defect_dojo:string;
+    defect_dojo: string;
   }
