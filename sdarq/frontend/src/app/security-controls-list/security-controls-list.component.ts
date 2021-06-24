@@ -15,6 +15,7 @@ export class SecurityControlsListComponent implements OnInit {
   serviceSecurityControl: ServiceSecurityControl[];
   // tslint:disable-next-line
   headElements = ['Service', 'Product', 'Dev Url', 'Sourcecode', 'CodeDX', 'DefectDojo', 'Docker scan', 'Manual pentest', 'DAST', 'CIS scan', 'Dependecies scan'];
+  sourceclear_results: boolean;
 
   constructor(private getSecurityControls: GetSecurityControlsService, private router: ActivatedRoute) { }
 
@@ -64,8 +65,10 @@ export class SecurityControlsListComponent implements OnInit {
 
   sourceclearShowValue(sourceclear) {
     if (sourceclear === true) {
-      return '<i class="fas fa-check fa-1x"></i>'
+      this.sourceclear_results = true;
+      // return '<i class="fas fa-check fa-1x"></i>'
     } else {
+      this.sourceclear_results = false;  
       return '<i class="fas fa-times fa-1x"></i>'
     }
   }

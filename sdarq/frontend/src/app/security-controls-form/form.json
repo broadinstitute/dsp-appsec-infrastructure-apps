@@ -48,35 +48,44 @@
        {
         "type": "boolean",
         "name": "zap",
-        "title": "Service scan (Zap)",
+        "title": "Service scan ( via Zap or similar tool)",
         "hideNumber": true,
         "isRequired": true
        },
        {
         "type": "boolean",
         "name": "sourceclear",
-        "title": "Downstream dependency scan (Sourceclear)",
+        "title": "Downstream dependency scan (via Sourceclear or similar tool)",
         "hideNumber": true,
         "isRequired": true
        },
        {
+        "type": "text",
+        "name": "sourceclear_link",
+        "visibleIf": "{sourceclear} = true",
+        "title": "Enter downstream dependency result link",
+        "enableIf": "{sourceclear} = true",
+        "isRequired": true,
+        "requiredIf": "{sourceclear} = true"
+       },
+       {
         "type": "boolean",
         "name": "docker_scan",
-        "title": "Docker image scan (Trivy)",
+        "title": "Docker image scan (via Trivy or similar tool)",
         "hideNumber": true,
         "isRequired": true
        },
        {
         "type": "boolean",
         "name": "cis_scanner",
-        "title": "GCP project scan (CIS scanner)",
+        "title": "GCP project scan (via CIS scanner or similar tool)",
         "hideNumber": true,
         "isRequired": true
        },
        {
         "type": "boolean",
         "name": "burp",
-        "title": "Have you performed any manual security pentest via Burp",
+        "title": "Have you performed any manual security pentest (via Burp or similar tool)",
         "hideNumber": true,
         "isRequired": true
        }

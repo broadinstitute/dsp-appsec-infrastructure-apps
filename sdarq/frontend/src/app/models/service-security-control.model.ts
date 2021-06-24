@@ -12,7 +12,10 @@ export class ServiceSecurityControl implements Deserializable {
     dev_url: string;
     github: string;
     sourceclear: boolean;
+    sourceclear_link: string;
     threat_model: boolean;
-    trivy: boolean;
+    docker_scan: boolean;
     zap: boolean;
+    CodeDx: string;
+    defect_dojo:string;
   }
