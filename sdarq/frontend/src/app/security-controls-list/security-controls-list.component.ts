@@ -16,6 +16,7 @@ export class SecurityControlsListComponent implements OnInit {
   // tslint:disable-next-line
   headElements = ['Service', 'Product', 'Dev Url', 'Sourcecode', 'CodeDX', 'DefectDojo', 'Docker scan', 'Manual pentest', 'DAST', 'CIS scan', 'Dependecies scan'];
   sourceclear_results: boolean;
+  searchString: any;
 
   constructor(private getSecurityControls: GetSecurityControlsService, private router: ActivatedRoute) { }
 
