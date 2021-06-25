@@ -14,6 +14,7 @@ options:
   - BASTION_PORT=1080
   - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis
   - SOURCECLEAR_IMAGE=us.gcr.io/${PROJECT_ID}/sourceclear
+  - SOURCECLEAR_TRIGGER_IMAGE=us.gcr.io/${PROJECT_ID}/sourceclear-trigger
   - ZAP_IMAGE=us.gcr.io/${PROJECT_ID}/zap:${SHORT_SHA}
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
   - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
@@ -170,6 +171,17 @@ steps:
       --destination=$${ZAP_IMAGE}
       --cache
 
+- id: zap-image
+  name: *kaniko
+  waitFor: ['kaniko']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/srcclr-trigger
+      --destination=$${SOURCECLEAR_TRIGGER_IMAGE}
+      --cache
+
 ### Terraform
 
 # prepare GCS backend for Terraform
@@ -261,5 +273,11 @@ steps:
   waitFor: ['shared', 'batch-dispatcher-image']
   entrypoint: ./deploy.sh
   dir: zap
+
+- id: srcclr-trigger
+  name: *kubectl
+  waitFor: ['shared', 'batch-dispatcher-image']
+  entrypoint: ./deploy.sh
+  dir: srcclr-trigger
 
 timeout: 7200s

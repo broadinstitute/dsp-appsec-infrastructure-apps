@@ -1,0 +1,38 @@
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: ${CRON_JOB}-weekly
+  namespace: ${NAMESPACE}
+spec:
+  schedule: "0 7 * * 0"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: ${CRON_SERVICE_ACCOUNT}
+          runtimeClassName: gvisor
+          nodeSelector:
+            cloud.google.com/gke-nodepool: batch
+          restartPolicy: OnFailure
+          containers:
+          - name: srcclr-trigger
+            image: ${SOURCECLEAR_TRIGGER_IMAGE}
+            env:
+            - name: GCP_PROJECT_ID
+              value: ${PROJECT_ID}
+            - name: DEFECT_DOJO_URL
+              value: ${DEFECT_DOJO_URL}
+            - name: DEFECT_DOJO_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ${JOB_SECRET}
+                  key: DEFECT_DOJO_KEY
+            - name: REPO_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: ${JOB_SECRET}
+                  key: REPO_TOKEN
+            resources:
+              requests:
+                memory: 50Mi
