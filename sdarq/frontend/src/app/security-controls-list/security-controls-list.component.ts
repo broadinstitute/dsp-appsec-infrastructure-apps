@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { GetSecurityControlsService } from '../services/get-security-controls.service'
 import { ActivatedRoute } from '@angular/router';
 import { ServiceSecurityControl } from '../models/service-security-control.model';
-import { BooleanLiteral } from 'typescript';
 
 
 @Component({
@@ -74,7 +73,7 @@ export class SecurityControlsListComponent implements OnInit {
   }
 
   getResults() {
-    this.getSecurityControls.getAllSecurityControls().subscribe((serviceSecurityControl) => {
+    this.getSecurityControls.getAllSecurityControls().subscribe((serviceSecurityControl: ServiceSecurityControl []) => {
       this.serviceSecurityControl = serviceSecurityControl;
     },
       (serviceSecurityControl) => {

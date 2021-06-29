@@ -17,6 +17,7 @@ import { MultiScanComponent } from './multi-scan/multi-scan.component';
 import { NotfoundComponent} from './notfound/notfound.component'
 import { SecurityControlsFormComponent} from './security-controls-form/security-controls-form.component'
 import { SecurityControlsListComponent } from './security-controls-list/security-controls-list.component';
+import { EditSecurityControlsFormComponent } from './edit-security-controls-form/edit-security-controls-form.component';
 
 
 
@@ -33,12 +34,13 @@ const routes: Routes = [
   { path: 'cis', component: CisLandingPageComponent },
   { path: 'jira-ticket-risk-assesment', component: JiraTicketRiskAssesmentComponent },
   { path: 'threat-model/request', component: ThreatModelComponent },
-  { path: 'scan-service', component: ServiceScanComponent},
-  { path: 'multi-scan', component: MultiScanComponent},
-  { path: 'security-control/create', component: SecurityControlsFormComponent},
-  { path: 'security-control/view', component: SecurityControlsListComponent},
-  { path: '404', component: NotfoundComponent},
-  { path: '**', redirectTo: '/404'}
+  { path: 'scan-service', component: ServiceScanComponent },
+  { path: 'multi-scan', component: MultiScanComponent },
+  { path: 'security-control/create', component: SecurityControlsFormComponent },
+  { path: 'security-control/view', component: SecurityControlsListComponent },
+  { path: 'security-control/edit', component: EditSecurityControlsFormComponent },
+  { path: '404', component: NotfoundComponent },
+  { path: '**', redirectTo: '/404' }
 ];
 
 @NgModule({
