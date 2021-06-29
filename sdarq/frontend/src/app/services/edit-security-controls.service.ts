@@ -19,7 +19,7 @@ export class EditSecurityControlsService {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
     return this.http.put(this.Url, data, options).pipe(
-      catchError(this.handleError) 
+      catchError(this.handleError)
     )
   }
 

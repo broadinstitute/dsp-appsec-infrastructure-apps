@@ -58,6 +58,7 @@ export class EditSecurityControlsFormComponent implements OnInit {
   }
 
   getSecurityControlForService(securityControls, choosenService) {
+    // tslint:disable-next-line
     for (let item of securityControls) {
       if (item.service === choosenService) {
         this.setValue(item)
