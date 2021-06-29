@@ -390,10 +390,46 @@ def create_sec_control_template():
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
 
     if re.match(pattern, service_name):
-        db.collection('security-controls').document(service_name).set(json_data)  # set collection name as variable
-        print("Security controls template is created!")
-        logging.info("Security controls template is created!")
-        return ''
+        doc_ref = db.collection('security-controls').document(service_name) # set collection name as variable
+        doc = doc_ref.get()
+        if bool(doc.to_dict()) is True:
+            logging.info("This service exists, if you want to edit it, go to edit page")
+            return Response(json.dumps({'statusText': 'This service exists, if you want to edit it, go to edit page'}), status=404, mimetype='application/json')
+        else:
+            db.collection('security-controls').document(service_name).set(json_data)  # set collection name as variable
+            logging.info("A new security controls template is create")
+            return ''
+    else:
+        logging.info("Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.")
+        print("Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.")
+        return Response(json.dumps({'statusText': 'Invalid input!Please make sure you include numbers, -, _ and alphabetical characters.'}), status=404, mimetype='application/json')
+
+
+@app.route('/edit_sec_controls/', methods=['PUT'])
+@cross_origin(origins=sdarq_host)
+def edit_sec_controls():
+    """
+    Edit data for a specific service
+    Args: Provided json data from user
+    Returns: 200 if data stored to Firestore
+             404 if input is invalid/service does not exist
+    """
+    json_data = request.get_json()
+    service_name = json_data['service']
+    pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
+
+    if re.match(pattern, service_name):
+        doc_ref = db.collection('security-controls').document(service_name) # set collection name as variable
+        doc = doc_ref.get()
+        if bool(doc.to_dict()) is True:
+            db.collection('security-controls').document(service_name).set(json_data)  # set collection name as variable
+            print("Security controls for the choosen service have changed!")
+            logging.info("Security controls for the choosen service have changed!")
+            return ''
+        else:
+            logging.info("This service does not exist!")
+            return Response(json.dumps({'statusText': 'This service does not exist!'}), status=404, mimetype='application/json')
+
     else:
         logging.info("Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.")
         print("Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.")
@@ -414,7 +450,6 @@ def get_sec_controls():
         data.append(doc.to_dict())
  
     return data
-
 
 
 if __name__ == "__main__":
