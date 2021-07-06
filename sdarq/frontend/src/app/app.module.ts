@@ -9,7 +9,6 @@ import { FormComponent } from './form/form.component';
 import { MainpageComponent } from './mainpage/mainpage.component';
 import { AppRoutingModule } from './app-routing.module';
 import { SendFormDataService } from './services/send-form-data.service';
-import { NonDSPformComponent } from './non-dspform/non-dspform.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { CisComponent } from './cis/cis.component';
 import { CisProjectService } from './services/cis-project.service';
@@ -41,7 +40,6 @@ import { NotfoundComponent } from './notfound/notfound.component';
     SurveyCreatorComponent,
     FormComponent,
     MainpageComponent,
-    NonDSPformComponent,
     HomepageComponent,
     CisComponent,
     NavbarComponent,
