@@ -22,7 +22,7 @@ variable "cluster_name" {
 
 variable "max_app_node_count" {
   type        = number
-  default     = 5
+  default     = 10
   description = "Max number of app nodes per zone"
 }
 
