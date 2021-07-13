@@ -9,7 +9,6 @@ import { SurveyComponent } from './survey.component';
 import { SurveyCreatorComponent } from './survey.creator.component';
 import { FormComponent } from './form/form.component';
 import { MainpageComponent } from './mainpage/mainpage.component';
-import { NonDSPformComponent } from './non-dspform/non-dspform.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { CisComponent } from './cis/cis.component';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -51,7 +50,6 @@ import { AppRoutingModule } from './app-routing.module';
     SurveyCreatorComponent,
     FormComponent,
     MainpageComponent,
-    NonDSPformComponent,
     HomepageComponent,
     CisComponent,
     NavbarComponent,

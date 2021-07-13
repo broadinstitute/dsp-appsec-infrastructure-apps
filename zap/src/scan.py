@@ -123,12 +123,10 @@ def get_codedx_report_by_alert_severity(
         "severity": [s.value for s in severities],
         "status": ["new", "unresolved", "reopened"],
     }
-    pid = cdx.get_project_id(project)
-    if not pid:
-        new_project = cdx.create_project(project)
-        pid = new_project["id"]
+    if not cdx.get_project_id(project):
+        cdx.create_project(project)
     cdx.get_pdf(
-        pid,
+        project,
         summary_mode="detailed",
         details_mode="with-source",
         include_result_details=True,
