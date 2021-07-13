@@ -57,7 +57,7 @@ spec:
           mountPath: /opt/codedx
         resources:
           requests:
-            memory: 2500M
+            memory: 5000M
 
       - name: codedx-db
         image: mariadb:10.3
