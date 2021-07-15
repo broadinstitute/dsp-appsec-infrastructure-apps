@@ -1,8 +1,8 @@
 FROM node:latest as node
 WORKDIR /app/website
-COPY base/. .
+COPY src/base/. .
 COPY docusaurus.config.js .
-COPY modules/codedx docs/SDARQ/Modules/.
+COPY src/modules/codedx docs/SDARQ/Modules/.
 RUN yarn install
 RUN npm run build
 

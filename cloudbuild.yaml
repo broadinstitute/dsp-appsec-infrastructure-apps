@@ -18,6 +18,8 @@ options:
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
   - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
   - DOCS_IMAGE=us.gcr.io/${PROJECT_ID}/docs:${SHORT_SHA}
+  - EXT_DOCS_IMAGE=us.gcr.io/${PROJECT_ID}/external-documentation:${SHORT_SHA}
+  - INT_DOCS_IMAGE=us.gcr.io/${PROJECT_ID}/internal-documentation:${SHORT_SHA}
   - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx
   - SDARQ_FRONTEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-frontend:${SHORT_SHA}
   - SDARQ_BACKEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-backend:${SHORT_SHA}
@@ -170,6 +172,18 @@ steps:
       --destination=$${ZAP_IMAGE}
       --cache
 
+- id: ext-docs-image
+  name: *kaniko
+  waitFor: ['kaniko']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/externaldocs
+      --destination=$${EXT_DOCS_IMAGE}
+      --cache
+
+
 ### Terraform
 
 # prepare GCS backend for Terraform
@@ -254,6 +268,21 @@ steps:
   dir: secexplorer
   env:
   - GCP_SERVICE_ACCOUNT_EMAIL=${_ORG_VIEWER_SA_EMAIL}
+
+# deploy external documents to GKE cluster
+- id: ext-docs
+  name: *kubectl
+  waitFor: ['shared', 'ext-docs-image']
+  entrypoint: ./deploy.sh
+  dir: docs
+
+# deploy internal documents to GKE cluster
+# internal docs image is generate separately
+- id: int-docs
+  name: *kubectl
+  waitFor: ['shared']
+  entrypoint: ./internal.sh
+  dir: docs
 
 # deploy Zap to GKE cluster
 - id: zap
