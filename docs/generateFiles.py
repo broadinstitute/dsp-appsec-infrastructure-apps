@@ -20,9 +20,9 @@ with open('Dockerfile.template', 'r') as f:
 with open('Dockerfile', 'w') as f:
     f.write(result)
 
-with open('docusaurus.config.js.template', 'r') as f:
+with open('src/base/docusaurus.config.js.template', 'r') as f:
     src = Template(f.read())
     result = src.substitute(data)
 
-with open('src/docusaurus.config.js', 'w') as f:
+with open('src/base/docusaurus.config.js', 'w') as f:
     f.write(result)

@@ -6,10 +6,11 @@ CWD="${PWD}"
 cd ../shared
 export $(xargs < .env)
 
-export NAMESPACE="docs"
+export NAMESPACE="enternal-docs"
 export DEPLOYMENT="${NAMESPACE}"
 
 export IP_NAME="${NAMESPACE}"
+# Different URL for docs?
 export DNS_HOSTNAME="${NAMESPACE}.${DNS_DOMAIN}"
 
 export SERVICE="${NAMESPACE}"

@@ -1,0 +1,19 @@
+{
+  "unversionedId": "Security_Guidance/Overview",
+  "id": "Security_Guidance/Overview",
+  "isDocsHomePage": false,
+  "title": "Overview",
+  "description": "",
+  "source": "@site/docs/Security_Guidance/Overview.md",
+  "sourceDirName": "Security_Guidance",
+  "slug": "/Security_Guidance/Overview",
+  "permalink": "/docs/Security_Guidance/Overview",
+  "editUrl": "https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/external/docs/docs/Security_Guidance/Overview.md",
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Overview",
+    "permalink": "/docs/Security_Guidance/Cloud_Security/Overview"
+  }
+}

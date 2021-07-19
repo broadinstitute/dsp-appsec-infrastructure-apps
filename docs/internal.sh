@@ -24,7 +24,7 @@ export TARGET_PORT="http"
 ./kube-apply.py \
     "namespace.yaml" \
     "configconnectorcontext.yaml" \
-    "${CWD}/deployment.yaml"
+    "${CWD}/internal.yaml"
 
 ./host.sh
 

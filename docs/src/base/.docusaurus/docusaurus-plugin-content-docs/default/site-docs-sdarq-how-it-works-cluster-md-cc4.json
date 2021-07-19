@@ -1,0 +1,28 @@
+{
+  "unversionedId": "SDARQ/How_It_Works/kubernetes-cluster",
+  "id": "SDARQ/How_It_Works/kubernetes-cluster",
+  "isDocsHomePage": false,
+  "title": "Infrastructure",
+  "description": "Deployment",
+  "source": "@site/docs/SDARQ/How_It_Works/cluster.md",
+  "sourceDirName": "SDARQ/How_It_Works",
+  "slug": "/SDARQ/How_It_Works/kubernetes-cluster",
+  "permalink": "/docs/SDARQ/How_It_Works/kubernetes-cluster",
+  "editUrl": "https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/external/docs/docs/SDARQ/How_It_Works/cluster.md",
+  "version": "current",
+  "sidebar_label": "AppSec Infrastructure",
+  "frontMatter": {
+    "id": "kubernetes-cluster",
+    "title": "Kubernetes Cluster Architecture",
+    "sidebar_label": "AppSec Infrastructure"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "App Deployment",
+    "permalink": "/docs/SDARQ/How_It_Works/sdarq-apps"
+  },
+  "next": {
+    "title": "Overview",
+    "permalink": "/docs/Security_Guidance/Cloud_Security/Overview"
+  }
+}

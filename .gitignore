@@ -2,3 +2,4 @@
 *.bak
 
 *cache*/
+*node_modules*

@@ -1,0 +1,258 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "loadedVersions": [
+        {
+          "versionName": "current",
+          "versionLabel": "Next",
+          "versionPath": "/docs",
+          "versionEditUrl": "https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/external/docs/docs",
+          "versionEditUrlLocalized": "https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/external/docs/i18n/en/docusaurus-plugin-content-docs/current",
+          "isLast": true,
+          "routePriority": -1,
+          "sidebarFilePath": "/Users/ssymonds/projects/dsp-appsec-infrastructure-apps/docs/src/base/sidebars.js",
+          "contentPath": "/Users/ssymonds/projects/dsp-appsec-infrastructure-apps/docs/src/base/docs",
+          "contentPathLocalized": "/Users/ssymonds/projects/dsp-appsec-infrastructure-apps/docs/src/base/i18n/en/docusaurus-plugin-content-docs/current",
+          "mainDocId": "SDARQ/Overview",
+          "sidebars": {
+            "tutorialSidebar": [
+              {
+                "type": "category",
+                "label": "SDARQ",
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "SDARQ/Overview"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "SDARQ/Quickstart"
+                  },
+                  {
+                    "type": "category",
+                    "label": "How_It_Works",
+                    "items": [
+                      {
+                        "type": "doc",
+                        "id": "SDARQ/How_It_Works/sdarq-apps",
+                        "label": "SDARQ Apps"
+                      },
+                      {
+                        "type": "doc",
+                        "id": "SDARQ/How_It_Works/kubernetes-cluster",
+                        "label": "AppSec Infrastructure"
+                      }
+                    ],
+                    "collapsed": true
+                  }
+                ],
+                "collapsed": true
+              },
+              {
+                "type": "category",
+                "label": "Security_Guidance",
+                "items": [
+                  {
+                    "type": "category",
+                    "label": "Cloud_Security",
+                    "items": [
+                      {
+                        "type": "doc",
+                        "id": "Security_Guidance/Cloud_Security/Overview"
+                      }
+                    ],
+                    "collapsed": true
+                  },
+                  {
+                    "type": "doc",
+                    "id": "Security_Guidance/Overview"
+                  }
+                ],
+                "collapsed": true
+              }
+            ]
+          },
+          "permalinkToSidebar": {
+            "/docs/SDARQ/How_It_Works/kubernetes-cluster": "tutorialSidebar",
+            "/docs/SDARQ/How_It_Works/sdarq-apps": "tutorialSidebar",
+            "/docs/SDARQ/Overview": "tutorialSidebar",
+            "/docs/SDARQ/Quickstart": "tutorialSidebar",
+            "/docs/Security_Guidance/Cloud_Security/Overview": "tutorialSidebar",
+            "/docs/Security_Guidance/Overview": "tutorialSidebar"
+          },
+          "docs": [
+            {
+              "unversionedId": "SDARQ/How_It_Works/kubernetes-cluster",
+              "id": "SDARQ/How_It_Works/kubernetes-cluster",
+              "isDocsHomePage": false,
+              "title": "Infrastructure",
+              "description": "Deployment",
+              "source": "@site/docs/SDARQ/How_It_Works/cluster.md",
+              "sourceDirName": "SDARQ/How_It_Works",
+              "slug": "/SDARQ/How_It_Works/kubernetes-cluster",
+              "permalink": "/docs/SDARQ/How_It_Works/kubernetes-cluster",
+              "editUrl": "https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/external/docs/docs/SDARQ/How_It_Works/cluster.md",
+              "version": "current",
+              "sidebar_label": "AppSec Infrastructure",
+              "frontMatter": {
+                "id": "kubernetes-cluster",
+                "title": "Kubernetes Cluster Architecture",
+                "sidebar_label": "AppSec Infrastructure"
+              },
+              "sidebar": "tutorialSidebar",
+              "previous": {
+                "title": "App Deployment",
+                "permalink": "/docs/SDARQ/How_It_Works/sdarq-apps"
+              },
+              "next": {
+                "title": "Overview",
+                "permalink": "/docs/Security_Guidance/Cloud_Security/Overview"
+              }
+            },
+            {
+              "unversionedId": "SDARQ/How_It_Works/sdarq-apps",
+              "id": "SDARQ/How_It_Works/sdarq-apps",
+              "isDocsHomePage": false,
+              "title": "App Deployment",
+              "description": "Next, Cloud Build applies both app-specific and some shared",
+              "source": "@site/docs/SDARQ/How_It_Works/apps.md",
+              "sourceDirName": "SDARQ/How_It_Works",
+              "slug": "/SDARQ/How_It_Works/sdarq-apps",
+              "permalink": "/docs/SDARQ/How_It_Works/sdarq-apps",
+              "editUrl": "https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/external/docs/docs/SDARQ/How_It_Works/apps.md",
+              "version": "current",
+              "sidebar_label": "SDARQ Apps",
+              "frontMatter": {
+                "id": "sdarq-apps",
+                "title": "SDARQ Apps",
+                "sidebar_label": "SDARQ Apps"
+              },
+              "sidebar": "tutorialSidebar",
+              "previous": {
+                "title": "Quick Start",
+                "permalink": "/docs/SDARQ/Quickstart"
+              },
+              "next": {
+                "title": "Infrastructure",
+                "permalink": "/docs/SDARQ/How_It_Works/kubernetes-cluster"
+              }
+            },
+            {
+              "unversionedId": "SDARQ/Overview",
+              "id": "SDARQ/Overview",
+              "isDocsHomePage": false,
+              "title": "Overview",
+              "description": "SDARQ was built to integrate security requirements throughout different phases in the SDLC. Product teams develop new services and features all the time. Retrofitting security is a very costly exercise both from a technical standpoint as well as from a security perspective.",
+              "source": "@site/docs/SDARQ/Overview.md",
+              "sourceDirName": "SDARQ",
+              "slug": "/SDARQ/Overview",
+              "permalink": "/docs/SDARQ/Overview",
+              "editUrl": "https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/external/docs/docs/SDARQ/Overview.md",
+              "version": "current",
+              "sidebarPosition": 1,
+              "frontMatter": {
+                "sidebar_position": 1
+              },
+              "sidebar": "tutorialSidebar",
+              "next": {
+                "title": "Quick Start",
+                "permalink": "/docs/SDARQ/Quickstart"
+              }
+            },
+            {
+              "unversionedId": "SDARQ/Quickstart",
+              "id": "SDARQ/Quickstart",
+              "isDocsHomePage": false,
+              "title": "Quick Start",
+              "description": "TODO",
+              "source": "@site/docs/SDARQ/Quickstart.md",
+              "sourceDirName": "SDARQ",
+              "slug": "/SDARQ/Quickstart",
+              "permalink": "/docs/SDARQ/Quickstart",
+              "editUrl": "https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/external/docs/docs/SDARQ/Quickstart.md",
+              "version": "current",
+              "sidebarPosition": 2,
+              "frontMatter": {
+                "sidebar_position": 2
+              },
+              "sidebar": "tutorialSidebar",
+              "previous": {
+                "title": "Overview",
+                "permalink": "/docs/SDARQ/Overview"
+              },
+              "next": {
+                "title": "App Deployment",
+                "permalink": "/docs/SDARQ/How_It_Works/sdarq-apps"
+              }
+            },
+            {
+              "unversionedId": "Security_Guidance/Cloud_Security/Overview",
+              "id": "Security_Guidance/Cloud_Security/Overview",
+              "isDocsHomePage": false,
+              "title": "Overview",
+              "description": "",
+              "source": "@site/docs/Security_Guidance/Cloud_Security/Overview.md",
+              "sourceDirName": "Security_Guidance/Cloud_Security",
+              "slug": "/Security_Guidance/Cloud_Security/Overview",
+              "permalink": "/docs/Security_Guidance/Cloud_Security/Overview",
+              "editUrl": "https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/external/docs/docs/Security_Guidance/Cloud_Security/Overview.md",
+              "version": "current",
+              "frontMatter": {},
+              "sidebar": "tutorialSidebar",
+              "previous": {
+                "title": "Infrastructure",
+                "permalink": "/docs/SDARQ/How_It_Works/kubernetes-cluster"
+              },
+              "next": {
+                "title": "Overview",
+                "permalink": "/docs/Security_Guidance/Overview"
+              }
+            },
+            {
+              "unversionedId": "Security_Guidance/Overview",
+              "id": "Security_Guidance/Overview",
+              "isDocsHomePage": false,
+              "title": "Overview",
+              "description": "",
+              "source": "@site/docs/Security_Guidance/Overview.md",
+              "sourceDirName": "Security_Guidance",
+              "slug": "/Security_Guidance/Overview",
+              "permalink": "/docs/Security_Guidance/Overview",
+              "editUrl": "https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/external/docs/docs/Security_Guidance/Overview.md",
+              "version": "current",
+              "frontMatter": {},
+              "sidebar": "tutorialSidebar",
+              "previous": {
+                "title": "Overview",
+                "permalink": "/docs/Security_Guidance/Cloud_Security/Overview"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "docusaurus-plugin-content-blog": {
+    "default": null
+  },
+  "docusaurus-plugin-content-pages": {
+    "default": [
+      {
+        "type": "jsx",
+        "permalink": "/",
+        "source": "@site/src/pages/index.js"
+      },
+      {
+        "type": "mdx",
+        "permalink": "/markdown-page",
+        "source": "@site/src/pages/markdown-page.md"
+      }
+    ]
+  },
+  "docusaurus-plugin-debug": {
+    "default": null
+  },
+  "docusaurus-theme-classic": {
+    "default": null
+  }
+}

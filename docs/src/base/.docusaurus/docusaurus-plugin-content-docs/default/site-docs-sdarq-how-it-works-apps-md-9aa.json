@@ -1,0 +1,28 @@
+{
+  "unversionedId": "SDARQ/How_It_Works/sdarq-apps",
+  "id": "SDARQ/How_It_Works/sdarq-apps",
+  "isDocsHomePage": false,
+  "title": "App Deployment",
+  "description": "Next, Cloud Build applies both app-specific and some shared",
+  "source": "@site/docs/SDARQ/How_It_Works/apps.md",
+  "sourceDirName": "SDARQ/How_It_Works",
+  "slug": "/SDARQ/How_It_Works/sdarq-apps",
+  "permalink": "/docs/SDARQ/How_It_Works/sdarq-apps",
+  "editUrl": "https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/external/docs/docs/SDARQ/How_It_Works/apps.md",
+  "version": "current",
+  "sidebar_label": "SDARQ Apps",
+  "frontMatter": {
+    "id": "sdarq-apps",
+    "title": "SDARQ Apps",
+    "sidebar_label": "SDARQ Apps"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Quick Start",
+    "permalink": "/docs/SDARQ/Quickstart"
+  },
+  "next": {
+    "title": "Infrastructure",
+    "permalink": "/docs/SDARQ/How_It_Works/kubernetes-cluster"
+  }
+}

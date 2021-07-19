@@ -1,0 +1,60 @@
+{
+  "/-deb": {
+    "component": "component---site-src-pages-index-jsc-4-f-f99",
+    "config": "config---5-e-9-4f3"
+  },
+  "/__docusaurus/debug-3d6": {
+    "component": "component---theme-debug-config-23-a-2ff"
+  },
+  "/__docusaurus/debug/config-914": {
+    "component": "component---theme-debug-config-23-a-2ff"
+  },
+  "/__docusaurus/debug/content-c28": {
+    "component": "component---theme-debug-contentba-8-ce7",
+    "allContent": "allContent---docusaurus-debug-content-246-9aa"
+  },
+  "/__docusaurus/debug/globalData-3cf": {
+    "component": "component---theme-debug-global-dataede-0fa"
+  },
+  "/__docusaurus/debug/metadata-31b": {
+    "component": "component---theme-debug-site-metadata-68-e-3d4"
+  },
+  "/__docusaurus/debug/registry-0da": {
+    "component": "component---theme-debug-registry-679-501"
+  },
+  "/__docusaurus/debug/routes-244": {
+    "component": "component---theme-debug-routes-946-699"
+  },
+  "/markdown-page-be1": {
+    "component": "component---theme-mdx-page-1-f-3-b90",
+    "content": "content---markdown-page-393-028"
+  },
+  "/docs-6bc": {
+    "component": "component---theme-doc-page-1-be-9be",
+    "versionMetadata": "versionMetadata---docs-935-398"
+  },
+  "/docs/SDARQ/How_It_Works/kubernetes-cluster-9d5": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-sdarq-how-it-works-kubernetes-clustercc-4-163"
+  },
+  "/docs/SDARQ/How_It_Works/sdarq-apps-62f": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-sdarq-how-it-works-sdarq-apps-9-aa-c61"
+  },
+  "/docs/SDARQ/Overview-c69": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-sdarq-overview-636-881"
+  },
+  "/docs/SDARQ/Quickstart-402": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-sdarq-quickstartd-1-a-d02"
+  },
+  "/docs/Security_Guidance/Cloud_Security/Overview-898": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-security-guidance-cloud-security-overview-02-f-5e2"
+  },
+  "/docs/Security_Guidance/Overview-11f": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-security-guidance-overview-1-cb-bc6"
+  }
+}

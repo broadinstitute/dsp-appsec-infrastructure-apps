@@ -18,7 +18,7 @@ spec:
 
       containers:
       - name: docs
-        image: ${EXT_DOCS_IMAGE}
+        image: ${INT_DOCS_IMAGE}
         ports:
         - name: ${SERVICE_PORT}
           containerPort: 80
