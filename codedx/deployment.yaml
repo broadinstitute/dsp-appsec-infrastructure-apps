@@ -41,7 +41,7 @@ spec:
         - name: SUPERUSER_NAME
           value: admin
         - name: JAVA_OPTS
-          value: -Xms9000M -Xmx9000M
+          value: -Xms5000M -Xmx5000M
         envFrom:
         - secretRef:
             name: ${SERVICE_SECRET}
@@ -59,7 +59,7 @@ spec:
           mountPath: /opt/codedx
         resources:
           requests:
-            memory: 10000M
+            memory: 7500M
 
       - name: codedx-db
         image: mariadb:10.3
