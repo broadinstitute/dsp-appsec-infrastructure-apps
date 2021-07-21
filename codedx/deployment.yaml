@@ -41,7 +41,7 @@ spec:
         - name: SUPERUSER_NAME
           value: admin
         - name: JAVA_OPTS
-          value: -Xms5000M -Xmx5000M
+          value: -Xms3000M -Xmx3000M
         envFrom:
         - secretRef:
             name: ${SERVICE_SECRET}
