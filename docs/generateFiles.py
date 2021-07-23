@@ -5,9 +5,10 @@ from string import Template
 with open('variables.json') as json_file:
     data = json.load(json_file)
 
+# "modules" represent a service in the appsec cluster
 formatted_modules = []
 for module in data["modules"]:
-    formatted_modules.append(f"COPY src/modules/{ module } docs/SDARQ/Modules/.")
+    formatted_modules.append(f"COPY src/modules/{ module }/Overview.md docs/SDARQ/Modules/{ module }.md")
 
 data["list"] = '\n'.join(formatted_modules)
 data["year"] = datetime.datetime.now().year

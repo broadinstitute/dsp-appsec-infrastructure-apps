@@ -15,13 +15,13 @@ function HomepageHeader() {
         <p className="hero__subtitle">{siteConfig.tagline}</p>
         <div className={styles.buttons}>
           <Link
-            className="button button--secondary button--lg"
-            to="/docs/SDARQ/Quickstart">
-            SDARQ Quick Start
+            className="button button--secondary button--lg button-padding"
+            href={siteConfig.sdarq_url}>
+            SDARQ
           </Link>
           <Link
-            className="button button--secondary button--lg"
-            href="https://dsp-security.broadinstitute.org/">
+            className="button button--secondary button--lg button-padding"
+            href={siteConfig.internal_url}>
             Internal Documentation
           </Link>
         </div>

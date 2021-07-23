@@ -30,7 +30,7 @@ deployment of the appsec-apps cluster.
 
 The `/modules` contains documentation for optional features of the appsec-apps cluster
 (i.e. CodeDx, etc.). To add a new integration, create a new folder in the `/modules`
-folder with the documentation files, then add the name of that folder to the
+folder with an `Overview.md` file, then add the name of that folder to the
 `modules` list in the `variables.json` file.
 
 There are some variables you can change in `variables.json`. This will

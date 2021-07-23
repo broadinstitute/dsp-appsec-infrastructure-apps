@@ -1,12 +1,21 @@
 {
     "modules": [
-        "codedx"
+        "CodeDx",
+        "CIS_Scanning",
+        "DefectDojo",
+        "Documentation",
+        "Jira_Ticket_Assessment",
+        "New_Service_Requirements",
+        "SecExplorer",
+        "Threat_Models",
+        "Zap_Scanning"
     ],
     "company": "Broad Institute",
     "github": "",
     "url": "https://broadinstitute.github.io/",
     "org": "broadinstitute",
     "repo": "dsp-appsec-infrastructure-apps",
-    "email": "appsec@broadinstitute.org"
-
+    "email": "appsec@broadinstitute.org",
+    "sdarq_url": "https://sdarq.dsp-appsec.broadinstitute.org",
+    "internal_url": "https://dsp-security.broadinstitute.org/"
 }

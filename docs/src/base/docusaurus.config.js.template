@@ -1,14 +1,18 @@
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
-  title: '$company Security Documentation Portal',
-  tagline: 'Open Source Security ',
-  url: '$url', //GenericCo
+  title: '$company Application Security Documentation',
+  tagline: 'Application Security Guidance and Tools',
+  url: '$url', //GenericCo,
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: '$org', // GenericCo
   projectName: '$repo', // GenericCo
+  customFields: {
+    sdarq_url: '$sdarq_url',
+    internal_url: '$internal_url'
+  },
   themeConfig: {
     navbar: {
       title: '$company',
@@ -17,7 +21,11 @@ module.exports = {
         src: 'img/tooling-logo.svg',
       },
       items: [
-        {to: '/docs/SDARQ/Overview', label: 'SDARQ', position: 'left'},
+        {to: '/docs/Overview', label: 'Overview', position: 'left'},
+        {to: '/docs/Security_Guidance/Overview', label: 'Security Guidance', position: 'left'},
+        {href: '$sdarq_url', label: 'SDARQ', position: 'left'},
+        {href: '$internal_url', label: 'Internal', position: 'right'},
+        {href: 'mailto: $email', label: 'Contact', position: 'right'},
         {
           href: 'https://github.com/broadinstitute/dsp-appsec-infrastructure-apps',
           label: 'GitHub',
@@ -75,7 +83,7 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl:
-            'https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/external/docs',
+            'https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/docs',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

@@ -1,7 +1,6 @@
 FROM node:latest as node
 WORKDIR /app/website
 COPY src/base/. .
-COPY docusaurus.config.js .
 $list
 RUN yarn install
 RUN npm run build

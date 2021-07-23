@@ -179,7 +179,7 @@ steps:
   args:
   - -c
   - executor
-      --context=dir:///workspace/externaldocs
+      --context=dir:///workspace/docs
       --destination=$${EXT_DOCS_IMAGE}
       --cache
 

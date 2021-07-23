@@ -6,7 +6,7 @@ CWD="${PWD}"
 cd ../shared
 export $(xargs < .env)
 
-export NAMESPACE="enternal-docs"
+export NAMESPACE="external-docs"
 export DEPLOYMENT="${NAMESPACE}"
 
 export IP_NAME="${NAMESPACE}"
