@@ -1,3 +1,4 @@
+# WARNING: Are you updating the template?
 FROM node:latest as node
 WORKDIR /app/website
 COPY src/base/. .

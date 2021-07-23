@@ -1,3 +1,4 @@
+// WARNING: Are you updating the template?
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
   title: '$company Application Security Documentation',
