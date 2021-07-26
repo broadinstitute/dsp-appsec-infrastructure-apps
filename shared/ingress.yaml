@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ${INGRESS}
@@ -6,7 +6,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.global-static-ip-name: ${IP_NAME}
     networking.gke.io/managed-certificates: ${MANAGED_CERT}
-    networking.gke.io/v1beta1.FrontendConfig: ${FRONTEND_CONFIG}
+    networking.gke.io/v1.FrontendConfig: ${FRONTEND_CONFIG}
 spec:
   rules:
   - host: ${DNS_HOSTNAME}
@@ -16,7 +16,7 @@ spec:
           serviceName: ${SERVICE}
           servicePort: ${SERVICE_PORT}
 ---
-apiVersion: networking.gke.io/v1beta1
+apiVersion: networking.gke.io/v1
 kind: FrontendConfig
 metadata:
   name: ${FRONTEND_CONFIG}
