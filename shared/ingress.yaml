@@ -13,8 +13,10 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: ${SERVICE}
-          servicePort: ${SERVICE_PORT}
+          service:
+            name: ${SERVICE}
+            port:
+              number: ${SERVICE_PORT}
 ---
 apiVersion: networking.gke.io/v1
 kind: FrontendConfig
