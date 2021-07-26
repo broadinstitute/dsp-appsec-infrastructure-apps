@@ -12,7 +12,8 @@ spec:
   - host: ${DNS_HOSTNAME}
     http:
       paths:
-      - pathType: Prefix
+      - path: /
+        pathType: Prefix
         backend:
           service:
             name: ${SERVICE}
