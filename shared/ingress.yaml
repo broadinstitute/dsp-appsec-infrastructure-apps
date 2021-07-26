@@ -16,7 +16,7 @@ spec:
           service:
             name: ${SERVICE}
             port:
-              number: ${SERVICE_PORT}
+              name: ${SERVICE_PORT}
 ---
 apiVersion: networking.gke.io/v1
 kind: FrontendConfig

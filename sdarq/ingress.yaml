@@ -17,37 +17,37 @@ spec:
           service:
             name: ${SERVICE}
             port:
-              number: ${FRONTEND_PORT}
+              name: ${FRONTEND_PORT}
       - path: /submit/
         backend:
           service:
             name: ${SERVICE}
             port:
-              number: ${BACKEND_PORT}
+              name: ${BACKEND_PORT}
       - path: /cis_scan/
         backend:
           service:
             name: ${SERVICE}
             port:
-              number: ${BACKEND_PORT}
+              name: ${BACKEND_PORT}
       - path: /cis_results/
         backend:
           service:
             name: ${SERVICE}
             port:
-              number: ${BACKEND_PORT}
+              name: ${BACKEND_PORT}
       - path: /request_tm/
         backend:
           service:
             name: ${SERVICE}
             port:
-              number: ${BACKEND_PORT}
+              name: ${BACKEND_PORT}
       - path: /zap_scan/
         backend:
           service:
             name: ${SERVICE}
             port:
-              number: ${BACKEND_PORT}
+              name: ${BACKEND_PORT}
 ---
 apiVersion: networking.gke.io/v1
 kind: FrontendConfig
