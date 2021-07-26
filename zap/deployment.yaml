@@ -94,7 +94,7 @@ apiVersion: v1
 kind: List
 items:
 - &cron-job
-  apiVersion: batch/v1
+  apiVersion: batch/v1beta1
   kind: CronJob
   metadata:
     name: ${CRON_JOB}-weekly
