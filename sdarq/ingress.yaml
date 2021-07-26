@@ -13,36 +13,42 @@ spec:
     http:
       paths:
       - path: /*
+        pathType: Prefix
         backend:
           service:
             name: ${SERVICE}
             port:
               name: ${FRONTEND_PORT}
       - path: /submit/
+        pathType: Prefix
         backend:
           service:
             name: ${SERVICE}
             port:
               name: ${BACKEND_PORT}
       - path: /cis_scan/
+        pathType: Prefix
         backend:
           service:
             name: ${SERVICE}
             port:
               name: ${BACKEND_PORT}
       - path: /cis_results/
+        pathType: Prefix
         backend:
           service:
             name: ${SERVICE}
             port:
               name: ${BACKEND_PORT}
       - path: /request_tm/
+        pathType: Prefix
         backend:
           service:
             name: ${SERVICE}
             port:
               name: ${BACKEND_PORT}
       - path: /zap_scan/
+        pathType: Prefix
         backend:
           service:
             name: ${SERVICE}
