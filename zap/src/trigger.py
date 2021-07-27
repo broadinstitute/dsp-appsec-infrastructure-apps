@@ -51,7 +51,7 @@ def pubsub_callback(endpoint: Endpoint):
 
     def callback(future: Future):
         try:
-            logging.info(future.result())
+            logging.info(f"PSC {future.result()}")
         except ConnectionRefusedError as err:
             logging.error(f"Please handle {err} for {endpoint}.")
 
@@ -166,7 +166,7 @@ def main():
     logging.info(f"Scan types: { args.scans }")
 
     endpoints = get_defect_dojo_endpoints(defect_dojo_url, defect_dojo_key)
-    logging.info("Defect Dojo endpoints fetched.")
+    logging.info(f"Defect Dojo {len(endpoints) if endpoints else 'no'} endpoints fetched.")
 
     trigger_scans(endpoints, gcp_project, zap_topic, scan_types)
 
