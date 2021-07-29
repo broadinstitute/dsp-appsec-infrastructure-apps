@@ -115,7 +115,7 @@ items:
             - &cron-job-container
               name: zap-trigger
               image: ${ZAP_IMAGE}
-              args: ['trigger', '-s', 'baseline', 'api', 'auth']
+              args: ['trigger', '-s', 'api', 'auth']
               env:
               - name: GCP_PROJECT_ID
                 value: ${PROJECT_ID}
