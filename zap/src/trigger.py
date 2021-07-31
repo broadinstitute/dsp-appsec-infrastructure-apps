@@ -168,7 +168,7 @@ def main():
     endpoints = get_defect_dojo_endpoints(defect_dojo_url, defect_dojo_key)
     logging.info(f"Defect Dojo {len(endpoints) if endpoints else 'no'} endpoints fetched.")
 
-    #trigger_scans(endpoints, gcp_project, zap_topic, scan_types)
+    trigger_scans(endpoints, gcp_project, zap_topic, scan_types)
 
 
 if __name__ == "__main__":
