@@ -146,11 +146,11 @@ def main():
         level=logging.INFO,
         format=f"%(levelname)-8s [zap-trigger] %(message)s",
     )
-    logging.info("Cron job running.")
     defect_dojo_url = getenv("DEFECT_DOJO_URL")
     defect_dojo_key = getenv("DEFECT_DOJO_KEY")
     zap_topic = getenv("ZAP_TOPIC_NAME")
     gcp_project = getenv("GCP_PROJECT_ID")
+    logging.info(f"Cron job running. Dojo {defect_dojo_url} Topic {zap_topic} Project {gcp_project}")
 
     parser = argparse.ArgumentParser(description="Get scan types to run")
     parser.add_argument(
