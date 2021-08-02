@@ -17,7 +17,7 @@ from typing import Any, List, Set
 
 from slack_sdk import WebClient
 from google.cloud import bigquery, firestore
-from google.cloud.resourcemanager_v3.services.projects import ProjectsClient
+from google.cloud import resourcemanager
 
 BENCHMARK_PROFILES = (
     'inspec-gcp-cis-benchmark',
@@ -293,11 +293,10 @@ def slack_notify_high(records: List[Any], slack_token: str,
 def validate_project(target_project_id: str):
     """
     Checks if GCP `project_id` exists via Resource Manager API.
-    Raises a NotFound error if not.
+    Raises a Permission error if not.
     """
-    client = ProjectsClient.Client()
-    client.fetch_project(target_project_id)
-
+    client = resourcemanager.ProjectsClient()
+    client.get_project(name=f"projects/{target_project_id}")
 
 def main():
     """
