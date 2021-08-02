@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ${INGRESS}
@@ -13,41 +13,47 @@ spec:
     http:
       paths:
       - path: /*
+        pathType: ImplementationSpecific
         backend:
-          serviceName: ${SERVICE}
-          servicePort: ${FRONTEND_PORT}
+          service:
+            name: ${SERVICE}
+            port:
+              name: ${FRONTEND_PORT}
       - path: /submit/
+        pathType: ImplementationSpecific
         backend:
-          serviceName: ${SERVICE}
-          servicePort: ${BACKEND_PORT}
+          service:
+            name: ${SERVICE}
+            port:
+              name: ${BACKEND_PORT}
       - path: /cis_scan/
+        pathType: ImplementationSpecific
         backend:
-          serviceName: ${SERVICE}
-          servicePort: ${BACKEND_PORT}
+          service:
+            name: ${SERVICE}
+            port:
+              name: ${BACKEND_PORT}
       - path: /cis_results/
+        pathType: ImplementationSpecific
         backend:
-          serviceName: ${SERVICE}
-          servicePort: ${BACKEND_PORT}
+          service:
+            name: ${SERVICE}
+            port:
+              name: ${BACKEND_PORT}
       - path: /request_tm/
+        pathType: ImplementationSpecific
         backend:
-          serviceName: ${SERVICE}
-          servicePort: ${BACKEND_PORT}
+          service:
+            name: ${SERVICE}
+            port:
+              name: ${BACKEND_PORT}
       - path: /zap_scan/
+        pathType: ImplementationSpecific
         backend:
-          serviceName: ${SERVICE}
-          servicePort: ${BACKEND_PORT}
-      - path: /create_sec_control_template/
-        backend:
-          serviceName: ${SERVICE}
-          servicePort: ${BACKEND_PORT}
-      - path: /get_sec_controls/
-        backend:
-          serviceName: ${SERVICE}
-          servicePort: ${BACKEND_PORT}
-      - path: /edit_sec_controls/
-        backend:
-          serviceName: ${SERVICE}
-          servicePort: ${BACKEND_PORT}
+          service:
+            name: ${SERVICE}
+            port:
+              name: ${BACKEND_PORT}
 ---
 apiVersion: networking.gke.io/v1beta1
 kind: FrontendConfig
@@ -58,7 +64,7 @@ spec:
   redirectToHttps:
     enabled: true
 ---
-apiVersion: cloud.google.com/v1beta1
+apiVersion: cloud.google.com/v1
 kind: BackendConfig
 metadata:
   name: ${BACKEND_CONFIG}

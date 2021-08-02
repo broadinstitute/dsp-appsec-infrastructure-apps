@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ${INGRESS}
@@ -12,9 +12,13 @@ spec:
   - host: ${DNS_HOSTNAME}
     http:
       paths:
-      - backend:
-          serviceName: ${SERVICE}
-          servicePort: ${HTTP_PORT}
+      - path: /*
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: ${SERVICE}
+            port:
+              name: ${HTTP_PORT}
 ---
 apiVersion: networking.gke.io/v1beta1
 kind: FrontendConfig
@@ -25,7 +29,7 @@ spec:
   redirectToHttps:
     enabled: true
 ---
-apiVersion: cloud.google.com/v1beta1
+apiVersion: cloud.google.com/v1
 kind: BackendConfig
 metadata:
   name: ${BACKEND_CONFIG}
