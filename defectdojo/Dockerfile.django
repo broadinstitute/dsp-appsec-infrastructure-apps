@@ -9,7 +9,7 @@ WORKDIR /
 
 COPY django.patch .
 
-RUN git apply django.patch
+RUN git apply --reject --whitespace=fix django.patch
 
 
 FROM dd
