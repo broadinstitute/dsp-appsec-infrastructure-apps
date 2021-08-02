@@ -16,7 +16,8 @@ import sys
 from typing import Any, List, Set
 
 from slack_sdk import WebClient
-from google.cloud import bigquery, firestore, resource_manager
+from google.cloud import bigquery, firestore
+from google.cloud.resourcemanager_v3.services.projects import ProjectsClient
 
 BENCHMARK_PROFILES = (
     'inspec-gcp-cis-benchmark',
@@ -294,7 +295,7 @@ def validate_project(target_project_id: str):
     Checks if GCP `project_id` exists via Resource Manager API.
     Raises a NotFound error if not.
     """
-    client = resource_manager.Client()
+    client = ProjectsClient.Client()
     client.fetch_project(target_project_id)
 
 
