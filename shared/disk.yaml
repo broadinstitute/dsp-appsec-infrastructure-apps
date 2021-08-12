@@ -14,4 +14,4 @@ spec:
   - name: ${DISK_SNAPSHOT_POLICY}
     namespace: ${GLOBAL_NAMESPACE}
   size: 200
-  interface: '' # workaround for https://github.com/GoogleCloudPlatform/k8s-config-connector/issues/521
+  interface: SCSI # (incomplete) workaround for https://github.com/GoogleCloudPlatform/k8s-config-connector/issues/521
