@@ -37,7 +37,7 @@ def get_callback(data):
 
     def callback(future: Future):
         try:
-            print(future.result())
+            print(future.result(), data)
         except:
             print("Please handle {} for {}.".format(future.exception(), data))
 
@@ -81,7 +81,7 @@ def scan_projects(
             SLACK_CHANNEL=formatted_slack_channel,
         )
         # Publish failures shall be handled in the callback function.
-        future.add_done_callback(get_callback(table.table_id))
+        future.add_done_callback(get_callback(gcp_project_id))
         futures.append(future)
     concurrent.futures.wait(futures)
 
