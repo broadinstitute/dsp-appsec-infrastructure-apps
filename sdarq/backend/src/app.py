@@ -193,7 +193,7 @@ def cis_results():
             pubsub_project_id, 'cis', project_id_edited)
         try:
             client.get_table(table_id)
-            sql_query = "SELECT table_id, FORMAT_TIMESTAMP('%m-%d-%G %T',TIMESTAMP_MILLIS(last_modified_time)) AS last_modified_date FROM `{0}.cis.__TABLES__` WHERE table_id=@tableid".format(
+            sql_query = "SELECT table_id, FORMAT_TIMESTAMP('%G-%m-%d',TIMESTAMP_MILLIS(last_modified_time)) AS last_modified_date FROM `{0}.cis.__TABLES__` WHERE table_id=@tableid".format(
                 str(pubsub_project_id))
             job_config = bigquery.QueryJobConfig(
                 query_parameters=[
@@ -203,14 +203,15 @@ def cis_results():
             query_job_table = client.query(sql_query, job_config=job_config)
             query_job_table.result()
             table_data = [dict(row) for row in query_job_table]
-            sql_query_2 = "SELECT * FROM `{0}.cis.{1}` ORDER BY benchmark, id".format(str(pubsub_project_id),
-                                                                           str(project_id_edited))
-            query_job = client.query(sql_query_2)
-            query_job.result()
-            findings = [dict(row) for row in query_job]
-            table = json.dumps({'findings': findings, 'table': table_data},
-                               indent=4, default=str)
-            return table
+            for data in table_data:
+                sql_query_2 = "SELECT * FROM `{0}.cis.{1}` ORDER BY benchmark, id WHERE DATE(_PARTITIONTIME) = {2} ".format(str(pubsub_project_id),
+                                                                            str(project_id_edited), str(data['last_modified_date']))
+                query_job = client.query(sql_query_2)
+                query_job.result()
+                findings = [dict(row) for row in query_job]
+                table = json.dumps({'findings': findings, 'table': table_data},
+                                indent=4, default=str)
+                return table
         except Exception:
             status_code = 404
             notfound = f"""
