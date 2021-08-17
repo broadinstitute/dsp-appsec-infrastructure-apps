@@ -203,9 +203,13 @@ def cis_results():
             query_job_table = client.query(sql_query, job_config=job_config)
             query_job_table.result()
             table_data = [dict(row) for row in query_job_table]
-            sql_query_2 = "SELECT * FROM `{0}.cis.{1}` WHERE DATE(_PARTITIONTIME) = '{2}' ORDER BY benchmark, id".format(str(pubsub_project_id),
-                                                                        str(project_id_edited), str(table_data[0]['last_modified_date']))
-            query_job = client.query(sql_query_2)
+            sql_query_2 = "SELECT * FROM `{0}.cis.{1}` WHERE DATE(_PARTITIONTIME) = @last_date_updated ORDER BY benchmark, id".format(str(pubsub_project_id))
+            job_config_2 = bigquery.QueryJobConfig(
+                query_parameters=[
+                    bigquery.ScalarQueryParameter(
+                        "last_date_updated", "STRING", table_data[0]['last_modified_date'])
+                ])
+            query_job = client.query(sql_query_2, job_config=job_config_2)
             query_job.result()
             findings = [dict(row) for row in query_job]
             table = json.dumps({'findings': findings, 'table': table_data},
