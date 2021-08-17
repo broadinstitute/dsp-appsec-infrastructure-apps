@@ -203,7 +203,7 @@ def cis_results():
             query_job_table = client.query(sql_query, job_config=job_config)
             query_job_table.result()
             table_data = [dict(row) for row in query_job_table]
-            sql_query_2 = "SELECT * FROM `{0}.cis.{1}` WHERE DATE(_PARTITIONTIME) = @last_date_updated ORDER BY benchmark, id".format(str(pubsub_project_id))
+            sql_query_2 = "SELECT * FROM `{0}.cis.{1}` WHERE DATE(_PARTITIONTIME)=@last_date_updated ORDER BY benchmark, id".format(str(pubsub_project_id))
             job_config_2 = bigquery.QueryJobConfig(
                 query_parameters=[
                     bigquery.ScalarQueryParameter(
