@@ -203,7 +203,8 @@ def cis_results():
             query_job_table = client.query(sql_query, job_config=job_config)
             query_job_table.result()
             table_data = [dict(row) for row in query_job_table]
-            sql_query_2 = "SELECT * FROM `{0}.cis.{1}` WHERE DATE(_PARTITIONTIME)=@last_date_updated ORDER BY benchmark, id".format(str(pubsub_project_id))
+            sql_query_2 = "SELECT * FROM `{0}.cis.{1}` WHERE DATE(_PARTITIONTIME)=@last_date_updated ORDER BY benchmark, id".format(str(pubsub_project_id),
+                                                                        str(project_id_edited))
             job_config_2 = bigquery.QueryJobConfig(
                 query_parameters=[
                     bigquery.ScalarQueryParameter(
@@ -213,7 +214,7 @@ def cis_results():
             query_job.result()
             findings = [dict(row) for row in query_job]
             table = json.dumps({'findings': findings, 'table': table_data},
-                            indent=4, default=str)
+                               indent=4, default=str)
             return table
         except Exception:
             status_code = 404
@@ -361,7 +362,7 @@ def zap_scan():
                 service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}{endpoint['path']}"
             severities = parse_json_data.parse_severities(
                 json_data['severities'])
-                
+
             publisher.publish(zap_topic_path,
                               data=message,
                               URL=service_full_endpoint,
