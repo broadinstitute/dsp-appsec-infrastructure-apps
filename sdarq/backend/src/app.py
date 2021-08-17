@@ -203,7 +203,7 @@ def cis_results():
             query_job_table = client.query(sql_query, job_config=job_config)
             query_job_table.result()
             table_data = [dict(row) for row in query_job_table]
-            sql_query_2 = "SELECT * FROM `{0}.cis.{1}` WHERE DATE(_PARTITIONTIME) = '{2}' ".format(str(pubsub_project_id),
+            sql_query_2 = "SELECT * FROM `{0}.cis.{1}` WHERE DATE(_PARTITIONTIME) = '{2}' ORDER BY benchmark, id".format(str(pubsub_project_id),
                                                                         str(project_id_edited), str(table_data[0]['last_modified_date']))
             query_job = client.query(sql_query_2)
             query_job.result()
