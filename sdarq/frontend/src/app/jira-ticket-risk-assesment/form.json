@@ -236,7 +236,7 @@
         "type": "html",
         "name": "risk_high_infrastructure_only",
         "visible": false,
-        "visibleIf": "{high_level} = 'change_infrastructure' and {infrastructure_gcp} anyof ['infrastructure_q1', 'infrastructure_q2', 'infrastructure_q3'] and {if_access_control_change_playbook} = 'item3' or {infrastructure_gcp} = 'infrastructure_q4'",
+        "visibleIf": "{high_level} = 'change_infrastructure' and {infrastructure_gcp} anyof ['infrastructure_q1', 'infrastructure_q2', 'infrastructure_q3'] and {if_access_control_change_playbook} = 'item3'",
         "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nPlease reach out to appsec@broadinstitute.org or tag someone from the DSP Appsec team in the Jira ticket.\n</div>"
        },
        {
@@ -264,7 +264,7 @@
         "type": "html",
         "name": "risk_medium",
         "visible": false,
-        "visibleIf": "{infrastructure_gcp} = ['item3'] and {high_level} = 'item1'",
+        "visibleIf": "{infrastructure_gcp} = ['item3'] and {high_level} = 'item1'  or {infrastructure_gcp} = 'infrastructure_q4'",
         "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\nPlease reach out to appsec@broadinstitute.org or tag someone from the DSP Appsec team in the Jira ticket.\n</div>"
        },
        {
@@ -306,4 +306,3 @@
      }
     ]
    }
-   
