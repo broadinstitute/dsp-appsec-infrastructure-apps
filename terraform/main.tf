@@ -24,11 +24,6 @@ resource "google_project_service" "servicenetworking" {
   disable_on_destroy = false
 }
 
-resource "google_compute_project_metadata_item" "oslogin" {
-  key   = "enable-oslogin"
-  value = "TRUE"
-}
-
 data "google_project" "project" {}
 data "google_client_config" "client" {}
 
@@ -125,6 +120,28 @@ resource "google_compute_ssl_policy" "ssl_policy" {
   min_tls_version = "TLS_1_2"
 }
 
+### OS Login
+
+resource "google_compute_project_metadata_item" "oslogin" {
+  key   = "enable-oslogin"
+  value = "TRUE"
+
+  depends_on = [
+    google_project_iam_member.sa_user_cloudbuild,
+    google_project_iam_member.compute_instance_admin_cloudbuild,
+  ]
+}
+
+resource "google_project_iam_member" "sa_user_cloudbuild" {
+  role   = "roles/iam.serviceAccountUser"
+  member = local.cloudbuild_sa
+}
+
+resource "google_project_iam_member" "compute_instance_admin_cloudbuild" {
+  role   = "roles/compute.instanceAdmin.v1"
+  member = local.cloudbuild_sa
+}
+
 ### GKE cluster node Service Account
 
 module "node_sa" {
@@ -136,20 +153,6 @@ module "node_sa" {
     "roles/monitoring.metricWriter",
     "roles/monitoring.viewer",
   ]
-}
-
-resource "google_service_account_iam_member" "node_sa_cloudbuild" {
-  service_account_id = module.node_sa.name
-  role               = "roles/iam.serviceAccountUser"
-  member             = local.cloudbuild_sa
-}
-
-data "google_compute_default_service_account" "default" {}
-
-resource "google_service_account_iam_member" "compute_sa_cloudbuild" {
-  service_account_id = data.google_compute_default_service_account.default.name
-  role               = "roles/iam.serviceAccountUser"
-  member             = local.cloudbuild_sa
 }
 
 ### Google Container Registry
@@ -247,8 +250,7 @@ resource "google_container_cluster" "cluster" {
   }
 
   depends_on = [
-    google_service_account_iam_member.node_sa_cloudbuild,
-    google_service_account_iam_member.compute_sa_cloudbuild,
+    google_project_iam_member.sa_user_cloudbuild,
   ]
 }
 
