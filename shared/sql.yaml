@@ -1,0 +1,35 @@
+---
+apiVersion: sql.cnrm.cloud.google.com/v1beta1
+kind: SQLInstance
+metadata:
+  name: ${SQL_INSTANCE}
+  namespace: ${NAMESPACE}
+  annotations:
+    cnrm.cloud.google.com/deletion-policy: abandon
+spec:
+  databaseVersion: ${SQL_VERSION}
+  region: ${SQL_REGION}
+  settings:
+    tier: ${SQL_TIER}
+    backupConfiguration:
+      enabled: true
+    ipConfiguration:
+      requireSsl: true
+      ipv4Enabled: false
+      privateNetworkRef:
+        external: ${sql_network}
+    databaseFlags:
+    - name: log_checkpoints
+      value: 'on'
+    - name: log_connections
+      value: 'on'
+    - name: log_disconnections
+      value: 'on'
+    - name: log_lock_waits
+      value: 'on'
+    - name: log_temp_files
+      value: 'on'
+    - name: log_min_duration_statement
+      value: 'on'
+    - name: log_min_error_statement
+      value: ERROR
