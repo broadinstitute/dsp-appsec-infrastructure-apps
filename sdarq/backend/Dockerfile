@@ -13,11 +13,12 @@ ENV PORT 8080
 ENTRYPOINT [ \
   "gunicorn", \
   "--workers", "5", \
+  "--worker-tmp-dir", "/dev/shm", \
   "--worker-connections", "1000", \
   "--timeout", "360", \
   "--graceful-timeout", "360", \
   "--limit-request-line", "8190", \
-  "--limit-request-fields", "25", \
+  "--limit-request-fields", "30", \
   "-b", "0.0.0.0:8080", \
   "app:app" \
 ]

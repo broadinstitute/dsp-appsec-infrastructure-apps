@@ -4,7 +4,10 @@ Triggers ZAP scans for endpoints from DefectDojo.
 """
 
 import argparse
+import concurrent
+import logging
 import re
+import traceback
 from asyncio import Future
 from os import getenv
 from typing import List, Literal, Optional, Set, TypedDict
@@ -31,7 +34,7 @@ def get_defect_dojo_endpoints(base_url: str, api_key: str) -> List[Endpoint]:
     """
     Fetch endpoints from DefectDojo.
     """
-    endpoint = base_url + "/api/v2/endpoints/"
+    endpoint = base_url + "/api/v2/endpoints?limit=1000"
     headers = {
         "content-type": "application/json",
         "Authorization": f"Token {api_key}",
@@ -48,9 +51,9 @@ def pubsub_callback(endpoint: Endpoint):
 
     def callback(future: Future):
         try:
-            print(future.result())
+            logging.info(f"PSC {future.result()}")
         except ConnectionRefusedError as err:
-            print(f"Please handle {err} for {endpoint}.")
+            logging.error(f"Please handle {err} for {endpoint}.")
 
     return callback
 
@@ -77,6 +80,7 @@ def trigger_scan(  # pylint: disable=too-many-arguments
         SLACK_CHANNEL=slack_channel,
     )
     future.add_done_callback(pubsub_callback(endpoint))
+    return future
 
 
 TAG_MATCHER = re.compile(r"^([^:]+):(.*)$")
@@ -120,12 +124,20 @@ def trigger_scans(
     publisher = PublisherClient()
     topic = publisher.topic_path(gcp_project, topic_name)  # pylint: disable=no-member
 
+    futures = []
     for endpoint in endpoints:
-        codedx_project, slack_channel, scan_type, engagement_id = parse_tags(endpoint)
-        if codedx_project and (scan_type in scan_types):
-            trigger_scan(
-                publisher, endpoint, topic, codedx_project, scan_type, slack_channel, engagement_id
-            )
+        slack_channel = None
+        try:
+            codedx_project, slack_channel, scan_type, engagement_id = parse_tags(endpoint)
+            if codedx_project and (scan_type in scan_types):
+                future = trigger_scan(
+                    publisher, endpoint, topic, codedx_project, scan_type, slack_channel, engagement_id
+                )
+                futures.append(future)
+        except BaseException as error:
+            logging.error(f"Error triggering scan for: { endpoint }\n{ traceback.print_exc() }")
+
+    concurrent.futures.wait(futures)
 
 
 def main():
@@ -133,10 +145,15 @@ def main():
     - Fetch the list of endpoints from DefectDojo
     - Trigger the scans for all endpoints
     """
+    logging.basicConfig(
+        level=logging.INFO,
+        format=f"%(levelname)-8s [zap-trigger] %(message)s",
+    )
     defect_dojo_url = getenv("DEFECT_DOJO_URL")
     defect_dojo_key = getenv("DEFECT_DOJO_KEY")
     zap_topic = getenv("ZAP_TOPIC_NAME")
     gcp_project = getenv("GCP_PROJECT_ID")
+    logging.info(f"Cron job running. Dojo {defect_dojo_url} Topic {zap_topic} Project {gcp_project}")
 
     parser = argparse.ArgumentParser(description="Get scan types to run")
     parser.add_argument(
@@ -149,8 +166,11 @@ def main():
     )
     args = parser.parse_args()
     scan_types = set(ScanType[s.upper()] for s in args.scans)
+    logging.info(f"Scan types: { args.scans }")
 
     endpoints = get_defect_dojo_endpoints(defect_dojo_url, defect_dojo_key)
+    logging.info(f"Defect Dojo {len(endpoints) if endpoints else 'no'} endpoints fetched.")
+
     trigger_scans(endpoints, gcp_project, zap_topic, scan_types)
 
 

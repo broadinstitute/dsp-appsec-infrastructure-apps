@@ -95,7 +95,7 @@ def submit():
     dojo_name = json_data['Service']
     security_champion = json_data['Security champion']
     product_type = 1
-    products_endpoint = f"{dojo_host_url}api/v2/products/"
+    products_endpoint = f"{dojo_host}api/v2/products/"
     slack_channels_list = ['#dsp-security', '#appsec-internal']
     jira_project_key = "DSEC"
 
@@ -193,7 +193,7 @@ def cis_results():
             pubsub_project_id, 'cis', project_id_edited)
         try:
             client.get_table(table_id)
-            sql_query = "SELECT table_id, FORMAT_TIMESTAMP('%m-%d-%G %T',TIMESTAMP_MILLIS(last_modified_time)) AS last_modified_date FROM `{0}.cis.__TABLES__` WHERE table_id=@tableid".format(
+            sql_query = "SELECT table_id, FORMAT_TIMESTAMP('%G-%m-%d',TIMESTAMP_MILLIS(last_modified_time)) AS last_modified_date FROM `{0}.cis.__TABLES__` WHERE table_id=@tableid".format(
                 str(pubsub_project_id))
             job_config = bigquery.QueryJobConfig(
                 query_parameters=[
@@ -203,9 +203,14 @@ def cis_results():
             query_job_table = client.query(sql_query, job_config=job_config)
             query_job_table.result()
             table_data = [dict(row) for row in query_job_table]
-            sql_query_2 = "SELECT * FROM `{0}.cis.{1}` ORDER BY benchmark, id".format(str(pubsub_project_id),
-                                                                           str(project_id_edited))
-            query_job = client.query(sql_query_2)
+            sql_query_2 = "SELECT * FROM `{0}.cis.{1}` WHERE DATE(_PARTITIONTIME)=@last_date_updated ORDER BY benchmark, id".format(str(pubsub_project_id),
+                                                                        str(project_id_edited))
+            job_config_2 = bigquery.QueryJobConfig(
+                query_parameters=[
+                    bigquery.ScalarQueryParameter(
+                        "last_date_updated", "STRING", table_data[0]['last_modified_date'])
+                ])
+            query_job = client.query(sql_query_2, job_config=job_config_2)
             query_job.result()
             findings = [dict(row) for row in query_job]
             table = json.dumps({'findings': findings, 'table': table_data},
@@ -334,7 +339,7 @@ def zap_scan():
     message = b""
     user_supplied_url = json_data['URL']
     dev_slack_channel = f"#{json_data['slack_channel']}"
-    endpoint = f"{dojo_host_url}api/v2/endpoints/"
+    endpoint = f"{dojo_host}api/v2/endpoints?limit=1000"
 
     publisher = pubsub_v1.PublisherClient()
     zap_topic_path = publisher.topic_path(pubsub_project_id, zap_topic_name)
@@ -348,7 +353,7 @@ def zap_scan():
 
     parsed_user_url = urlparse(user_supplied_url)
     for endpoint in endpoints:
-        if endpoint['host'] == parsed_user_url.netloc:
+        if endpoint['host'] == parsed_user_url.netloc and (endpoint['path'] or '/').rstrip('/') == parsed_user_url.path.rstrip('/'):
             service_codex_project, default_slack_channel, service_scan_type, engagement_id = parse_tags(
                 endpoint)
             if endpoint['path'] == None:
@@ -357,6 +362,7 @@ def zap_scan():
                 service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}{endpoint['path']}"
             severities = parse_json_data.parse_severities(
                 json_data['severities'])
+
             publisher.publish(zap_topic_path,
                               data=message,
                               URL=service_full_endpoint,

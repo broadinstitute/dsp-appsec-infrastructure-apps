@@ -117,7 +117,7 @@ spec:
             memory: 130M
 
       - name: rabbitmq
-        image: rabbitmq
+        image: rabbitmq:3.8
         env:
         - name: RABBITMQ_DEFAULT_USER
           valueFrom:

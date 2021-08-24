@@ -49,10 +49,8 @@ def codedx_upload(cdx: CodeDx, project: str, filename: str):
     """
     Create CodeDx project if needed and trigger analysis on the uploaded file.
     """
-    cdx.update_projects()
-    if project not in list(cdx.projects):
+    if not cdx.get_project_id(project):
         cdx.create_project(project)
-        cdx.update_projects()
 
     cdx.analyze(project, filename)
 
@@ -104,8 +102,11 @@ def get_codedx_alert_count_by_severity(
             "status": ["new", "unresolved", "reopened"],
         },
     }
-
-    res = cdx.get_finding_count(project, filters)
+    pid = cdx.get_project_id(project)
+    if not pid:
+        new_project = cdx.create_project(project)
+        pid = new_project["id"]
+    res = cdx.get_finding_count(pid, filters)
     if "count" not in res:
         raise RuntimeError(f"{ res }")
 
@@ -146,7 +147,8 @@ def get_codedx_report_by_alert_severity(
         "severity": [s.value for s in severities],
         "status": ["new", "unresolved", "reopened"],
     }
-
+    if not cdx.get_project_id(project):
+        cdx.create_project(project)
     cdx.get_pdf(
         project,
         summary_mode="detailed",
@@ -309,7 +311,7 @@ def main(): # pylint: disable=too-many-locals
             error_message = f"[RETRY-{ attempt }] Exception running Zap Scans: { error }"
             logging.warning(error_message)
             if attempt == max_retries - 1:
-                error_message = f"Error running Zap Scans. Last known error: { error }"
+                error_message = f"Error running Zap Scans for { codedx_project }. Last known error: { e }"
                 error_slack_alert(error_message, slack_token, slack_channel)
                 try:
                     zap = zap_connect(zap_port)

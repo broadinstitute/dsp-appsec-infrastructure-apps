@@ -9,7 +9,6 @@ import { FormComponent } from './form/form.component';
 import { MainpageComponent } from './mainpage/mainpage.component';
 import { AppRoutingModule } from './app-routing.module';
 import { SendFormDataService } from './services/send-form-data.service';
-import { NonDSPformComponent } from './non-dspform/non-dspform.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { CisComponent } from './cis/cis.component';
 import { CisProjectService } from './services/cis-project.service';
@@ -24,11 +23,11 @@ import { CisLandingPageComponent } from './cis-landing-page/cis-landing-page.com
 import { FilterPipe } from './pipes/filter.pipe';
 import { JiraTicketRiskAssesmentComponent } from './jira-ticket-risk-assesment/jira-ticket-risk-assesment.component';
 import { ThreatModelComponent } from './threat-model/threat-model.component';
-import { RequestTmService} from './services/request-tm.service';
+import { RequestTmService } from './services/request-tm.service';
 import { AboutPageComponent } from './about-page/about-page.component'
 import { CsvDataService } from './services/csv-data.service';
 import { ServiceScanComponent } from './service-scan/service-scan.component'
-import { ScanServiceService} from './services/scan-service.service';
+import { ScanServiceService } from './services/scan-service.service';
 import { MultiScanComponent } from './multi-scan/multi-scan.component';
 import { NotfoundComponent } from './notfound/notfound.component';
 
@@ -41,7 +40,6 @@ import { NotfoundComponent } from './notfound/notfound.component';
     SurveyCreatorComponent,
     FormComponent,
     MainpageComponent,
-    NonDSPformComponent,
     HomepageComponent,
     CisComponent,
     NavbarComponent,
@@ -73,7 +71,7 @@ import { NotfoundComponent } from './notfound/notfound.component';
     RequestTmService,
     CsvDataService,
     ScanServiceService
-    ],
+  ],
   bootstrap: [
     AppComponent
   ],
