@@ -24,7 +24,7 @@ resource "google_project_service" "servicenetworking" {
   disable_on_destroy = false
 }
 
-resource "google_compute_project_metadata_item" "default" {
+resource "google_compute_project_metadata_item" "oslogin" {
   key   = "enable-oslogin"
   value = "TRUE"
 }
@@ -54,7 +54,9 @@ resource "google_compute_subnetwork" "gke" {
   ip_cidr_range            = var.node_cidr
   private_ip_google_access = true
 
-  log_config {}
+  log_config {
+    metadata = "INCLUDE_ALL_METADATA"
+  }
 }
 
 resource "google_compute_global_address" "mysql" {
