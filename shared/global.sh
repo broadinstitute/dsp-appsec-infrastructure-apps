@@ -8,10 +8,17 @@ export $(xargs < .env)
 # get cluster credentials
 gcloud container clusters get-credentials --region "${region}" "${cluster}"
 
-# deploy global resources using Config Connector
+# deploy global resources
 export NAMESPACE="${GLOBAL_NAMESPACE}"
+export PSP_NAME="restricted"
+export PSP_ROLE="${NAMESPACE}-psp"
+export PSP_BINDING="${PSP_ROLE}"
+
+kubectl apply -f \
+  "https://raw.githubusercontent.com/kubernetes/website/main/content/en/examples/policy/${PSP_NAME}-psp.yaml"
 
 ./kube-apply.py \
+  "psp.yaml" \
   "configconnector.yaml" \
   "namespace.yaml" \
   "configconnectorcontext.yaml" \
