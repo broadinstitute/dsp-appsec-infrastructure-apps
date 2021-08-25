@@ -15,9 +15,8 @@ import subprocess
 import sys
 from typing import Any, List, Set
 
+from google.cloud import bigquery, firestore, resourcemanager
 from slack_sdk import WebClient
-from google.cloud import bigquery, firestore
-from google.cloud import resourcemanager
 
 BENCHMARK_PROFILES = (
     'inspec-gcp-cis-benchmark',
@@ -35,7 +34,8 @@ def benchmark(target_project_id: str, profile: str):
     proc = subprocess.run([
         'inspec', 'exec', profile,
         '-t', 'gcp://', '--reporter', 'json',
-        '--input', f'gcp_project_id={target_project_id}'
+        '--input', f'gcp_project_id={target_project_id}',
+        f"registry_storage_legacy_bucket_owner_list=[projectEditor:{target_project_id},projectOwner:{target_project_id}]",
     ], stdout=subprocess.PIPE, stderr=sys.stderr, text=True, check=False)
 
     # normal exit codes as documented at
