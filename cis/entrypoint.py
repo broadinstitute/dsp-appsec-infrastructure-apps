@@ -7,13 +7,13 @@ This module
 - optionally records completion in a Firestore doc
 """
 
-from datetime import datetime
 import json
 import logging
 import os
 import re
 import subprocess
 import sys
+from datetime import datetime
 from typing import Any, List, Set
 
 from google.cloud import bigquery, firestore, resourcemanager
@@ -62,6 +62,7 @@ def benchmarks(target_project_id: str):
 
 
 def parse_profiles(target_project_id: str, profiles, cis_controls_ignore_final_list):
+    # pylint: disable=too-many-locals
     """
     Parses scan results into a table structure for BigQuery.
     """
