@@ -1,7 +1,7 @@
 --- a/entrypoint-initializer.sh
 +++ b/entrypoint-initializer.sh
 @@ -107,4 +107,12 @@
-
+ 
    echo "Installing watson search index"
    python3 manage.py installwatson
 +else
