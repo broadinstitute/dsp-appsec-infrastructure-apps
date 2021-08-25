@@ -68,7 +68,7 @@ def parse_profiles(target_project_id: str, profiles, cis_controls_ignore_final_l
     """
     rows: List[Any] = []
     titles: Set[str] = set()
-    timestamp = datetime.now()
+    timestamp = datetime.now().isoformat()
     for profile in profiles:
         if profile['name'] not in BENCHMARK_PROFILES:
             continue
