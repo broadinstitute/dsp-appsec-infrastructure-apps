@@ -179,7 +179,7 @@ steps:
   entrypoint: sh
   args:
   - -c
-  - gsutil mb -b "gs://$${TERRAFORM_BUCKET}" ;
+  - gsutil mb -b on "gs://$${TERRAFORM_BUCKET}" ;
     gsutil versioning set on "gs://$${TERRAFORM_BUCKET}"
 
 # deploy GKE cluster and associated GCP resources
