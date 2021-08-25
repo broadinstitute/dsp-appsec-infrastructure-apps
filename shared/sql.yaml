@@ -28,7 +28,7 @@ spec:
     - name: log_lock_waits
       value: 'on'
     - name: log_min_error_statement
-      value: 'ERROR'
+      value: 'error'
     - name: log_temp_files
       value: '0'
     - name: log_min_duration_statement
