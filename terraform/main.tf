@@ -171,11 +171,10 @@ resource "google_storage_bucket_iam_member" "us_gcr_viewers" {
   member = each.value
 }
 
-resource "google_container_registry" "gcr" {
-  location = "US"
-}
-
 # needed for CIS GKE 5.1.3
+
+resource "google_container_registry" "gcr" {}
+
 resource "google_storage_bucket_iam_member" "gcr_viewer" {
   bucket = google_container_registry.gcr.id
   role   = "roles/storage.objectViewer"
