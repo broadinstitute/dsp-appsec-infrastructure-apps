@@ -34,6 +34,7 @@ resource "google_compute_instance" "bastion" {
 
   metadata = {
     google-logging-enabled = true
+    block-project-ssh-keys = true
     gce-container-declaration = jsonencode({
       spec = {
         containers = [{

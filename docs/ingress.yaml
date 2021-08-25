@@ -26,6 +26,7 @@ metadata:
   name: ${FRONTEND_CONFIG}
   namespace: ${NAMESPACE}
 spec:
+  sslPolicy: ${ssl_policy}
   redirectToHttps:
     enabled: true
 ---
