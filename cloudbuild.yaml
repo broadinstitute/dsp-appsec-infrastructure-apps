@@ -232,12 +232,12 @@ steps:
   entrypoint: ./deploy.sh
   dir: codedx
 
-# # deploy DefectDojo to GKE cluster
-# - id: defectdojo
-#   name: *kubectl
-#   waitFor: ['shared', 'defectdojo-django-image', 'defectdojo-nginx-image']
-#   entrypoint: ./deploy.sh
-#   dir: defectdojo
+# deploy DefectDojo to GKE cluster
+- id: defectdojo
+  name: *kubectl
+  waitFor: ['shared', 'defectdojo-django-image', 'defectdojo-nginx-image']
+  entrypoint: ./deploy.sh
+  dir: defectdojo
 
 # deploy SDARQ to GKE cluster
 - id: sdarq
