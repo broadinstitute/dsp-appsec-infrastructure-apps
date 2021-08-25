@@ -107,32 +107,32 @@ steps:
       --destination=$${CODEDX_IMAGE}
       --cache
 
-# # build patched DefectDojo Django image,
-# # using Kaniko to speed up builds
-# - id: defectdojo-django-image
-#   name: *kaniko
-#   waitFor: ['kaniko']
-#   entrypoint: sh
-#   args:
-#   - -c
-#   - executor
-#       --context=dir:///workspace/defectdojo
-#       --dockerfile=Dockerfile.django
-#       --destination=$${DD_DJANGO_IMAGE}
-#       --cache
+# build patched DefectDojo Django image,
+# using Kaniko to speed up builds
+- id: defectdojo-django-image
+  name: *kaniko
+  waitFor: ['kaniko']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/defectdojo
+      --dockerfile=Dockerfile.django
+      --destination=$${DD_DJANGO_IMAGE}
+      --cache
 
-# # build patched DefectDojo Nginx image
-# - id: defectdojo-nginx-image
-#   name: *kaniko
-#   waitFor: ['kaniko']
-#   entrypoint: sh
-#   args:
-#   - -c
-#   - executor
-#       --context=dir:///workspace/defectdojo
-#       --dockerfile=Dockerfile.nginx
-#       --destination=$${DD_NGINX_IMAGE}
-#       --cache
+# build patched DefectDojo Nginx image
+- id: defectdojo-nginx-image
+  name: *kaniko
+  waitFor: ['kaniko']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/defectdojo
+      --dockerfile=Dockerfile.nginx
+      --destination=$${DD_NGINX_IMAGE}
+      --cache
 
 # build SDARQ frontend Docker image
 - id: sdarq-frontend-image
