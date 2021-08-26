@@ -12,10 +12,7 @@ export class CisResultsComponent implements OnInit {
 
   result: any;
   projectFindings: any[];
-  latestDate: any[];
-  table_id: any[];
   data: any[];
-  date: any[];
   params: any;
   value: string;
   showModal: boolean;
@@ -23,8 +20,8 @@ export class CisResultsComponent implements OnInit {
   errors: any[];
   showTable: boolean;
   filename: string;
-  table_name: any[];
-  modified_datetime: string;
+  tableName: string;
+  updateDatetime: string;
   headElements = ['Benchmark', 'Id', 'Level', 'CVSS', 'Title', 'Failures', 'Description', 'Rationale', 'Refs'];
 
 
@@ -38,19 +35,16 @@ export class CisResultsComponent implements OnInit {
     })
   }
 
-  saveAsCSV(projectFindings, modified_datetime, table_name) {
-    const format = '.csv'
-    const prefix = 'GCP_CIS_Results_'.concat(table_name)
-    const table = prefix.concat('_')
-    this.filename = table.concat(modified_datetime).concat(format)
+  saveAsCSV(projectFindings, updateDatetime, tableName) {
+    this.filename = ['GCP_CIS_Results_', tableName, '_', updateDatetime, '.csv'].join('')
     this.csvService.exportToCsv(this.filename, this.csvService.ConvertToCSV(JSON.stringify(projectFindings), this.headElements))
   }
 
   private getResults(value) {
     this.getProjectScan.getCisScan(this.value).subscribe((data: any) => {
       this.projectFindings = data.findings;
-      this.table_name = data.table[0].table_id;
-      this.modified_datetime = new Date(data.table[0].last_modified_datetime).toLocaleString();
+      this.tableName = data.table[0].table_id;
+      this.updateDatetime = new Date(data.table[0].last_modified_datetime).toLocaleString();
       this.showSpinner = false;
       this.showTable = true;
     },
