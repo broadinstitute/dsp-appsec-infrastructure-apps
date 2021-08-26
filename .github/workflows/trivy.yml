@@ -32,8 +32,8 @@ jobs:
 
     - uses: broadinstitute/dsp-appsec-trivy-action@v1
       with:
-        context: ./${{ matrix.dir }}
-        dockerfile: ${{ matrix.dockerfile || 'Dockerfile ' }}
+        context: ${{ matrix.dir }}
+        # dockerfile: ${{ matrix.dockerfile || 'Dockerfile ' }}
         sarif: ${{ matrix.dir }}/trivy-results.sarif
 
     - name: Upload Trivy scan results to GitHub Security tab
