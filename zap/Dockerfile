@@ -1,9 +1,5 @@
-FROM us.gcr.io/broad-dsp-gcr-public/base/python:debian AS base
-
-FROM owasp/zap2docker-weekly AS zap
-
 # Set up a Python virtualenv in a "build" stage
-FROM base AS build
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:debian AS build
 
 RUN apt-get update && \
     apt-get install --no-install-recommends -qq git-core && \
@@ -29,10 +25,10 @@ RUN /venv/bin/pylint --fail-under=9 --ignore=zap_common.py ./*.py
 
 
 # Copy the virtualenv and sources into the clean final image
-FROM base
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:debian
 
+COPY --from=owasp/zap2docker-weekly /zap/zap_common.py ./
 COPY --from=build /venv /venv
-COPY --from=zap /zap/zap_common.py ./
 COPY src/*.py ./
 
 ENTRYPOINT ["/venv/bin/python3", "-u", "-m"]
