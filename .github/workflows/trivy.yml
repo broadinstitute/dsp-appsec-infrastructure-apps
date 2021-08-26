@@ -16,17 +16,17 @@ jobs:
         - dir: cis
         - dir: zap
         - dir: batch
-        - dir: codedx
+        #- dir: codedx
         - dir: bastion
         #- dir: docs/src
         - dir: secexplorer
         - dir: .
           dockerfile: sdarq/backend/Dockerfile
         - dir: sdarq/frontend
-        - dir: defectdojo
-          dockerfile: Dockerfile.django
-        - dir: defectdojo
-          dockerfile: Dockerfile.nginx
+        # - dir: defectdojo
+        #   dockerfile: Dockerfile.django
+        # - dir: defectdojo
+        #   dockerfile: Dockerfile.nginx
     env:
       SARIF_PATH: ${{ matrix.dir }}/trivy-results.sarif
 
