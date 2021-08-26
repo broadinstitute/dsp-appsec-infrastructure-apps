@@ -27,6 +27,8 @@ jobs:
           dockerfile: Dockerfile.django
         - dir: defectdojo
           dockerfile: Dockerfile.nginx
+    env:
+      SARIF_PATH: ${{ matrix.dir }}/trivy-results.sarif
 
     steps:
     - uses: actions/checkout@v2
@@ -35,10 +37,10 @@ jobs:
       with:
         context: ${{ matrix.dir }}
         dockerfile: ${{ matrix.dockerfile || 'Dockerfile' }}
-        sarif: ${{ matrix.dir }}/trivy-results.sarif
+        sarif: ${{ github.base_ref && env.SARIF_PATH || '' }}
 
     - name: Upload Trivy scan results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@v1
       if: ${{ !github.base_ref }} # omit upload on PRs
       with:
-        sarif_file: ${{ matrix.dir }}/trivy-results.sarif
+        sarif_file: ${{ env.SARIF_PATH }}
