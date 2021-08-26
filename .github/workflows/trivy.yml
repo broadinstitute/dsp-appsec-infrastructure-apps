@@ -1,0 +1,43 @@
+name: dsp-appsec-trivy
+on:
+  pull_request:
+  schedule:
+  - cron: '0 14 * * 1' # each Monday at 9am EST
+
+jobs:
+  appsec-trivy:
+    # Parse Dockerfile and build, scan image if a "blessed" base image is not used
+    name: DSP AppSec Trivy check
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - dir: cis
+        - dir: zap
+        - dir: batch
+        - dir: codedx
+        - dir: bastion
+        - dir: docs/src
+        - dir: secexplorer
+        - dir: sdarq/backend
+        - dir: sdarq/frontend
+        - dir: defectdojo
+          dockerfile: Dockefile.djano
+        - dir: defectdojo
+          dockerfile: Dockefile.nginx
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: broadinstitute/dsp-appsec-trivy-action@v1
+      with:
+        context: ${{ matrix.dir }}
+        dockerfile: ${{ matrix.dockerfile || 'Dockerfile ' }}
+        sarif: trivy-results.sarif
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v1
+      if: ${{ !github.base_ref }} # omit upload on PRs
+      with:
+        sarif_file: ${{ matrix.dir }}/trivy-results.sarif
