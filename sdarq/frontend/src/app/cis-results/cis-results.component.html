@@ -25,7 +25,7 @@
   <div class="row">
     <div class="col animated fadeIn">
       <div *ngIf="showTable">
-        <a mdbBtn color="primary" mdbWavesEffect (click)="saveAsCSV(projectFindings,updateDatetime,tableName)">Download CSV file</a>
+        <a mdbBtn color="primary" mdbWavesEffect (click)="saveAsCSV(projectFindings,updateDate,tableName)">Download CSV file</a>
       </div>
     </div>
     <div class="col">
@@ -39,7 +39,7 @@
   <!-- start table  -->
   <div class="row">
     <div class="col">
-      <p *ngIf="showTable" class="updateDatetime">Last updated: {{ updateDatetime }}</p>
+      <p *ngIf="showTable" class="updateDate">Last updated: {{ updateDate.toLocaleString() }}</p>
       <table mdbTable #tableEl="mdbTable" hover="true" striped="true" class="z-depth-1" class="animated fadeIn"
         *ngIf="showTable">
         <th *ngFor="let head of headElements" class="mdb-color darken-3 white-text">
