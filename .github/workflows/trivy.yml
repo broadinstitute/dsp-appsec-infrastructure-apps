@@ -16,17 +16,10 @@ jobs:
         - dir: cis
         - dir: zap
         - dir: batch
-        #- dir: codedx
         - dir: bastion
-        #- dir: docs/src
         - dir: secexplorer
-        - dir: .
-          dockerfile: sdarq/backend/Dockerfile
         - dir: sdarq/frontend
-        # - dir: defectdojo
-        #   dockerfile: Dockerfile.django
-        # - dir: defectdojo
-        #   dockerfile: Dockerfile.nginx
+        - dockerfile: sdarq/backend/Dockerfile
     env:
       SARIF_PATH: ${{ matrix.dir }}/trivy-results.sarif
 
@@ -35,7 +28,7 @@ jobs:
 
     - uses: broadinstitute/dsp-appsec-trivy-action@v1
       with:
-        context: ${{ matrix.dir }}
+        context: ${{ matrix.dir || '.' }}
         dockerfile: ${{ matrix.dockerfile || 'Dockerfile' }}
         sarif: ${{ !github.base_ref && env.SARIF_PATH || '' }}
         severities: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
