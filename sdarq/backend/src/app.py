@@ -194,12 +194,16 @@ def cis_results():
         try:
             last_modified_datetime = client.get_table(table_id).modified.strftime('%G-%m-%dT%H:%M:%SZ')
             sql_query = f'''
-                SELECT * EXCEPT(timestamp) FROM `{table_id}`
+                SELECT
+                    benchmark, id, level,
+                    CAST(CAST(impact AS FLOAT64) * 10 AS INT64) AS cvss,
+                    title, failures, description, rationale, refs,
+                FROM `{table_id}`
                 WHERE DATE(_PARTITIONTIME) = DATE(@last_modified_datetime)
                 AND timestamp IN (
                     SELECT MAX(timestamp) FROM `{table_id}`
                 )
-                ORDER BY benchmark, id
+                ORDER BY level, cvss DESC, id
             '''
             job_config = bigquery.QueryJobConfig(
                 query_parameters=[

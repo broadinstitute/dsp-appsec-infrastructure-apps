@@ -13,7 +13,7 @@ export class FilterPipe implements PipeTransform {
             return value.filter((it) => {
                 const id = it.id.toString().includes(searchString);
                 const level = it.level.toString().includes(searchString);
-                const impact = it.impact.toString().includes(searchString);
+                const cvss = it.cvss.toString().includes(searchString);
                 const title = it.title
                     .toLowerCase()
                     .includes(searchString.toLowerCase());
@@ -26,7 +26,7 @@ export class FilterPipe implements PipeTransform {
                 const benchmark = it.benchmark
                     .toLowerCase()
                     .includes(searchString.toLowerCase());
-                return id + level + impact + title + description + rationale + benchmark;
+                return id + level + cvss + title + description + rationale + benchmark;
             });
         }
     }
