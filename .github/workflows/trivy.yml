@@ -13,13 +13,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - dir: cis
-        - dir: zap
         - dir: batch
         - dir: bastion
+        - dir: cis
         - dir: secexplorer
         - dir: sdarq/frontend
         - dockerfile: sdarq/backend/Dockerfile
+        - dir: zap
     env:
       SARIF_PATH: ${{ matrix.dir }}/trivy-results.sarif
 

@@ -1,4 +1,4 @@
-FROM python:slim AS base
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:debian AS base
 
 FROM owasp/zap2docker-weekly AS zap
 

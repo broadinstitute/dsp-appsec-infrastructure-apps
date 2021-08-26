@@ -9,6 +9,7 @@ COPY . .
 RUN npm run lint
 RUN npm run build -- --prod
 
-FROM nginx:alpine
+FROM us.gcr.io/broad-dsp-gcr-public/base/nginx:mainline-alpine
+
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=node /app/dist /usr/share/nginx/html
