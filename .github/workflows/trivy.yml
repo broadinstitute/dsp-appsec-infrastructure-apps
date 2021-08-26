@@ -32,9 +32,9 @@ jobs:
 
     - uses: broadinstitute/dsp-appsec-trivy-action@v1
       with:
-        context: ${{ matrix.dir }}
+        context: ./${{ matrix.dir }}
         dockerfile: ${{ matrix.dockerfile || 'Dockerfile ' }}
-        sarif: trivy-results.sarif
+        sarif: ${{ matrix.dir }}/trivy-results.sarif
 
     - name: Upload Trivy scan results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@v1
