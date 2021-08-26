@@ -23,9 +23,9 @@ jobs:
         - dir: sdarq/backend
         - dir: sdarq/frontend
         - dir: defectdojo
-          dockerfile: Dockefile.djano
+          dockerfile: Dockerfile.djano
         - dir: defectdojo
-          dockerfile: Dockefile.nginx
+          dockerfile: Dockerfile.nginx
 
     steps:
     - uses: actions/checkout@v2
@@ -33,7 +33,7 @@ jobs:
     - uses: broadinstitute/dsp-appsec-trivy-action@v1
       with:
         context: ${{ matrix.dir }}
-        # dockerfile: ${{ matrix.dockerfile || 'Dockerfile ' }}
+        dockerfile: ${{ matrix.dockerfile || 'Dockerfile' }}
         sarif: ${{ matrix.dir }}/trivy-results.sarif
 
     - name: Upload Trivy scan results to GitHub Security tab
