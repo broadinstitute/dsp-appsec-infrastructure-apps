@@ -192,30 +192,35 @@ def cis_results():
         table_id = u"{0}.{1}.{2}".format(
             pubsub_project_id, 'cis', project_id_edited)
         try:
-            client.get_table(table_id)
-            sql_query = "SELECT table_id, FORMAT_TIMESTAMP('%G-%m-%d',TIMESTAMP_MILLIS(last_modified_time)) AS last_modified_date FROM `{0}.cis.__TABLES__` WHERE table_id=@tableid".format(
-                str(pubsub_project_id))
+            last_modified_datetime = client.get_table(table_id).modified.strftime('%G-%m-%dT%H:%M:%SZ')
+            sql_query = f'''
+                SELECT
+                    benchmark, id, level,
+                    CAST(CAST(impact AS FLOAT64) * 10 AS INT64) AS cvss,
+                    title, failures, description, rationale, refs,
+                FROM `{table_id}`
+                WHERE DATE(_PARTITIONTIME) = DATE(@last_modified_datetime)
+                AND timestamp IN (
+                    SELECT MAX(timestamp) FROM `{table_id}`
+                )
+                ORDER BY level, cvss DESC, id
+            '''
             job_config = bigquery.QueryJobConfig(
                 query_parameters=[
                     bigquery.ScalarQueryParameter(
-                        "tableid", "STRING", project_id_edited)
-                ])
-            query_job_table = client.query(sql_query, job_config=job_config)
-            query_job_table.result()
-            table_data = [dict(row) for row in query_job_table]
-            sql_query_2 = "SELECT * FROM `{0}.cis.{1}` WHERE DATE(_PARTITIONTIME)=@last_date_updated ORDER BY benchmark, id".format(str(pubsub_project_id),
-                                                                        str(project_id_edited))
-            job_config_2 = bigquery.QueryJobConfig(
-                query_parameters=[
-                    bigquery.ScalarQueryParameter(
-                        "last_date_updated", "STRING", table_data[0]['last_modified_date'])
-                ])
-            query_job = client.query(sql_query_2, job_config=job_config_2)
+                        "last_modified_datetime", "STRING", last_modified_datetime)
+                ]
+            )
+            query_job = client.query(sql_query, job_config=job_config)
             query_job.result()
             findings = [dict(row) for row in query_job]
-            table = json.dumps({'findings': findings, 'table': table_data},
-                               indent=4, default=str)
-            return table
+            return json.dumps({
+                'findings': findings,
+                'meta': {
+                    'projectId': project_id,
+                    'lastModifiedDatetime': last_modified_datetime,
+                }
+            }, indent=2)
         except Exception:
             status_code = 404
             notfound = f"""

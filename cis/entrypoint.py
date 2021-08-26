@@ -13,6 +13,7 @@ import os
 import re
 import subprocess
 import sys
+from datetime import datetime
 from typing import Any, List, Set
 
 from google.cloud import bigquery, firestore, resourcemanager
@@ -61,11 +62,13 @@ def benchmarks(target_project_id: str):
 
 
 def parse_profiles(target_project_id: str, profiles, cis_controls_ignore_final_list):
+    # pylint: disable=too-many-locals
     """
     Parses scan results into a table structure for BigQuery.
     """
     rows: List[Any] = []
     titles: Set[str] = set()
+    timestamp = datetime.now().isoformat()
     for profile in profiles:
         if profile['name'] not in BENCHMARK_PROFILES:
             continue
@@ -111,6 +114,7 @@ def parse_profiles(target_project_id: str, profiles, cis_controls_ignore_final_l
                 'description': ctrl['desc'],
                 'rationale': rationale,
                 'refs': refs,
+                'timestamp': timestamp,
             })
 
     return '; '.join(titles), rows
@@ -147,10 +151,12 @@ def load_bigquery(target_project_id: str, dataset_id: str, table_id: str,
         f('description', 'STRING', mode='REQUIRED'),
         f('rationale', 'STRING', mode='REQUIRED'),
         f('refs', 'STRING', mode='REPEATED'),
+        f('timestamp', 'TIMESTAMP'),
     )
     job_config = bigquery.LoadJobConfig(
         schema=schema,
         write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
+        schema_update_options=[bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION],
         time_partitioning=bigquery.TimePartitioning(
             type_=bigquery.TimePartitioningType.DAY,
         ),
