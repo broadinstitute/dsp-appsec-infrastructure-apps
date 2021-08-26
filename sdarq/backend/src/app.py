@@ -193,8 +193,13 @@ def cis_results():
             pubsub_project_id, 'cis', project_id_edited)
         try:
             client.get_table(table_id)
-            sql_query = "SELECT table_id, FORMAT_TIMESTAMP('%G-%m-%d',TIMESTAMP_MILLIS(last_modified_time)) AS last_modified_date FROM `{0}.cis.__TABLES__` WHERE table_id=@tableid".format(
-                str(pubsub_project_id))
+            sql_query = f'''
+                SELECT
+                    table_id,
+                    FORMAT_DATETIME("%G-%m-%dT%TZ", TIMESTAMP_TRUNC(TIMESTAMP_MILLIS(last_modified_time), SECOND)) AS last_modified_datetime
+                FROM `{pubsub_project_id}.cis.__TABLES__`
+                WHERE table_id=@tableid
+            '''
             job_config = bigquery.QueryJobConfig(
                 query_parameters=[
                     bigquery.ScalarQueryParameter(
@@ -204,8 +209,8 @@ def cis_results():
             query_job_table.result()
             table_data = [dict(row) for row in query_job_table]
             sql_query_2 = f'''
-                SELECT * FROM `{table_id}`
-                WHERE DATE(_PARTITIONTIME)=@last_date_updated
+                SELECT * EXCEPT(timestamp) FROM `{table_id}`
+                WHERE DATE(_PARTITIONTIME) = DATE(@last_modified_datetime)
                 AND timestamp IN (
                     SELECT MAX(timestamp) FROM `{table_id}`
                 )
@@ -214,7 +219,7 @@ def cis_results():
             job_config_2 = bigquery.QueryJobConfig(
                 query_parameters=[
                     bigquery.ScalarQueryParameter(
-                        "last_date_updated", "STRING", table_data[0]['last_modified_date'])
+                        "last_modified_datetime", "STRING", table_data[0]['last_modified_datetime'])
                 ])
             query_job = client.query(sql_query_2, job_config=job_config_2)
             query_job.result()

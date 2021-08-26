@@ -24,7 +24,7 @@ export class CisResultsComponent implements OnInit {
   showTable: boolean;
   filename: string;
   table_name: any[];
-  modified_date: any[];
+  modified_datetime: string;
   headElements = ['Benchmark', 'Id', 'Level', 'CVSS', 'Title', 'Failures', 'Description', 'Rationale', 'Refs'];
 
 
@@ -38,20 +38,19 @@ export class CisResultsComponent implements OnInit {
     })
   }
 
-  saveAsCSV(projectFindings, modified_date, table_name) {
+  saveAsCSV(projectFindings, modified_datetime, table_name) {
     const format = '.csv'
-    const prefix = 'GCP_CIS_Results_'.concat(table_name.toString())
-    const table = prefix.concat('_'.toString())
-    this.filename = table.concat(modified_date.toString()).concat(format.toString())
+    const prefix = 'GCP_CIS_Results_'.concat(table_name)
+    const table = prefix.concat('_')
+    this.filename = table.concat(modified_datetime).concat(format)
     this.csvService.exportToCsv(this.filename, this.csvService.ConvertToCSV(JSON.stringify(projectFindings), this.headElements))
-
   }
 
   private getResults(value) {
     this.getProjectScan.getCisScan(this.value).subscribe((data: any) => {
       this.projectFindings = data.findings;
       this.table_name = data.table[0].table_id;
-      this.modified_date = data.table[0].last_modified_date;
+      this.modified_datetime = new Date(data.table[0].last_modified_datetime).toLocaleString();
       this.showSpinner = false;
       this.showTable = true;
     },
