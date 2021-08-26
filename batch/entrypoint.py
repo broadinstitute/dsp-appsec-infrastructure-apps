@@ -114,7 +114,7 @@ def load_job(subscription: str, spec_path: str):
 
     Constructs a Job object with this spec.
     """
-    with open(spec_path) as spec_file:
+    with open(spec_path, "r") as spec_file:
         spec = yaml.safe_load(spec_file)
         spec["template"].setdefault("metadata", {}).setdefault("annotations", {})
 

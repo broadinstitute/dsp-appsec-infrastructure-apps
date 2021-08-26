@@ -18,12 +18,13 @@ jobs:
         - dir: batch
         - dir: codedx
         - dir: bastion
-        - dir: docs/src
+        #- dir: docs/src
         - dir: secexplorer
-        - dir: sdarq/backend
+        - dir: .
+          dockerfile: sdarq/backend/Dockerfile
         - dir: sdarq/frontend
         - dir: defectdojo
-          dockerfile: Dockerfile.djano
+          dockerfile: Dockerfile.django
         - dir: defectdojo
           dockerfile: Dockerfile.nginx
 
