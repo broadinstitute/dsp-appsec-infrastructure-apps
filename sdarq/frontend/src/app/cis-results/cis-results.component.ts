@@ -44,8 +44,8 @@ export class CisResultsComponent implements OnInit {
   private getResults(value) {
     this.getProjectScan.getCisScan(this.value).subscribe((data: any) => {
       this.projectFindings = data.findings;
-      this.projectId = data.table[0].table_id.replace('_', '-');
-      this.updateDate = new Date(data.table[0].last_modified_datetime);
+      this.projectId = data.meta.projectId;
+      this.updateDate = new Date(data.meta.lastModifiedDatetime);
       this.showSpinner = false;
       this.showTable = true;
     },
