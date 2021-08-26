@@ -38,6 +38,7 @@ jobs:
         context: ${{ matrix.dir }}
         dockerfile: ${{ matrix.dockerfile || 'Dockerfile' }}
         sarif: ${{ !github.base_ref && env.SARIF_PATH || '' }}
+        severities: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
 
     - name: Upload Trivy scan results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@v1
