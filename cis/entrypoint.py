@@ -90,8 +90,6 @@ def parse_profiles(target_project_id: str, profiles, cis_controls_ignore_final_l
                     .replace('cmp == nil', 'be empty')
                     .replace('cmp ==', 'equal')
                 )
-            if not failures:
-                continue
 
             rationale = ''
             for desc in ctrl['descriptions']:
