@@ -99,14 +99,15 @@ def parse_profiles(target_project_id: str, profiles, cis_controls_ignore_final_l
 
             tags = ctrl['tags']
             tag_id = '_'.join(profile['name'].split('-')[2:0:-1])
-            ctrl_id = tags[tag_id] if tag_id in tags else re.findall(r'\d+\.\d+', ctrl['id'])[0]
+            ctrl_id = tags[tag_id] if tags else re.findall(r'\d+\.\d+', ctrl['id'])[0]
+            level = tags['cis_level'] if tags else None
             refs = collect_refs(ctrl['refs'], [])
             bench = profile['title'].lstrip('InSpec ')
 
             rows.append({
                 'benchmark': bench,
                 'id': ctrl_id,
-                'level': tags['cis_level'],
+                'level': level,
                 'impact': str(ctrl['impact']),
                 'title': ctrl['title'],
                 'failures': failures,
@@ -143,7 +144,7 @@ def load_bigquery(target_project_id: str, dataset_id: str, table_id: str,
     schema = (
         f('benchmark', 'STRING', mode='REQUIRED'),
         f('id', 'STRING', mode='REQUIRED'),
-        f('level', 'INTEGER', mode='REQUIRED'),
+        f('level', 'INTEGER'),
         f('impact', 'STRING', mode='REQUIRED'),
         f('title', 'STRING', mode='REQUIRED'),
         f('failures', 'STRING', mode='REPEATED'),
@@ -155,7 +156,10 @@ def load_bigquery(target_project_id: str, dataset_id: str, table_id: str,
     job_config = bigquery.LoadJobConfig(
         schema=schema,
         write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
-        schema_update_options=[bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION],
+        schema_update_options=[
+            bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION,
+            bigquery.SchemaUpdateOption.ALLOW_FIELD_RELAXATION,
+        ],
         time_partitioning=bigquery.TimePartitioning(
             type_=bigquery.TimePartitioningType.DAY,
         ),
