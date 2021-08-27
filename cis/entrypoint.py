@@ -111,7 +111,7 @@ def parse_profiles(target_project_id: str, profiles, cis_controls_ignore_final_l
                 'impact': str(ctrl['impact']),
                 'title': ctrl['title'],
                 'failures': failures,
-                'description': ctrl['desc'],
+                'description': ctrl['desc'] or '',
                 'rationale': rationale,
                 'refs': refs,
                 'timestamp': timestamp,
@@ -317,12 +317,12 @@ def main():
     # parse inputs
     target_project_id = os.environ['TARGET_PROJECT_ID']  # required
     dataset_id = os.environ['BQ_DATASET']  # required
+    # Slack settings, if provided by the user
     slack_token = os.getenv('SLACK_TOKEN')
-    # slack channel if provided from user
     slack_channel = os.getenv('SLACK_CHANNEL')
     slack_results_url = os.getenv('SLACK_RESULTS_URL')
     fs_collection = os.getenv('FIRESTORE_COLLECTION')
-    cis_controls_ignore_list = os.environ['CIS_CONTROLS_IGNORE']
+    cis_controls_ignore_list = os.getenv('CIS_CONTROLS_IGNORE', '')
     cis_controls_ignore_final_list = cis_controls_ignore_list.split(",")
 
     try:
