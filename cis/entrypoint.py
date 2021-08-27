@@ -90,8 +90,6 @@ def parse_profiles(target_project_id: str, profiles, cis_controls_ignore_final_l
                     .replace('cmp == nil', 'be empty')
                     .replace('cmp ==', 'equal')
                 )
-            if not failures:
-                continue
 
             rationale = ''
             for desc in ctrl['descriptions']:
@@ -217,7 +215,7 @@ def find_highs(rows: List[Any], slack_channel: str, slack_token: str, target_pro
     """
     records = []
     for row in rows:
-        if float(row['impact']) > 0.6:
+        if row['findings'] and float(row['impact']) > 0.6:
             records.append({
                 'impact': row['impact'],
                 'title': row['title'],

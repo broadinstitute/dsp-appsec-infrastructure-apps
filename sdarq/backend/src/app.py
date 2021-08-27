@@ -200,6 +200,7 @@ def cis_results():
                     title, failures, description, rationale, refs,
                 FROM `{table_id}`
                 WHERE DATE(_PARTITIONTIME) = DATE(@last_modified_datetime)
+                AND ARRAY_LENGTH(failures) > 0
                 AND timestamp IN (
                     SELECT MAX(timestamp) FROM `{table_id}`
                 )
