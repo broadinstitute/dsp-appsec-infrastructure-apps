@@ -99,12 +99,13 @@ def parse_profiles(target_project_id: str, profiles, cis_controls_ignore_final_l
 
             tags = ctrl['tags']
             tag_id = '_'.join(profile['name'].split('-')[2:0:-1])
+            ctrl_id = tags[tag_id] if tag_id in tags else re.findall(r'\d+\.\d+', ctrl['id'])[0]
             refs = collect_refs(ctrl['refs'], [])
             bench = profile['title'].lstrip('InSpec ')
 
             rows.append({
                 'benchmark': bench,
-                'id': tags[tag_id],
+                'id': ctrl_id,
                 'level': tags['cis_level'],
                 'impact': str(ctrl['impact']),
                 'title': ctrl['title'],
