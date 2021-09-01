@@ -50,6 +50,8 @@ export DB_PASSWORD
 
 export SQL_INSTANCE="burpsuite-enterprise"
 export SQL_REGION="us-east1"
+export SQL_VERSION="POSTGRES_11"
+export SQL_TIER="db-custom-1-3840"
 
 export IP_NAME="${NAMESPACE}"
 export DNS_HOSTNAME="${NAMESPACE}.${DNS_DOMAIN}"
@@ -66,7 +68,8 @@ export TARGET_PORT="http"
 ./kube-apply.py \
   "service-account.yaml" \
   "${CWD}/secret-config.yaml" \
-  "${CWD}/deployment.yaml"
+  "${CWD}/deployment.yaml" \
+  "sql.yaml"
 
 ./host.sh
 

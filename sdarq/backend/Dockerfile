@@ -1,10 +1,10 @@
-FROM python:slim
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:debian
 
-RUN  pip install --upgrade pip 
+RUN pip3 install -U pip
 
 WORKDIR /app
 COPY sdarq/backend/requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 COPY --from=owasp/zap2docker-weekly /zap/zap_common.py ./
 COPY sdarq/backend/src/*.py zap/src/*.py ./

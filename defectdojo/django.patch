@@ -1,9 +1,9 @@
 --- a/entrypoint-initializer.sh
 +++ b/entrypoint-initializer.sh
-@@ -107,4 +107,12 @@
-
-   echo "Installing watson search index"
-   python3 manage.py installwatson
+@@ -108,4 +108,12 @@
+   # surveys fixture needs to be modified as it contains an instance dependant polymorphic content id
+   echo "Migration of textquestions for surveys"
+   python3 manage.py migrate_textquestions
 +else
 +cat <<EOD | python manage.py shell
 +import os

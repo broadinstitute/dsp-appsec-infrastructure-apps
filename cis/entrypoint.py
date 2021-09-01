@@ -13,10 +13,11 @@ import os
 import re
 import subprocess
 import sys
+from datetime import datetime
 from typing import Any, List, Set
 
+from google.cloud import bigquery, firestore, resourcemanager
 from slack_sdk import WebClient
-from google.cloud import bigquery, firestore, resource_manager
 
 BENCHMARK_PROFILES = (
     'inspec-gcp-cis-benchmark',
@@ -34,7 +35,8 @@ def benchmark(target_project_id: str, profile: str):
     proc = subprocess.run([
         'inspec', 'exec', profile,
         '-t', 'gcp://', '--reporter', 'json',
-        '--input', f'gcp_project_id={target_project_id}'
+        '--input', f'gcp_project_id={target_project_id}',
+        f"registry_storage_legacy_bucket_owner_list=[projectEditor:{target_project_id},projectOwner:{target_project_id}]",
     ], stdout=subprocess.PIPE, stderr=sys.stderr, text=True, check=False)
 
     # normal exit codes as documented at
@@ -60,11 +62,13 @@ def benchmarks(target_project_id: str):
 
 
 def parse_profiles(target_project_id: str, profiles, cis_controls_ignore_final_list):
+    # pylint: disable=too-many-locals
     """
     Parses scan results into a table structure for BigQuery.
     """
     rows: List[Any] = []
     titles: Set[str] = set()
+    timestamp = datetime.now().isoformat()
     for profile in profiles:
         if profile['name'] not in BENCHMARK_PROFILES:
             continue
@@ -86,8 +90,6 @@ def parse_profiles(target_project_id: str, profiles, cis_controls_ignore_final_l
                     .replace('cmp == nil', 'be empty')
                     .replace('cmp ==', 'equal')
                 )
-            if not failures:
-                continue
 
             rationale = ''
             for desc in ctrl['descriptions']:
@@ -97,19 +99,22 @@ def parse_profiles(target_project_id: str, profiles, cis_controls_ignore_final_l
 
             tags = ctrl['tags']
             tag_id = '_'.join(profile['name'].split('-')[2:0:-1])
+            ctrl_id = tags[tag_id] if tags else re.findall(r'\d+\.\d+', ctrl['id'])[0]
+            level = tags['cis_level'] if tags else None
             refs = collect_refs(ctrl['refs'], [])
             bench = profile['title'].lstrip('InSpec ')
 
             rows.append({
                 'benchmark': bench,
-                'id': tags[tag_id],
-                'level': tags['cis_level'],
+                'id': ctrl_id,
+                'level': level,
                 'impact': str(ctrl['impact']),
                 'title': ctrl['title'],
                 'failures': failures,
-                'description': ctrl['desc'],
+                'description': ctrl['desc'] or '',
                 'rationale': rationale,
                 'refs': refs,
+                'timestamp': timestamp,
             })
 
     return '; '.join(titles), rows
@@ -139,17 +144,22 @@ def load_bigquery(target_project_id: str, dataset_id: str, table_id: str,
     schema = (
         f('benchmark', 'STRING', mode='REQUIRED'),
         f('id', 'STRING', mode='REQUIRED'),
-        f('level', 'INTEGER', mode='REQUIRED'),
+        f('level', 'INTEGER'),
         f('impact', 'STRING', mode='REQUIRED'),
         f('title', 'STRING', mode='REQUIRED'),
         f('failures', 'STRING', mode='REPEATED'),
         f('description', 'STRING', mode='REQUIRED'),
         f('rationale', 'STRING', mode='REQUIRED'),
         f('refs', 'STRING', mode='REPEATED'),
+        f('timestamp', 'TIMESTAMP'),
     )
     job_config = bigquery.LoadJobConfig(
         schema=schema,
         write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
+        schema_update_options=[
+            bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION,
+            bigquery.SchemaUpdateOption.ALLOW_FIELD_RELAXATION,
+        ],
         time_partitioning=bigquery.TimePartitioning(
             type_=bigquery.TimePartitioningType.DAY,
         ),
@@ -210,7 +220,7 @@ def find_highs(rows: List[Any], slack_channel: str, slack_token: str, target_pro
     """
     records = []
     for row in rows:
-        if float(row['impact']) > 0.6:
+        if row['failures'] and float(row['impact']) > 0.6:
             records.append({
                 'impact': row['impact'],
                 'title': row['title'],
@@ -292,11 +302,10 @@ def slack_notify_high(records: List[Any], slack_token: str,
 def validate_project(target_project_id: str):
     """
     Checks if GCP `project_id` exists via Resource Manager API.
-    Raises a NotFound error if not.
+    Raises a Permission error if not.
     """
-    client = resource_manager.Client()
-    client.fetch_project(target_project_id)
-
+    client = resourcemanager.ProjectsClient()
+    client.get_project(name=f"projects/{target_project_id}")
 
 def main():
     """
@@ -308,12 +317,12 @@ def main():
     # parse inputs
     target_project_id = os.environ['TARGET_PROJECT_ID']  # required
     dataset_id = os.environ['BQ_DATASET']  # required
+    # Slack settings, if provided by the user
     slack_token = os.getenv('SLACK_TOKEN')
-    # slack channel if provided from user
     slack_channel = os.getenv('SLACK_CHANNEL')
     slack_results_url = os.getenv('SLACK_RESULTS_URL')
     fs_collection = os.getenv('FIRESTORE_COLLECTION')
-    cis_controls_ignore_list = os.environ['CIS_CONTROLS_IGNORE']
+    cis_controls_ignore_list = os.getenv('CIS_CONTROLS_IGNORE', '')
     cis_controls_ignore_final_list = cis_controls_ignore_list.split(",")
 
     try:
@@ -343,7 +352,7 @@ def main():
     # writes an error in Firestore document if an exception occurs
     except (Exception) as error:
         if fs_collection:
-            doc_ref.set({u'Error': u'{}'.format(error)})
+            doc_ref.set({'Error': '{}'.format(error)})
         raise error
 
 
