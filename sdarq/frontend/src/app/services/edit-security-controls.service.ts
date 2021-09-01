@@ -10,8 +10,6 @@ export class EditSecurityControlsService {
 
   private Url = location.origin + '/edit_sec_controls/';
 
-  // private Url = 'http://127.0.0.1:8080' + '/edit_sec_controls/';
-
   constructor(private http: HttpClient) { }
 
   editSCT(data): Observable<any> {
