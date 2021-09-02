@@ -1,6 +1,5 @@
 <div class="jumbotron min-vh-100">
     <div class="container">
-
         <div class="row">
             <div class="col-sm text-center">
             <form [formGroup]="chooseServiceForm" (ngSubmit)="editService()" *ngIf="chooseServiceToEditForm">
@@ -10,7 +9,6 @@
             </form>
         </div>
         </div>
-
         <div class="row" *ngIf="serviceToEditForm">
             <div class="col-sm" *ngIf="showServiceData">
                 <div class="service-security-controls-block">
