@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { GetSecurityControlsService } from '../services/get-security-controls.service';
 import { ServiceSecurityControl } from '../models/service-security-control.model';
 import { EditSecurityControlsService } from '../services/edit-security-controls.service';
@@ -42,8 +42,9 @@ export class EditSecurityControlsFormComponent implements OnInit {
   }
 
   chooseServiceForm = new FormGroup({
-    serviceName: new FormControl(''),
+    serviceName: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]),
   })
+
 
   editService() {
     const choosenService = this.chooseServiceForm.value.serviceName
