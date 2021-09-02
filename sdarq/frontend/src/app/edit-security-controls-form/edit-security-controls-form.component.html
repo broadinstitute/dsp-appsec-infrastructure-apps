@@ -1,12 +1,12 @@
 <div class="jumbotron min-vh-100">
     <div class="container">
 
-        <div class="row justify-content-center">
-            <div class="col-sm">
+        <div class="row">
+            <div class="col-sm text-center">
             <form [formGroup]="chooseServiceForm" (ngSubmit)="editService()" *ngIf="chooseServiceToEditForm">
                 <label class="label-edit-security-controls">Enter service name to start editing security controls: </label><br>
-                <input id="service" type="text" formControlName="serviceName"><br><br>
-                <button type="submit">Continue</button>
+                <input class="input-edit-security-control" id="service" type="text" formControlName="serviceName"><br><br>
+                <button [disabled]="!chooseServiceForm.valid" class="continue-button" type="submit">Continue</button>
             </form>
         </div>
         </div>
