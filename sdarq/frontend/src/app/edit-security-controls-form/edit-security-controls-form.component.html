@@ -1,33 +1,41 @@
 <div class="jumbotron min-vh-100">
-
     <div class="container">
-        <div class="row">
-        <form [formGroup]="chooseServiceForm" (ngSubmit)="editService()" *ngIf="chooseServiceToEditForm">
-            <label>Choose service to edit: </label><br>
-            <input id="service" type="text" formControlName="serviceName"><br><br>
-            <button type="submit">Continue</button>
-        </form>
+
+        <div class="row justify-content-center">
+            <div class="col-sm">
+            <form [formGroup]="chooseServiceForm" (ngSubmit)="editService()" *ngIf="chooseServiceToEditForm">
+                <label class="label-edit-security-controls">Enter service name to start editing security controls: </label><br>
+                <input id="service" type="text" formControlName="serviceName"><br><br>
+                <button type="submit">Continue</button>
+            </form>
         </div>
+        </div>
+
         <div class="row" *ngIf="serviceToEditForm">
-        <div class="col-sm" *ngIf="showServiceData">
-        <div>
-           Product name: {{ product }} <br><br>
-           Service name: {{ service }} <br><br>
-           Sourcecode link: {{ github }}  <br><br>
-           Dev URL: {{ dev_url }} <br><br>
-           Vulnerability management: {{ vulnerability_management }} <br><br>
-           Defect Dojo: {{ defect_dojo }} <br><br>
-           DAST: {{ zap }} <br><br>
-           Dependecies scan : {{ sourceclear }} <br><br>
-           Dependecies scan results link: {{ sourceclear_link }} <br><br>
-           Docker image scan: {{ docker_scan }} <br><br>
-           CIS scan: {{ cis_scanner }} <br><br>
-           Security manual pentest run last 6 months: {{ burp }} <br><br>
+            <div class="col-sm" *ngIf="showServiceData">
+                <div class="service-security-controls-block">
+                    <p class="service-cecurity-controls-title"> {{ service }} security controls:</p>  <br><br>
+                    <p>This block purpose is to show current security controls implemented for {{ service }} and to help you replace with new values.</p><br>
+                    <p>
+                    <strong>Service name:</strong> {{ service }} <br><br>
+                    <strong>Product name:</strong> {{ product }} <br><br>
+                    <strong>Github link:</strong> {{ github }} <br><br>
+                    <strong>Dev URL:</strong> {{ dev_url }} <br><br>
+                    <strong>Vulnerability management URL:</strong> {{ vulnerability_management }} <br><br>
+                    <strong>Defect Dojo URL:</strong> {{ defect_dojo }} <br><br>
+                    <strong>DAST:</strong> {{ zap }} <br><br>
+                    <strong>Downstream dependency scan:</strong> {{ sourceclear }} <br><br>
+                    <strong>Dependecies scan results link:</strong> {{ sourceclear_link }} <br><br>
+                    <strong>Docker image scan:</strong> {{ docker_scan }} <br><br>
+                    <strong>GCP project scan:</strong> {{ cis_scanner }} <br><br>
+                    <strong>Security manual pentest run last 6 months:</strong> {{ burp }} <br><br><br>
+                    </p>
+                </div>
+            </div>
+            <div class="col-sm" *ngIf="serviceToEditForm">
+                <app-survey [json]="json" (submitSurvey)="onSubmit($event)"></app-survey>
+            </div>
         </div>
-        </div>
-        <div class="col-sm" *ngIf="serviceToEditForm">
-            <app-survey [json]="json" (submitSurvey)="onSubmit($event)"></app-survey>
-        </div>
-        </div>
+
     </div>
 </div>
