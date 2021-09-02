@@ -28,12 +28,11 @@ export class EditSecurityControlsFormComponent implements OnInit {
   item: any;
   chooseServiceToEditForm: boolean;
   serviceToEditForm: boolean;
-  showServiceData:boolean;
+  showServiceData: boolean;
   serviceName: string;
   choosenService: string;
   secControls: any;
   json = formJson;
-
 
   constructor(private getSecurityControls: GetSecurityControlsService, private editSecurityControls: EditSecurityControlsService) { }
 
@@ -56,7 +55,7 @@ export class EditSecurityControlsFormComponent implements OnInit {
 
   loadSecurityControls(choosenService) {
     this.getSecurityControls.getAllSecurityControls().subscribe((serviceSecurityControl: ServiceSecurityControl[]) => {
-      for (let item of serviceSecurityControl) {
+      for (const item of serviceSecurityControl) {
         if (item.service === choosenService) {
             this.secControls = item;
             this.product = item.product;
