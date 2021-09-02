@@ -12,13 +12,6 @@
        },
        {
         "type": "text",
-        "name": "service",
-        "title": "Service name",
-        "hideNumber": true,
-        "isRequired": true
-       },
-       {
-        "type": "text",
         "name": "github",
         "title": "Github link",
         "hideNumber": true,

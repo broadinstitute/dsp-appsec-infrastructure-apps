@@ -16,6 +16,6 @@ export class ServiceSecurityControl implements Deserializable {
     threat_model: boolean;
     docker_scan: boolean;
     zap: boolean;
-    CodeDx: string;
+    vulnerability_management: string;
     defect_dojo: string;
   }

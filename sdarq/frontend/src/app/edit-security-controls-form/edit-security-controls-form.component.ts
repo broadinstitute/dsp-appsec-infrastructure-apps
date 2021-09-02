@@ -3,6 +3,8 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { GetSecurityControlsService } from '../services/get-security-controls.service';
 import { ServiceSecurityControl } from '../models/service-security-control.model';
 import { EditSecurityControlsService } from '../services/edit-security-controls.service';
+import formJson from './form.json';
+
 
 @Component({
   selector: 'app-edit-security-controls-form',
@@ -14,7 +16,7 @@ export class EditSecurityControlsFormComponent implements OnInit {
   service: string;
   github: string;
   dev_url: string;
-  CodeDx: string;
+  vulnerability_management: string;
   defect_dojo: string;
   zap: boolean;
   sourceclear: boolean;
@@ -22,13 +24,15 @@ export class EditSecurityControlsFormComponent implements OnInit {
   docker_scan: boolean;
   cis_scanner: boolean;
   burp: boolean;
-  securityControls: any;
   data: any;
   item: any;
   chooseServiceToEditForm: boolean;
   serviceToEditForm: boolean;
+  showServiceData:boolean;
   serviceName: string;
   choosenService: string;
+  secControls: any;
+  json = formJson;
 
 
   constructor(private getSecurityControls: GetSecurityControlsService, private editSecurityControls: EditSecurityControlsService) { }
@@ -47,60 +51,39 @@ export class EditSecurityControlsFormComponent implements OnInit {
     this.loadSecurityControls(choosenService)
     this.chooseServiceToEditForm = false;
     this.serviceToEditForm = true;
+    this.showServiceData = true;
   }
 
   loadSecurityControls(choosenService) {
     this.getSecurityControls.getAllSecurityControls().subscribe((serviceSecurityControl: ServiceSecurityControl[]) => {
-      this.securityControls = serviceSecurityControl;
-      this.data = this.getSecurityControlForService(this.securityControls, choosenService)
-      return this.data
+      for (let item of serviceSecurityControl) {
+        if (item.service === choosenService) {
+            this.secControls = item;
+            this.product = item.product;
+            this.service = item.service;
+            this.github = item.github;
+            this.dev_url = item.dev_url;
+            this.vulnerability_management = item.vulnerability_management;
+            this.defect_dojo = item.defect_dojo;
+            this.zap = item.zap;
+            this.sourceclear = item.sourceclear;
+            this.sourceclear_link = item.sourceclear_link;
+            this.docker_scan = item.docker_scan;
+            this.cis_scanner = item.cis_scanner;
+            this.burp = item.burp;
+        }
+      }
     })
   }
 
-  getSecurityControlForService(securityControls, choosenService) {
-    // tslint:disable-next-line
-    for (let item of securityControls) {
-      if (item.service === choosenService) {
-        this.setValue(item)
-        return item;
-      }
-    }
-  }
 
-  setValue(item) {
-    this.securityControlForm.get('product').setValue(item.product)
-    this.securityControlForm.get('service').setValue(item.service)
-    this.securityControlForm.get('github').setValue(item.github)
-    this.securityControlForm.get('dev_url').setValue(item.dev_url)
-    this.securityControlForm.get('CodeDx').setValue(item.CodeDx)
-    this.securityControlForm.get('defect_dojo').setValue(item.defect_dojo)
-    this.securityControlForm.get('zap').setValue(item.zap)
-    this.securityControlForm.get('sourceclear').setValue(item.sourceclear)
-    this.securityControlForm.get('sourceclear_link').setValue(item.sourceclear_link)
-    this.securityControlForm.get('docker_scan').setValue(item.docker_scan)
-    this.securityControlForm.get('cis_scanner').setValue(item.cis_scanner)
-    this.securityControlForm.get('burp').setValue(item.burp)
-  }
-
-  securityControlForm = new FormGroup({
-    product: new FormControl(''),
-    service: new FormControl(''),
-    github: new FormControl(''),
-    dev_url: new FormControl(''),
-    CodeDx: new FormControl(''),
-    defect_dojo: new FormControl(''),
-    zap: new FormControl(''),
-    sourceclear: new FormControl(''),
-    sourceclear_link: new FormControl(''),
-    docker_scan: new FormControl(''),
-    cis_scanner: new FormControl(''),
-    burp: new FormControl(''),
-  });
-
-  onSubmit() {
-    this.editSecurityControls.editSCT(this.securityControlForm.value).subscribe((data: any) => {
+  onSubmit(result) {
+    result['service'] = this.service
+    this.showServiceData = false;
+    this.editSecurityControls.editSCT(result).subscribe((data: any) => {
     },
       (data) => {
+        console.log(data)
       });
   }
 }

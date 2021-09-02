@@ -1,59 +1,33 @@
 <div class="jumbotron min-vh-100">
 
     <div class="container">
+        <div class="row">
         <form [formGroup]="chooseServiceForm" (ngSubmit)="editService()" *ngIf="chooseServiceToEditForm">
             <label>Choose service to edit: </label><br>
             <input id="service" type="text" formControlName="serviceName"><br><br>
             <button type="submit">Continue</button>
         </form>
-
-        <form [formGroup]="securityControlForm" (ngSubmit)="onSubmit()" *ngIf="serviceToEditForm">
-            <label>Service name: </label><br>
-            <input id="service" type="text" formControlName="service"><br><br>
-
-            <label>Product name: </label><br>
-            <input id="product" type="text" formControlName="product"><br><br>
-
-            <label>Github link: </label><br>
-            <input id="github" type="text" formControlName="github"><br><br>
-
-            <label>Dev Url: </label><br>
-            <input id="dev_url" type="text" formControlName="dev_url"><br><br>
-
-            <label>CodeDx URL: </label><br>
-            <input id="CodeDx" type="text" formControlName="CodeDx"><br><br>
-
-            <label>Defect Dojo URL: </label><br>
-            <input id="defect_dojo" type="text" formControlName="defect_dojo"><br><br>
-
-            <label>Service scan ( via Zap or similar tool): </label><br>
-            <input type="radio" id="zap" formControlName="zap" name="zap" value="true"> Yes
-            <input type="radio" id="zap" formControlName="zap" name="zap" value="false"> No
-            <br><br>
-
-            <label>Downstream dependency scan (via Sourceclear or similar tool): </label><br>
-            <input type="radio" formControlName="sourceclear" id="sourceclear" name="sourceclear" value="true"> Yes
-            <input type="radio" formControlName="sourceclear" id="sourceclear" name="sourceclear" value="false"> No
-            <br><br>
-
-            <label>Enter downstream dependency result link: </label><br>
-            <input id="sourceclear_link" type="text" formControlName="sourceclear_link"><br><br>
-
-            <label>Docker image scan (via Trivy or similar tool): </label><br>
-            <input type="radio" formControlName="docker_scan" id="docker_scan" name="docker_scan" value="true"> Yes
-            <input type="radio" formControlName="docker_scan" id="docker_scan" name="docker_scan" value="false"> No
-            <br><br>
-
-            <label>GCP project scan (via CIS scanner or similar tool): </label><br>
-            <input type="radio" formControlName="cis_scanner" name="cis_scanner" value="true"> Yes
-            <input type="radio" formControlName="cis_scanner" name="cis_scanner" value="false"> No
-            <br><br>
-
-            <label>Have you performed any manual security pentest (via Burp or similar tool): </label><br>
-            <input type="radio" formControlName="burp" id="burp" name="burp" value="true"> Yes
-            <input type="radio" formControlName="burp" id="burp" name="burp" value="false"> No
-            <br><br>
-            <button type="submit">Submit</button>
-        </form>
+        </div>
+        <div class="row" *ngIf="serviceToEditForm">
+        <div class="col-sm" *ngIf="showServiceData">
+        <div>
+           Product name: {{ product }} <br><br>
+           Service name: {{ service }} <br><br>
+           Sourcecode link: {{ github }}  <br><br>
+           Dev URL: {{ dev_url }} <br><br>
+           Vulnerability management: {{ vulnerability_management }} <br><br>
+           Defect Dojo: {{ defect_dojo }} <br><br>
+           DAST: {{ zap }} <br><br>
+           Dependecies scan : {{ sourceclear }} <br><br>
+           Dependecies scan results link: {{ sourceclear_link }} <br><br>
+           Docker image scan: {{ docker_scan }} <br><br>
+           CIS scan: {{ cis_scanner }} <br><br>
+           Security manual pentest run last 6 months: {{ burp }} <br><br>
+        </div>
+        </div>
+        <div class="col-sm" *ngIf="serviceToEditForm">
+            <app-survey [json]="json" (submitSurvey)="onSubmit($event)"></app-survey>
+        </div>
+        </div>
     </div>
 </div>
