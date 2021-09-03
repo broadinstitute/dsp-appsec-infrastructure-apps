@@ -75,6 +75,13 @@ spec:
             name: ${SERVICE}
             port:
               name: ${BACKEND_PORT}
+      - path: /get_sec_controls_service/
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: ${SERVICE}
+            port:
+              name: ${BACKEND_PORT}
 ---
 apiVersion: networking.gke.io/v1beta1
 kind: FrontendConfig
