@@ -22,18 +22,14 @@
                     <tr *ngFor="let controls of serviceSecurityControl | filtersct: searchString ">
                         <td>{{ controls.service }}</td>
                         <td>{{ controls.product }}</td>
-                        <td><a href="{{ controls.dev_url }}" target="_blank" rel="noreferrer noopener">
-                                <!-- nosemgrep-->
+                        <td><a href="{{ controls.dev_url }}" target="_blank" rel="noreferrer noopener"> <!-- nosemgrep-->
                                 {{ controls.service | lowercase}}-dev-url</a></td>
-                        <td><a href="{{ controls.github  }}" target="_blank" rel="noreferrer noopener">
-                                <!-- nosemgrep-->
+                        <td><a href="{{ controls.github  }}" target="_blank" rel="noreferrer noopener"> <!-- nosemgrep-->
                                 <mdb-icon fab icon="github" size="2x"></mdb-icon>
                             </a></td>
-                        <td><a href="{{ controls.vulnerability_management }}" target="_blank" rel="noreferrer noopener">
-                                <!-- nosemgrep-->
+                        <td><a href="{{ controls.vulnerability_management }}" target="_blank" rel="noreferrer noopener"> <!-- nosemgrep-->
                                 <img src="../assets/codedx.png" width="30px"></a></td>
-                        <td><a href="{{ controls.defect_dojo }}" target="_blank">
-                                <!-- nosemgrep-->
+                        <td><a href="{{ controls.defect_dojo }}" target="_blank"> <!-- nosemgrep-->
                                 <img src="../assets/defectdojo.png" width="25px"></a></td>
                         <td>
                             <div [innerHTML]="trivyShowValue(controls.docker_scan) "></div>
@@ -51,8 +47,7 @@
                             <div [innerHTML]="sourceclearShowValue(controls.sourceclear)"></div>
                             <div *ngIf="sourceclear_results">
                                 <a href="{{ controls.sourceclear_link}}" target="_blank" rel="noreferrer noopener"
-                                    class="btn btn-outline-success btn-sm" role="button">
-                                    <!-- nosemgrep-->
+                                    class="btn btn-outline-success btn-sm" role="button"> <!-- nosemgrep-->
                                     Results
                                 </a>
                             </div>

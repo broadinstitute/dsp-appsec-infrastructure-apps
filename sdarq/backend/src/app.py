@@ -467,7 +467,9 @@ def get_sec_controls():
 def get_sec_controls_service():
     """
     Get all security controls for a service
-    Returns: Json data
+    Args: Service name (Json format)
+    Returns: Json data if 200
+             404 if project not found
     """
 
     json_data = request.get_json()
@@ -480,12 +482,10 @@ def get_sec_controls_service():
         if doc.exists:
             return doc.to_dict()
         else:
-            print("1")
-            logging.info("This service does not exist!")
-            return Response(json.dumps({'statusText': 'This service does not exist!'}), status=404, mimetype='application/json')
+            logging.info("This service does not exist! Contact AppSec team for more information.")
+            return Response(json.dumps({'statusText': 'This service does not exist! '}), status=404, mimetype='application/json')
     else:
-        print("2")
-        logging.info("Please enter a valid value for your service name!")
+        logging.info("Please enter a valid value for your service name! Contact AppSec team for more information.")
         return Response(json.dumps({'statusText': 'Please enter a valid value for your service name!'}), status=404, mimetype='application/json')
 
 
