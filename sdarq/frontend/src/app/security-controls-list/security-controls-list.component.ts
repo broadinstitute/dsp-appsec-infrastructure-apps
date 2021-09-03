@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { GetSecurityControlsService } from '../services/get-security-controls.service'
-import { ActivatedRoute } from '@angular/router';
 import { ServiceSecurityControl } from '../models/service-security-control.model';
 
 
@@ -17,7 +16,7 @@ export class SecurityControlsListComponent implements OnInit {
   sourceclear_results: boolean;
   searchString: any;
 
-  constructor(private getSecurityControls: GetSecurityControlsService, private router: ActivatedRoute) { }
+  constructor(private getSecurityControls: GetSecurityControlsService) { }
 
   ngOnInit() {
     this.getResults()
@@ -71,6 +70,7 @@ export class SecurityControlsListComponent implements OnInit {
       return '<i class="fas fa-times fa-1x"></i>'
     }
   }
+
 
   getResults() {
     this.getSecurityControls.getAllSecurityControls().subscribe((serviceSecurityControl: ServiceSecurityControl []) => {

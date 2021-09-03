@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { GetSecurityControlsService } from '../services/get-security-controls.service';
+// import { GetSecurityControlsService } from '../services/get-security-controls.service';
 import { ServiceSecurityControl } from '../models/service-security-control.model';
 import { EditSecurityControlsService } from '../services/edit-security-controls.service';
+import { GetServiceSecurityControlsService } from '../services/get-service-security-controls.service';
+
 import formJson from './form.json';
 
 
@@ -29,49 +31,54 @@ export class EditSecurityControlsFormComponent implements OnInit {
   chooseServiceToEditForm: boolean;
   serviceToEditForm: boolean;
   showServiceData: boolean;
-  serviceName: string;
   choosenService: string;
   json = formJson;
+  datas: any;
+  showModalError: boolean;
+  errorMessage: string;
 
-  constructor(private getSecurityControls: GetSecurityControlsService, private editSecurityControls: EditSecurityControlsService) { }
+  constructor(private getSecurityControls: GetServiceSecurityControlsService, private editSecurityControls: EditSecurityControlsService) { }
 
   ngOnInit(): void {
     this.chooseServiceToEditForm = true;
     this.serviceToEditForm = false;
+    this.showModalError = false;
   }
 
   chooseServiceForm = new FormGroup({
-    serviceName: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]),
+    service: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]),
   })
 
 
   editService() {
-    const choosenService = this.chooseServiceForm.value.serviceName
-    this.loadSecurityControls(choosenService)
+    this.loadSecurityControls(this.chooseServiceForm.value)
     this.chooseServiceToEditForm = false;
+    this.showModalError = false;
     this.serviceToEditForm = true;
     this.showServiceData = true;
   }
 
-  loadSecurityControls(choosenService) {
-    this.getSecurityControls.getAllSecurityControls().subscribe((serviceSecurityControl: ServiceSecurityControl[]) => {
-      for (const item of serviceSecurityControl) {
-        if (item.service.toLowerCase() === choosenService.toLowerCase()) {
-            this.product = item.product;
-            this.service = item.service;
-            this.github = item.github;
-            this.dev_url = item.dev_url;
-            this.vulnerability_management = item.vulnerability_management;
-            this.defect_dojo = item.defect_dojo;
-            this.zap = item.zap;
-            this.sourceclear = item.sourceclear;
-            this.sourceclear_link = item.sourceclear_link;
-            this.docker_scan = item.docker_scan;
-            this.cis_scanner = item.cis_scanner;
-            this.burp = item.burp;
-        }
-      }
-    })
+  loadSecurityControls(datas) {
+    this.getSecurityControls.getServiceSecurityControls(datas).subscribe((serviceSecurityControl) => {
+        this.product = serviceSecurityControl.product;
+        this.service = serviceSecurityControl.service;
+        this.github = serviceSecurityControl.github;
+        this.dev_url = serviceSecurityControl.dev_url;
+        this.vulnerability_management = serviceSecurityControl.vulnerability_management;
+        this.defect_dojo = serviceSecurityControl.defect_dojo;
+        this.zap = serviceSecurityControl.zap;
+        this.sourceclear = serviceSecurityControl.sourceclear;
+        this.sourceclear_link = serviceSecurityControl.sourceclear_link;
+        this.docker_scan = serviceSecurityControl.docker_scan;
+        this.cis_scanner = serviceSecurityControl.cis_scanner;
+        this.burp = serviceSecurityControl.burp;
+    },
+    (serviceSecurityControl) => {
+      this.errorMessage = serviceSecurityControl;
+      this.showModalError = true;
+      this.serviceToEditForm = false;
+      this.showServiceData = false;
+    });
   }
 
 
@@ -81,7 +88,10 @@ export class EditSecurityControlsFormComponent implements OnInit {
     this.editSecurityControls.editSCT(result).subscribe((data: any) => {
     },
       (data) => {
-        console.log(data)
+        this.errorMessage = data;
+        this.showModalError = true;
+        this.serviceToEditForm = false;
+        this.showServiceData = false;
       });
   }
 }

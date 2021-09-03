@@ -401,13 +401,13 @@ def create_sec_control_template():
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
 
     if re.match(pattern, service_name):
-        doc_ref = db.collection('security-controls').document(service_name) # set collection name as variable
+        doc_ref = db.collection('security-controls').document(service_name.lower()) # set collection name as variable
         doc = doc_ref.get()
         if bool(doc.to_dict()) is True:
             logging.info("This service exists, if you want to edit it, go to edit page")
             return Response(json.dumps({'statusText': 'This service exists, if you want to edit it, go to edit page'}), status=404, mimetype='application/json')
         else:
-            db.collection('security-controls').document(service_name).set(json_data)  # set collection name as variable
+            db.collection('security-controls').document(service_name.lower()).set(json_data)  # set collection name as variable
             logging.info("A new security controls template is create")
             return ''
     else:
@@ -430,11 +430,10 @@ def edit_sec_controls():
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
 
     if re.match(pattern, service_name):
-        doc_ref = db.collection('security-controls').document(service_name) # set collection name as variable
+        doc_ref = db.collection('security-controls').document(service_name.lower()) # set collection name as variable
         doc = doc_ref.get()
         if bool(doc.to_dict()) is True:
-            db.collection('security-controls').document(service_name).set(json_data)  # set collection name as variable
-            print("Security controls for the choosen service have changed!")
+            db.collection('security-controls').document(service_name.lower()).set(json_data)  # set collection name as variable
             logging.info("Security controls for the choosen service have changed!")
             return ''
         else:
@@ -461,6 +460,33 @@ def get_sec_controls():
         data.append(doc.to_dict())
  
     return data
+
+
+@app.route('/get_sec_controls_service/', methods=['POST'])
+@cross_origin(origins=sdarq_host)
+def get_sec_controls_service():
+    """
+    Get all security controls for a service
+    Returns: Json data
+    """
+
+    json_data = request.get_json()
+    service_name = json_data['service']
+    pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
+
+    if re.match(pattern, service_name, re.IGNORECASE):
+        doc_ref = db.collection('security-controls').document(service_name.lower()) # set collection name as variable
+        doc = doc_ref.get()
+        if doc.exists:
+            return doc.to_dict()
+        else:
+            print("1")
+            logging.info("This service does not exist!")
+            return Response(json.dumps({'statusText': 'This service does not exist!'}), status=404, mimetype='application/json')
+    else:
+        print("2")
+        logging.info("Please enter a valid value for your service name!")
+        return Response(json.dumps({'statusText': 'Please enter a valid value for your service name!'}), status=404, mimetype='application/json')
 
 
 if __name__ == "__main__":
