@@ -9,8 +9,7 @@ import { catchError } from 'rxjs/operators';
 
 export class SendFormDataService {
 
-  // private Url = location.origin + '/submit/';
-  private Url = 'http://127.0.0.1:8080' + '/submit/';
+  private Url = location.origin + '/submit/';
 
   constructor(private http: HttpClient) { }
 
