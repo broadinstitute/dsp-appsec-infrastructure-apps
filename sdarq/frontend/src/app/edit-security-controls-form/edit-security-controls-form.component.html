@@ -3,7 +3,9 @@
         <div class="row">
             <div class="col-sm text-center">
                 <div class="alert alert-danger animated fadeInRight" role="alert" *ngIf="showModalError">
-                    {{errorMessage}}
+                    <h4 class="alert-heading">Oops!</h4>
+                    <p> {{errorMessage}} </p>
+                    <p class="mb-0">Please contact AppSec team for more information!</p>
                   </div>
             <form [formGroup]="chooseServiceForm" (ngSubmit)="editService()" *ngIf="chooseServiceToEditForm">
                 <label class="label-edit-security-controls">Enter service name to start editing security controls: </label><br>
