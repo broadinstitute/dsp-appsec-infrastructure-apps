@@ -48,9 +48,10 @@ def audience():
     if AUDIENCE is None:
         project_number = get_metadata('numeric-project-id')
         project_id = get_metadata('project-id')
-        AUDIENCE = '/projects/{}/apps/{}'.format(
+        AUDIENCE = '/projects/{}/global/backendServices/{}'.format(
             project_number, project_id
         )
+        print(project_id)
     return AUDIENCE
 
 
@@ -67,7 +68,7 @@ def validate_assertion(assertion):
             algorithms=['ES256'],
             audience=audience()
             )
-        return info['email'], info['sub']
+        return info['email']
     except Exception as e:
         print('Failed to validate assertion: {}'.format(e), file=sys.stderr)
         return None, None
