@@ -56,7 +56,7 @@ headers = {
     "content-type": "application/json",
     "Authorization": f"Token {dojo_api_key}",
 }
-
+logging.basicConfig(level=logging.INFO)
 app = FlaskAPI(__name__)
 
 # Instantiate the Jira backend wrapper
