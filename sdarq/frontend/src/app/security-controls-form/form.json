@@ -19,6 +19,13 @@
        },
        {
         "type": "text",
+        "name": "security_champion",
+        "title": "Security Champion",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "text",
         "name": "github",
         "title": "Github link",
         "hideNumber": true,
