@@ -1,9 +1,9 @@
---- a/entrypoint-initializer.sh
-+++ b/entrypoint-initializer.sh
-@@ -108,4 +108,12 @@
-   # surveys fixture needs to be modified as it contains an instance dependant polymorphic content id
-   echo "Migration of textquestions for surveys"
+--- entrypoint-initializer.sh
++++ entrypoint-initializer.sh
+@@ -119,4 +119,12 @@
    python3 manage.py migrate_textquestions
+ 
+   initialize_test_types
 +else
 +cat <<EOD | python manage.py shell
 +import os
