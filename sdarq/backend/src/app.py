@@ -430,7 +430,8 @@ def edit_sec_controls():
     service_name = json_data['service']
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
 
-    user_email = auth_iap.user()
+    assertion = request.headers.get('X-Goog-IAP-JWT-Assertion')
+    user_email= auth_iap.validate_assertion(assertion)
 
     if re.match(pattern, service_name):
         doc_ref = db.collection('security-controls').document(service_name.lower()) # set collection name as variable
