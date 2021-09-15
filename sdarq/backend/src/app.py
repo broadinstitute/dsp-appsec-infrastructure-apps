@@ -429,12 +429,15 @@ def edit_sec_controls():
     service_name = json_data['service']
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
 
+    user_email = request.headers.get('X-Goog-Authenticated-User-Email')
+    user_id = request.headers.get('X-Goog-Authenticated-User-ID')
+
     if re.match(pattern, service_name):
         doc_ref = db.collection('security-controls').document(service_name.lower()) # set collection name as variable
         doc = doc_ref.get()
         if bool(doc.to_dict()) is True:
             db.collection('security-controls').document(service_name.lower()).set(json_data)  # set collection name as variable
-            logging.info("Security controls for the choosen service have changed!")
+            logging.info("Security controls for the choosen service have changed by user_email: {0}, user_id: {1}!", user_email, user_id)
             return ''
         else:
             logging.info("This service does not exist!")
