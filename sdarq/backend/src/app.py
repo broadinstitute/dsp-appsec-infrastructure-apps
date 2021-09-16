@@ -430,15 +430,12 @@ def edit_sec_controls():
     service_name = json_data['service']
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
 
-    assertion = request.headers.get('X-Goog-IAP-JWT-Assertion')
-    user_email= auth_iap.validate_assertion(assertion)
-
     if re.match(pattern, service_name):
         doc_ref = db.collection('security-controls').document(service_name.lower()) # set collection name as variable
         doc = doc_ref.get()
         if bool(doc.to_dict()) is True:
             db.collection('security-controls').document(service_name.lower()).set(json_data)  # set collection name as variable
-            logging.info("Security controls for the choosen service have changed by user_email: {0}!".format(user_email))
+            logging.info("Security controls for the choosen service have changed!")
             return ''
         else:
             logging.info("This service does not exist!")
