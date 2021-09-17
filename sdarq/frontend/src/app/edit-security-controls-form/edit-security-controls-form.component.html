@@ -1,0 +1,45 @@
+<div class="jumbotron min-vh-100">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm text-center">
+                <div class="alert alert-danger animated fadeInRight" role="alert" *ngIf="showModalError">
+                    <h4 class="alert-heading">Oops!</h4>
+                    <p> {{errorMessage}} </p>
+                    <p class="mb-0">Please contact AppSec team for more information!</p>
+                  </div>
+            <form [formGroup]="chooseServiceForm" (ngSubmit)="editService()" *ngIf="chooseServiceToEditForm">
+                <label class="label-edit-security-controls">Enter service name to start editing security controls: </label><br>
+                <input class="input-edit-security-control" id="service" type="text" formControlName="service"><br><br>
+                <button [disabled]="!chooseServiceForm.valid" class="continue-button" type="submit">Continue</button>
+            </form>
+        </div>
+        </div>
+        <div class="row" *ngIf="serviceToEditForm">
+            <div class="col-sm" *ngIf="showServiceData">
+                <div class="service-security-controls-block">
+                    <p class="service-cecurity-controls-title"> {{ service }} security controls:</p>  <br><br>
+                    <p>This block purpose is to show current security controls implemented for {{ service }} and to help you replace with new values.</p><br>
+                    <p>
+                    <strong>Service name:</strong> {{ service }} <br><br>
+                    <strong>Product name:</strong> {{ product }} <br><br>
+                    <strong>Security champion:</strong> {{ security_champion }} <br><br>
+                    <strong>Github link:</strong> {{ github }} <br><br>
+                    <strong>Dev URL:</strong> {{ dev_url }} <br><br>
+                    <strong>Vulnerability management URL:</strong> {{ vulnerability_management }} <br><br>
+                    <strong>Defect Dojo URL:</strong> {{ defect_dojo }} <br><br>
+                    <strong>DAST:</strong> {{ zap }} <br><br>
+                    <strong>Downstream dependencies scan:</strong> {{ sourceclear }} <br><br>
+                    <strong>Dependecies scan results link:</strong> {{ sourceclear_link }} <br><br>
+                    <strong>Docker image scan:</strong> {{ docker_scan }} <br><br>
+                    <strong>GCP project scan:</strong> {{ cis_scanner }} <br><br>
+                    <strong>Security manual pentest run last 6 months:</strong> {{ burp }} <br><br><br>
+                    </p>
+                </div>
+            </div>
+            <div class="col-sm" *ngIf="serviceToEditForm">
+                <app-survey [json]="json" (submitSurvey)="onSubmit($event)"></app-survey>
+            </div>
+        </div>
+
+    </div>
+</div>

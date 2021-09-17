@@ -1,9 +1,9 @@
---- a/entrypoint-initializer.sh
-+++ b/entrypoint-initializer.sh
-@@ -107,4 +107,12 @@
-
-   echo "Installing watson search index"
-   python3 manage.py installwatson
+--- entrypoint-initializer.sh
++++ entrypoint-initializer.sh
+@@ -119,4 +119,12 @@
+   python3 manage.py migrate_textquestions
+ 
+   initialize_test_types
 +else
 +cat <<EOD | python manage.py shell
 +import os

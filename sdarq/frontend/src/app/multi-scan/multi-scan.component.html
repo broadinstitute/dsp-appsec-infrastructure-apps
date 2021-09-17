@@ -1,10 +1,14 @@
 <div class="jumbotron min-vh-100">
     <div class="container">
         <div class="alert alert-danger animated fadeInRight" role="alert" *ngIf="showModalErrService">
-            {{showModalErrorServiceScan}}
+            <h4 class="alert-heading">Oops!</h4>
+            <p>{{showModalErrorServiceScan}} </p>
+            <p class="mb-0">Please contact AppSec team for more information!</p>
         </div>
         <div class="alert alert-danger animated fadeInRight" role="alert" *ngIf="showModalErrProject">
-            {{showModalErrorProjectScan}}
+            <h4 class="alert-heading">Oops!</h4>
+            <p>{{showModalErrorProjectScan}} </p>
+            <p class="mb-0">Please contact AppSec team for more information!</p>
         </div>
         <app-survey *ngIf="showForm" [json]="json" (submitSurvey)="requestMultiScan($event)"></app-survey>
     </div>

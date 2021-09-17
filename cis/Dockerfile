@@ -1,6 +1,6 @@
 ARG USER="inspec"
 
-FROM debian:testing-slim AS base
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:debian AS base
 
 ARG USER
 
@@ -12,12 +12,10 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         build-essential \
         git-core \
-        python3-dev \
-        python3-pip \
         ruby-dev \
         ruby \
     && \
-    pip3 install -r requirements.txt \
+    pip3 install -Ur requirements.txt \
     && \
     gem install inspec-bin -qN && \
     git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gcp-cis-benchmark.git && \
@@ -28,7 +26,6 @@ RUN apt-get update && \
     apt-get remove -y \
         build-essential \
         git-core \
-        python3-dev \
         ruby-dev \
     && \
     apt-get autoremove -y && \
@@ -41,11 +38,11 @@ RUN apt-get update && \
 
 FROM base AS test
 
-RUN pip3 install pylint pytest
+RUN pip3 install -U pylint pytest
 
 COPY *.py /
 
-RUN pylint --disable=W0702,W0613,E0611,C0301,E1101,R0913 /*.py
+RUN pylint --disable=W0702,W0613,E0611,C0301,E1101,R0913,W1309,C0209 /*.py
 
 RUN pytest /entrypoint_test.py
 
