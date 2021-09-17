@@ -46,7 +46,7 @@ jira_instance = os.getenv('jira_instance')
 sdarq_host = os.getenv('sdarq_host')
 dojo_host_url = os.getenv('dojo_host_url')
 firestore_collection = os.getenv('firestore_collection')
-topic_name = os.environ['JOB_TOPIC']
+cis_topic_name = os.environ['CIS_JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
 zap_topic_name = os.environ['ZAP_JOB_TOPIC']
 security_controls_firestore_collection = os.environ['SC_FIRESTORE_COLLECTION']
@@ -249,7 +249,7 @@ def cis_scan():
 
     if re.match(pattern, user_project_id):
         publisher = pubsub_v1.PublisherClient()
-        topic_path = publisher.topic_path(pubsub_project_id, topic_name)
+        topic_path = publisher.topic_path(pubsub_project_id, cis_topic_name)
         user_proj = user_project_id.replace('-', '_')
         logging.info(
             "Request to assess security posture for project %s ", user_proj)
