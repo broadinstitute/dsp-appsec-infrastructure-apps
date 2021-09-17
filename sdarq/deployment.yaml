@@ -47,6 +47,8 @@ spec:
             value: ${PROJECT_ID}
           - name: JOB_TOPIC
             value: ${JOB_TOPIC}
+          - name: SC_FIRESTORE_COLLECTION
+            value: ${SC_FIRESTORE_COLLECTION}
         readinessProbe:
           httpGet:
             path: /health/

@@ -50,6 +50,7 @@ firestore_collection = os.getenv('firestore_collection')
 topic_name = os.environ['JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
 zap_topic_name = os.environ['ZAP_JOB_TOPIC']
+security_controls_firestore_collection = os.environ['SC_FIRESTORE_COLLECTION']
 
 
 # Create headers for DefectDojo API call
@@ -431,10 +432,10 @@ def edit_sec_controls():
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
 
     if re.match(pattern, service_name):
-        doc_ref = db.collection('security-controls').document(service_name.lower()) # set collection name as variable
+        doc_ref = db.collection(security_controls_firestore_collection).document(service_name.lower()) # set collection name as variable
         doc = doc_ref.get()
         if bool(doc.to_dict()) is True:
-            db.collection('security-controls').document(service_name.lower()).set(json_data)  # set collection name as variable
+            db.collection(security_controls_firestore_collection).document(service_name.lower()).set(json_data)  # set collection name as variable
             logging.info("Security controls for the choosen service have changed!")
             return ''
         else:
@@ -456,7 +457,7 @@ def get_sec_controls():
     Returns: Json data
     """
     data=[]
-    docs = db.collection(u'security-controls').stream()  # set collection name as variable
+    docs = db.collection(security_controls_firestore_collection).stream()  # set collection name as variable
     for doc in docs:
         data.append(doc.to_dict())
  
@@ -478,7 +479,7 @@ def get_sec_controls_service():
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
 
     if re.match(pattern, service_name, re.IGNORECASE):
-        doc_ref = db.collection('security-controls').document(service_name.lower()) # set collection name as variable
+        doc_ref = db.collection(security_controls_firestore_collection).document(service_name.lower()) # set collection name as variable
         doc = doc_ref.get()
         if doc.exists:
             return doc.to_dict()
