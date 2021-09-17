@@ -36,10 +36,6 @@ dojo_host = os.getenv('dojo_host')  # get Defect Dojo URL
 dojo_user = os.getenv('dojo_user')
 dojo_api_key = os.getenv('dojo_api_key')
 slack_token = os.getenv('slack_token')
-github_token = os.getenv('github_token', None)
-github_org = os.getenv('github_org', None)
-github_repo = os.getenv('github_repo', None)
-github_event = os.getenv('github_event', "sdarq")
 jira_username = os.getenv('jira_username')
 jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
@@ -164,10 +160,6 @@ def submit():
         for channel in slack_channels_list:
             slacknotify.slacknotify(
                 channel, dojo_name, security_champion, product_id, dojo_host_url)
-
-    if github_token and github_org and github_repo:
-        github_repo_dispatcher(github_token, github_org,
-                               github_repo, github_event, json_data)
 
     return ''
 
