@@ -46,16 +46,18 @@ jira_instance = os.getenv('jira_instance')
 sdarq_host = os.getenv('sdarq_host')
 dojo_host_url = os.getenv('dojo_host_url')
 firestore_collection = os.getenv('firestore_collection')
-topic_name = os.environ['JOB_TOPIC']
+cis_topic_name = os.environ['CIS_JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
 zap_topic_name = os.environ['ZAP_JOB_TOPIC']
+security_controls_firestore_collection = os.environ['SC_FIRESTORE_COLLECTION']
+
 
 # Create headers for DefectDojo API call
 headers = {
     "content-type": "application/json",
     "Authorization": f"Token {dojo_api_key}",
 }
-
+logging.basicConfig(level=logging.INFO)
 app = FlaskAPI(__name__)
 
 # Instantiate the Jira backend wrapper
@@ -247,7 +249,7 @@ def cis_scan():
 
     if re.match(pattern, user_project_id):
         publisher = pubsub_v1.PublisherClient()
-        topic_path = publisher.topic_path(pubsub_project_id, topic_name)
+        topic_path = publisher.topic_path(pubsub_project_id, cis_topic_name)
         user_proj = user_project_id.replace('-', '_')
         logging.info(
             "Request to assess security posture for project %s ", user_proj)
@@ -384,6 +386,108 @@ def zap_scan():
         You should NOT run a security pentest against the URL you entered, or maybe it doesn't exist in AppSec list.
         """
         return Response(json.dumps({'statusText': text_message}), status=status_code, mimetype='application/json')
+
+
+@app.route('/create_sec_control_template/', methods=['POST'])
+@cross_origin(origins=sdarq_host)
+def create_sec_control_template():
+    """
+    Store data to Firestore
+    Args: Provided json data from user
+    Returns: 200 if data stored to Firestore
+             404 if input is invalid/ service already exists 
+    """
+    json_data = request.get_json()
+    service_name = json_data['service']
+    pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
+
+    if re.match(pattern, service_name):
+        doc_ref = db.collection('security-controls').document(service_name.lower()) # set collection name as variable
+        doc = doc_ref.get()
+        if bool(doc.to_dict()) is True:
+            logging.info("This service exists, if you want to edit it, go to edit page")
+            return Response(json.dumps({'statusText': 'This service exists, if you want to edit it, go to edit page'}), status=404, mimetype='application/json')
+        else:
+            db.collection('security-controls').document(service_name.lower()).set(json_data)  # set collection name as variable
+            logging.info("A new security controls template is create")
+            return ''
+    else:
+        logging.info("Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.")
+        print("Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.")
+        return Response(json.dumps({'statusText': 'Invalid input!Please make sure you include numbers, -, _ and alphabetical characters.'}), status=404, mimetype='application/json')
+
+
+@app.route('/edit_sec_controls/', methods=['PUT'])
+@cross_origin(origins=sdarq_host)
+def edit_sec_controls():
+    """
+    Edit data for a specific service
+    Args: Provided json data from user
+    Returns: 200 if data stored to Firestore
+             404 if input is invalid/service does not exist
+    """
+    json_data = request.get_json()
+    service_name = json_data['service']
+    pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
+
+    if re.match(pattern, service_name):
+        doc_ref = db.collection(security_controls_firestore_collection).document(service_name.lower()) # set collection name as variable
+        doc = doc_ref.get()
+        if bool(doc.to_dict()) is True:
+            db.collection(security_controls_firestore_collection).document(service_name.lower()).set(json_data)  # set collection name as variable
+            logging.info("Security controls for the choosen service have changed!")
+            return ''
+        else:
+            logging.info("This service does not exist!")
+            return Response(json.dumps({'statusText': 'This service does not exist!'}), status=404, mimetype='application/json')
+
+    else:
+        logging.info("Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.")
+        print("Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.")
+        return Response(json.dumps({'statusText': 'Invalid input!Please make sure you include numbers, -, _ and alphabetical characters.'}), status=404, mimetype='application/json')
+
+
+@app.route('/get_sec_controls/', methods=['GET'])
+@cross_origin(origins=sdarq_host)
+def get_sec_controls():
+    """
+    Get all data from Firestore
+    Args: None
+    Returns: Json data
+    """
+    data=[]
+    docs = db.collection(security_controls_firestore_collection).stream()  # set collection name as variable
+    for doc in docs:
+        data.append(doc.to_dict())
+ 
+    return data
+
+
+@app.route('/get_sec_controls_service/', methods=['POST'])
+@cross_origin(origins=sdarq_host)
+def get_sec_controls_service():
+    """
+    Get all security controls for a service
+    Args: Service name (Json format)
+    Returns: Json data if 200
+             404 if project not found
+    """
+
+    json_data = request.get_json()
+    service_name = json_data['service']
+    pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
+
+    if re.match(pattern, service_name, re.IGNORECASE):
+        doc_ref = db.collection(security_controls_firestore_collection).document(service_name.lower()) # set collection name as variable
+        doc = doc_ref.get()
+        if doc.exists:
+            return doc.to_dict()
+        else:
+            logging.info("This service does not exist! Contact AppSec team for more information.")
+            return Response(json.dumps({'statusText': 'This service does not exist! '}), status=404, mimetype='application/json')
+    else:
+        logging.info("Please enter a valid value for your service name! Contact AppSec team for more information.")
+        return Response(json.dumps({'statusText': 'Please enter a valid value for your service name!'}), status=404, mimetype='application/json')
 
 
 if __name__ == "__main__":

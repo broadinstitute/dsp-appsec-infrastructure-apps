@@ -54,6 +54,34 @@ spec:
             name: ${SERVICE}
             port:
               name: ${BACKEND_PORT}
+      - path: /create_sec_control_template/
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: ${SERVICE}
+            port:
+              name: ${BACKEND_PORT}
+      - path: /edit_sec_controls/
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: ${SERVICE}
+            port:
+              name: ${BACKEND_PORT}
+      - path: /get_sec_controls/
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: ${SERVICE}
+            port:
+              name: ${BACKEND_PORT}
+      - path: /get_sec_controls_service/
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: ${SERVICE}
+            port:
+              name: ${BACKEND_PORT}
 ---
 apiVersion: networking.gke.io/v1beta1
 kind: FrontendConfig

@@ -45,8 +45,12 @@ spec:
         env:
           - name: PUBSUB_PROJECT_ID
             value: ${PROJECT_ID}
-          - name: JOB_TOPIC
-            value: ${JOB_TOPIC}
+          - name: CIS_JOB_TOPIC
+            value: ${CIS_JOB_TOPIC}
+          - name: ZAP_JOB_TOPIC
+            value: ${ZAP_JOB_TOPIC}
+          - name: SC_FIRESTORE_COLLECTION
+            value: ${SC_FIRESTORE_COLLECTION}
         readinessProbe:
           httpGet:
             path: /health/
