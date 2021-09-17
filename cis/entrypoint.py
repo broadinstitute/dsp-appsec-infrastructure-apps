@@ -352,7 +352,7 @@ def main():
     # writes an error in Firestore document if an exception occurs
     except (Exception) as error:
         if fs_collection:
-            doc_ref.set({'Error': '{}'.format(error)})
+            doc_ref.set({f'Error': '{}'.format(error)})
         raise error
 
 
