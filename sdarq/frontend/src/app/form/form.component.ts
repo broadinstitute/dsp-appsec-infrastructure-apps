@@ -17,11 +17,13 @@ export class FormComponent implements OnInit {
   showAlert: boolean;
   showForm: boolean;
 
-  constructor(private sendForm: SendFormDataService, private scanGCPproject: CisProjectService, private createNewSctService: CreateNewSctService) { }
+  constructor(private sendForm: SendFormDataService,
+              private scanGCPproject: CisProjectService,
+              private createNewSctService: CreateNewSctService) { }
 
   ngOnInit() {
     this.showForm = true;
-   }
+  }
 
 
 
@@ -32,9 +34,13 @@ export class FormComponent implements OnInit {
         this.showAlert = true;
         this.showForm = false;
         this.errors = submitNewServiceQuestionnaireResponse;
-       });
+      });
 
-    this.arrRequired = {'service' : result['Service'], 'github': result['Github URL'], 'security_champion': result['Security champion']};
+    this.arrRequired = {
+      'service': result['Service'],
+      'github': result['Github URL'],
+      'security_champion': result['Security champion']
+    };
     this.createNewSctService.createNewSCT(this.arrRequired).subscribe((createNewSCTResponse) => {
     });
 
