@@ -82,8 +82,7 @@ def health():
 
 
 @app.route('/submit/', methods=['POST'])
-# @cross_origin(origins=sdarq_host)
-@cross_origin(origins='http://127.0.0.1:4200')
+@cross_origin(origins=sdarq_host)
 def submit():
     """
     Send new product to DefectDojo,
