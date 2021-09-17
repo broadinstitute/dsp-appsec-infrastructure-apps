@@ -27,7 +27,6 @@ from google.cloud import bigquery, firestore, pubsub_v1
 from jira import JIRA
 from trigger import parse_tags
 
-import auth_iap
 import parse_data as parse_json_data
 import slacknotify
 from github_repo_dispatcher import github_repo_dispatcher
