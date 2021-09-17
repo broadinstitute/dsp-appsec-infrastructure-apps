@@ -29,7 +29,6 @@ from trigger import parse_tags
 
 import parse_data as parse_json_data
 import slacknotify
-from github_repo_dispatcher import github_repo_dispatcher
 
 # Env variables
 dojo_host = os.getenv('dojo_host')  # get Defect Dojo URL
