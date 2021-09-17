@@ -34,7 +34,7 @@ export class FormComponent implements OnInit {
         this.errors = submitNewServiceQuestionnaireResponse;
        });
 
-    this.arrRequired = {'service' : result['Service'], 'github': result['Github URL']};
+    this.arrRequired = {'service' : result['Service'], 'github': result['Github URL'], 'security_champion': result['Security champion']};
     this.createNewSctService.createNewSCT(this.arrRequired).subscribe((createNewSCTResponse) => {
     });
 
