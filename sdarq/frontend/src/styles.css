@@ -273,6 +273,8 @@ body {
 
 .card .card-body .card-text {
   font-weight: 200 !important;
+  color: #212529 !important;
+  font-size: .85rem !important;
 }
 
 .navbar {
