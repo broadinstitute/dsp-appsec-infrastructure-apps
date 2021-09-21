@@ -273,6 +273,8 @@ body {
 
 .card .card-body .card-text {
   font-weight: 200 !important;
+  color: #212529 !important;
+  font-size: .85rem !important;
 }
 
 .navbar {
@@ -296,7 +298,7 @@ ul.stepper li.completed a .circle {
 }
 
 .center {
-  padding-left: 40%;
+  padding-left: 36%;
 }
 
 .jumbotron {
