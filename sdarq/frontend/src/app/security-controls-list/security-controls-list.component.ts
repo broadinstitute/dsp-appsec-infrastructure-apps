@@ -12,9 +12,10 @@ export class SecurityControlsListComponent implements OnInit {
 
   serviceSecurityControl: ServiceSecurityControl[];
   // tslint:disable-next-line
-  headElements = ['Service', 'Product', 'Contact', 'Dev URL', 'Sourcecode', 'Vulnerability Managment', 'DefectDojo', 'Threat Model', 'Docker Scan', 'Manual Pentest', 'DAST', 'CIS scan', 'Dependecies scan'];
+  headElements = ['Service', 'Product', 'Contact', 'Dev URL', 'Sourcecode', 'DefectDojo', 'Threat Model', 'Docker Scan', 'Manual Pentest', 'DAST', 'CIS scan', 'Dependecies scan'];
 
   sourceclear_results: boolean;
+  zap_results: boolean;
   searchString: any;
 
   constructor(private getSecurityControls: GetSecurityControlsService) { }
@@ -49,8 +50,9 @@ export class SecurityControlsListComponent implements OnInit {
 
   zapShowValue(zap) {
     if (zap === true) {
-      return '<i class="fas fa-check fa-1x"></i>'
+      this.zap_results = true;
     } else {
+      this.zap_results = false;
       return '<i class="fas fa-times fa-1x"></i>'
     }
   }

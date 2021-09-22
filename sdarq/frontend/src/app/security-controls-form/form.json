@@ -40,15 +40,15 @@
        },
        {
         "type": "text",
-        "name": "vulnerability_management",
-        "title": "Vulnerability management URL",
+        "name": "defect_dojo",
+        "title": "Defect Dojo URL",
         "hideNumber": true,
         "isRequired": true
        },
        {
-        "type": "text",
-        "name": "defect_dojo",
-        "title": "Defect Dojo URL",
+        "type": "boolean",
+        "name": "threat_model",
+        "title": "Does this servise have a threat model?",
         "hideNumber": true,
         "isRequired": true
        },
@@ -65,6 +65,15 @@
         "title": "Service scan ( via Zap or similar tool)",
         "hideNumber": true,
         "isRequired": true
+       },
+       {
+        "type": "text",
+        "name": "vulnerability_management",
+        "visibleIf": "{zap} = true",
+        "title": "Vulnerability management results link",
+        "enableIf": "{zap} = true",
+        "isRequired": true,
+        "requiredIf": "{zap} = true"
        },
        {
         "type": "boolean",
