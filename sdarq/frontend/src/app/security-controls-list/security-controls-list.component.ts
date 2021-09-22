@@ -52,6 +52,7 @@ export class SecurityControlsListComponent implements OnInit {
     if (zap === true) {
       this.zap_results = true;
     } else {
+      this.zap_results = false;
       return '<i class="fas fa-times fa-1x"></i>'
     }
   }
