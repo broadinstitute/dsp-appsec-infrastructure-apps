@@ -54,6 +54,13 @@
        },
        {
         "type": "boolean",
+        "name": "threat_model",
+        "title": "Does this servise have a threat model?",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "boolean",
         "name": "zap",
         "title": "Service scan ( via Zap or similar tool)",
         "hideNumber": true,
