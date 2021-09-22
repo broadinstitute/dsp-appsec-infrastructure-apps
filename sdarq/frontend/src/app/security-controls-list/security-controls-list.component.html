@@ -31,7 +31,10 @@
                         <td><a href="{{ controls.defect_dojo }}" target="_blank"> <!-- nosemgrep-->
                                 <img src="../assets/defectdojo.png" width="25px"></a></td>
                         <td>
-                            <div [innerHTML]="trivyShowValue(controls.docker_scan) "></div>
+                            <div [innerHTML]="threatmodelShowValue(controls.threat_model)"></div>
+                        </td>
+                        <td>
+                            <div [innerHTML]="trivyShowValue(controls.docker_scan)"></div>
                         </td>
                         <td>
                             <div [innerHTML]="burpShowValue(controls.burp)"></div>
