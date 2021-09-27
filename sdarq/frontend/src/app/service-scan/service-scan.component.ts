@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import formJson from './form.json';
-import { ScanServiceService } from '../services/scan-service.service';
+import { ScanServiceService } from '../services/scan-service/scan-service.service';
 
 
 @Component({

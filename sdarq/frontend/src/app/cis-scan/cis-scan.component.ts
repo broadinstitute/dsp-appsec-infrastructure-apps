@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import formJson from './form.json';
-import { CisProjectService } from '../services/cis-project.service';
+import { CisProjectService } from '../services/scan-gcp-project/cis-project.service';
 
 
 @Component({

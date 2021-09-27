@@ -26,15 +26,16 @@ import { SecurityControlsFormComponent } from './security-controls-form/security
 import { SecurityControlsListComponent } from './security-controls-list/security-controls-list.component';
 import { EditSecurityControlsFormComponent } from './edit-security-controls-form/edit-security-controls-form.component';
 // Listed services
-import { GetSecurityControlsService } from './services/get-security-controls.service';
-import { CreateNewSctService } from './services/create-new-sct.service';
-import { ScanServiceService } from './services/scan-service.service';
-import { CsvDataService } from './services/csv-data.service';
-import { RequestTmService } from './services/request-tm.service';
-import { GetCisScanService } from './services/get-cis-scan.service';
-import { CisProjectService } from './services/cis-project.service';
-import { SendFormDataService } from './services/send-form-data.service';
-import { EditSecurityControlsService } from './services/edit-security-controls.service';
+import { GetSecurityControlsService } from './services/get-all-security-controls/get-security-controls.service';
+import { CreateNewSctService } from './services/create-new-security-controls/create-new-sct.service';
+import { ScanServiceService } from './services/scan-service/scan-service.service';
+import { CsvDataService } from './services/convert-json-to-csv/csv-data.service';
+import { RequestTmService } from './services/threat-model-request/request-tm.service';
+import { GetCisScanService } from './services/get-project-cis-results/get-cis-scan.service';
+import { CisProjectService } from './services/scan-gcp-project/cis-project.service';
+import { GetServiceSecurityControlsService } from './services/get-service-security-controls/get-service-security-controls.service';
+import { SendFormDataService } from './services/create-new-service/send-form-data.service';
+import { EditSecurityControlsService } from './services/edit-service-security-controls/edit-security-controls.service';
 // Listed pipes
 import { FilterPipe } from './pipes/filter.pipe';
 import { FiltersctPipe } from './pipes/filtersct.pipe';
@@ -85,7 +86,8 @@ import { AppRoutingModule } from './app-routing.module';
     ScanServiceService,
     CreateNewSctService,
     GetSecurityControlsService,
-    EditSecurityControlsService
+    EditSecurityControlsService,
+    GetServiceSecurityControlsService
     ],
   bootstrap: [
     AppComponent

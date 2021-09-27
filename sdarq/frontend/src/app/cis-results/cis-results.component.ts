@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { GetCisScanService } from '../services/get-cis-scan.service';
+import { GetCisScanService } from '../services/get-project-cis-results/get-cis-scan.service';
 import { ActivatedRoute } from '@angular/router';
-import { CsvDataService } from '../services/csv-data.service';
+import { CsvDataService } from '../services/convert-json-to-csv/csv-data.service';
 
 @Component({
   selector: 'app-cis-results',
