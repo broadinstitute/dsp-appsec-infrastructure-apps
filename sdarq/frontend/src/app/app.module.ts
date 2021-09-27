@@ -21,7 +21,6 @@ import { JiraTicketRiskAssesmentComponent } from './jira-ticket-risk-assesment/j
 import { ThreatModelComponent } from './threat-model/threat-model.component';
 import { AboutPageComponent } from './about-page/about-page.component'
 import { ServiceScanComponent } from './service-scan/service-scan.component'
-import { MultiScanComponent } from './multi-scan/multi-scan.component';
 import { NotfoundComponent } from './notfound/notfound.component';
 import { SecurityControlsFormComponent } from './security-controls-form/security-controls-form.component';
 import { SecurityControlsListComponent } from './security-controls-list/security-controls-list.component';
@@ -64,7 +63,6 @@ import { AppRoutingModule } from './app-routing.module';
     ThreatModelComponent,
     AboutPageComponent,
     ServiceScanComponent,
-    MultiScanComponent,
     NotfoundComponent,
     SecurityControlsFormComponent,
     SecurityControlsListComponent,
