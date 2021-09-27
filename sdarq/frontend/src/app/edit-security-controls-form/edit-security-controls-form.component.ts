@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-// import { GetSecurityControlsService } from '../services/get-security-controls.service';
-import { ServiceSecurityControl } from '../models/service-security-control.model';
-import { EditSecurityControlsService } from '../services/edit-security-controls.service';
-import { GetServiceSecurityControlsService } from '../services/get-service-security-controls.service';
+import { EditSecurityControlsService } from '../services/edit-service-security-controls/edit-security-controls.service';
+import { GetServiceSecurityControlsService } from '../services/get-service-security-controls/get-service-security-controls.service';
 
 import formJson from './form.json';
 
@@ -27,6 +25,7 @@ export class EditSecurityControlsFormComponent implements OnInit {
   docker_scan: boolean;
   cis_scanner: boolean;
   burp: boolean;
+  threat_model: boolean;
   data: any;
   item: any;
   chooseServiceToEditForm: boolean;
@@ -68,6 +67,7 @@ export class EditSecurityControlsFormComponent implements OnInit {
         this.dev_url = serviceSecurityControl.dev_url;
         this.vulnerability_management = serviceSecurityControl.vulnerability_management;
         this.defect_dojo = serviceSecurityControl.defect_dojo;
+        this.threat_model = serviceSecurityControl.threat_model;
         this.zap = serviceSecurityControl.zap;
         this.sourceclear = serviceSecurityControl.sourceclear;
         this.sourceclear_link = serviceSecurityControl.sourceclear_link;

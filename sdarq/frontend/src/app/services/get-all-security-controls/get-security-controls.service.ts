@@ -2,22 +2,24 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
-import { ServiceSecurityControl } from '../models/service-security-control.model';
+import { ServiceSecurityControl } from '../../models/service-security-control.model';
+
 
 @Injectable({
   providedIn: 'root'
 })
-export class GetServiceSecurityControlsService {
+export class GetSecurityControlsService {
 
-    private Url = location.origin + '/get_sec_controls_service/';
+  private Url = location.origin + '/get_sec_controls/';
 
   constructor(private http: HttpClient) { }
 
-  getServiceSecurityControls(data): Observable<any> {
+  getAllSecurityControls(): Observable<ServiceSecurityControl[]> {
     const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
-    return this.http.post(this.Url, data, options).pipe(
+    return this.http.get<ServiceSecurityControl[]>(this.Url, options).pipe(
+      map(res => res.map((serviceSecurityControl: ServiceSecurityControl) => new ServiceSecurityControl().deserialize(serviceSecurityControl))), // tslint:disable-line
       catchError(this.handleError)
     )
   }
@@ -39,5 +41,4 @@ export class GetServiceSecurityControlsService {
     }
     return throwError(errorMessage);
   }
-
 }

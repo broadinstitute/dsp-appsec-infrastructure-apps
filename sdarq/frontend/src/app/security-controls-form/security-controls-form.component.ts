@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import formJson from './form.json';
-import { CreateNewSctService } from '../services/create-new-sct.service';
+import { CreateNewSctService } from '../services/create-new-security-controls/create-new-sct.service';
 
 
 @Component({

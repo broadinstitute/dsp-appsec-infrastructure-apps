@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { SendFormDataService } from '../services/send-form-data.service';
-import { CisProjectService } from '../services/cis-project.service';
-import { CreateNewSctService } from '../services/create-new-sct.service';
+import { SendFormDataService } from '../services/create-new-service/send-form-data.service';
+import { CisProjectService } from '../services/scan-gcp-project/cis-project.service';
+import { CreateNewSctService } from '../services/create-new-security-controls/create-new-sct.service';
 import formJson from './form.json';
 
 @Component({

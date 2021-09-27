@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { GetSecurityControlsService } from '../services/get-security-controls.service'
+import { GetSecurityControlsService } from '../services/get-all-security-controls/get-security-controls.service'
 import { ServiceSecurityControl } from '../models/service-security-control.model';
 
 
