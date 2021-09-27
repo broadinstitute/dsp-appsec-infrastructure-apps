@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-// import { GetSecurityControlsService } from '../services/get-security-controls.service';
-import { ServiceSecurityControl } from '../models/service-security-control.model';
 import { EditSecurityControlsService } from '../services/edit-security-controls.service';
 import { GetServiceSecurityControlsService } from '../services/get-service-security-controls.service';
 
