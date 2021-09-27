@@ -54,13 +54,6 @@
        },
        {
         "type": "boolean",
-        "name": "threat_model",
-        "title": "Does this servise have a threat model?",
-        "hideNumber": true,
-        "isRequired": true
-       },
-       {
-        "type": "boolean",
         "name": "zap",
         "title": "Service scan ( via Zap or similar tool)",
         "hideNumber": true,
@@ -78,7 +71,7 @@
        {
         "type": "boolean",
         "name": "sourceclear",
-        "title": "Downstream dependency scan (via Sourceclear or similar tool)",
+        "title": "Downstream dependency scan (via Sourceclear, Snyk or similar tool)",
         "hideNumber": true,
         "isRequired": true
        },
@@ -89,6 +82,7 @@
         "title": "Enter downstream dependency result link",
         "enableIf": "{sourceclear} = true",
         "isRequired": true,
+        "hideNumber": true,
         "requiredIf": "{sourceclear} = true"
        },
        {
