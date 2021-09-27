@@ -1,8 +1,8 @@
 import { TestBed, async } from '@angular/core/testing';
 
 import { AppComponent } from './app.component';
-import { SurveyCreatorComponent } from './survey.creator.component';
-import { SurveyComponent } from './survey.component';
+import { SurveyCreatorComponent } from './services/survejs-form/survey.creator.component';
+import { SurveyComponent } from './services/survejs-form/survey.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
