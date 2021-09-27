@@ -27,6 +27,7 @@ export class EditSecurityControlsFormComponent implements OnInit {
   docker_scan: boolean;
   cis_scanner: boolean;
   burp: boolean;
+  threat_model: boolean;
   data: any;
   item: any;
   chooseServiceToEditForm: boolean;
@@ -68,6 +69,7 @@ export class EditSecurityControlsFormComponent implements OnInit {
         this.dev_url = serviceSecurityControl.dev_url;
         this.vulnerability_management = serviceSecurityControl.vulnerability_management;
         this.defect_dojo = serviceSecurityControl.defect_dojo;
+        this.threat_model = serviceSecurityControl.threat_model;
         this.zap = serviceSecurityControl.zap;
         this.sourceclear = serviceSecurityControl.sourceclear;
         this.sourceclear_link = serviceSecurityControl.sourceclear_link;
