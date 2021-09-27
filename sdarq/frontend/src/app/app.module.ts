@@ -5,8 +5,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 // Listed components
 import { AppComponent } from './app.component';
-import { SurveyComponent } from './survey.component';
-import { SurveyCreatorComponent } from './survey.creator.component';
+import { SurveyComponent } from './services/survejs-form/survey.component';
+import { SurveyCreatorComponent } from './services/survejs-form/survey.creator.component';
 import { FormComponent } from './form/form.component';
 import { MainpageComponent } from './mainpage/mainpage.component';
 import { HomepageComponent } from './homepage/homepage.component';
