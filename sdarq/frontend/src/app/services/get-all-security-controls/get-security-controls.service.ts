@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
-import { ServiceSecurityControl } from '../models/service-security-control.model';
+import { ServiceSecurityControl } from '../../models/service-security-control.model';
 
 
 @Injectable({
