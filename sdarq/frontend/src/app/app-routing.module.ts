@@ -12,7 +12,6 @@ import { JiraTicketRiskAssesmentComponent } from './jira-ticket-risk-assesment/j
 import { ThreatModelComponent} from './threat-model/threat-model.component'
 import { AboutPageComponent } from './about-page/about-page.component'
 import { ServiceScanComponent } from './service-scan/service-scan.component'
-import { MultiScanComponent } from './multi-scan/multi-scan.component';
 import { NotfoundComponent} from './notfound/notfound.component'
 import { SecurityControlsFormComponent} from './security-controls-form/security-controls-form.component'
 import { SecurityControlsListComponent } from './security-controls-list/security-controls-list.component';
@@ -33,7 +32,6 @@ const routes: Routes = [
   { path: 'jira-ticket-risk-assesment', component: JiraTicketRiskAssesmentComponent },
   { path: 'threat-model/request', component: ThreatModelComponent },
   { path: 'scan-service', component: ServiceScanComponent },
-  { path: 'multi-scan', component: MultiScanComponent },
   { path: 'security-control/create', component: SecurityControlsFormComponent },
   { path: 'security-control/view', component: SecurityControlsListComponent },
   { path: 'security-control/edit', component: EditSecurityControlsFormComponent },
