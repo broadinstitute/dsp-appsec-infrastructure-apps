@@ -314,7 +314,7 @@ def request_tm():
                                                appsec_jira_ticket_description),
                                            issuetype={'name': 'Task'})
     logging.info(
-        "Jira ticket in appsec board for project %s threat model", project_name)
+        "Jira ticket created in appsec board for %s threat model", project_name)
 
     for channel in slack_channels_list:
         slacknotify.slacknotify_threat_model(channel, security_champion,
@@ -480,6 +480,45 @@ def get_sec_controls_service():
         logging.info("Please enter a valid value for your service name! Contact AppSec team for more information.")
         return Response(json.dumps({'statusText': 'Please enter a valid value for your service name!'}), status=404, mimetype='application/json')
 
+
+@app.route('/request_manual_pentest/', methods=['POST'])
+@cross_origin(origins=sdarq_host)
+def request_manual_pentest():
+    """
+    Creates a request for threat model for a specific service
+    Creates a Jira ticket and notifies team in Slack
+    Args:
+        JSON data supplied by user
+    """
+    user_data = request.get_json()
+    print(user_data)
+
+    security_champion = user_data['security_champion']
+    project_name = user_data['service']
+    slack_channels_list = ['#dsp-security', '#appsec-internal']
+    jira_project_key = "DSEC"
+
+    appsec_jira_ticket_summury = 'Security pentest request for ' + user_data['service']
+    appsec_jira_ticket_description = 'URL to pentest: ' + user_data['URL'] + '\n' + \
+        'Environment: ' + user_data['env'] + '\n' + 'Permission levels:' + user_data['permission_level'] + \
+        '\n' + 'Documentation: ' + user_data['document'] + \
+        '\n' + 'Security champion: ' + user_data['security_champion']
+
+    logging.info("Security pentest request for  %s ", project_name)
+
+    jira_ticket_appsec = jira.create_issue(project=jira_project_key,
+                                           summary=appsec_jira_ticket_summury,
+                                           description=str(
+                                               appsec_jira_ticket_description),
+                                           issuetype={'name': 'Task'})
+    logging.info(
+        "Jira ticket created in appsec board for %s security pentest", project_name)
+
+    for channel in slack_channels_list:
+        slacknotify.slacknotify_security_pentest(channel, security_champion,
+                                            project_name, jira_instance, jira_ticket_appsec, jira_project_key)
+
+    return ''
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=int(os.getenv('PORT', 8080)))
