@@ -82,6 +82,13 @@ spec:
             name: ${SERVICE}
             port:
               name: ${BACKEND_PORT}
+      - path: /request_manual_pentest/
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: ${SERVICE}
+            port:
+              name: ${BACKEND_PORT}
 ---
 apiVersion: networking.gke.io/v1beta1
 kind: FrontendConfig
