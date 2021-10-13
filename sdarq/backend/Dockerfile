@@ -1,10 +1,20 @@
 FROM us.gcr.io/broad-dsp-gcr-public/base/python:debian
 
-RUN pip3 install -U pip
-
 WORKDIR /app
 COPY sdarq/backend/requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt
+
+RUN apt-get update -q && \
+    apt-get install -qq --no-install-recommends \
+      build-essential \
+      libffi7 \
+      libffi-dev && \
+    pip3 install -U pip && \
+    pip3 install -r requirements.txt && \
+    apt-get remove -y \
+      build-essential \
+      libffi-dev && \
+    rm -rf /var/lib/apt/lists/*
+
 
 COPY --from=owasp/zap2docker-weekly /zap/zap_common.py ./
 COPY sdarq/backend/src/*.py zap/src/*.py ./
