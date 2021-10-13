@@ -16,6 +16,7 @@ import { NotfoundComponent} from './notfound/notfound.component'
 import { SecurityControlsFormComponent} from './security-controls-form/security-controls-form.component'
 import { SecurityControlsListComponent } from './security-controls-list/security-controls-list.component';
 import { EditSecurityControlsFormComponent } from './edit-security-controls-form/edit-security-controls-form.component';
+import { SecurityPentestComponent } from './security-pentest/security-pentest.component';
 
 
 
@@ -35,6 +36,7 @@ const routes: Routes = [
   { path: 'security-control/create', component: SecurityControlsFormComponent },
   { path: 'security-control/view', component: SecurityControlsListComponent },
   { path: 'security-control/edit', component: EditSecurityControlsFormComponent },
+  { path: 'security-pentest/request', component: SecurityPentestComponent },
   { path: '404', component: NotfoundComponent },
   { path: '**', redirectTo: '/404' }
 ];
