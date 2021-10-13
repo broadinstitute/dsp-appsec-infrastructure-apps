@@ -6,7 +6,6 @@ COPY sdarq/backend/requirements.txt requirements.txt
 RUN apt-get update -q && \
     apt-get install -qq --no-install-recommends \
       build-essential \
-      libffi7 \
       libffi-dev && \
     pip3 install -U pip && \
     pip3 install -r requirements.txt && \
