@@ -7,7 +7,11 @@ This module
 - sends request to scan a GCP project against the CIS Benchmark
 - get results from BigQuery for a scanned GCP project
 - send a request for threat model
+- send a request for security pentest
 - scan a service via ZAP tool
+- add security controls for a service
+- edit security controls for a service
+- list all security controls for all services
 """
 #!/usr/bin/env python3
 
@@ -307,10 +311,11 @@ def request_tm():
     project_name = user_data['Name']
 
     appsec_jira_ticket_summury = user_data['Type'] + user_data['Name']
-    appsec_jira_ticket_description = user_data['Diagram'] + '\n' + \
-        user_data['Document'] + '\n' + user_data['Github']
+    appsec_jira_ticket_description = user_data['Diagram'] + \
+                                    '\n' + user_data['Document'] + \
+                                    '\n' + user_data['Github']
 
-    logging.info("Request for threat model for project %s ", project_name)
+    logging.info("Threat model request for %s ", project_name)
 
     jira_ticket_appsec = jira.create_issue(project=appsec_jira_project_key,
                                            summary=appsec_jira_ticket_summury,
@@ -401,9 +406,7 @@ def create_sec_control_template():
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
 
     if re.match(pattern, service_name):
-        # set collection name as variable
-        doc_ref = db.collection(
-            'security-controls').document(service_name.lower())
+        doc_ref = db.collection(security_controls_firestore_collection).document(service_name.lower())
         doc = doc_ref.get()
         if bool(doc.to_dict()) is True:
             message = """
@@ -412,10 +415,8 @@ def create_sec_control_template():
             logging.info(message)
             return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
         else:
-            # set collection name as variable
-            db.collection(
-                'security-controls').document(service_name.lower()).set(json_data)
-            logging.info("A new security controls template is create")
+            db.collection(security_controls_firestore_collection).document(service_name.lower()).set(json_data)
+            logging.info("A new security controls template is created")
             return ''
     else:
         message = """
@@ -472,7 +473,6 @@ def get_sec_controls():
     Returns: Json data
     """
     data = []
-    # set collection name as variable
     docs = db.collection(security_controls_firestore_collection).stream()
     for doc in docs:
         data.append(doc.to_dict())
@@ -496,7 +496,7 @@ def get_sec_controls_service():
 
     if re.match(pattern, service_name, re.IGNORECASE):
         doc_ref = db.collection(security_controls_firestore_collection).document(
-            service_name.lower())  # set collection name as variable
+            service_name.lower())
         doc = doc_ref.get()
         if doc.exists:
             return doc.to_dict()
@@ -518,21 +518,20 @@ def get_sec_controls_service():
 @cross_origin(origins=sdarq_host)
 def request_manual_pentest():
     """
-    Creates a request for threat model for a specific service
+    Creates a request for security pentest for a specific service
     Creates a Jira ticket and notifies team in Slack
     Args:
         JSON data supplied by user
     """
     user_data = request.get_json()
-    print(user_data)
 
     security_champion = user_data['security_champion']
     project_name = user_data['service']
 
     appsec_jira_ticket_summury = 'Security pentest request for ' + \
         user_data['service']
-    appsec_jira_ticket_description = 'URL to pentest: ' + user_data['URL'] + '\n' + \
-        'Environment: ' + user_data['env'] + \
+    appsec_jira_ticket_description = 'URL to pentest: ' + user_data['URL'] + \
+        '\n' +'Environment: ' + user_data['env'] + \
         '\n' + 'Permission levels:' + user_data['permission_level'] + \
         '\n' + 'Documentation: ' + user_data['document'] + \
         '\n' + 'Security champion: ' + user_data['security_champion']
