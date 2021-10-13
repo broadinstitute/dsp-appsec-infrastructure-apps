@@ -1,5 +1,5 @@
---- /entrypoint-initializer.sh
-+++ /entrypoint-initializer.sh
+--- entrypoint-initializer.sh
++++ entrypoint-initializer.sh
 @@ -123,4 +123,12 @@
    # checks the deduplication config at startup
    echo "Startup Deduplication Configuration"
