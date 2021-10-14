@@ -410,7 +410,7 @@ def create_sec_control_template():
         doc = doc_ref.get()
         if bool(doc.to_dict()) is True:
             message = """
-            This service exists, if you want to edit it, go to edit page
+            This service already exists, if you want to edit it, go to the edit page.
             """
             logging.info(message)
             return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
@@ -458,7 +458,7 @@ def edit_sec_controls():
 
     else:
         message = """
-        Invalid input!Please make sure you include numbers, -, _ and alphabetical characters.
+        Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.
         """
         logging.info(message)
         return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
@@ -502,7 +502,7 @@ def get_sec_controls_service():
             return doc.to_dict()
         else:
             message = """
-            This service does not exist! Contact AppSec team for more information
+            This service does not exist! Contact AppSec team for more information!
             """
             logging.info(message)
             return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
