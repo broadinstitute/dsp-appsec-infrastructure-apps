@@ -35,18 +35,18 @@ import parse_data as parse_json_data
 import slacknotify
 
 # Env variables
-dojo_host = os.getenv('dojo_host')
-dojo_user = os.getenv('dojo_user')
+dojo_host = os.getenv('dojo_host') # dojo host
 dojo_api_key = os.getenv('dojo_api_key')
 slack_token = os.getenv('slack_token')
 jira_username = os.getenv('jira_username')
 jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
 sdarq_host = os.getenv('sdarq_host')
-dojo_host_url = os.getenv('dojo_host_url')
-firestore_collection = os.getenv('firestore_collection')
+dojo_host_url = os.getenv('dojo_host_url') #slack messages url
 appsec_slack_channel = os.getenv('appsec_slack_channel')
 appsec_jira_project_key = os.getenv('appsec_jira_project_key')
+
+firestore_collection = os.environ('CIS_FIRESTORE-COLLECTION')
 cis_topic_name = os.environ['CIS_JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
 zap_topic_name = os.environ['ZAP_JOB_TOPIC']
