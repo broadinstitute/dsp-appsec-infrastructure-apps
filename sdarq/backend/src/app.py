@@ -46,7 +46,7 @@ dojo_host_url = os.getenv('dojo_host_url') #slack messages url
 appsec_slack_channel = os.getenv('appsec_slack_channel')
 appsec_jira_project_key = os.getenv('appsec_jira_project_key')
 
-firestore_collection = os.environ('CIS_FIRESTORE-COLLECTION')
+firestore_collection = os.environ('CIS_FIRESTORE_COLLECTION')
 cis_topic_name = os.environ['CIS_JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
 zap_topic_name = os.environ['ZAP_JOB_TOPIC']
