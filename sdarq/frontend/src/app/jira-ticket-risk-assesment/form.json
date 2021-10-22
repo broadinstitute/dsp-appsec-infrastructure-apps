@@ -156,10 +156,6 @@
         "otherText": "Other"
        },
        {
-        "type": "html",
-        "name": "question6"
-       },
-       {
         "type": "radiogroup",
         "name": "confidentiality",
         "visibleIf": "{high_level} = 'change_product_api' and {product_terra} = ['item5'] and {product_features_other} = ['item1']",
