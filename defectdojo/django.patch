@@ -1,9 +1,9 @@
 --- entrypoint-initializer.sh
 +++ entrypoint-initializer.sh
-@@ -119,4 +119,12 @@
-   python3 manage.py migrate_textquestions
- 
-   initialize_test_types
+@@ -123,4 +123,12 @@
+   # checks the deduplication config at startup
+   echo "Startup Deduplication Configuration"
+   python3 manage.py validatededupeconfig
 +else
 +cat <<EOD | python manage.py shell
 +import os
@@ -13,3 +13,4 @@
 +u.save()
 +EOD
  fi
+ 

@@ -51,6 +51,8 @@ spec:
             value: ${ZAP_JOB_TOPIC}
           - name: SC_FIRESTORE_COLLECTION
             value: ${SC_FIRESTORE_COLLECTION}
+          - name: CIS_FIRESTORE_COLLECTION
+            value: ${CIS_FIRESTORE_COLLECTION}
         readinessProbe:
           httpGet:
             path: /health/
