@@ -44,7 +44,7 @@ steps:
 
 # Pre-pull Kaniko image, used to speed up Docker builds.
 - id: kaniko
-  name: &kaniko gcr.io/kaniko-project/executor:debug
+  name: &kaniko gcr.io/kaniko-project/executor:v1.6.0-debug
   entrypoint: 'true'
 
 # build bastion proxy Docker image
