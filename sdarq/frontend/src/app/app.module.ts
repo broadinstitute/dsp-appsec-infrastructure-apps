@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
-// Listed components
 import { AppComponent } from './app.component';
 import { SurveyComponent } from './services/survejs-form/survey.component';
 import { SurveyCreatorComponent } from './services/survejs-form/survey.creator.component';
@@ -25,7 +24,7 @@ import { NotfoundComponent } from './notfound/notfound.component';
 import { SecurityControlsFormComponent } from './security-controls-form/security-controls-form.component';
 import { SecurityControlsListComponent } from './security-controls-list/security-controls-list.component';
 import { EditSecurityControlsFormComponent } from './edit-security-controls-form/edit-security-controls-form.component';
-// Listed services
+import { SecurityPentestComponent } from './security-pentest/security-pentest.component';
 import { GetSecurityControlsService } from './services/get-all-security-controls/get-security-controls.service';
 import { CreateNewSctService } from './services/create-new-security-controls/create-new-sct.service';
 import { ScanServiceService } from './services/scan-service/scan-service.service';
@@ -36,10 +35,9 @@ import { CisProjectService } from './services/scan-gcp-project/cis-project.servi
 import { GetServiceSecurityControlsService } from './services/get-service-security-controls/get-service-security-controls.service';
 import { SendFormDataService } from './services/create-new-service/send-form-data.service';
 import { EditSecurityControlsService } from './services/edit-service-security-controls/edit-security-controls.service';
-// Listed pipes
+import { RequestSecurityPentestService } from './services/security-pentest-request/request-security-pentest.service';
 import { FilterPipe } from './pipes/filter.pipe';
 import { FiltersctPipe } from './pipes/filtersct.pipe';
-// Router
 import { AppRoutingModule } from './app-routing.module';
 
 
@@ -67,7 +65,8 @@ import { AppRoutingModule } from './app-routing.module';
     NotfoundComponent,
     SecurityControlsFormComponent,
     SecurityControlsListComponent,
-    EditSecurityControlsFormComponent
+    EditSecurityControlsFormComponent,
+    SecurityPentestComponent
     ],
   imports: [
     BrowserModule,
@@ -87,7 +86,8 @@ import { AppRoutingModule } from './app-routing.module';
     CreateNewSctService,
     GetSecurityControlsService,
     EditSecurityControlsService,
-    GetServiceSecurityControlsService
+    GetServiceSecurityControlsService,
+    RequestSecurityPentestService
     ],
   bootstrap: [
     AppComponent

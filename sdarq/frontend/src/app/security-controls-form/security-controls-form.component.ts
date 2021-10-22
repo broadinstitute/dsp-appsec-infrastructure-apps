@@ -10,17 +10,26 @@ import { CreateNewSctService } from '../services/create-new-security-controls/cr
 })
 export class SecurityControlsFormComponent implements OnInit {
 
+  showModalErr: boolean;
+  showForm: boolean;
+  showModalError: any;
+
   json = formJson;
 
   constructor(private createSCT: CreateNewSctService) { }
 
   ngOnInit(): void {
+    this.showModalError = false;
+    this.showForm = true;
   }
 
   sendSCTData(result) {
     this.createSCT.createNewSCT(result).subscribe((data: any) => {
     },
       (data) => {
+        this.showModalErr = true;
+        this.showModalError = data;
+        this.showForm = false;
       });
   }
 }
