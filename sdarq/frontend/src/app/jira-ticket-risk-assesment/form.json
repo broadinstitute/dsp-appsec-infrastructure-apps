@@ -46,10 +46,6 @@
         "otherText": "Not sure - I need further help with this. "
        },
        {
-        "type": "html",
-        "name": "question2"
-       },
-       {
         "type": "radiogroup",
         "name": "infrastructure_gcp",
         "visible": false,
