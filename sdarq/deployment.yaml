@@ -126,6 +126,6 @@ spec:
               - name: SECURITY_CONTROLS_SLACK_CHANNEL
                 valueFrom:
                   secretKeyRef:
-                    name: ${JOB_SECRET}
-                    key: SECURITY_CONTROLS_SLACK_CHANNEL
+                    name: ${SDARQ_SECRET}
+                    key: appsec_slack_channel
 

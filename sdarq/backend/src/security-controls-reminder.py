@@ -5,9 +5,12 @@ This module
 - send notifications/reminder to Appsec team for missing security controls
 """
 
-from google.cloud import firestore
 import os
+
+from google.cloud import firestore
+
 import slacknotify
+
 
 def get_sec_controls():
     """
@@ -39,7 +42,7 @@ def main():
     """
 
 security_controls_firestore_collection = os.environ['SC_FIRESTORE_COLLECTION']
-slack_channel = os.getenv('SECURITY_CONTROLS_SLACK_CHANNEL')
+slack_channel = os.getenv('appsec_slack_channel')
 
 get_sec_controls()
 
