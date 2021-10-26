@@ -18,7 +18,7 @@ export INGRESS="${SERVICE}"
 export MANAGED_CERT="${SERVICE}"
 export FRONTEND_CONFIG="${SERVICE}"
 export BACKEND_CONFIG="${SERVICE}"
-export CRON_JOB="security-controls-cronjob"
+export CRON_JOB="${NAMESPACE}-security-controls-cronjob"
 export CRON_SERVICE_ACCOUNT="${CRON_JOB}"
 
 export SDARQ_CONFIG="${SERVICE}"

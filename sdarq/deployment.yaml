@@ -103,7 +103,7 @@ metadata:
   name: security-controls-cronjob
   namespace: ${NAMESPACE}
 spec:
-  schedule: "0 15 10 15 *"
+  schedule: "0 12 10 12 *"
   jobTemplate:
     spec:
       template:
