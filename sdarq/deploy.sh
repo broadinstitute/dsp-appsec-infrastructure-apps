@@ -18,6 +18,8 @@ export INGRESS="${SERVICE}"
 export MANAGED_CERT="${SERVICE}"
 export FRONTEND_CONFIG="${SERVICE}"
 export BACKEND_CONFIG="${SERVICE}"
+export CRON_JOB="security-controls-cronjob"
+export CRON_SERVICE_ACCOUNT="${CRON_JOB}"
 
 export SDARQ_CONFIG="${SERVICE}"
 export SDARQ_SECRET="sdarq"
@@ -36,6 +38,10 @@ export BACKEND_PORT="backend"
   "${CWD}/deployment.yaml"
 
 ./host.sh
+
+export SERVICE="${CRON_JOB}"
+export SERVICE_ACCOUNT="${CRON_SERVICE_ACCOUNT}"
+./kube-apply.py "service-account.yaml"
 
 ./kube-apply.py \
   "${iap_secret_yaml}" \

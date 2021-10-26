@@ -39,7 +39,7 @@ def main():
     """
 
 security_controls_firestore_collection = os.environ['SC_FIRESTORE_COLLECTION']
-slack_channel = os.getenv('SLACK_CHANNEL')
+slack_channel = os.getenv('SECURITY_CONTROLS_SLACK_CHANNEL')
 
 get_sec_controls()
 
