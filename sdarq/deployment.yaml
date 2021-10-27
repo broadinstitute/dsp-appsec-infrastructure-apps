@@ -115,7 +115,7 @@ spec:
           restartPolicy: OnFailure
 
           containers:
-          - name: security-controls-cronjob
+          - name: sdarq-security-controls-monthly
             image: ${SDARQ_BACKEND_IMAGE}
             command: ['python3', '/security-controls-reminder.py']
             env:
