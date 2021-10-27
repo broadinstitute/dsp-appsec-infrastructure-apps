@@ -108,7 +108,7 @@ spec:
     spec:
       template:
         spec:
-          serviceAccountName: ${SDARQ_BACKEND_IMAGE}
+          serviceAccountName: ${CRON_SERVICE_ACCOUNT}
           runtimeClassName: gvisor
           nodeSelector:
             cloud.google.com/gke-nodepool: batch
