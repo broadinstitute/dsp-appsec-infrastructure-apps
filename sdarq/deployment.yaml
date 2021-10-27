@@ -117,7 +117,7 @@ spec:
           containers:
           - name: sdarq-security-controls-monthly
             image: ${SDARQ_BACKEND_IMAGE}
-            command: ['python3', '/security-controls-reminder.py']
+            command: ['python3', '/src/security-controls-reminder.py']
             env:
               - name: DATASET_PROJECT_ID
                 value: ${PROJECT_ID}
