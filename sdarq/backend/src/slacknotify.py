@@ -258,32 +258,32 @@ def slacknotify_security_pentest(channel, security_champion, project_name, jira_
         ]
     )
 
-    def slacknotify_security_pentest(channel, service, missing_control):
-        response = client.chat_postMessage(
-        channel=channel,
-        text="There is a request for security pentest",
-        blocks=[
-            {
-                "type": "section",
-                "text": {
-                      "type": "mrkdwn",
-                      "text": "*Security Control Not Implemented*"
-                      }
-            },
-            {
-                "type": "section",
-                "text": {
+def slacknotify_security_controls(channel, service, missing_control):
+    response = client.chat_postMessage(
+    channel=channel,
+    text="There is a request for security pentest",
+    blocks=[
+        {
+            "type": "section",
+            "text": {
                     "type": "mrkdwn",
-                    "text": "*Service:* {0} " .format(str(service))
-                }
-            },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "*Missing security control:* {0} " .format(str(missing_control))
-                }
+                    "text": "*Security Control Not Implemented*"
+                    }
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*Service:* {0} " .format(str(service))
             }
-        ]
-    )
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*Missing security control:* {0} " .format(str(missing_control))
+            }
+        }
+    ]
+)
 
