@@ -100,7 +100,7 @@ spec:
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: security-controls-cronjob
+  name: sdarq-security-controls-monthly
   namespace: ${NAMESPACE}
 spec:
   schedule: "0 12 10 12 *"
