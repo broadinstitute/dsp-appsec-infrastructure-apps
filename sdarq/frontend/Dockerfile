@@ -3,7 +3,7 @@ FROM node:lts AS node
 WORKDIR /app
 
 COPY package.* .
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 COPY . .
 RUN npm run lint
