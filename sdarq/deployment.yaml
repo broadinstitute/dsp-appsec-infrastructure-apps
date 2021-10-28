@@ -128,4 +128,3 @@ spec:
                   secretKeyRef:
                     name: ${SDARQ_SECRET}
                     key: appsec_slack_channel
-
