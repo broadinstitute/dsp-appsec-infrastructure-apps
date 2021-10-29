@@ -34,7 +34,6 @@ def get_callback(data):
     """
     Handle publish failures
     """
-
     def callback(future: Future):
         try:
             print(future.result(), data)
