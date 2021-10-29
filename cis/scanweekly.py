@@ -24,7 +24,7 @@ def list_projects(dataset_project_id: str, bq_dataset: str):
     """
     client = bigquery.Client()
 
-    dataset_id = f'{dataset_project_id}.{bq_dataset}''
+    dataset_id = f'{dataset_project_id}.{bq_dataset}'
     tables = list(client.list_tables(dataset_id))
 
     return tables
