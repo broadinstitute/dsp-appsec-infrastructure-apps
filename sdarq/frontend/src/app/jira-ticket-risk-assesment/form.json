@@ -24,7 +24,7 @@
         "title": "At a high level this change is about:",
         "isRequired": true,
         "hasComment": true,
-        "commentText": "Use the space below should you need to provide more information or additional context. ",
+        "commentText": "Use the space below if you need to provide more information or additional context. ",
         "choices": [
          {
           "value": "change_infrastructure",
@@ -37,6 +37,10 @@
          {
           "value": "change_product_ui",
           "text": "Product - UI (changes related to Terra UI)"
+         },
+         {
+          "value": "add_SA",
+          "text": "Service Account - Add new Service Account or edit privileges of an existing Service Account"
          }
         ],
         "otherText": "Not sure - I need further help with this. "
@@ -146,10 +150,6 @@
          }
         ],
         "otherText": "Other"
-       },
-       {
-        "type": "html",
-        "name": "question6"
        },
        {
         "type": "radiogroup",
@@ -300,6 +300,12 @@
         "visible": false,
         "visibleIf": "{high_level} = 'change_product_api' and {product_terra} = ['item5'] and {product_features_other} = ['item1'] and {confidentiality} = 'item1' or {high_level} = 'change_product_api' and {product_terra} = ['item5'] and {product_features_other} = ['item1'] and {confidentiality} = 'item3' or {high_level} = 'change_product_api' and {product_terra} = ['item5'] and {product_features_other} = ['item1'] and {confidentiality} = 'item2' and {integrity} = 'item1' or {high_level} = 'change_product_api' and {product_terra} = ['item5'] and {product_features_other} = ['item1'] and {confidentiality} = 'item2' and {integrity} = 'item3'",
         "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nTo determine the risk of this change, please reach out to appsec@broadinstitute.org or tag someone from the DSP Appsec team in the Jira ticket.\n</div>\n\n"
+       },
+       {
+        "type": "html",
+        "name": "high_risk_SA",
+        "visibleIf": "{high_level} = 'add_SA'",
+        "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nAdding a new Service Account or editing an existing one must be always followed by the LEAST PRIVILEGE principle.\nPlease reach out to appsec@broadinstitute.org or tag someone from the DSP Appsec team in the Jira ticket.\n</div>"
        }
       ],
       "title": "Jira Security Risk Assessment Guide"

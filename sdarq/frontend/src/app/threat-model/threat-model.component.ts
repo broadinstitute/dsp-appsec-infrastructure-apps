@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RequestTmService } from '../services/request-tm.service';
+import { RequestTmService } from '../services/threat-model-request/request-tm.service';
 import { HttpClient } from '@angular/common/http';
 import formJson from './form.json';
 
@@ -19,7 +19,6 @@ export class ThreatModelComponent implements OnInit {
 
   sendData(result) {
     this.sendForm.sendFormData(result).subscribe((res) => {
-      console.log('Form sent');
     },
       (res) => { });
   }

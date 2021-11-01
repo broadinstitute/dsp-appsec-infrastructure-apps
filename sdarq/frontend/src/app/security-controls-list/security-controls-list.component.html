@@ -1,0 +1,61 @@
+<div class="jumbotron min-vh-100">
+        <div class="row">
+            <div class="col animated fadeIn">
+            </div>
+            <div class="col">
+            </div>
+            <div class="col">
+                <!-- tslint:disable-next-line -->
+                <input type="text" class="form-control" name="searchString" placeholder="Search service/product"
+                    [(ngModel)]="searchString" />
+            </div>
+        </div>
+        <br>
+            <table class="table table-hover">
+                <th *ngFor="let head of headElements">
+                    {{ head }}
+                </th>
+                <tbody #row>
+                    <!-- tslint:disable-next-line -->
+                    <tr *ngFor="let controls of serviceSecurityControl | filtersct: searchString ">
+                        <td>{{ controls.service }}</td>
+                        <td>{{ controls.product }}</td>
+                        <td>{{ controls.security_champion }}</td>
+                        <td><a href="{{ controls.dev_url }}" target="_blank" rel="noreferrer noopener"> <!-- nosemgrep-->
+                                {{ controls.service | lowercase}}-dev-url</a></td>
+                        <td><a href="{{ controls.github  }}" target="_blank" rel="noreferrer noopener"> <!-- nosemgrep-->
+                                <mdb-icon fab icon="github" size="2x"></mdb-icon>
+                            </a></td>
+                        <td><a href="{{ controls.defect_dojo }}" target="_blank"> <!-- nosemgrep-->
+                                <img src="../assets/defectdojo.png" width="25px"></a></td>
+                        <td>
+                            <div [innerHTML]="threatmodelShowValue(controls.threat_model)"></div>
+                        </td>
+                        <td>
+                            <div [innerHTML]="trivyShowValue(controls.docker_scan)"></div>
+                        </td>
+                        <td>
+                            <div [innerHTML]="burpShowValue(controls.burp)"></div>
+                        </td>
+                        <td>
+                            <div [innerHTML]="zapShowValue(controls.zap)"></div>
+                            <div *ngIf="zap_results">
+                           <a href="{{ controls.vulnerability_management }}" target="_blank" rel="noreferrer noopener"> <!-- nosemgrep-->
+                                 <img src="../assets/codedx.png" width="30px"></a>
+                                </div>
+                        </td>
+                        <td>
+                            <div [innerHTML]="cisscannerShowValue(controls.cis_scanner)"></div>
+                        </td>
+                        <td>
+                            <div [innerHTML]="sourceclearShowValue(controls.sourceclear)"></div>
+                            <div *ngIf="sourceclear_results">
+                                <a href="{{ controls.sourceclear_link}}" target="_blank" rel="noreferrer noopener" class="btn btn-outline-success btn-sm" role="button"> <!-- nosemgrep-->
+                                    Results
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+</div>

@@ -44,7 +44,7 @@ steps:
 
 # Pre-pull Kaniko image, used to speed up Docker builds.
 - id: kaniko
-  name: &kaniko gcr.io/kaniko-project/executor:debug
+  name: &kaniko gcr.io/kaniko-project/executor:v1.6.0-debug
   entrypoint: 'true'
 
 # build bastion proxy Docker image
@@ -107,32 +107,32 @@ steps:
       --destination=$${CODEDX_IMAGE}
       --cache
 
-# # build patched DefectDojo Django image,
-# # using Kaniko to speed up builds
-# - id: defectdojo-django-image
-#   name: *kaniko
-#   waitFor: ['kaniko']
-#   entrypoint: sh
-#   args:
-#   - -c
-#   - executor
-#       --context=dir:///workspace/defectdojo
-#       --dockerfile=Dockerfile.django
-#       --destination=$${DD_DJANGO_IMAGE}
-#       --cache
+# build patched DefectDojo Django image,
+# using Kaniko to speed up builds
+- id: defectdojo-django-image
+  name: *kaniko
+  waitFor: ['kaniko']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/defectdojo
+      --dockerfile=Dockerfile.django
+      --destination=$${DD_DJANGO_IMAGE}
+      --cache
 
-# # build patched DefectDojo Nginx image
-# - id: defectdojo-nginx-image
-#   name: *kaniko
-#   waitFor: ['kaniko']
-#   entrypoint: sh
-#   args:
-#   - -c
-#   - executor
-#       --context=dir:///workspace/defectdojo
-#       --dockerfile=Dockerfile.nginx
-#       --destination=$${DD_NGINX_IMAGE}
-#       --cache
+# build patched DefectDojo Nginx image
+- id: defectdojo-nginx-image
+  name: *kaniko
+  waitFor: ['kaniko']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/defectdojo
+      --dockerfile=Dockerfile.nginx
+      --destination=$${DD_NGINX_IMAGE}
+      --cache
 
 # build SDARQ frontend Docker image
 - id: sdarq-frontend-image
@@ -179,7 +179,7 @@ steps:
   entrypoint: sh
   args:
   - -c
-  - gsutil mb "gs://$${TERRAFORM_BUCKET}" ;
+  - gsutil mb -b on "gs://$${TERRAFORM_BUCKET}" ;
     gsutil versioning set on "gs://$${TERRAFORM_BUCKET}"
 
 # deploy GKE cluster and associated GCP resources
@@ -232,12 +232,12 @@ steps:
   entrypoint: ./deploy.sh
   dir: codedx
 
-# # deploy DefectDojo to GKE cluster
-# - id: defectdojo
-#   name: *kubectl
-#   waitFor: ['shared', 'defectdojo-django-image', 'defectdojo-nginx-image']
-#   entrypoint: ./deploy.sh
-#   dir: defectdojo
+# deploy DefectDojo to GKE cluster
+- id: defectdojo
+  name: *kubectl
+  waitFor: ['shared', 'defectdojo-django-image', 'defectdojo-nginx-image']
+  entrypoint: ./deploy.sh
+  dir: defectdojo
 
 # deploy SDARQ to GKE cluster
 - id: sdarq

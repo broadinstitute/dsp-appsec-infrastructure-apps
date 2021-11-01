@@ -78,6 +78,6 @@ export class SurveyComponent implements OnInit {
     };
     const surveyPDF = new SurveyPDF.SurveyPDF(this.json, options);
     surveyPDF.data = this.result;
-    surveyPDF.save('security_requirement');
+    surveyPDF.save('completed_form');
   }
 }

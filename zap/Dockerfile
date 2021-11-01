@@ -1,6 +1,6 @@
-FROM python:slim AS base
-
 FROM owasp/zap2docker-weekly AS zap
+
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:debian AS base
 
 # Set up a Python virtualenv in a "build" stage
 FROM base AS build
@@ -31,8 +31,8 @@ RUN /venv/bin/pylint --fail-under=9 --ignore=zap_common.py,defectdojo_apiv2.py  
 # Copy the virtualenv and sources into the clean final image
 FROM base
 
-COPY --from=build /venv /venv
 COPY --from=zap /zap/zap_common.py ./
+COPY --from=build /venv /venv
 COPY src/*.py ./
 
 ENTRYPOINT ["/venv/bin/python3", "-u", "-m"]

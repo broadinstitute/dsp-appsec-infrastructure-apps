@@ -12,8 +12,11 @@ import { JiraTicketRiskAssesmentComponent } from './jira-ticket-risk-assesment/j
 import { ThreatModelComponent} from './threat-model/threat-model.component'
 import { AboutPageComponent } from './about-page/about-page.component'
 import { ServiceScanComponent } from './service-scan/service-scan.component'
-import { MultiScanComponent } from './multi-scan/multi-scan.component';
 import { NotfoundComponent} from './notfound/notfound.component'
+import { SecurityControlsFormComponent} from './security-controls-form/security-controls-form.component'
+import { SecurityControlsListComponent } from './security-controls-list/security-controls-list.component';
+import { EditSecurityControlsFormComponent } from './edit-security-controls-form/edit-security-controls-form.component';
+import { SecurityPentestComponent } from './security-pentest/security-pentest.component';
 
 
 
@@ -22,17 +25,20 @@ const routes: Routes = [
   { path: 'about', component: AboutPageComponent },
   { path: 'newservice', component: MainpageComponent },
   { path: 'questionnaire', component: FormComponent },
-  { path: 'cis/latest', component: CisComponent },
   { path: 'scan', component: ScanpageComponent },
+  { path: 'cis/latest', component: CisComponent },
   { path: 'cis/results', component: CisResultsComponent },
   { path: 'cis/scan', component: CisScanComponent },
   { path: 'cis', component: CisLandingPageComponent },
   { path: 'jira-ticket-risk-assesment', component: JiraTicketRiskAssesmentComponent },
   { path: 'threat-model/request', component: ThreatModelComponent },
-  { path: 'scan-service', component: ServiceScanComponent},
-  { path: 'multi-scan', component: MultiScanComponent},
-  { path: '404', component: NotfoundComponent},
-  { path: '**', redirectTo: '/404'}
+  { path: 'scan-service', component: ServiceScanComponent },
+  { path: 'security-control/create', component: SecurityControlsFormComponent },
+  { path: 'security-control/view', component: SecurityControlsListComponent },
+  { path: 'security-control/edit', component: EditSecurityControlsFormComponent },
+  { path: 'security-pentest/request', component: SecurityPentestComponent },
+  { path: '404', component: NotfoundComponent },
+  { path: '**', redirectTo: '/404' }
 ];
 
 @NgModule({

@@ -1,0 +1,107 @@
+{ "completedHtml": "<p><h3>Thank you for editing!</h3></p>",
+    "pages": [
+     {
+      "name": "Security Controls Template",
+      "elements": [
+       {
+        "type": "text",
+        "name": "product",
+        "title": "Product name",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "text",
+        "name": "github",
+        "title": "Github link",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "text",
+        "name": "security_champion",
+        "title": "Security Champion",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "text",
+        "name": "dev_url",
+        "title": "Dev URL",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "text",
+        "name": "defect_dojo",
+        "title": "Defect Dojo URL",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "boolean",
+        "name": "threat_model",
+        "title": "Does this servise have a threat model?",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "boolean",
+        "name": "zap",
+        "title": "Service scan ( via Zap or similar tool)",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "text",
+        "name": "vulnerability_management",
+        "visibleIf": "{zap} = true",
+        "title": "Vulnerability management results link",
+        "enableIf": "{zap} = true",
+        "isRequired": true,
+        "requiredIf": "{zap} = true"
+       },
+       {
+        "type": "boolean",
+        "name": "sourceclear",
+        "title": "Downstream dependency scan (via Sourceclear, Snyk or similar tool)",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "text",
+        "name": "sourceclear_link",
+        "visibleIf": "{sourceclear} = true",
+        "title": "Enter downstream dependency result link",
+        "enableIf": "{sourceclear} = true",
+        "isRequired": true,
+        "hideNumber": true,
+        "requiredIf": "{sourceclear} = true"
+       },
+       {
+        "type": "boolean",
+        "name": "docker_scan",
+        "title": "Docker image scan (via Trivy or similar tool)",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "boolean",
+        "name": "cis_scanner",
+        "title": "GCP project scan (via CIS scanner or similar tool)",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "boolean",
+        "name": "burp",
+        "title": "Have you performed any manual security pentest (via Burp or similar tool)",
+        "hideNumber": true,
+        "isRequired": true
+       }
+      ],
+      "questionTitleLocation": "top",
+      "title": "Security Controls Template"
+     }
+    ]
+   }

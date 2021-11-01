@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { GetCisScanService } from '../services/get-cis-scan.service';
+import { GetCisScanService } from '../services/get-project-cis-results/get-cis-scan.service';
 import { ActivatedRoute } from '@angular/router';
-import { CsvDataService } from '../services/csv-data.service';
+import { CsvDataService } from '../services/convert-json-to-csv/csv-data.service';
 
 @Component({
   selector: 'app-cis-results',
@@ -12,10 +12,7 @@ export class CisResultsComponent implements OnInit {
 
   result: any;
   projectFindings: any[];
-  latestDate: any[];
-  table_id: any[];
   data: any[];
-  date: any[];
   params: any;
   value: string;
   showModal: boolean;
@@ -23,8 +20,8 @@ export class CisResultsComponent implements OnInit {
   errors: any[];
   showTable: boolean;
   filename: string;
-  table_name: any[];
-  modified_date: any[];
+  projectId: string;
+  updateDate: Date;
   headElements = ['Benchmark', 'Id', 'Level', 'CVSS', 'Title', 'Failures', 'Description', 'Rationale', 'Refs'];
 
 
@@ -38,20 +35,17 @@ export class CisResultsComponent implements OnInit {
     })
   }
 
-  saveAsCSV(projectFindings, modified_date, table_name) {
-    const format = '.csv'
-    const prefix = 'GCP_CIS_Results_'.concat(table_name.toString())
-    const table = prefix.concat('_'.toString())
-    this.filename = table.concat(modified_date.toString()).concat(format.toString())
-    this.csvService.exportToCsv(this.filename, this.csvService.ConvertToCSV(JSON.stringify(projectFindings), this.headElements))
-
+  saveAsCSV(projectFindings, updateDate, projectId) {
+    this.filename = ['GCP_CIS_Results_', projectId, '_', updateDate.toISOString(), '.csv'].join('');
+    const csvContent = this.csvService.ConvertToCSV(JSON.stringify(projectFindings), this.headElements);
+    this.csvService.exportToCsv(this.filename, csvContent);
   }
 
   private getResults(value) {
     this.getProjectScan.getCisScan(this.value).subscribe((data: any) => {
       this.projectFindings = data.findings;
-      this.table_name = data.table[0].table_id;
-      this.modified_date = data.table[0].last_modified_date;
+      this.projectId = data.meta.projectId;
+      this.updateDate = new Date(data.meta.lastModifiedDatetime);
       this.showSpinner = false;
       this.showTable = true;
     },

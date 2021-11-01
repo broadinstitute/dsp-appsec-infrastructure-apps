@@ -19,7 +19,9 @@
       Notification is sent to the slack channel.
     </div>
     <div class="alert alert-danger animated fadeInRight" role="alert" *ngIf="showModalError">
-      {{showModalError}}
+      <h4 class="alert-heading">Oops!</h4>
+      <p> {{showModalError}} </p>
+      <p class="mb-0">Please contact AppSec team for more information!</p>
     </div>
     <br>
     <br>

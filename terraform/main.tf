@@ -48,6 +48,10 @@ resource "google_compute_subnetwork" "gke" {
   network                  = google_compute_network.gke.self_link
   ip_cidr_range            = var.node_cidr
   private_ip_google_access = true
+
+  log_config {
+    metadata = "INCLUDE_ALL_METADATA"
+  }
 }
 
 resource "google_compute_global_address" "mysql" {
@@ -108,6 +112,14 @@ locals {
   nat_cidr = "${google_compute_address.nat.address}/32"
 }
 
+### Load balancing
+
+resource "google_compute_ssl_policy" "ssl_policy" {
+  name            = var.cluster_name
+  profile         = "MODERN"
+  min_tls_version = "TLS_1_2"
+}
+
 ### GKE cluster node Service Account
 
 module "node_sa" {
@@ -137,18 +149,28 @@ resource "google_service_account_iam_member" "compute_sa_cloudbuild" {
 
 ### Google Container Registry
 
-resource "google_container_registry" "gcr" {
+resource "google_container_registry" "us_gcr" {
   location = "US"
 }
 
-resource "google_storage_bucket_iam_member" "gcr_viewers" {
+resource "google_storage_bucket_iam_member" "us_gcr_viewers" {
   for_each = {
     node_sa         = "serviceAccount:${module.node_sa.email}"
     bastion_host_sa = "serviceAccount:${module.bastion_host_sa.email}"
   }
-  bucket = google_container_registry.gcr.id
+  bucket = google_container_registry.us_gcr.id
   role   = "roles/storage.objectViewer"
   member = each.value
+}
+
+# needed for CIS GKE 5.1.3
+
+resource "google_container_registry" "gcr" {}
+
+resource "google_storage_bucket_iam_member" "gcr_viewer" {
+  bucket = google_container_registry.gcr.id
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${module.node_sa.email}"
 }
 
 ### GKE cluster
@@ -201,6 +223,10 @@ resource "google_container_cluster" "cluster" {
   network_policy {
     enabled = true
   }
+
+  # pod_security_policy_config {
+  #   enabled = true
+  # }
 
   addons_config {
     network_policy_config {
@@ -429,6 +455,10 @@ output "cnrm_sa" {
 
 output "sql_network" {
   value = google_service_networking_connection.sql.network
+}
+
+output "ssl_policy" {
+  value = google_compute_ssl_policy.ssl_policy.name
 }
 
 output "nat_cidr" {

@@ -117,7 +117,7 @@ spec:
             memory: 130M
 
       - name: rabbitmq
-        image: rabbitmq:3.8
+        image: rabbitmq
         env:
         - name: RABBITMQ_DEFAULT_USER
           valueFrom:
@@ -168,26 +168,6 @@ spec:
     apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
     kind: Project
     external: projects/${PROJECT_ID}
----
-apiVersion: sql.cnrm.cloud.google.com/v1beta1
-kind: SQLInstance
-metadata:
-  name: ${SQL_INSTANCE}
-  namespace: ${NAMESPACE}
-  annotations:
-    cnrm.cloud.google.com/deletion-policy: abandon
-spec:
-  databaseVersion: POSTGRES_11
-  region: ${SQL_REGION}
-  settings:
-    tier: db-custom-1-3840
-    backupConfiguration:
-      enabled: true
-    ipConfiguration:
-      requireSsl: true
-      ipv4Enabled: false
-      privateNetworkRef:
-        external: ${sql_network}
 ---
 apiVersion: sql.cnrm.cloud.google.com/v1beta1
 kind: SQLUser

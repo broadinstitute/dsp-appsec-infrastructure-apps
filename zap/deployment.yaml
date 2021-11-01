@@ -172,6 +172,10 @@ metadata:
   namespace: ${NAMESPACE}
   annotations:
     cnrm.cloud.google.com/deletion-policy: abandon
+spec:
+  uniformBucketLevelAccess: true
+  versioning:
+    enabled: true
 ---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember

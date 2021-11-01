@@ -1,25 +1,11 @@
 ## SDARQ
 
-A tool which:
-- assesses security posture of a product and creates a specific security checklist which aims to boost security and satisfy compliance requirements.  
-- assesses security posture of a GCP project and tracks all the findings. 
+`Sdarq` is a coordination platform to guide both developers and appsec professionals through an SDLC and provide interfaces into various tools and bind them.
 
-### CIS Scanner x SDARQ
-- Discovers vulnerabilities in GCP project
-- Manages vulnerabilities
-- Automates scans and sends reports
 
-### Questionnaire
-- Assesses security posture of a product/service
-- Creates a security checklist for dev teams
+On the proactive side, SDARQ was built to integrate security requirements throughout different phases in the Software Development Lifecycle. Product teams develop new services and features all the time. Retrofitting security is a very costly exercise both from a technical standpoint as well as from a security perspective. SDARQ allows product teams to be aware of all security-related and compliance-related requirements as early as possible, ideally before they have even written a single line of code. By serving as a bridge on the partnership between the Appsec team and Product teams, SDARQ helps DSP develop secure services as part of Terra by generating actionable and specific security requirements based on the technical characteristics of the service being built. 
 
-### Jira Ticket Risk Assessment
-- Assess the risk of developer actions to a specific product/service
-
-### Integration with other tools:
-- Jira
-- Slack
-- DefectDojo
+On the reactive and continuous checking side, SDARQ is composed of several modules that perform application security scans and CIS benchmark scans. This allows for better visibility and eventually better mitigation for any potential vulnerabilities that may exist in Terra services. Additionally the CIS benchmark scans allow us to apply defense in depth and hardening which help us protect data and assets in the cloud. 
 
 
 ### Run it locally

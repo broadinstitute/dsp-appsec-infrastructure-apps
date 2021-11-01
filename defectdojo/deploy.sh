@@ -49,6 +49,8 @@ export DD_DATABASE_PORT="5432"
 export SQL_REGION="us-east1"
 export SQL_INSTANCE="${NAMESPACE}"
 export SQL_INSTANCE_URI="${PROJECT_ID}:${SQL_REGION}:${SQL_INSTANCE}=tcp:${DD_DATABASE_PORT}"
+export SQL_VERSION="POSTGRES_11"
+export SQL_TIER="db-custom-1-3840"
 
 export IP_NAME="${NAMESPACE}"
 export DNS_HOSTNAME="${NAMESPACE}.${DNS_DOMAIN}"
@@ -65,7 +67,8 @@ export TARGET_PORT="http"
 
 ./kube-apply.py \
   "service-account.yaml" \
-  "${CWD}/deployment.yaml"
+  "${CWD}/deployment.yaml" \
+  "sql.yaml"
 
 ./host.sh
 

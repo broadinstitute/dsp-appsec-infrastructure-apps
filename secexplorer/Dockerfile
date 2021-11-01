@@ -1,6 +1,14 @@
-FROM python:3.7
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:debian
 
-RUN pip3 install --upgrade cartography python-dateutil==2.8.0
+RUN apt-get update -q && \
+    apt-get install -qq --no-install-recommends \
+      build-essential \
+      libffi-dev && \
+    pip3 install -U cartography python-dateutil && \
+    apt-get remove -y \
+      build-essential \
+      libffi-dev && \
+    rm -rf /var/lib/apt/lists/*
 
 USER nobody
 ENTRYPOINT ["cartography"]
