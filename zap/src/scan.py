@@ -73,7 +73,7 @@ def defectdojo_upload(engagement_id: int, zap_filename: str, defect_dojo_key: st
                      close_old_findings=False,
                      skip_duplicates=False,
                      scan_date=str(datetime.today().strftime('%Y-%m-%d')),
-                     tags="Zap")
+                     tags="Zap_scan")
 
 
 class Severity(str, Enum):
@@ -301,7 +301,7 @@ def main(): # pylint: disable=too-many-locals
                 scan_type,
             )
 
-            # upload results in defectDojo
+            # upload its results in defectDojo
             defectdojo_upload(engagement_id, zap_filename,
                               defect_dojo_key, defect_dojo_user, defect_dojo)
 
