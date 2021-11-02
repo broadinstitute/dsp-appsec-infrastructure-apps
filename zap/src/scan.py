@@ -311,7 +311,7 @@ def main(): # pylint: disable=too-many-locals
             error_message = f"[RETRY-{ attempt }] Exception running Zap Scans: { error }"
             logging.warning(error_message)
             if attempt == max_retries - 1:
-                error_message = f"Error running Zap Scans for { codedx_project }. Last known error: { e }"
+                error_message = f"Error running Zap Scans for { codedx_project }. Last known error: { error }"
                 error_slack_alert(error_message, slack_token, slack_channel)
                 try:
                     zap = zap_connect(zap_port)
