@@ -124,6 +124,7 @@ resource "google_compute_ssl_policy" "ssl_policy" {
 
 module "node_sa" {
   source       = "./modules/service-account"
+  project      = var.project
   account_id   = "gke-node-${var.cluster_name}"
   display_name = "GKE node identity for ${var.cluster_name} cluster"
   roles = [
@@ -217,7 +218,7 @@ resource "google_container_cluster" "cluster" {
   }
 
   workload_identity_config {
-    identity_namespace = "${var.project}.svc.id.goog"
+    workload_pool = "${var.project}.svc.id.goog"
   }
 
   network_policy {
@@ -302,6 +303,7 @@ module "batch_node_pool" {
 
 module "cnrm_sa" {
   source       = "./modules/service-account"
+  project      = var.project
   account_id   = "cnrm-system-${var.cluster_name}"
   display_name = "GKE Config Connector identity for ${var.cluster_name} cluster"
   roles = [
@@ -408,8 +410,9 @@ data "http" "iap_brand" {
 }
 
 resource "google_project_iam_member" "oauth_cloudbuild" {
-  role   = "roles/oauthconfig.editor"
-  member = local.cloudbuild_sa
+  project = var.project
+  role    = "roles/oauthconfig.editor"
+  member  = local.cloudbuild_sa
 }
 
 resource "google_iap_client" "iap" {
