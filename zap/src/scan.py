@@ -12,9 +12,9 @@ from sys import exit  # pylint: disable=redefined-builtin
 from time import sleep
 from typing import List
 
+from codedx_api.CodeDxAPI import CodeDx  # pylint: disable=import-error
 from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
-from codedx_api.CodeDxAPI import CodeDx # pylint: disable=import-error
 
 import defectdojo_apiv2 as defectdojo
 from zap import ScanType, zap_compliance_scan, zap_connect
