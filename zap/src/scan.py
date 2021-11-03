@@ -65,7 +65,7 @@ def defectdojo_upload(engagement_id: int, zap_filename: str, defect_dojo_key: st
     absolute_path = os.path.abspath(zap_filename)
     logging.info("aboslute path: %s", absolute_path)
 
-    dojo.upload_scan(engagement_id=engagement_id,
+    dojo_upload = dojo.upload_scan(engagement_id=engagement_id,
                      scan_type="ZAP Scan",
                      file=absolute_path,
                      active=True,
@@ -74,7 +74,7 @@ def defectdojo_upload(engagement_id: int, zap_filename: str, defect_dojo_key: st
                      skip_duplicates=True,
                      scan_date=str(datetime.today().strftime('%Y-%m-%d')),
                      tags="Zap_scan")
-
+    logging.info("Dojo file upload: %s", dojo_upload)
 
 class Severity(str, Enum):
     """
