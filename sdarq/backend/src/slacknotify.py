@@ -14,7 +14,7 @@ client = WebClient(token=slack_token,
                          ssl=ssl_context)
 
 
-def slacknotify(channel, dojo_name, security_champion, product_id, dojo_host_url):
+def slacknotify(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url):
     """
     Sends slack notification where: 
         1. No Jira ticket is selected 
@@ -22,7 +22,7 @@ def slacknotify(channel, dojo_name, security_champion, product_id, dojo_host_url
 
     Args:
         slack_token: Slack token 
-        channel: Slack channel name
+        appsec_slack_channel: Slack channel name
         dojo_name: Engagement name in defect dojo
         security_champion: Security champion name
         product_id: Product in defectdojo
@@ -32,7 +32,7 @@ def slacknotify(channel, dojo_name, security_champion, product_id, dojo_host_url
         Sends slack notification
     """
     response = client.chat_postMessage(
-        channel=channel,
+        channel=appsec_slack_channel,
         text="New service created",
         blocks=[
             {
@@ -73,7 +73,7 @@ def slacknotify(channel, dojo_name, security_champion, product_id, dojo_host_url
     )
 
 
-def slacknotify_jira(channel, dojo_name, security_champion, product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket):
+def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket):
     """
     Sends slack notification where: 
         1. Jira ticket is selected 
@@ -81,7 +81,7 @@ def slacknotify_jira(channel, dojo_name, security_champion, product_id, dojo_hos
 
     Args:
         slack_token: Slack token 
-        channel: Slack channel name
+        appsec_slack_channel: Slack channel name
         dojo_name: Engagement name in defect dojo
         security_champion: Security champion name
         product_id: Product in defectdojo
@@ -94,7 +94,7 @@ def slacknotify_jira(channel, dojo_name, security_champion, product_id, dojo_hos
         Sends slack notification
     """
     response = client.chat_postMessage(
-        channel=channel,
+        channel=appsec_slack_channel,
         text="New service created",
         blocks=[
             {
@@ -143,13 +143,13 @@ def slacknotify_jira(channel, dojo_name, security_champion, product_id, dojo_hos
     )
 
 
-def slacknotify_threat_model(channel, security_champion, request_type, project_name,  jira_instance, jira_ticket_appsec, appsec_jira_board):
+def slacknotify_threat_model(appsec_slack_channel, security_champion, request_type, project_name,  jira_instance, jira_ticket_appsec, appsec_jira_board):
     """
     Sends slack notification when there is a request for threat model
 
     Args:
         slack_token: Slack token 
-        channel: Slack channel name
+        appsec_slack_channel: Slack channel name
         security_champion: Security champion name
         request_type: Create or update threat model
         project_name: Project name
@@ -161,7 +161,7 @@ def slacknotify_threat_model(channel, security_champion, request_type, project_n
         Sends slack notification
     """
     response = client.chat_postMessage(
-        channel=channel,
+        channel=appsec_slack_channel,
         text="There is a request for a threat model",
         blocks=[
             {
@@ -201,13 +201,13 @@ def slacknotify_threat_model(channel, security_champion, request_type, project_n
         ]
     )
 
-def slacknotify_security_pentest(channel, security_champion, project_name, jira_instance, jira_ticket_appsec, appsec_jira_board):
+def slacknotify_security_pentest(appsec_slack_channel, security_champion, project_name, jira_instance, jira_ticket_appsec, appsec_jira_board):
     """
     Sends slack notification when there is a request for a security request
 
     Args:
         slack_token: Slack token 
-        channel: Slack channel name
+        appsec_slack_channel: Slack channel name
         security_champion: Security champion name
         project_name: Project name
         jira_instance:  Jira Cloud instance
@@ -218,7 +218,7 @@ def slacknotify_security_pentest(channel, security_champion, project_name, jira_
         Sends slack notification
     """
     response = client.chat_postMessage(
-        channel=channel,
+        channel=appsec_slack_channel,
         text="There is a request for security pentest",
         blocks=[
             {

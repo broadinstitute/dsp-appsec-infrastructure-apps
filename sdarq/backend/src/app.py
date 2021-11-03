@@ -42,7 +42,7 @@ jira_username = os.getenv('jira_username')
 jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
 sdarq_host = os.getenv('sdarq_host')
-dojo_host_url = os.getenv('dojo_host_url') #slack messages url
+dojo_host_url = os.getenv('dojo_host_url') # slack messages url
 appsec_slack_channel = os.getenv('appsec_slack_channel')
 appsec_jira_project_key = os.getenv('appsec_jira_project_key')
 
@@ -58,7 +58,10 @@ headers = {
     "content-type": "application/json",
     "Authorization": f"Token {dojo_api_key}",
 }
+# Logging configuration
 logging.basicConfig(level=logging.INFO)
+
+# Flask App
 app = FlaskAPI(__name__)
 
 # Instantiate the Jira backend wrapper
@@ -66,7 +69,10 @@ global jira
 jira = JIRA(basic_auth=(jira_username, jira_api_token),
             options={'server': jira_instance})
 
+# BigQuery Client
 client = bigquery.Client()
+
+# Firestore Client
 db = firestore.Client()
 
 
