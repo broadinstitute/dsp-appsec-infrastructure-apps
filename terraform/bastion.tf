@@ -77,6 +77,7 @@ resource "google_compute_firewall" "bastion" {
 
 module "bastion_host_sa" {
   source       = "./modules/service-account"
+  project      = var.project
   account_id   = "${local.bastion_name}-host"
   display_name = "Bastion host for ${var.cluster_name} cluster"
   roles = [
