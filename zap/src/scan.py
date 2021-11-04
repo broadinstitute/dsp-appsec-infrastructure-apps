@@ -60,7 +60,7 @@ def defectdojo_upload(engagement_id: int, zap_filename: str, defect_dojo_key: st
     Upload Zap results in DefectDojo engagement
     """
     dojo = defectdojo.DefectDojoAPIv2(
-        defect_dojo, defect_dojo_key, defect_dojo_user, debug=True)
+        defect_dojo, defect_dojo_key, defect_dojo_user, debug=False)
 
     absolute_path = os.path.abspath(zap_filename)
     logging.info("aboslute path: %s", absolute_path)
