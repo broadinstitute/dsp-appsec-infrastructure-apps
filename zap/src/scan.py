@@ -263,7 +263,7 @@ def main(): # pylint: disable=too-many-locals
             defect_dojo_key = getenv("DEFECT_DOJO_KEY")
             engagement_id = int(getenv("ENGAGEMENT_ID"))
             defect_dojo_user = getenv("DEFECT_DOJO_USER")
-            defect_dojo = getenv("DEFECT_DOJO")
+            defect_dojo = getenv("DEFECT_DOJO_URL")
 
             # configure logging
             logging.basicConfig(

@@ -40,6 +40,8 @@ data:
             value: ${BUCKET_NAME}
           - name: ZAP_PORT
             value: '${ZAP_PORT}'
+          - name: DEFECT_DOJO_URL
+            value: ${DEFECT_DOJO_URL}
           - name: CODEDX_API_KEY
             valueFrom:
               secretKeyRef:
@@ -50,11 +52,6 @@ data:
               secretKeyRef:
                 name: ${JOB_SECRET}
                 key: DEFECT_DOJO_KEY
-          - name: DEFECT_DOJO
-            valueFrom:
-              secretKeyRef:
-                name: ${JOB_SECRET}
-                key: DEFECT_DOJO
           - name: DEFECT_DOJO_USER
             valueFrom:
               secretKeyRef:
