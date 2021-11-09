@@ -17,6 +17,7 @@ export class SecurityControlsListComponent implements OnInit {
   sourceclear_results: boolean;
   zap_results: boolean;
   searchString: any;
+  dev_link: boolean;
 
   constructor(private getSecurityControls: GetSecurityControlsService) { }
 
@@ -74,6 +75,14 @@ export class SecurityControlsListComponent implements OnInit {
     }
   }
 
+  devURLShowValue(dev_url) {
+    if (dev_url === '') {
+      this.dev_link = false;
+      return '<i class="fas fa-times fa-1x"></i>'
+    } else {
+      this.dev_link = true;
+    }
+  }
 
   getResults() {
     this.getSecurityControls.getAllSecurityControls().subscribe((serviceSecurityControl: ServiceSecurityControl []) => {
