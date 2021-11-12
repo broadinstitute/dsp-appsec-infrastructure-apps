@@ -5,7 +5,14 @@
             "elements": [{
                     "type": "text",
                     "name": "Service",
-                    "title": "The name of the application/service",
+                    "title": "Service name",
+                    "isRequired": true,
+                    "requiredErrorText": "Required."
+                },
+                {
+                    "type": "text",
+                    "name": "Product",
+                    "title": "Product name",
                     "isRequired": true,
                     "requiredErrorText": "Required."
                 },
