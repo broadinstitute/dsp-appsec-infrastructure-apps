@@ -27,7 +27,6 @@ COPY src/*.py ./
 
 RUN /venv/bin/pylint --fail-under=9 --ignore=zap_common.py,defectdojo_apiv2.py  ./*.py
 
-
 # Copy the virtualenv and sources into the clean final image
 FROM base
 
