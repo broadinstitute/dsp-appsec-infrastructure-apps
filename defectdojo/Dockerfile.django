@@ -9,8 +9,7 @@ WORKDIR /
 
 COPY django.patch .
 
-RUN git apply django.patch
-
+RUN git apply -v django.patch
 
 FROM dd
 

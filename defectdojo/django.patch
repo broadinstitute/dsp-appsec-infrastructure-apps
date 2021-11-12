@@ -1,9 +1,6 @@
 --- entrypoint-initializer.sh
 +++ entrypoint-initializer.sh
-@@ -123,4 +123,12 @@
-   # checks the deduplication config at startup
-   echo "Startup Deduplication Configuration"
-   python3 manage.py validatededupeconfig
+@@ -123,1 +123,9 @@
 +else
 +cat <<EOD | python manage.py shell
 +import os
