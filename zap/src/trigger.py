@@ -93,6 +93,7 @@ def parse_tags(endpoint: Endpoint):
     codedx_project = ""
     slack_channel = ""
     scan_type: Optional[ScanType] = None
+    engagement_id = None
     for tag in endpoint["tags"]:
         tag_match = TAG_MATCHER.match(tag)
         if not tag_match:
@@ -105,7 +106,9 @@ def parse_tags(endpoint: Endpoint):
             scan_type = ScanType[tag_val.upper()]
         if tag_key == "slack":
             slack_channel = tag_val
-    return codedx_project, slack_channel, scan_type
+        if tag_key == "engagement_id":
+            engagement_id = tag_val
+    return codedx_project, slack_channel, scan_type, engagement_id
 
 
 def trigger_scans(
@@ -125,10 +128,10 @@ def trigger_scans(
     for endpoint in endpoints:
         slack_channel = None
         try:
-            codedx_project, slack_channel, scan_type = parse_tags(endpoint)
+            codedx_project, slack_channel, scan_type, engagement_id = parse_tags(endpoint)
             if codedx_project and (scan_type in scan_types):
                 future = trigger_scan(
-                    publisher, endpoint, topic, codedx_project, scan_type, slack_channel
+                    publisher, endpoint, topic, codedx_project, scan_type, slack_channel, engagement_id
                 )
                 futures.append(future)
         except BaseException as error:
