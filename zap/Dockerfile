@@ -25,7 +25,7 @@ RUN /venv/bin/pip3 install -U git+https://github.com/PyCQA/pylint.git
 COPY --from=zap /zap/zap_common.py ./
 COPY src/*.py ./
 
-RUN /venv/bin/pylint --fail-under=9 --ignore=zap_common.py,defectdojo_apiv2.py  ./*.py
+RUN /venv/bin/pylint --fail-under=9 --ignore=zap_common.py ./*.py
 
 # Copy the virtualenv and sources into the clean final image
 FROM base
