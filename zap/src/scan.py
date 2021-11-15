@@ -266,19 +266,37 @@ def main(): # pylint: disable=too-many-locals
             defect_dojo = getenv("DEFECT_DOJO_URL")
 
             # configure logging
-            logging.basicConfig(
-                level=logging.INFO,
+            logging.basicConfig(level=logging.INFO,
                 format=f"%(levelname)-8s [{codedx_project} {scan_type}-scan] %(message)s",
-            )
+                )
+
             logging.info("Severities: %s", ", ".join(
                 s.value for s in severities))
 
             zap_filename = zap_compliance_scan(
                 codedx_project, zap_port, target_url, scan_type)
 
-            # upload its results to Code Dx
-            cdx = CodeDx(codedx_url, codedx_api_key)
-            codedx_upload(cdx, codedx_project, zap_filename)
+            # upload its results in defectDojo
+            defectdojo_upload(engagement_id, zap_filename,
+                              defect_dojo_key, defect_dojo_user, defect_dojo)
+
+            if codedx_api_key:
+                # upload its results to Code Dx
+                cdx = CodeDx(codedx_url, codedx_api_key)
+                codedx_upload(cdx, codedx_project, zap_filename)
+
+
+                # alert Slack, if needed
+                slack_alert_with_report(
+                    cdx,
+                    codedx_project,
+                    severities,
+                    slack_token,
+                    slack_channel,
+                    target_url,
+                    xml_report_url,
+                    scan_type,
+                )
 
             # optionally, upload them to GCS
             xml_report_url = ""
@@ -289,21 +307,6 @@ def main(): # pylint: disable=too-many-locals
                     zap_filename,
                 )
 
-            # alert Slack, if needed
-            slack_alert_with_report(
-                cdx,
-                codedx_project,
-                severities,
-                slack_token,
-                slack_channel,
-                target_url,
-                xml_report_url,
-                scan_type,
-            )
-
-            # upload its results in defectDojo
-            defectdojo_upload(engagement_id, zap_filename,
-                              defect_dojo_key, defect_dojo_user, defect_dojo)
 
             zap = zap_connect(zap_port)
             zap.core.shutdown()
