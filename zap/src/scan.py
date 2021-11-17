@@ -320,7 +320,7 @@ def main(): # pylint: disable=too-many-locals
                     zap_filename,
                 )
 
-            if codedx_api_key is ' ':
+            if codedx_api_key == ' ':
                 # upload its results to Code Dx
                 cdx = CodeDx(codedx_url, codedx_api_key)
                 codedx_upload(cdx, codedx_project, zap_filename)
@@ -349,22 +349,25 @@ def main(): # pylint: disable=too-many-locals
             zap = zap_connect(zap_port)
             zap.core.shutdown()
         except Exception as error: # pylint: disable=broad-except
-            error_message = f"[RETRY-{ attempt }] Exception running Zap Scans: { error }"
-            logging.warning(error_message)
-            if attempt == max_retries - 1:
-                error_message = f"Error running Zap Scans for { codedx_project }. Last known error: { error }"
-                error_slack_alert(error_message, slack_token, slack_channel)
-                try:
-                    zap = zap_connect(zap_port)
-                    zap.core.shutdown()
-                except Exception as zap_e: # pylint: disable=broad-except
-                    error_message = f"Error shutting down zap: { zap_e }"
-                    error_slack_alert(
-                        error_message, slack_token, slack_channel)
-                    logging.exception("Error shutting down zap.")
-                logging.exception("Max retries exceeded.")
-                exit(0)
-            sleep(5)
+            if error == 'Invalid return character or leading space in header: API-Key':
+                pass
+            else:
+                error_message = f"[RETRY-{ attempt }] Exception running Zap Scans: { error }"
+                logging.warning(error_message)
+                if attempt == max_retries - 1:
+                    error_message = f"Error running Zap Scans for { codedx_project }. Last known error: { error }"
+                    error_slack_alert(error_message, slack_token, slack_channel)
+                    try:
+                        zap = zap_connect(zap_port)
+                        zap.core.shutdown()
+                    except Exception as zap_e: # pylint: disable=broad-except
+                        error_message = f"Error shutting down zap: { zap_e }"
+                        error_slack_alert(
+                            error_message, slack_token, slack_channel)
+                        logging.exception("Error shutting down zap.")
+                    logging.exception("Max retries exceeded.")
+                    exit(0)
+                sleep(5)
         else:
             break
 
