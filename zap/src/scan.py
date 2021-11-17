@@ -63,7 +63,6 @@ def defectdojo_upload(engagement_id: int, zap_filename: str, defect_dojo_key: st
         defect_dojo, defect_dojo_key, defect_dojo_user, debug=False)
 
     absolute_path = os.path.abspath(zap_filename)
-    logging.info("aboslute path: %s", absolute_path)
 
     dojo_upload = dojo.upload_scan(engagement_id=engagement_id,
                      scan_type="ZAP Scan",
