@@ -144,6 +144,11 @@ items:
                   secretKeyRef:
                     name: ${JOB_SECRET}
                     key: DEFECT_DOJO_KEY
+              - name: DEFECT_DOJO
+                valueFrom:
+                  secretKeyRef:
+                    name: ${JOB_SECRET}
+                    key: DEFECT_DOJO
               resources:
                 requests:
                   memory: 50Mi

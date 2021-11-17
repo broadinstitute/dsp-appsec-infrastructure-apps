@@ -229,6 +229,37 @@ def slack_alert_with_report(  # pylint: disable=too-many-arguments
     logging.info("Alert sent to Slack channel: %s", channel)
 
 
+def slack_alert_without_report(  # pylint: disable=too-many-arguments
+        token: str,
+        channel: str,
+        xml_report_url: str,
+        engagement_id: str,
+        dd: str
+):
+    """
+    Alert Slack on requested findings, if any.
+    """
+    # continue only if Slack channel is set
+    if not channel:
+        logging.warning("Slack alert was not requested")
+        return
+
+    slack = SlackClient(token)
+
+    gcs_slack_text = ""
+    if xml_report_url:
+        gcs_slack_text = (
+            f"New vulnerability report uploaded to GCS bucket: {xml_report_url}\n and DefectDojo engagement: {dd}{engagement_id}"
+        )
+    elif gcs_slack_text:
+        # mention only XML report, if it was requested
+        slack.chat_postMessage(channel=channel, text=gcs_slack_text)
+    else:
+        logging.warning("No findings for alert to Slack")
+        return
+    logging.info("Alert sent to Slack channel: %s", channel)
+
+
 def main(): # pylint: disable=too-many-locals
     """
     - Run ZAP scan
@@ -263,6 +294,7 @@ def main(): # pylint: disable=too-many-locals
             engagement_id = int(getenv("ENGAGEMENT_ID"))
             defect_dojo_user = getenv("DEFECT_DOJO_USER")
             defect_dojo = getenv("DEFECT_DOJO_URL")
+            dd = getenv("DEFECT_DOJO")
 
             # configure logging
             logging.basicConfig(level=logging.INFO,
@@ -278,6 +310,15 @@ def main(): # pylint: disable=too-many-locals
             # upload its results in defectDojo
             defectdojo_upload(engagement_id, zap_filename,
                               defect_dojo_key, defect_dojo_user, defect_dojo)
+
+            # optionally, upload them to GCS
+            xml_report_url = ""
+            if scan_type == ScanType.UI:
+                xml_report_url = upload_gcs(
+                    bucket_name,
+                    scan_type,
+                    zap_filename,
+                )
 
             if codedx_api_key:
                 # upload its results to Code Dx
@@ -296,16 +337,14 @@ def main(): # pylint: disable=too-many-locals
                     xml_report_url,
                     scan_type,
                 )
-
-            # optionally, upload them to GCS
-            xml_report_url = ""
-            if scan_type == ScanType.UI:
-                xml_report_url = upload_gcs(
-                    bucket_name,
-                    scan_type,
-                    zap_filename,
+            else:
+                slack_alert_without_report(
+                    slack_token,
+                    slack_token,
+                    xml_report_url,
+                    engagement_id,
+                    dd,
                 )
-
 
             zap = zap_connect(zap_port)
             zap.core.shutdown()
