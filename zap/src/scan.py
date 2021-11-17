@@ -320,7 +320,7 @@ def main(): # pylint: disable=too-many-locals
                     zap_filename,
                 )
 
-            if codedx_api_key:
+            if codedx_api_key is ' ':
                 # upload its results to Code Dx
                 cdx = CodeDx(codedx_url, codedx_api_key)
                 codedx_upload(cdx, codedx_project, zap_filename)
@@ -337,14 +337,14 @@ def main(): # pylint: disable=too-many-locals
                     xml_report_url,
                     scan_type,
                 )
-            else:
-                slack_alert_without_report(
-                    slack_token,
-                    slack_token,
-                    xml_report_url,
-                    engagement_id,
-                    dd,
-                )
+    
+            slack_alert_without_report(
+                slack_token,
+                slack_token,
+                xml_report_url,
+                engagement_id,
+                dd,
+            )
 
             zap = zap_connect(zap_port)
             zap.core.shutdown()
