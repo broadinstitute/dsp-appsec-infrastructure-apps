@@ -247,16 +247,19 @@ def slack_alert_without_report(  # pylint: disable=too-many-arguments
 
     slack = SlackClient(token)
 
-    gcs_slack_text = ""
     if xml_report_url:
         gcs_slack_text = (
             f"New vulnerability report uploaded to GCS bucket: {xml_report_url}\n and DefectDojo engagement: {dd}{engagement_id}"
         )
         slack.chat_postMessage(channel=channel, text=gcs_slack_text)
+        logging.info("Alert sent to Slack channel for GCS bucket and DefectDojo upload report")
     else:
-        logging.warning("No findings for alert to Slack")
-        return
-    logging.info("Alert sent to Slack channel: %s", channel)
+        gcs_slack_text = (
+            f"New vulnerability report uploaded to DefectDojo engagement: {dd}{engagement_id}"
+        )
+        slack.chat_postMessage(channel=channel, text=gcs_slack_text)
+        logging.info("Alert sent to Slack channel for DefectDojo upload report")
+
 
 
 def main(): # pylint: disable=too-many-locals
