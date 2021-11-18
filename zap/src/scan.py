@@ -327,7 +327,15 @@ def main(): # pylint: disable=too-many-locals
                 cdx = CodeDx(codedx_url, codedx_api_key)
                 codedx_upload(cdx, codedx_project, zap_filename)
 
+                slack_alert_without_report(
+                    slack_token,
+                    slack_token,
+                    xml_report_url,
+                    engagement_id,
+                    dd,
+                )
 
+            else:
                 # alert Slack, if needed
                 slack_alert_with_report(
                     cdx,
@@ -338,14 +346,6 @@ def main(): # pylint: disable=too-many-locals
                     target_url,
                     xml_report_url,
                     scan_type,
-                )
-            else:
-                slack_alert_without_report(
-                    slack_token,
-                    slack_token,
-                    xml_report_url,
-                    engagement_id,
-                    dd,
                 )
 
             zap = zap_connect(zap_port)
