@@ -226,7 +226,8 @@ def slack_alert_with_report(  # pylint: disable=too-many-arguments
     else:
         logging.warning("No findings for alert to Slack")
         return
-    logging.info("Alert sent to Slack channel: %s", channel)
+    logging.info("Alert sent to Slack channel: %s", 
+    )
 
 
 def slack_alert_without_report(  # pylint: disable=too-many-arguments
@@ -251,8 +252,6 @@ def slack_alert_without_report(  # pylint: disable=too-many-arguments
         gcs_slack_text = (
             f"New vulnerability report uploaded to GCS bucket: {xml_report_url}\n and DefectDojo engagement: {dd}{engagement_id}"
         )
-    elif gcs_slack_text:
-        # mention only XML report, if it was requested
         slack.chat_postMessage(channel=channel, text=gcs_slack_text)
     else:
         logging.warning("No findings for alert to Slack")
