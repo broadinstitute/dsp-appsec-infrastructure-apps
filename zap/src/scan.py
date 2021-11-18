@@ -323,10 +323,6 @@ def main(): # pylint: disable=too-many-locals
                 )
 
             if codedx_api_key == '%':
-                # upload its results to Code Dx
-                cdx = CodeDx(codedx_url, codedx_api_key)
-                codedx_upload(cdx, codedx_project, zap_filename)
-
                 slack_alert_without_report(
                     slack_token,
                     slack_token,
@@ -336,6 +332,10 @@ def main(): # pylint: disable=too-many-locals
                 )
 
             else:
+                # upload its results to Code Dx
+                cdx = CodeDx(codedx_url, codedx_api_key)
+                codedx_upload(cdx, codedx_project, zap_filename)
+
                 # alert Slack, if needed
                 slack_alert_with_report(
                     cdx,
