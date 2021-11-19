@@ -323,6 +323,14 @@ def main(): # pylint: disable=too-many-locals
                 )
 
             if codedx_api_key == "":
+                slack_alert_without_report(
+                    slack_token,
+                    slack_channel,
+                    xml_report_url,
+                    engagement_id,
+                    dd,
+                )
+            else:
                 # upload its results to Code Dx
                 cdx = CodeDx(codedx_url, codedx_api_key)
                 codedx_upload(cdx, codedx_project, zap_filename)
@@ -337,14 +345,6 @@ def main(): # pylint: disable=too-many-locals
                     target_url,
                     xml_report_url,
                     scan_type,
-                )
-            else:
-                slack_alert_without_report(
-                    slack_token,
-                    slack_channel,
-                    xml_report_url,
-                    engagement_id,
-                    dd,
                 )
 
 
