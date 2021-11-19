@@ -322,7 +322,7 @@ def main(): # pylint: disable=too-many-locals
                     zap_filename,
                 )
 
-            if codedx_api_key:
+            if codedx_api_key == "":
                 # upload its results to Code Dx
                 cdx = CodeDx(codedx_url, codedx_api_key)
                 codedx_upload(cdx, codedx_project, zap_filename)
