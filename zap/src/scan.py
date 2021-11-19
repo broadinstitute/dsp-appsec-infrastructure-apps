@@ -324,7 +324,7 @@ def main(): # pylint: disable=too-many-locals
                     zap_filename,
                 )
 
-            if codedx_api_key == "":
+            if codedx_api_key == '""':
                 slack_alert_without_report(
                     slack_token,
                     slack_channel,
