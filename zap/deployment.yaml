@@ -57,6 +57,11 @@ data:
               secretKeyRef:
                 name: ${JOB_SECRET}
                 key: DEFECT_DOJO_USER
+          - name: DEFECT_DOJO
+            valueFrom:
+              secretKeyRef:
+                name: ${JOB_SECRET}
+                key: DEFECT_DOJO
           - name: SLACK_TOKEN
             valueFrom:
               secretKeyRef:
