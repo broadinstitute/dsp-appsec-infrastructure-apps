@@ -341,7 +341,7 @@ def main(): # pylint: disable=too-many-locals
             else:
                 slack_alert_without_report(
                     slack_token,
-                    slack_token,
+                    slack_channel,
                     xml_report_url,
                     engagement_id,
                     dd,
