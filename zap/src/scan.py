@@ -255,7 +255,7 @@ def slack_alert_without_report(  # pylint: disable=too-many-arguments
         logging.info("Alert sent to Slack channel for GCS bucket and DefectDojo upload report")
     else:
         gcs_slack_text = (
-            f"New vulnerability report uploaded to DefectDojo engagement: {dd}{engagement_id}"
+            f"New vulnerability report uploaded to DefectDojo engagement: {dd}engagement/{engagement_id}"
         )
         slack.chat_postMessage(channel=channel, text=gcs_slack_text)
         logging.info("Alert sent to Slack channel for DefectDojo upload report")
