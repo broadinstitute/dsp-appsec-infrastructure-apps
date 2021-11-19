@@ -306,6 +306,8 @@ def main(): # pylint: disable=too-many-locals
             logging.info("Severities: %s", ", ".join(
                 s.value for s in severities))
 
+            logging.info("cd: {codedx_api_key}")
+
             zap_filename = zap_compliance_scan(
                 codedx_project, zap_port, target_url, scan_type)
 
