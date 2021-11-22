@@ -63,7 +63,6 @@ def defectdojo_upload(engagement_id: int, zap_filename: str, defect_dojo_key: st
         defect_dojo, defect_dojo_key, defect_dojo_user, debug=False)
 
     absolute_path = os.path.abspath(zap_filename)
-    logging.info("aboslute path: %s", absolute_path)
 
     dojo_upload = dojo.upload_scan(engagement_id=engagement_id,
                      scan_type="ZAP Scan",
@@ -227,7 +226,40 @@ def slack_alert_with_report(  # pylint: disable=too-many-arguments
     else:
         logging.warning("No findings for alert to Slack")
         return
-    logging.info("Alert sent to Slack channel: %s", channel)
+    logging.info("Alert sent to Slack channel: %s", 
+    )
+
+
+def slack_alert_without_report(  # pylint: disable=too-many-arguments
+        token: str,
+        channel: str,
+        xml_report_url: str,
+        engagement_id: str,
+        dd: str
+):
+    """
+    Alert Slack on requested findings, if any.
+    """
+    # continue only if Slack channel is set
+    if not channel:
+        logging.warning("Slack alert was not requested")
+        return
+
+    slack = SlackClient(token)
+
+    if xml_report_url:
+        gcs_slack_text = (
+            f"New vulnerability report uploaded to GCS bucket: {xml_report_url}\n and DefectDojo engagement: {dd}{engagement_id}"
+        )
+        slack.chat_postMessage(channel=channel, text=gcs_slack_text)
+        logging.info("Alert sent to Slack channel for GCS bucket and DefectDojo upload report")
+    else:
+        gcs_slack_text = (
+            f"New vulnerability report uploaded to DefectDojo engagement: {dd}engagement/{engagement_id}"
+        )
+        slack.chat_postMessage(channel=channel, text=gcs_slack_text)
+        logging.info("Alert sent to Slack channel for DefectDojo upload report")
+
 
 
 def main(): # pylint: disable=too-many-locals
@@ -264,21 +296,22 @@ def main(): # pylint: disable=too-many-locals
             engagement_id = int(getenv("ENGAGEMENT_ID"))
             defect_dojo_user = getenv("DEFECT_DOJO_USER")
             defect_dojo = getenv("DEFECT_DOJO_URL")
+            dd = getenv("DEFECT_DOJO")
 
             # configure logging
-            logging.basicConfig(
-                level=logging.INFO,
+            logging.basicConfig(level=logging.INFO,
                 format=f"%(levelname)-8s [{codedx_project} {scan_type}-scan] %(message)s",
-            )
+                )
+
             logging.info("Severities: %s", ", ".join(
                 s.value for s in severities))
 
             zap_filename = zap_compliance_scan(
                 codedx_project, zap_port, target_url, scan_type)
 
-            # upload its results to Code Dx
-            cdx = CodeDx(codedx_url, codedx_api_key)
-            codedx_upload(cdx, codedx_project, zap_filename)
+            # upload its results in defectDojo
+            defectdojo_upload(engagement_id, zap_filename,
+                              defect_dojo_key, defect_dojo_user, defect_dojo)
 
             # optionally, upload them to GCS
             xml_report_url = ""
@@ -289,21 +322,31 @@ def main(): # pylint: disable=too-many-locals
                     zap_filename,
                 )
 
-            # alert Slack, if needed
-            slack_alert_with_report(
-                cdx,
-                codedx_project,
-                severities,
-                slack_token,
-                slack_channel,
-                target_url,
-                xml_report_url,
-                scan_type,
-            )
+            if codedx_api_key == '""':
+                slack_alert_without_report(
+                    slack_token,
+                    slack_channel,
+                    xml_report_url,
+                    engagement_id,
+                    dd,
+                )
+            else:
+                # upload its results to Code Dx
+                cdx = CodeDx(codedx_url, codedx_api_key)
+                codedx_upload(cdx, codedx_project, zap_filename)
 
-            # upload its results in defectDojo
-            defectdojo_upload(engagement_id, zap_filename,
-                              defect_dojo_key, defect_dojo_user, defect_dojo)
+                # alert Slack, if needed
+                slack_alert_with_report(
+                    cdx,
+                    codedx_project,
+                    severities,
+                    slack_token,
+                    slack_channel,
+                    target_url,
+                    xml_report_url,
+                    scan_type,
+                )
+
 
             zap = zap_connect(zap_port)
             zap.core.shutdown()
