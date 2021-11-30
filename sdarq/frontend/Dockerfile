@@ -7,7 +7,7 @@ RUN npm install --legacy-peer-deps
 
 COPY . .
 RUN npm run lint
-RUN npm run build -- --prod
+RUN npm run build -- --configuration production
 
 FROM us.gcr.io/broad-dsp-gcr-public/base/nginx:mainline-alpine
 
