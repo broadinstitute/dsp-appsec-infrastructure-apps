@@ -65,6 +65,7 @@ def trigger_scan(  # pylint: disable=too-many-arguments
     codedx_project: str,
     scan_type: ScanType,
     slack_channel: str,
+    engagement_id: str,
 ):
     """
     Trigger scan for a given endpoint via a Pub/Sub message.
@@ -78,6 +79,7 @@ def trigger_scan(  # pylint: disable=too-many-arguments
         URL=url,
         SCAN_TYPE=scan_type.name,
         SLACK_CHANNEL=slack_channel,
+        ENGAGEMENT_ID=engagement_id,
     )
     future.add_done_callback(pubsub_callback(endpoint))
     return future
