@@ -93,7 +93,7 @@ def parse_tags(endpoint: Endpoint):
     codedx_project = ""
     slack_channel = ""
     scan_type: Optional[ScanType] = None
-    engagement_id = None
+    engagement_id = ""
     for tag in endpoint["tags"]:
         tag_match = TAG_MATCHER.match(tag)
         if not tag_match:
