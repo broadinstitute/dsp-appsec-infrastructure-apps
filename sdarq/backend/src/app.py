@@ -106,6 +106,8 @@ def submit():
     product_type = 1
     products_endpoint = f"{dojo_host}api/v2/products/"
 
+    user_email = request.headers.get('X-Goog-Authenticated-User-Email')
+
     # Create a Jira ticket for Threat Model in Appsec team board
     architecture_diagram = json_data['Architecture Diagram']
     github_url = json_data['Github URL']
@@ -133,7 +135,7 @@ def submit():
                                         description=str(
                                             formatted_jira_description),
                                         issuetype={'name': 'Task'})
-        logging.info("Jira ticket in %s board created", project_key_id)
+        logging.info("Jira ticket in %s board created by %s", project_key_id, user_email)
 
         # Delete Ticket_Description from json
         del json_data['Ticket_Description']
@@ -146,7 +148,7 @@ def submit():
         res.raise_for_status()
         product_id = res.json()['id']
 
-        logging.info("Product created: %s", dojo_name)
+        logging.info("Product created: %s by %s request", dojo_name, user_email)
 
         # Set Slack notification
         slacknotify.slacknotify_jira(appsec_slack_channel, dojo_name, security_champion,
@@ -162,7 +164,7 @@ def submit():
         res.raise_for_status()
         product_id = res.json()['id']
 
-        logging.info("Product created: %s", dojo_name)
+        logging.info("Product created: %s by %s request", dojo_name, user_email)
 
         # When Jira ticket creation is not selected
         slacknotify.slacknotify(
@@ -186,8 +188,10 @@ def cis_results():
     pattern = "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
     project_id_edited = project_id.strip('-').replace('-', '_')
 
+    user_email = request.headers.get('X-Goog-Authenticated-User-Email')
+
     logging.info(
-        "Request to read CIS scanner results for project %s ", project_id_edited)
+        "Request by %s to read CIS scanner results for project %s ", user_email, project_id_edited)
 
     if re.match(pattern, project_id_edited):
         table_id = u"{0}.{1}.{2}".format(
@@ -254,12 +258,14 @@ def cis_scan():
     results_url = f"{sdarq_host}/cis/results?project_id={user_project_id}"
     message = message.encode("utf-8")
 
+    user_email = request.headers.get('X-Goog-Authenticated-User-Email')
+
     if re.match(pattern, user_project_id):
         publisher = pubsub_v1.PublisherClient()
         topic_path = publisher.topic_path(pubsub_project_id, cis_topic_name)
         user_proj = user_project_id.replace('-', '_')
         logging.info(
-            "Request to assess security posture for project %s ", user_proj)
+            "Request by %s to assess security posture for project %s ", user_email, user_proj)
         db.collection(firestore_collection).document(user_proj)
         if 'slack_channel' in json_data:
             slack_channel = f"#{json_data['slack_channel']}"
@@ -316,12 +322,14 @@ def request_tm():
     request_type = user_data['Type']
     project_name = user_data['Name']
 
+    user_email = request.headers.get('X-Goog-Authenticated-User-Email')
+
     appsec_jira_ticket_summury = user_data['Type'] + user_data['Name']
     appsec_jira_ticket_description = user_data['Diagram'] + \
                                     '\n' + user_data['Document'] + \
                                     '\n' + user_data['Github']
 
-    logging.info("Threat model request for %s ", project_name)
+    logging.info("Threat model request for %s by %s", project_name, user_email)
 
     jira_ticket_appsec = jira.create_issue(project=appsec_jira_project_key,
                                            summary=appsec_jira_ticket_summury,
@@ -412,6 +420,8 @@ def create_sec_control_template():
     service_name = json_data['service']
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
 
+    user_email = request.headers.get('X-Goog-Authenticated-User-Email')
+
     if re.match(pattern, service_name):
         doc_ref = db.collection(security_controls_firestore_collection).document(service_name.lower())
         doc = doc_ref.get()
@@ -419,17 +429,17 @@ def create_sec_control_template():
             message = """
             This service already exists, if you want to edit it, go to the edit page.
             """
-            logging.info(message)
+            logging.info("User %s requested to create SCT for a service, but it already exists", user_email)
             return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
         else:
             db.collection(security_controls_firestore_collection).document(service_name.lower()).set(json_data)
-            logging.info("A new security controls template is created")
+            logging.info("A new security controls template is created by %s", user_email)
             return ''
     else:
         message = """
         Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.
         """
-        logging.info(message)
+        logging.info("User %s requested to create SCT for a service, but INVALID input was provided", user_email)
         return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
 
 
@@ -446,6 +456,8 @@ def edit_sec_controls():
     service_name = json_data['service']
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
 
+    user_email = request.headers.get('X-Goog-Authenticated-User-Email')
+
     if re.match(pattern, service_name):
         doc_ref = db.collection(security_controls_firestore_collection).document(
             service_name.lower())
@@ -454,20 +466,20 @@ def edit_sec_controls():
             db.collection(security_controls_firestore_collection).document(
                 service_name.lower()).set(json_data)
             logging.info(
-                "Security controls for the choosen service have changed!")
+                "Security controls for the choosen service have changed by %s !", user_email)
             return ''
         else:
             message = """
             This service does not exist!
             """
-            logging.info(message)
+            logging.info("User %s requested to edit a service security controls, but this service does not exist!", user_email)
             return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
 
     else:
         message = """
         Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.
         """
-        logging.info(message)
+        logging.info("User %s requested to edit SCT for a service, but INVALID input was provided", user_email)
         return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
 
 
@@ -479,8 +491,10 @@ def get_sec_controls():
     Args: None
     Returns: Json data
     """
+    user_email = request.headers.get('X-Goog-Authenticated-User-Email')
     data = []
     docs = db.collection(security_controls_firestore_collection).stream()
+    logging.info("User %s read security controls for the list of services.", user_email)
     for doc in docs:
         data.append(doc.to_dict())
 
@@ -501,6 +515,8 @@ def get_sec_controls_service():
     service_name = json_data['service']
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
 
+    user_email = request.headers.get('X-Goog-Authenticated-User-Email')
+
     if re.match(pattern, service_name, re.IGNORECASE):
         doc_ref = db.collection(security_controls_firestore_collection).document(
             service_name.lower())
@@ -511,13 +527,13 @@ def get_sec_controls_service():
             message = """
             This service does not exist! Contact AppSec team for more information!
             """
-            logging.info(message)
+            logging.info("User %s requested to read security controls of a service that does not exist.", user_email)
             return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
     else:
         message = """
         Please enter a valid value for your service name! Contact AppSec team for more information.
         """
-        logging.info(message)
+        logging.info("User %s did not provide a valid value for the service name to read security controls.", user_email)
         return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
 
 
@@ -531,6 +547,7 @@ def request_manual_pentest():
         JSON data supplied by user
     """
     user_data = request.get_json()
+    user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     security_champion = user_data['security_champion']
     project_name = user_data['service']
@@ -543,7 +560,7 @@ def request_manual_pentest():
         '\n' + 'Documentation: ' + user_data['document'] + \
         '\n' + 'Security champion: ' + user_data['security_champion']
 
-    logging.info("Security pentest request for  %s ", project_name)
+    logging.info("Security pentest request for  %s by %s", project_name, user_email)
 
     jira_ticket_appsec = jira.create_issue(project=appsec_jira_project_key,
                                            summary=appsec_jira_ticket_summury,
@@ -551,7 +568,7 @@ def request_manual_pentest():
                                                appsec_jira_ticket_description),
                                            issuetype={'name': 'Task'})
     logging.info(
-        "Jira ticket created in appsec board for %s security pentest", project_name)
+        "Jira ticket created in appsec board for %s security pentest request by %s", project_name, user_email)
 
     slacknotify.slacknotify_security_pentest(appsec_slack_channel,
                                              security_champion,
