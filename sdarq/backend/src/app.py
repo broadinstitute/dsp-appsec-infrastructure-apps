@@ -105,7 +105,6 @@ def submit():
     security_champion = json_data['Security champion']
     product_type = 1
     products_endpoint = f"{dojo_host}api/v2/products/"
-
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     # Create a Jira ticket for Threat Model in Appsec team board
@@ -187,7 +186,6 @@ def cis_results():
     project_id = project_id_encoded.decode("utf-8")
     pattern = "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
     project_id_edited = project_id.strip('-').replace('-', '_')
-
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     logging.info(
@@ -257,7 +255,6 @@ def cis_scan():
     message = ""
     results_url = f"{sdarq_host}/cis/results?project_id={user_project_id}"
     message = message.encode("utf-8")
-
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if re.match(pattern, user_project_id):
@@ -321,7 +318,6 @@ def request_tm():
     security_champion = user_data['Eng']
     request_type = user_data['Type']
     project_name = user_data['Name']
-
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     appsec_jira_ticket_summury = user_data['Type'] + user_data['Name']
@@ -365,6 +361,7 @@ def zap_scan():
     user_supplied_url = json_data['URL']
     dev_slack_channel = f"#{json_data['slack_channel']}"
     endpoint = f"{dojo_host}api/v2/endpoints?limit=1000"
+    user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     publisher = pubsub_v1.PublisherClient()
     zap_topic_path = publisher.topic_path(pubsub_project_id, zap_topic_name)
@@ -396,6 +393,7 @@ def zap_scan():
                               SEVERITIES=severities,
                               SLACK_CHANNEL=dev_slack_channel,
                               ENGAGEMENT_ID=engagement_id)
+            logging.info("User %s requested to scan via ZAP %s service", user_email, service_full_endpoint)
 
             return ''
     else:
@@ -404,6 +402,7 @@ def zap_scan():
         You should NOT run a security pentest against the URL you entered, 
         or maybe it doesn't exist in AppSec list. Please contact AppSec team.
         """
+        logging.info("User %s requested to scan via ZAP a service that does not exist in DefectDojo endpoint list", user_email)
         return Response(json.dumps({'statusText': text_message}), status=status_code, mimetype='application/json')
 
 
@@ -419,7 +418,6 @@ def create_sec_control_template():
     json_data = request.get_json()
     service_name = json_data['service']
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
-
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if re.match(pattern, service_name):
@@ -455,7 +453,6 @@ def edit_sec_controls():
     json_data = request.get_json()
     service_name = json_data['service']
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
-
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if re.match(pattern, service_name):
@@ -514,7 +511,6 @@ def get_sec_controls_service():
     json_data = request.get_json()
     service_name = json_data['service']
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
-
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if re.match(pattern, service_name, re.IGNORECASE):
@@ -548,14 +544,13 @@ def request_manual_pentest():
     """
     user_data = request.get_json()
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
-
     security_champion = user_data['security_champion']
     project_name = user_data['service']
 
     appsec_jira_ticket_summury = 'Security pentest request for ' + \
         user_data['service']
     appsec_jira_ticket_description = 'URL to pentest: ' + user_data['URL'] + \
-        '\n' +'Environment: ' + user_data['env'] + \
+        '\n' + 'Environment: ' + user_data['env'] + \
         '\n' + 'Permission levels:' + user_data['permission_level'] + \
         '\n' + 'Documentation: ' + user_data['document'] + \
         '\n' + 'Security champion: ' + user_data['security_champion']
