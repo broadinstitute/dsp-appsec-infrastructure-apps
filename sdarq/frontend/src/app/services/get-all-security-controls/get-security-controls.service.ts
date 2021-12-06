@@ -25,6 +25,7 @@ export class GetSecurityControlsService {
   }
 
   handleError(error) {
+    
     let errorMessage = '';
 
     if (error.error instanceof ErrorEvent) {
