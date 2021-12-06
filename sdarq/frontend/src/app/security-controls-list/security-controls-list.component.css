@@ -5,9 +5,13 @@
 
 
 .green-color {
-    color:green;
+    color:green !important;
     }
 
 .red-color {
-    color:rgb(172, 0, 0);
+    color:#e70606 !important;
+}
+
+.fa-2x {
+    font-size: 1.8em !important;
 }

@@ -29,7 +29,7 @@ export class SecurityControlsListComponent implements OnInit {
     if (docker_scan === true) {
       return '<i class="fas fa-check-circle green-color fa-2x" ></i>'
     } else {
-      return '<i class="fas fa-times fa-2x center color"></i>'
+      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
     }
   }
 
