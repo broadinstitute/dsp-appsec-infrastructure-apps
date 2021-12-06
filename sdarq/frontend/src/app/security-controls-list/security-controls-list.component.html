@@ -13,19 +13,19 @@
         <br>
             <table class="table table-hover">
                 <th *ngFor="let head of headElements">
-                    {{ head }}
+                    <strong>{{ head }}</strong>
                 </th>
                 <tbody #row>
                     <!-- tslint:disable-next-line -->
                     <tr *ngFor="let controls of serviceSecurityControl | filtersct: searchString ">
-                        <td>{{ controls.service }}</td>
+                        <td><strong>{{ controls.service }}</strong></td>
                         <td>{{ controls.product }}</td>
                         <td>{{ controls.security_champion }}</td>
                         <td>
                             <div [innerHTML]="devURLShowValue(controls.dev_url)"></div>
                                 <div *ngIf="dev_link">
                                     <a href="{{ controls.dev_url }}" target="_blank" rel="noreferrer noopener"> <!-- nosemgrep-->
-                                    {{ controls.service | lowercase}}-dev-url
+                                    <strong>{{ controls.service | lowercase}}-dev-url</strong>
                                     </a>
                             </div>
                         </td>
@@ -33,7 +33,7 @@
                                 <mdb-icon fab icon="github" size="2x"></mdb-icon>
                             </a></td>
                         <td><a href="{{ controls.defect_dojo }}" target="_blank"> <!-- nosemgrep-->
-                                <img src="../assets/defectdojo.png" width="25px"></a></td>
+                                <img src="../assets/defectdojo.png" width="23px"></a></td>
                         <td>
                             <div [innerHTML]="threatmodelShowValue(controls.threat_model)"></div>
                         </td>
@@ -47,7 +47,7 @@
                             <div [innerHTML]="zapShowValue(controls.zap)"></div>
                             <div *ngIf="zap_results">
                            <a href="{{ controls.vulnerability_management }}" target="_blank" rel="noreferrer noopener"> <!-- nosemgrep-->
-                                 <img src="../assets/codedx.png" width="30px"></a>
+                                 <img src="../assets/codedx.png" width="27px"></a>
                                 </div>
                         </td>
                         <td>
@@ -56,7 +56,7 @@
                         <td>
                             <div [innerHTML]="sourceclearShowValue(controls.sourceclear)"></div>
                             <div *ngIf="sourceclear_results">
-                                <a href="{{ controls.sourceclear_link}}" target="_blank" rel="noreferrer noopener" class="btn btn-outline-success btn-sm" role="button"> <!-- nosemgrep-->
+                                <a href="{{ controls.sourceclear_link}}" target="_blank" rel="noreferrer noopener" class="btn btn-success btn-sm" role="button"> <!-- nosemgrep-->
                                     Results
                                 </a>
                             </div>
