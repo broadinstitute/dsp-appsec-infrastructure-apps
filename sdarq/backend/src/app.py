@@ -376,7 +376,7 @@ def zap_scan():
             if endpoint['path'] is None:
                 service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}"
             else:
-                service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}{endpoint['path']}"
+                service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}/{endpoint['path']}"
             severities = parse_json_data.parse_severities(
                 json_data['severities'])
 
