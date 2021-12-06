@@ -153,7 +153,6 @@ def submit():
         slacknotify.slacknotify_jira(appsec_slack_channel, dojo_name, security_champion,
                                      product_id, dojo_host_url, jira_instance,
                                      project_key_id, jira_ticket)
-
     else:
         # Create DefectDojo product
         data = {'name': dojo_name, 'description': parse_json_data.prepare_dojo_input(
@@ -234,7 +233,6 @@ def cis_results():
             gcloud config list project --format='value(core.project)'
             """
             return Response(json.dumps({'statusText': notfound}), status=status_code, mimetype='application/json')
-
     else:
         status_code = 404
         message = """
@@ -341,7 +339,6 @@ def request_tm():
                                          jira_instance,
                                          jira_ticket_appsec,
                                          appsec_jira_project_key)
-
     return ''
 
 
@@ -384,7 +381,6 @@ def zap_scan():
                 service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}{endpoint['path']}"
             severities = parse_json_data.parse_severities(
                 json_data['severities'])
-
             publisher.publish(zap_topic_path,
                               data=message,
                               URL=service_full_endpoint,
@@ -394,7 +390,6 @@ def zap_scan():
                               SLACK_CHANNEL=dev_slack_channel,
                               ENGAGEMENT_ID=engagement_id)
             logging.info("User %s requested to scan via ZAP %s service", user_email, service_full_endpoint)
-
             return ''
     else:
         status_code = 404
@@ -471,7 +466,6 @@ def edit_sec_controls():
             """
             logging.info("User %s requested to edit a service security controls, but this service does not exist!", user_email)
             return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
-
     else:
         message = """
         Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.
@@ -494,7 +488,6 @@ def get_sec_controls():
     logging.info("User %s read security controls for the list of services.", user_email)
     for doc in docs:
         data.append(doc.to_dict())
-
     return data
 
 
@@ -507,7 +500,6 @@ def get_sec_controls_service():
     Returns: Json data if 200
              404 if project not found
     """
-
     json_data = request.get_json()
     service_name = json_data['service']
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
@@ -571,7 +563,6 @@ def request_manual_pentest():
                                              jira_instance,
                                              jira_ticket_appsec,
                                              appsec_jira_project_key)
-
     return ''
 
 
