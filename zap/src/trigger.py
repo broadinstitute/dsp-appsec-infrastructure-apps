@@ -71,7 +71,7 @@ def trigger_scan(  # pylint: disable=too-many-arguments
     Trigger scan for a given endpoint via a Pub/Sub message.
     """
     port = f":{endpoint['port']}" if endpoint["port"] else ""
-    url = f"{endpoint['protocol']}://{endpoint['host']}{port}{endpoint['path'] or ''}"
+    url = f"{endpoint['protocol']}://{endpoint['host']}{port}/{endpoint['path'] or ''}"
     future = publisher.publish(
         topic=topic,
         data=b"",
