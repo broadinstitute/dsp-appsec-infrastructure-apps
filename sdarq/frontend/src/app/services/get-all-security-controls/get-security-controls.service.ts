@@ -10,9 +10,7 @@ import { ServiceSecurityControl } from '../../models/service-security-control.mo
 })
 export class GetSecurityControlsService {
 
-  // private Url = location.origin + '/get_sec_controls/';
-
-  private Url = 'http://127.0.0.1:8080'+ '/get_sec_controls/';
+  private Url = location.origin + '/get_sec_controls/';
 
   constructor(private http: HttpClient) { }
 
