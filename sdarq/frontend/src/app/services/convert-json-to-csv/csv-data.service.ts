@@ -18,9 +18,9 @@ export class CsvDataService {
 
   exportToCsv(filename: string, csvContent: string) {
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    if (navigator.msSaveBlob) {
-      navigator.msSaveBlob(blob, filename);
-    } else {
+    // if (navigator.) {
+    //   navigator.msSaveBlob(blob, filename);
+    // } else {
       const link = document.createElement('a');
       if (link.download !== undefined) {
         const url = URL.createObjectURL(blob);
@@ -33,4 +33,4 @@ export class CsvDataService {
       }
     }
   }
-}
+// }

@@ -65,12 +65,13 @@ def trigger_scan(  # pylint: disable=too-many-arguments
     codedx_project: str,
     scan_type: ScanType,
     slack_channel: str,
+    engagement_id: str,
 ):
     """
     Trigger scan for a given endpoint via a Pub/Sub message.
     """
     port = f":{endpoint['port']}" if endpoint["port"] else ""
-    url = f"{endpoint['protocol']}://{endpoint['host']}{port}{endpoint['path'] or ''}"
+    url = f"{endpoint['protocol']}://{endpoint['host']}{port}/{endpoint['path'] or ''}"
     future = publisher.publish(
         topic=topic,
         data=b"",
@@ -78,6 +79,7 @@ def trigger_scan(  # pylint: disable=too-many-arguments
         URL=url,
         SCAN_TYPE=scan_type.name,
         SLACK_CHANNEL=slack_channel,
+        ENGAGEMENT_ID=engagement_id,
     )
     future.add_done_callback(pubsub_callback(endpoint))
     return future
@@ -93,7 +95,7 @@ def parse_tags(endpoint: Endpoint):
     codedx_project = ""
     slack_channel = ""
     scan_type: Optional[ScanType] = None
-    engagement_id = None
+    engagement_id = ""
     for tag in endpoint["tags"]:
         tag_match = TAG_MATCHER.match(tag)
         if not tag_match:
