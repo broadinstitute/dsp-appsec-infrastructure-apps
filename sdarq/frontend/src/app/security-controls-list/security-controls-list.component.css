@@ -1,17 +1,4 @@
 .btn-sm, .btn-group-sm > .btn {
     padding: 0.25rem 0.5rem;
     font-size: 0.6rem !important;
-} 
-
-
-i .green-color {
-    color:green !important;
-    }
-
-i .red-color {
-    color:#e70606 !important;
-}
-
-.fa-2x {
-    font-size: 1.8em !important;
 }
