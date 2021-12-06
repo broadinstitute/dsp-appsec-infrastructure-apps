@@ -37,7 +37,7 @@ export class SecurityControlsListComponent implements OnInit {
     if (burp === true) {
       return '<i class="fas fa-check-circle green-color fa-2x"></i>'
     } else {
-      return '<i class="fas fa-times red-color fa-2x"></i>'
+      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
     }
   }
 

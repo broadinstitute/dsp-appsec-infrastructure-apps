@@ -17,8 +17,8 @@
         <div class="row" *ngIf="serviceToEditForm">
             <div class="col-sm" *ngIf="showServiceData">
                 <div class="service-security-controls-block">
-                    <p class="service-cecurity-controls-title"> {{ service.uppercase }} security controls:</p>  <br><br>
-                    <p>This block purpose is to show current security controls implemented for {{ service.uppercase }} and to help you replace with new values.</p><br>
+                    <p class="service-cecurity-controls-title"> {{ service | uppercase }} security controls:</p>  <br><br>
+                    <p>This block purpose is to show current security controls implemented for {{ service | uppercase }} and to help you replace with new values.</p><br>
                     <p>
                     <strong>Service name:</strong> {{ service }} <br><br>
                     <strong>Product name:</strong> {{ product }} <br><br>
