@@ -27,25 +27,25 @@ export class SecurityControlsListComponent implements OnInit {
 
   trivyShowValue(docker_scan) {
     if (docker_scan === true) {
-      return '<i class="fas fa-check fa-1x" ></i>'
+      return '<i class="fas fa-check-circle green-color fa-2x" ></i>'
     } else {
-      return '<i class="fas fa-times fa-1x color"></i>'
+      return '<i class="fas fa-times fa-2x center color"></i>'
     }
   }
 
   burpShowValue(burp) {
     if (burp === true) {
-      return '<i class="fas fa-check fa-1x "></i>'
+      return '<i class="fas fa-check-circle green-color fa-2x"></i>'
     } else {
-      return '<i class="fas fa-times fa-1x"></i>'
+      return '<i class="fas fa-times red-color fa-2x"></i>'
     }
   }
 
   threatmodelShowValue(threat_model) {
     if (threat_model === true) {
-      return '<i class="fas fa-check fa-1x"></i>'
+      return '<i class="fas fa-check-circle green-color fa-2x"></i>'
     } else {
-      return '<i class="fas fa-times fa-1x"></i>'
+      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
     }
   }
 
@@ -54,15 +54,15 @@ export class SecurityControlsListComponent implements OnInit {
       this.zap_results = true;
     } else {
       this.zap_results = false;
-      return '<i class="fas fa-times fa-1x"></i>'
+      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
     }
   }
 
   cisscannerShowValue(cis_scanner) {
     if (cis_scanner === true) {
-      return '<i class="fas fa-check fa-1x"></i>'
+      return '<i class="fas fa-check-circle green-color fa-2x"></i>'
     } else {
-      return '<i class="fas fa-times fa-1x"></i>'
+      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
     }
   }
 
@@ -71,14 +71,14 @@ export class SecurityControlsListComponent implements OnInit {
       this.sourceclear_results = true;
     } else {
       this.sourceclear_results = false;
-      return '<i class="fas fa-times fa-1x"></i>'
+      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
     }
   }
 
   devURLShowValue(dev_url) {
     if (dev_url === '') {
       this.dev_link = false;
-      return '<i class="fas fa-times fa-1x"></i>'
+      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
     } else {
       this.dev_link = true;
     }
