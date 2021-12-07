@@ -405,6 +405,14 @@ color: #17af17 !important
   padding: .5rem 1rem !important;
 }
 
+.green-color {
+  color:green !important;
+  }
+
+.red-color {
+  color: #d50a0a !important;
+}
+
 .fa-2x {
   font-size: 1.55em !important;
 }

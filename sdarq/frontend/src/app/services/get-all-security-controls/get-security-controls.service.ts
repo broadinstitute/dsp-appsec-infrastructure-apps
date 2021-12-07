@@ -12,6 +12,7 @@ export class GetSecurityControlsService {
 
   private URL = location.origin + '/get_sec_controls/';
 
+
   constructor(private http: HttpClient) { }
 
   getAllSecurityControls(): Observable<ServiceSecurityControl[]> {
@@ -25,7 +26,7 @@ export class GetSecurityControlsService {
   }
 
   handleError(error) {
-
+    
     let errorMessage = '';
 
     if (error.error instanceof ErrorEvent) {
