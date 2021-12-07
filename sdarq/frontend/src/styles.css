@@ -404,3 +404,11 @@ color: #17af17 !important
 .btn {
   padding: .5rem 1rem !important;
 }
+
+.fa-2x {
+  font-size: 1.55em !important;
+}
+
+.fa-3x {
+  font-size: 2.1em !important;
+} 
