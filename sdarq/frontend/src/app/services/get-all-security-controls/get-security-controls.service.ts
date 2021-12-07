@@ -10,9 +10,8 @@ import { ServiceSecurityControl } from '../../models/service-security-control.mo
 })
 export class GetSecurityControlsService {
 
-  // private Url = location.origin + '/get_sec_controls/';
+  private URL = location.origin + '/get_sec_controls/';
 
-  private Url = 'http://127.0.0.1:8080'+ '/get_sec_controls/';
 
   constructor(private http: HttpClient) { }
 
@@ -20,7 +19,7 @@ export class GetSecurityControlsService {
     const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
-    return this.http.get<ServiceSecurityControl[]>(this.Url, options).pipe(
+    return this.http.get<ServiceSecurityControl[]>(this.URL, options).pipe(
       map(res => res.map((serviceSecurityControl: ServiceSecurityControl) => new ServiceSecurityControl().deserialize(serviceSecurityControl))), // tslint:disable-line
       catchError(this.handleError)
     )
