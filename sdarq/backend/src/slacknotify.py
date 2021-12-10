@@ -30,7 +30,7 @@ def slacknotify(appsec_slack_channel, dojo_name, security_champion, product_id, 
     Returns:
         Sends slack notification
     """
-    response = client.chat_postMessage(
+    client.chat_postMessage(
         channel=appsec_slack_channel,
         text="New service created",
         blocks=[
@@ -91,7 +91,7 @@ def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product
     Returns:
         Sends slack notification
     """
-    response = client.chat_postMessage(
+    client.chat_postMessage(
         channel=appsec_slack_channel,
         text="New service created",
         blocks=[
@@ -157,7 +157,7 @@ def slacknotify_threat_model(appsec_slack_channel, security_champion, request_ty
     Returns:
         Sends slack notification
     """
-    response = client.chat_postMessage(
+    client.chat_postMessage(
         channel=appsec_slack_channel,
         text="There is a request for a threat model",
         blocks=[
@@ -213,7 +213,7 @@ def slacknotify_security_pentest(appsec_slack_channel, security_champion, projec
     Returns:
         Sends slack notification
     """
-    response = client.chat_postMessage(
+    client.chat_postMessage(
         channel=appsec_slack_channel,
         text="There is a request for security pentest",
         blocks=[
@@ -265,7 +265,7 @@ def slacknotify_jira_ticket_risk_assessment(appsec_slack_channel, jira_ticket_li
     Returns:
         Sends slack notification
     """
-    response = client.chat_postMessage(
+    client.chat_postMessage(
         channel=appsec_slack_channel,
         text="There is a request for security pentest",
         blocks=[
