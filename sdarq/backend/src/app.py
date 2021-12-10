@@ -575,7 +575,12 @@ def notifyAppSecJTRA():
         JSON data supplied by user
     """
     user_data = request.get_json()
-    
+    jira_ticket_link = user_data['jira_ticket_link']
+
+    if user_data['high_level'] == 'add_SA':
+        slacknotify.slacknotify_jira_ticket_risk_assessment(appsec_slack_channel, jira_ticket_link)
+
+
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=int(os.getenv('PORT', 8080)))

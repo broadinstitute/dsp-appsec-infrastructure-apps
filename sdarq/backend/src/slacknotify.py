@@ -21,7 +21,6 @@ def slacknotify(appsec_slack_channel, dojo_name, security_champion, product_id, 
         2. No QA person must be notified 
 
     Args:
-        slack_token: Slack token 
         appsec_slack_channel: Slack channel name
         dojo_name: Engagement name in defect dojo
         security_champion: Security champion name
@@ -80,7 +79,6 @@ def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product
         2. QA person will not be notified 
 
     Args:
-        slack_token: Slack token 
         appsec_slack_channel: Slack channel name
         dojo_name: Engagement name in defect dojo
         security_champion: Security champion name
@@ -148,7 +146,6 @@ def slacknotify_threat_model(appsec_slack_channel, security_champion, request_ty
     Sends slack notification when there is a request for threat model
 
     Args:
-        slack_token: Slack token 
         appsec_slack_channel: Slack channel name
         security_champion: Security champion name
         request_type: Create or update threat model
@@ -206,7 +203,6 @@ def slacknotify_security_pentest(appsec_slack_channel, security_champion, projec
     Sends slack notification when there is a request for a security request
 
     Args:
-        slack_token: Slack token 
         appsec_slack_channel: Slack channel name
         security_champion: Security champion name
         project_name: Project name
@@ -258,3 +254,41 @@ def slacknotify_security_pentest(appsec_slack_channel, security_champion, projec
         ]
     )
 
+def slacknotify_jira_ticket_risk_assessment(appsec_slack_channel, jira_ticket_link ):
+    """
+    Sends Slack notifications to AppSec when there is high risk Jira ticket
+
+    Args:
+        appsec_slack_channel: Slack channel name
+        jira_ticket_link: Jira ticket link
+
+    Returns:
+        Sends slack notification
+    """
+    response = client.chat_postMessage(
+        channel=appsec_slack_channel,
+        text="There is a request for security pentest",
+        blocks=[
+            {
+                "type": "section",
+                "text": {
+                      "type": "mrkdwn",
+                      "text": "*There is a security pentest request*"
+                      }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Jira Ticket Risk Assessment: HIGH*"
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Jita ticket link:* {0} " .format(str(jira_ticket_link))
+                }
+            }
+        ]
+    )
