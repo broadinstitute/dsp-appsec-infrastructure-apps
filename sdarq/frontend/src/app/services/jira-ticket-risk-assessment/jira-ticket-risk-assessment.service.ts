@@ -8,7 +8,7 @@ import { catchError } from 'rxjs/operators';
 })
 export class JiraTicketRiskAssessmentService {
 
-  private Url = location.origin + '/submitJTRAdata/';
+  private Url = location.origin + '/submitJTRA/';
 
   constructor(private http: HttpClient) { }
 

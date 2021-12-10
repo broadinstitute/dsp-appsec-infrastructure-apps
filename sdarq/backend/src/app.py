@@ -566,5 +566,16 @@ def request_manual_pentest():
     return ''
 
 
+@app.route('/submitJTRA/', methods=['POST'])
+@cross_origin(origins=sdarq_host)
+def notifyAppSecJTRA():
+    """
+    Calculates the risk based on the data and notifies AppSec team for review
+    Args:
+        JSON data supplied by user
+    """
+    user_data = request.get_json()
+    
+
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=int(os.getenv('PORT', 8080)))
