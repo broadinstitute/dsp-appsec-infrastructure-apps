@@ -73,7 +73,7 @@
         "otherText": "Other"
        },
        {
-        "type": "checkbox",
+        "type": "radiogroup",
         "name": "main_product",
         "visible": false,
         "visibleIf": "{high_level} = 'change_product_api'",
@@ -99,7 +99,7 @@
         ]
        },
        {
-        "type": "checkbox",
+        "type": "radiogroup",
         "name": "product_ui_question_change",
         "visible": false,
         "visibleIf": "{high_level} = 'change_product_ui'",
@@ -126,10 +126,10 @@
         "otherText": "Other"
        },
        {
-        "type": "checkbox",
+        "type": "radiogroup",
         "name": "product_features_other",
         "visible": false,
-        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = ['item5']",
+        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'item5'",
         "title": "Select all that apply.",
         "isRequired": true,
         "choices": [
@@ -155,7 +155,7 @@
        {
         "type": "radiogroup",
         "name": "confidentiality",
-        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = ['item5'] and {product_features_other} = ['item1']",
+        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'item5' and {product_features_other} = 'item1'",
         "title": "Confidentiality:  Suppose an attacker would be able to find a vulnerability that is introduced as part of this change and successfully exploit it.  Confidentiality is about protecting the information from being exposed to an unauthorized party. Would the exploitation of a potential vulnerability in this component lead to loss of Confidentiality? ",
         "choices": [
          {
@@ -176,7 +176,7 @@
         "type": "radiogroup",
         "name": "integrity",
         "visible": false,
-        "visibleIf": "{product_features_other} = ['item1'] and {confidentiality} = 'item2' and {product_features_other} = ['item1']",
+        "visibleIf": "{product_features_other} = ['item1'] and {confidentiality} = 'item2' and {product_features_other} = 'item1'",
         "title": "Integrity: Suppose an attacker would be able to find a vulnerability that is introduced as part of this change, and successfully exploit it.  Integrity is about protecting data from being modified by an unauthorized party. Would the exploitation of a potential vulnerability in this component lead to loss of Integrity?",
         "isRequired": true,
         "choices": [
@@ -198,7 +198,7 @@
         "type": "radiogroup",
         "name": "availability",
         "visible": false,
-        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = ['item5'] and {product_features_other} = ['item1'] and {integrity} = 'item2' and {confidentiality} = 'item2'",
+        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'item5' and {product_features_other} = 'item1' and {integrity} = 'item2' and {confidentiality} = 'item2'",
         "title": "Availability: Suppose an attacker would be able to find a vulnerability that is introduced as part of this change and successfully exploit it.  Availability means that information is accessible to authorized users, i.e. that data is accessible by authorized users whenever it's needed. Would the exploitation of a potential vulnerability in this component lead to loss of Availability?",
         "choices": [
          {
@@ -251,7 +251,7 @@
         "type": "html",
         "name": "risk_high_third_party_scripts",
         "visible": false,
-        "visibleIf": "{high_level} = 'change_product_ui' and {main_product} = ['item3']",
+        "visibleIf": "{high_level} = 'change_product_ui' and {main_product} = 'item3'",
         "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n<hr>\n</div>"
        },
        {
@@ -271,14 +271,14 @@
        {
         "type": "html",
         "name": "risk_low",
-        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = ['item5'] and {product_features_other} = ['item1'] and {confidentiality} = 'item2' and {integrity} = 'item2' and {availability} anyof ['item1', 'item2', 'item3']",
+        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'item5' and {product_features_other} = 'item1' and {confidentiality} = 'item2' and {integrity} = 'item2' and {availability} anyof ['item1', 'item2', 'item3']",
         "html": "<div class=\"alert alert-info\">\nRisk: <b>LOW</b>\n<hr>\n</div>\n\n"
        },
        {
         "type": "html",
         "name": "risk_low_ui_only",
         "visible": false,
-        "visibleIf": "{high_level} = 'change_product_ui' and {product_ui_question_change} = ['item1']",
+        "visibleIf": "{high_level} = 'change_product_ui' and {product_ui_question_change} = 'item1'",
         "html": "<div class=\"alert alert-info\">\nRisk: <b>LOW</b>\n<hr>\n</div>\n\n"
        },
        {
@@ -292,14 +292,14 @@
         "type": "html",
         "name": "risk_medium_product_only",
         "visible": false,
-        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = ['item5'] and {product_features_other} anyof ['change_ui_change_dom', 'change_ui_load_active_content', 'change_ui_url_inputs']",
+        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'item5' and {product_features_other} anyof ['change_ui_change_dom', 'change_ui_load_active_content', 'change_ui_url_inputs']",
         "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>"
        },
        {
         "type": "html",
         "name": "risk_high_generic",
         "visible": false,
-        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = ['item5'] and {product_features_other} = ['item1'] and {confidentiality} = 'item1' or {high_level} = 'change_product_api' and {main_product} = ['item5'] and {product_features_other} = ['item1'] and {confidentiality} = 'item3' or {high_level} = 'change_product_api' and {main_product} = ['item5'] and {product_features_other} = ['item1'] and {confidentiality} = 'item2' and {integrity} = 'item1' or {high_level} = 'change_product_api' and {main_product} = ['item5'] and {product_features_other} = ['item1'] and {confidentiality} = 'item2' and {integrity} = 'item3'",
+        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'item5' and {product_features_other} = 'item1' and {confidentiality} = 'item1' or {high_level} = 'change_product_api' and {main_product} = 'item5' and {product_features_other} = 'item1' and {confidentiality} = 'item3' or {high_level} = 'change_product_api' and {main_product} = 'item5' and {product_features_other} = 'item1' and {confidentiality} = 'item2' and {integrity} = 'item1' or {high_level} = 'change_product_api' and {main_product} = 'item5' and {product_features_other} = 'item1' and {confidentiality} = 'item2' and {integrity} = 'item3'",
         "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nTo determine the risk of this change, please reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>\n\n"
        },
        {

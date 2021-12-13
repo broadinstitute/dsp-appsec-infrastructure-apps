@@ -31,10 +31,12 @@ from flask_api import FlaskAPI
 from flask_cors import cross_origin
 from google.cloud import bigquery, firestore, pubsub_v1
 from jira import JIRA
-from trigger import parse_tags
 
 import parse_data as parse_json_data
 import slacknotify
+
+from trigger import parse_tags
+
 
 # Env variables
 dojo_host = os.getenv('dojo_host') # dojo host
@@ -396,7 +398,7 @@ def zap_scan():
     else:
         status_code = 404
         text_message = """
-        You should NOT run a security pentest against the URL you entered, 
+        You should NOT run a security pentest against the URL you entered,
         or maybe it doesn't exist in AppSec list. Please contact AppSec team.
         """
         logging.info("User %s requested to scan via ZAP a service that does not exist in DefectDojo endpoint list", user_email)
@@ -578,9 +580,24 @@ def notifyAppSecJTRA():
     """
     user_data = request.get_json()
     jira_ticket_link = user_data['jira_ticket_link']
+    print(user_data)
+    user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
-    if user_data['high_level'] == 'add_SA':
-        slacknotify.slacknotify_jira_ticket_risk_assessment(appsec_slack_channel, jira_ticket_link)
+    if user_data['high_level'] == 'add_SA' \
+        or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'item5' and user_data['product_features_other'] == 'item1' and user_data['confidentiality'] == 'item1' \
+        or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'item5' and user_data['product_features_other'] == 'item1' and user_data['confidentiality'] == 'item3' \
+        or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'item5' and user_data['product_features_other'] == 'item1' and user_data['confidentiality'] == 'item2' and user_data['integrity'] == 'item1' \
+        or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'item5' and user_data['product_features_other'] == 'item1' and user_data['confidentiality'] == 'item2' and user_data['integrity'] == 'item3' \
+        or user_data['high_level'] == 'change_product_ui' and user_data['product_ui_question_change'] in ['change_ui_url_inputs', 'change_ui_load_active_content', 'change_ui_change_dom'] \
+        or user_data['high_level'] == 'change_product_api' and user_data['main_product'] in ['item1', 'item2', 'item4'] \
+        or user_data['high_level'] == 'change_infrastructure' and user_data['infrastructure_gcp'] in ['infrastructure_q1', 'infrastructure_q2', 'infrastructure_q3'] and user_data['if_access_control_change_playbook'] == 'item3':
+        logging.info("User %s submitted a HIGH Risk JIRA Ticket %s",  user_email, jira_ticket_link)
+        slacknotify.slacknotify_jira_ticket_risk_assessment(appsec_slack_channel, jira_ticket_link, user_email)
+    else:
+        logging.info("User %s submitted a JIRA Risk Jira Ticket %s, result not HIGH",  user_email, jira_ticket_link)
+
+    return ''
+
 
 
 if __name__ == "__main__":
