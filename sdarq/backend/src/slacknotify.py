@@ -13,7 +13,6 @@ slack_token = os.getenv('slack_token')
 client = WebClient(token=slack_token,
                          ssl=ssl_context)
 
-
 def slacknotify(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url):
     """
     Sends slack notification where: 
@@ -70,7 +69,6 @@ def slacknotify(appsec_slack_channel, dojo_name, security_champion, product_id, 
             }
         ]
     )
-
 
 def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket):
     """
@@ -139,7 +137,6 @@ def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product
             }
         ]
     )
-
 
 def slacknotify_threat_model(appsec_slack_channel, security_champion, request_type, project_name,  jira_instance, jira_ticket_appsec, appsec_jira_board):
     """

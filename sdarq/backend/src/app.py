@@ -4,6 +4,7 @@ This module
         - creates a new product in Defect Dojo
         - optionally creates a Jira Ticket
         - notifies several Slack channels about service requirements request
+        - creates a new security controls template for a new service/product
 - sends request to scan a GCP project against the CIS Benchmark
 - get results from BigQuery for a scanned GCP project
 - send a request for threat model
@@ -12,6 +13,7 @@ This module
 - add security controls for a service
 - edit security controls for a service
 - list all security controls for all services
+- calculates the risk of a Jira ticket and notifies AppSec team
 """
 #!/usr/bin/env python3
 
@@ -579,7 +581,6 @@ def notifyAppSecJTRA():
 
     if user_data['high_level'] == 'add_SA':
         slacknotify.slacknotify_jira_ticket_risk_assessment(appsec_slack_channel, jira_ticket_link)
-
 
 
 if __name__ == "__main__":
