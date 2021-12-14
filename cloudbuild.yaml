@@ -32,7 +32,6 @@ options:
   - CODEDX_SERVICE=codedx
   - DOJO_NAMESPACE=defectdojo
   - DOJO_SERVICE=defectdojo
-  - SDARQ_SERVICE_ACCOUNT=sdarq-sa
   - REGION=us-east1
   - ZONE_1=us-east1-b
   - ZONE_2=us-east1-c

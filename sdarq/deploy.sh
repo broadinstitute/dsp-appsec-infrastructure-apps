@@ -25,6 +25,7 @@ export CIS_JOB_TOPIC="cis-scans"
 export ZAP_JOB_TOPIC="zap-scans"
 export SC_FIRESTORE_COLLECTION="security-controls"
 export CIS_FIRESTORE_COLLECTION="cis-scans"
+export SDARQ_SERVICE_ACCOUNT="${NAMESPACE}-sa"
 
 export FRONTEND_PORT="frontend"
 export BACKEND_PORT="backend"
