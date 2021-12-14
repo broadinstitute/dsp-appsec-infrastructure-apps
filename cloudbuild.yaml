@@ -10,10 +10,7 @@ options:
   env:
   - PROJECT_ID=${PROJECT_ID}
   - BATCH_DISPATCHER_IMAGE=us.gcr.io/${PROJECT_ID}/batch-dispatcher:${SHORT_SHA}
-  - BASTION_IMAGE=us.gcr.io/${PROJECT_ID}/bastion
-  - BASTION_PORT=1080
   - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis
-  - SOURCECLEAR_IMAGE=us.gcr.io/${PROJECT_ID}/sourceclear
   - ZAP_IMAGE=us.gcr.io/${PROJECT_ID}/zap:${SHORT_SHA}
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
   - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
@@ -46,18 +43,6 @@ steps:
 - id: kaniko
   name: &kaniko gcr.io/kaniko-project/executor:v1.6.0-debug
   entrypoint: 'true'
-
-# build bastion proxy Docker image
-- id: bastion-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/bastion
-      --destination=$${BASTION_IMAGE}
-      --cache
 
 # build Batch dispatcher image
 - id: batch-dispatcher-image
@@ -246,14 +231,6 @@ steps:
   entrypoint: ./deploy.sh
   dir: sdarq
 
-# deploy SecExplorer to GKE cluster
-- id: secexplorer
-  name: *kubectl
-  waitFor: ['shared', 'cartography-image']
-  entrypoint: ./deploy.sh
-  dir: secexplorer
-  env:
-  - GCP_SERVICE_ACCOUNT_EMAIL=${_ORG_VIEWER_SA_EMAIL}
 
 # deploy Zap to GKE cluster
 - id: zap
