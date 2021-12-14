@@ -10,6 +10,8 @@ options:
   env:
   - PROJECT_ID=${PROJECT_ID}
   - BATCH_DISPATCHER_IMAGE=us.gcr.io/${PROJECT_ID}/batch-dispatcher:${SHORT_SHA}
+  - BASTION_IMAGE=us.gcr.io/${PROJECT_ID}/bastion
+  - BASTION_PORT=1080
   - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis
   - ZAP_IMAGE=us.gcr.io/${PROJECT_ID}/zap:${SHORT_SHA}
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
@@ -18,7 +20,6 @@ options:
   - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx
   - SDARQ_FRONTEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-frontend:${SHORT_SHA}
   - SDARQ_BACKEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-backend:${SHORT_SHA}
-  - CARTOGRAPHY_IMAGE=us.gcr.io/${PROJECT_ID}/cartography
   - DNS_DOMAIN=${_DNS_DOMAIN}
   - DNS_ZONE=${_DNS_ZONE}
   - TERRAFORM_BUCKET=${PROJECT_ID}-terraform
@@ -44,6 +45,18 @@ steps:
   name: &kaniko gcr.io/kaniko-project/executor:v1.6.0-debug
   entrypoint: 'true'
 
+# build bastion proxy Docker image
+- id: bastion-image
+  name: *kaniko
+  waitFor: ['kaniko']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/bastion
+      --destination=$${BASTION_IMAGE}
+      --cache
+
 # build Batch dispatcher image
 - id: batch-dispatcher-image
   name: *kaniko
@@ -54,18 +67,6 @@ steps:
   - executor
       --context=dir:///workspace/batch
       --destination=$${BATCH_DISPATCHER_IMAGE}
-      --cache
-
-# build Cartography Docker image
-- id: cartography-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/secexplorer
-      --destination=$${CARTOGRAPHY_IMAGE}
       --cache
 
 # build CIS Docker image
@@ -230,7 +231,6 @@ steps:
   waitFor: ['shared', 'sdarq-backend-image', 'sdarq-frontend-image']
   entrypoint: ./deploy.sh
   dir: sdarq
-
 
 # deploy Zap to GKE cluster
 - id: zap
