@@ -16,7 +16,6 @@ jobs:
         - dir: batch
         - dir: bastion
         - dir: cis
-        - dir: secexplorer
         - dir: sdarq/frontend
         - dockerfile: sdarq/backend/Dockerfile
         - dir: zap
