@@ -5,7 +5,7 @@ metadata:
   namespace: ${NAMESPACE}
 spec:
   rule:
-  - action: deny
+  - action: deny(403)
     priority: 10
     match:
       expr:
