@@ -5,8 +5,13 @@ metadata:
   namespace: ${NAMESPACE}
 spec:
   rule:
+  - action: deny
+    priority: 10
+    match:
+      expr:
+        expression: "evaluatePreconfiguredExpr('cve-canary', ['owasp-crs-v030001-id244228-cve'])"
   - action: allow
-    priority: 1
+    priority: 20
     match:
       versionedExpr: SRC_IPS_V1
       config:
@@ -22,7 +27,7 @@ spec:
         - 69.173.127.228/32
         - 69.173.126.0/24
   - action: allow
-    priority: 2
+    priority: 30
     match:
       versionedExpr: SRC_IPS_V1
       config:
