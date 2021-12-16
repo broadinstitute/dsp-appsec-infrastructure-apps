@@ -67,9 +67,7 @@ def slacknotify(appsec_slack_channel, dojo_name, security_champion, product_id, 
                                 "url": "{0}/product/{1}" .format(dojo_host_url, str(product_id))
                             }
                         ]
-            }], "color": "#0731b0",
-        "footer": "AppSec-Team",
-        "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png"}]
+            }], "color": "#0731b0",}]
     )
 
 
@@ -138,9 +136,7 @@ def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product
                     }
                 ]
             }
-        ], "color": "#0731b0",
-        "footer": "AppSec-Team",
-        "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png"}]
+        ], "color": "#0731b0"}]
     )
 
 
@@ -199,9 +195,7 @@ def slacknotify_threat_model(appsec_slack_channel, security_champion, request_ty
                     }
                 ]
             }
-        ], "color": "#0731b0",
-        "footer": "AppSec-Team",
-        "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png"}]
+        ], "color": "#0731b0"}]
     )
 
 def slacknotify_security_pentest(appsec_slack_channel, security_champion, project_name, jira_instance, jira_ticket_appsec, appsec_jira_board):
@@ -223,7 +217,6 @@ def slacknotify_security_pentest(appsec_slack_channel, security_champion, projec
     response = client.chat_postMessage(
         channel=appsec_slack_channel,
         text="There is a request for security pentest",
-        
         attachments=[{"blocks":[
             {
                 "type": "section",
@@ -259,8 +252,6 @@ def slacknotify_security_pentest(appsec_slack_channel, security_champion, projec
                     }
                 ]
             }
-        ], "color": "#0731b0",
-        "footer": "AppSec-Team",
-        "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png"}]
+        ], "color": "#0731b0"}]
     )
 
