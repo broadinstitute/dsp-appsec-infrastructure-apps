@@ -52,7 +52,7 @@
             "elements": [{
                 "type": "radiogroup",
                 "name": "Compliance",
-                "title": "Is an SIA needed? In order to determine this please select what's applicable. My application:",
+                "title": "Is an SIA (Security Impact Analysis) needed? In order to determine this please select what's applicable. My application:",
                 "choices": [{
                         "value": "Uses a Global Load Balancer that doesn’t already exist",
                         "text": " Uses a Global Load Balancer that doesn’t already exist "
@@ -66,16 +66,16 @@
                         "text": " Is a new GAE application that doesn’t use Firewall Rules to limit the applications that can talk to it "
                     },
                     {
-                        "value": "Not behind our “Orchestration” layer or API Gateway",
-                        "text": " Is not behind our “Orchestration” layer or API Gateway "
+                        "value": "Not behind an API Gateway",
+                        "text": " Is not behind an API Gateway "
                     },
                     {
-                        "value": "Does not require government oversight (is not part of Terra)",
-                        "text": "Does not require government oversight (is not part of Terra)"
+                        "value": "Does not require government oversight",
+                        "text": "Does not require government oversight"
                     },
                     {
                         "value": "Uses a new cloud component (GCP) that hasn’t been used before by our microservices",
-                        "text": " Uses a new cloud component (Google service) that hasn’t been used before by our microservices. How can you tell if your component is new? See the Service-Oriented Architecture section of the FireCloud Design Specification. If the service you are introducing does NOT rely in what's already in the list please select this checkbox and update the Doc by adding your service"
+                        "text": "Uses a new cloud component (GCP service) that hasn’t been used before by our microservices."
                     }
                 ]
             }],
@@ -89,7 +89,7 @@
                     "title": "Your service must be based on one of the following",
                     "choices": [{
                             "value": "GAE",
-                            "text": " Based in GAE (Google App Engine) "
+                            "text": "Based in GAE (Google App Engine) "
                         },
                         {
                             "value": "GCF",
@@ -156,11 +156,11 @@
                         },
                         {
                             "value": "Git-secrets",
-                            "text": "We are currently using git-secrets in our repo "
+                            "text": "We are currently using git-secrets in our repository"
                         },
                         {
                             "value": "Vault-SecretManager",
-                            "text": "We are currently using Vault/Secret Manager to store our secrets "
+                            "text": "We are currently using Vault/Secret Manager to store our secrets"
                         },
                         {
                             "value": "Sentry",
@@ -169,6 +169,10 @@
                         {
                             "value": "Codacy",
                             "text": "We are currently using Codacy for security static code analysis"
+                        },
+                        {
+                            "value": "Trivy",
+                            "text": "We are currently using tools to scan our Docker images"
                         }
                     ]
                 },
@@ -371,11 +375,11 @@
                     },
                     {
                         "value": "Config files are templatized ",
-                        "text": " Our Deployment config files are templatized "
+                        "text": "Our Deployment config files are templatized "
                     },
                     {
                         "value": "Scripted solution for CI and CD",
-                        "text": " We have a scripted solution for CI and CD"
+                        "text": "We have a scripted solution for CI and CD"
                     }
                 ]
             }],
@@ -441,7 +445,13 @@
                     "type": "html",
                     "name": "Alert-Sourceclear",
                     "visibleIf": "{Security tools} notcontains \"Sourceclear\"",
-                    "html": "<div class=\"highs\">You must use\n            <a href=\"https://broadinstitute-dsp.sourceclear.io/login\">SourceClear</a> for downstream dependency/3rd\n            party component management. Ask DSP AppSec to add your repo.</div>"
+                    "html": "<div class=\"highs\">You must use SourceClear for downstream dependency/3rd\n            party component management. Ask AppSec team to add your repo.</div>"
+                },
+                {
+                    "type": "html",
+                    "name": "Alert-Trivy",
+                    "visibleIf": "{Security tools} notcontains \"Trivy\"",
+                    "html": "<div class=\"highs\">You must use security tools to scan your Docker images. Ask AppSec team to help you setup this tools.</div>"
                 },
                 {
                     "type": "html",
