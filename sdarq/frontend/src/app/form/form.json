@@ -173,6 +173,10 @@
                         {
                             "value": "Trivy",
                             "text": "We are currently using tools to scan our Docker images"
+                        },
+                        {
+                            "value": "ZAP",
+                            "text": "Our service is currently scanned weekly/monthly via ZAP or similar tools"
                         }
                     ]
                 },
@@ -451,7 +455,13 @@
                     "type": "html",
                     "name": "Alert-Trivy",
                     "visibleIf": "{Security tools} notcontains \"Trivy\"",
-                    "html": "<div class=\"highs\">You must use security tools to scan your Docker images. Ask AppSec team to help you setup this tools.</div>"
+                    "html": "<div class=\"highs\">You must use security tools to scan your Docker images. Ask AppSec team to help you setup this tool.</div>"
+                },
+                {
+                    "type": "html",
+                    "name": "Alert-ZAP",
+                    "visibleIf": "{Security tools} notcontains \"ZAP\"",
+                    "html": "<div class=\"highs\">Your service must be scanned weekly/mothly via SAST tools. Ask AppSec team to help you setup this tool.</div>"
                 },
                 {
                     "type": "html",
@@ -745,8 +755,16 @@
                             "text": "Please reach out to AppSec team for initial security discussion. This is basically a Threat Modeling and Security Architecture Review session. The main purpose of the meeting is for us to take  an iterative, recursive look at the architecture and design of a new service/system."
                         },
                         {
-                            "value": "You must use SourceClear for downstream dependency/3rd  party component management. Ask DSP AppSec to add your repo.",
+                            "value": "You must use SourceClear for downstream dependency/3rd  party component management. Ask AppSec team to add your repo.",
                             "visibleIf": "{Security tools} notcontains \"Sourceclear\""
+                        },
+                        {
+                            "value": "You must use security tools to scan your Docker images. Ask AppSec team to help you setup this tool.",
+                            "visibleIf": "{Security tools} notcontains \"Trivy\""
+                        },
+                        {
+                            "value": "Your service must be scanned weekly/mothly via SAST tools. Ask AppSec team to help you setup this tool.",
+                            "visibleIf": "{Security tools} notcontains \"ZAP\""
                         },
                         {
                             "value": "You should only store secrets in Vault/Secret Manager.",
