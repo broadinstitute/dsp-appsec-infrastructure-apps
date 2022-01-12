@@ -500,7 +500,7 @@
         "type": "html",
         "name": "Alert-vault",
         "visibleIf": "{Security tools} notcontains 'Vault-SecretManager'",
-        "html": "<div class=\"highs\">You should only store secrets in\n            <a href=\"https://www.vaultproject.io/\">Vault</a> or <a href=\"https://cloud.google.com/secret-manager\">Google Secret Manager</a>. Get started\n            <a href=\"https://broadinstitute.atlassian.net/wiki/spaces/DO/pages/113874856/Vault\">here</a> to set up Vault.</div>  "
+        "html": "<div class=\"highs\">You should only store secrets in\n            <a href=\"https://www.vaultproject.io/\">Vault</a> , <a href=\"https://cloud.google.com/secret-manager\">Google Secret Manager</a> or similar tools. </div>  "
        },
        {
         "type": "html",
@@ -512,7 +512,7 @@
         "type": "html",
         "name": "Alert-codacy",
         "visibleIf": "{Security tools} notcontains \"Codacy\"",
-        "html": "<div class=\"highs\">You should use\n            <a href=\"https://www.codacy.com/\">Codacy</a> for security static code analysis.\n            Reach out to #dsp-infosec-champions to add your repo.\n</div>"
+        "html": "<div class=\"highs\">You should use\n            <a href=\"https://www.codacy.com/\">Codacy</a> or similar tools for security static code analysis.\n  Reach out to Appsec team to set it up for your repository.\n</div>"
        },
        {
         "type": "html",
@@ -590,7 +590,7 @@
         "type": "html",
         "name": "Alert-filesWithoutSecrets",
         "visibleIf": "{Deployment} notcontains \"Config files do NOT contain any secrets \"",
-        "html": "<div class=\"medium\">You need to ensure that your config files contain no secrets. Additionally please review <a href=\"https://security-kb.dsp-techops.broadinstitute.org/\">Security KB</a> on how to avoid leaking secrets to build logs.</div>"
+        "html": "<div class=\"medium\">You need to ensure that your config files contain no secrets. Additionally please review <a href=\"https://dsp-security.broadinstitute.org/platform-security-categories/managing-secrets\">DSP Security</a> on how to avoid leaking secrets to build logs.</div>"
        },
        {
         "type": "html",
@@ -664,15 +664,15 @@
           "visibleIf": "{Security tools} notcontains \"ZAP\""
          },
          {
-          "value": "You should only store secrets in Vault/Secret Manager.",
+          "value": "You should only store secrets in Vault, Secret Manager or similar tools.",
           "visibleIf": "{Security tools} notcontains 'Vault-SecretManager'"
          },
          {
-          "value": "You should setup Sentry. Reach out to #dsp-devops to get started.",
+          "value": "You should setup Sentry. Reach out to AppSec team to get started.",
           "visibleIf": "{Security tools} notcontains \"Sentry\""
          },
          {
-          "value": "You should use Codacy for security static code analysis. Reach out to #dsp-infosec-champions to add your repo.",
+          "value": "You should use Codacy or smilar tools for security static code analysis. Ask AppSec team to help you setup this tool.",
           "visibleIf": "{Security tools} notcontains \"Codacy\""
          },
          {
@@ -717,7 +717,7 @@
           "visibleIf": "{Post-launch monitoring} = \"Weak\" or {Post-launch monitoring} = \"Nonexistent\""
          },
          {
-          "value": "You need to ensure that your config files contain no secrets. Additionally please review Security KB on how to avoid leaking secrets to build logs.",
+          "value": "You need to ensure that your config files contain no secrets. Additionally please review DSP Security (https://dsp-security.broadinstitute.org/platform-security-categories/managing-secrets ) on how to avoid leaking secrets to build logs.",
           "visibleIf": "{Deployment} notcontains \"Config files do NOT contain any secrets \""
          },
          {
