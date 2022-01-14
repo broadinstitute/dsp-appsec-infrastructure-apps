@@ -241,8 +241,8 @@
         "title": "Check what's applicable",
         "choices": [
          {
-          "value": "Certificate for a non-*.dsde-.broadinstitute.org URL",
-          "text": "I need a certificate for a non-*.dsde-.broadinstitute.org URL "
+          "value": "Certificate for a URL",
+          "text": "I need a certificate for a URL "
          },
          {
           "value": "Using persistent storage",
@@ -559,8 +559,8 @@
        {
         "type": "html",
         "name": "Alert-certificate",
-        "visibleIf": "{Applicable} contains \"Certificate for a non-*.dsde-.broadinstitute.org URL\"",
-        "html": "<div class=\"medium\">Reach out to DevOps team about certificates for non-*.dsde-.broadinstitute.org URL\n</div>"
+        "visibleIf": "{Applicable} contains \"Certificate for a URL\"",
+        "html": "<div class=\"medium\">Reach out to DevOps team about certificates for a URL\n</div>"
        },
        {
         "type": "html",
@@ -680,8 +680,8 @@
           "visibleIf": "{Stack protection} empty or {Runtime protection in your stack} = 'No'"
          },
          {
-          "value": "Reach out to DevOps team about certificates for non-*.dsde-.broadinstitute.org URL.",
-          "visibleIf": "{Applicable} contains \"Certificate for a non-*.dsde-.broadinstitute.org URL\""
+          "value": "Reach out to DevOps team about certificates for a URL.",
+          "visibleIf": "{Applicable} contains \"Certificate for a URL\""
          },
          {
           "value": "Reach out to DevOps team about persistence about Encryption and Backup options for your persistence storage.",
