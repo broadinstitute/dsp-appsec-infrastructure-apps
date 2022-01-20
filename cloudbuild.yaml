@@ -13,7 +13,6 @@ options:
   - BASTION_IMAGE=us.gcr.io/${PROJECT_ID}/bastion
   - BASTION_PORT=1080
   - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis
-  - SOURCECLEAR_IMAGE=us.gcr.io/${PROJECT_ID}/sourceclear
   - ZAP_IMAGE=us.gcr.io/${PROJECT_ID}/zap:${SHORT_SHA}
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
   - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
@@ -21,7 +20,6 @@ options:
   - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx
   - SDARQ_FRONTEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-frontend:${SHORT_SHA}
   - SDARQ_BACKEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-backend:${SHORT_SHA}
-  - CARTOGRAPHY_IMAGE=us.gcr.io/${PROJECT_ID}/cartography
   - DNS_DOMAIN=${_DNS_DOMAIN}
   - DNS_ZONE=${_DNS_ZONE}
   - TERRAFORM_BUCKET=${PROJECT_ID}-terraform
@@ -71,18 +69,6 @@ steps:
       --destination=$${BATCH_DISPATCHER_IMAGE}
       --cache
 
-# build Cartography Docker image
-- id: cartography-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/secexplorer
-      --destination=$${CARTOGRAPHY_IMAGE}
-      --cache
-
 # build CIS Docker image
 - id: cis-image
   name: *kaniko
@@ -108,7 +94,6 @@ steps:
       --cache
 
 # build patched DefectDojo Django image,
-# using Kaniko to speed up builds
 - id: defectdojo-django-image
   name: *kaniko
   waitFor: ['kaniko']
@@ -159,6 +144,7 @@ steps:
       --destination=$${SDARQ_BACKEND_IMAGE}
       --cache
 
+# build ZAP Docker image
 - id: zap-image
   name: *kaniko
   waitFor: ['kaniko']
@@ -245,15 +231,6 @@ steps:
   waitFor: ['shared', 'sdarq-backend-image', 'sdarq-frontend-image']
   entrypoint: ./deploy.sh
   dir: sdarq
-
-# deploy SecExplorer to GKE cluster
-- id: secexplorer
-  name: *kubectl
-  waitFor: ['shared', 'cartography-image']
-  entrypoint: ./deploy.sh
-  dir: secexplorer
-  env:
-  - GCP_SERVICE_ACCOUNT_EMAIL=${_ORG_VIEWER_SA_EMAIL}
 
 # deploy Zap to GKE cluster
 - id: zap

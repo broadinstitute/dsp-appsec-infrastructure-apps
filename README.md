@@ -4,9 +4,11 @@ This repository hosts dsp-appsec internal infrastructure. These apps are deploye
 
 ### Apps
 
+- [Sdarq](sdarq)
 - [DefectDojo](defectdojo)
 - [CodeDx](codedx)
-- [Sdarq](sdarq)
+- [CIS Scanner](cis)
+- [Automated ZAP Scanner](zap)
 
 
 ### Deployment
