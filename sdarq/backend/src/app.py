@@ -574,7 +574,7 @@ def request_manual_pentest():
 @cross_origin(origins=sdarq_host)
 def notifyAppSecJTRA():
     """
-    Calculates the risk based on the data and notifies AppSec team for review
+    Calculates the risk based on the user data and notifies AppSec team for the review
     Args:
         JSON data supplied by user
     """
@@ -595,7 +595,6 @@ def notifyAppSecJTRA():
         slacknotify.slacknotify_jira_ticket_risk_assessment(appsec_slack_channel, jira_ticket_link, user_email)
     else:
         logging.info("User %s submitted a MEDIUM/LOW Risk Jira Ticket %s", user_email, jira_ticket_link)
-
     return ''
 
 
