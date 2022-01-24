@@ -5,6 +5,7 @@ Runs ZAP scan, uploads results to Code Dx and GCS, and alerts Slack.
 
 import logging
 import os
+import traceback
 from datetime import datetime
 from enum import Enum
 from os import getenv
@@ -356,10 +357,10 @@ def main(): # pylint: disable=too-many-locals
             zap = zap_connect(zap_port)
             zap.core.shutdown()
         except Exception as error: # pylint: disable=broad-except
-            error_message = f"[RETRY-{ attempt }] Exception running Zap Scans: { error }"
+            error_message = f"[RETRY-{ attempt }] Exception running Zap Scans: { error }, exception { traceback.format_exception(error)}"
             logging.warning(error_message)
             if attempt == max_retries - 1:
-                error_message = f"Error running Zap Scans for { codedx_project }. Last known error: { error }"
+                error_message = f"Error running Zap Scans for { codedx_project }. Last known error: { error }.  exception  { traceback.format_exception(error)}"
                 error_slack_alert(error_message, slack_token, slack_channel)
                 try:
                     zap = zap_connect(zap_port)
