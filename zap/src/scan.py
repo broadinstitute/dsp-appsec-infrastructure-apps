@@ -306,7 +306,7 @@ def main(): # pylint: disable=too-many-locals
             logging.info("Severities: %s", ", ".join(
                 s.value for s in severities))
 
-            zap_filename = zap_compliance_scan(
+            (zap_filename, session_filename) = zap_compliance_scan(
                 codedx_project, zap_port, target_url, scan_type)
 
             # upload its results in defectDojo
@@ -320,6 +320,11 @@ def main(): # pylint: disable=too-many-locals
                     bucket_name,
                     scan_type,
                     zap_filename,
+                )
+                session_file_url = upload_gcs(
+                    bucket_name,
+                    scan_type,
+                    session_filename,
                 )
 
             if codedx_api_key == '""':
