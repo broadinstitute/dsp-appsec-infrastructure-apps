@@ -7,12 +7,13 @@ import os
 import shutil
 from enum import Enum
 
+from zapv2 import ZAPv2
 import google.auth
 from google.auth.transport.requests import Request as GoogleAuthRequest
 from zap_common import (wait_for_zap_start, write_report, zap_access_target,
                         zap_active_scan, zap_ajax_spider, zap_spider,
                         zap_wait_for_passive_scan)
-from zapv2 import ZAPv2
+
 
 TIMEOUT_MINS = 5
 
@@ -117,12 +118,12 @@ def zap_save_session(zap: ZAPv2, project: str, scan_type: ScanType):
     Save and zip zap session.
     """
     os.mkdir(os.getcwd()+"/session")
-    sessionFolder = os.getcwd()+"/session/"
-    sessionFileName = f"{project}_{scan_type}-session"
-    sessionFileName = sessionFileName.replace("-", "_").replace(" ", "")
-    zap.core.save_session(sessionFolder+sessionFileName)
-    shutil.make_archive(sessionFileName, 'zip' , sessionFolder)
-    return sessionFileName + ".zip"
+    session_folder = os.getcwd()+"/session/"
+    session_filename = f"{project}_{scan_type}-session"
+    session_filename = session_filename.replace("-", "_").replace(" ", "")
+    zap.core.save_session(session_folder+session_filename)
+    shutil.make_archive(session_filename, 'zip' , session_folder)
+    return session_filename + ".zip"
 
 
 def zap_compliance_scan(
