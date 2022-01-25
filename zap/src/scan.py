@@ -226,8 +226,7 @@ def slack_alert_with_report(  # pylint: disable=too-many-arguments
     else:
         logging.warning("No findings for alert to Slack")
         return
-    logging.info("Alert sent to Slack channel: %s", 
-    )
+    logging.info("Alert sent to Slack channel: %s")
 
 
 def slack_alert_without_report(  # pylint: disable=too-many-arguments
@@ -321,7 +320,7 @@ def main(): # pylint: disable=too-many-locals
                     scan_type,
                     zap_filename,
                 )
-                session_file_url = upload_gcs(
+                upload_gcs(
                     bucket_name,
                     scan_type,
                     session_filename,
