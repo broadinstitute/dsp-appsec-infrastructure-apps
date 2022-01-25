@@ -122,6 +122,7 @@ def zap_save_session(zap: ZAPv2, project: str, scan_type: ScanType):
     session_filename = session_filename.replace("-", "_").replace(" ", "")
     zap.core.save_session(session_folder+session_filename)
     shutil.make_archive(os.getcwd()+"/"+session_filename, 'zip' , session_folder)
+    logging.info("checking if session was saved. Zip file is "+str(os.path.getsize())+" bytes")
     return session_filename + ".zip"
 
 
