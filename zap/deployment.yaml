@@ -22,7 +22,7 @@ data:
           image: owasp/zap2docker-weekly
           volumeMounts:
             - name: shared-data
-              mountPath: /usr/share
+              mountPath: /tmp/share
           command: ['zap.sh']
           args: [
             '-daemon',
@@ -39,7 +39,7 @@ data:
           image: ${ZAP_IMAGE}
           volumeMounts:
             - name: shared-data
-              mountPath: /usr/share
+              mountPath: /tmp/share
           imagePullPolicy: Always
           args: ['scan']
           env:
