@@ -11,12 +11,18 @@ data:
         serviceAccountName: ${JOB_SERVICE_ACCOUNT}
         runtimeClassName: gvisor
         restartPolicy: Never
+        volumes:
+        - name: shared-data
+          emptyDir: {}
         nodeSelector:
           cloud.google.com/gke-nodepool: batch
 
         containers:
         - name: zap
           image: owasp/zap2docker-weekly
+          volumeMounts:
+            - name: shared-data
+              mountPath: /usr/share
           command: ['zap.sh']
           args: [
             '-daemon',
@@ -31,6 +37,9 @@ data:
 
         - name: zap-scan
           image: ${ZAP_IMAGE}
+          volumeMounts:
+            - name: shared-data
+              mountPath: /usr/share
           imagePullPolicy: Always
           args: ['scan']
           env:
