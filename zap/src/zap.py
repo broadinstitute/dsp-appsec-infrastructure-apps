@@ -116,13 +116,18 @@ def zap_save_session(zap: ZAPv2, project: str, scan_type: ScanType):
     """
     Save and zip zap session.
     """
-    os.mkdir(os.getcwd()+"/session")
-    session_folder = os.getcwd()+"/session/"
+    share_path = "/tmp/share/"
+    share_path_sess = "/tmp/share/session"
+    if os.path.isdir(share_path_sess):
+        os.rmdir(share_path_sess)
+    os.mkdir(share_path_sess)
+    session_folder = share_path_sess + "/"
     session_filename = f"{project}_{scan_type}-session"
     session_filename = session_filename.replace("-", "_").replace(" ", "")
+    #zap scanner container saves session to shared volume
     zap.core.save_session(session_folder+session_filename)
-    shutil.make_archive(os.getcwd()+"/"+session_filename, 'zip' , session_folder)
-    logging.info("checking if session was saved. Zip file is "+str(os.path.getsize())+" bytes")
+    #scan controller uses same shared volume to zip session and return the filename
+    shutil.make_archive(share_path+"/"+session_filename, 'zip' , session_folder)
     return session_filename + ".zip"
 
 
