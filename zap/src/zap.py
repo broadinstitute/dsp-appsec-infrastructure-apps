@@ -127,8 +127,8 @@ def zap_save_session(zap: ZAPv2, project: str, scan_type: ScanType):
     #zap scanner container saves session to shared volume
     zap.core.save_session(session_folder+session_filename)
     #scan controller uses same shared volume to zip session and return the filename
-    shutil.make_archive(share_path+"/"+session_filename, 'zip' , session_folder)
-    return session_filename + ".zip"
+    shutil.make_archive(share_path+session_filename, 'zip' , session_folder)
+    return share_path + session_filename + ".zip"
 
 
 def zap_compliance_scan(
