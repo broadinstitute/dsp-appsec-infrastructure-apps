@@ -196,11 +196,6 @@ steps:
   entrypoint: ./global.sh
   dir: shared
 
-# deploy Burp Enterprise to GKE cluster
-- id: burp-enterprise
-  name: *kubectl
-  entrypoint: ./deploy.sh
-  dir: burp-enterprise
 
 # deploy CIS scanner resources
 - id: cis
