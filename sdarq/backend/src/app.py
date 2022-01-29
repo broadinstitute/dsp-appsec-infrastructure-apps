@@ -578,8 +578,7 @@ def notifyAppSecJTRA():
     Args:
         JSON data supplied by user
     """
-    user_data = request.get_json()
-    jira_ticket_link = user_data['jira_ticket_link']
+    user_data = request.get_json()    
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if user_data['high_level'] == 'add_SA' \
@@ -590,10 +589,13 @@ def notifyAppSecJTRA():
         or user_data['high_level'] == 'change_product_ui' and user_data['product_ui_question_change'] in ['change_ui_url_inputs', 'change_ui_load_active_content', 'change_ui_change_dom'] \
         or user_data['high_level'] == 'change_product_api' and user_data['main_product'] in ['item1', 'item2', 'item4'] \
         or user_data['high_level'] == 'change_infrastructure' and user_data['infrastructure_gcp'] in ['infrastructure_q1', 'infrastructure_q2', 'infrastructure_q3'] and user_data['if_access_control_change_playbook'] == 'item3':
-        logging.info("User %s submitted a HIGH Risk JIRA Ticket %s",  user_email, jira_ticket_link)
-        slacknotify.slacknotify_jira_ticket_risk_assessment(appsec_slack_channel, jira_ticket_link, user_email)
+        logging.info("User %s submitted a HIGH Risk JIRA Ticket", user_email)
+        if user_data['jira_ticket_link']:
+            slacknotify.slacknotify_jira_ticket_risk_assessment(appsec_slack_channel, user_data['jira_ticket_link'], user_email)
+        else:
+            slacknotify.slacknotify_jira_ticket_risk_assessment(appsec_slack_channel, user_data['context'], user_email)
     else:
-        logging.info("User %s submitted a MEDIUM/LOW Risk Jira Ticket %s", user_email, jira_ticket_link)
+        logging.info("User %s submitted a MEDIUM/LOW Risk Jira Ticket", user_email)
     return ''
 
 
