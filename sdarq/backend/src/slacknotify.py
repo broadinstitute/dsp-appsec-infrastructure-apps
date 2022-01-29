@@ -262,8 +262,8 @@ def slacknotify_jira_ticket_risk_assessment(appsec_slack_channel, ticket_context
     """
     client.chat_postMessage(
         channel=appsec_slack_channel,
-        text="There is a request for security pentest",
-        blocks=[
+        text="Jira ticket review",
+        attachments=[{"blocks":[
             {
                 "type": "section",
                 "text": {
@@ -275,15 +275,15 @@ def slacknotify_jira_ticket_risk_assessment(appsec_slack_channel, ticket_context
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Jita ticket link/context:* `{0}` " .format(str(ticket_context))
+                    "text": "*Ticket link/context:* `{0}` " .format(str(ticket_context))
                 }
             },
             {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Dev:* {0} " .format(str(user_email))
+                    "text": "*Dev:* `{0}` " .format(str(user_email))
                 }
             }
-        ]
+        ], "color": "#bd3022"}]
     )
