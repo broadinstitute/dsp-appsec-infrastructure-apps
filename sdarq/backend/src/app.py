@@ -590,7 +590,7 @@ def notifyAppSecJTRA():
         or user_data['high_level'] == 'change_product_api' and user_data['main_product'] in ['item1', 'item2', 'item4'] \
         or user_data['high_level'] == 'change_infrastructure' and user_data['infrastructure_gcp'] in ['infrastructure_q1', 'infrastructure_q2', 'infrastructure_q3'] and user_data['if_access_control_change_playbook'] == 'item3':
         logging.info("User %s submitted a HIGH Risk JIRA Ticket", user_email)
-        if user_data['jira_ticket_link']:
+        if 'jira_ticket_link' in user_data:
             slacknotify.slacknotify_jira_ticket_risk_assessment(appsec_slack_channel, user_data['jira_ticket_link'], user_email)
         else:
             slacknotify.slacknotify_jira_ticket_risk_assessment(appsec_slack_channel, user_data['context'], user_email)
