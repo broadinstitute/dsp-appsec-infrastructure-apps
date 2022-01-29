@@ -209,7 +209,6 @@ def slacknotify_security_pentest(appsec_slack_channel, security_champion, projec
     """
     client.chat_postMessage(
         channel=appsec_slack_channel,
-        text="There is a request for security pentest",
         attachments=[{"blocks":[
             {
                 "type": "section",
@@ -262,7 +261,6 @@ def slacknotify_jira_ticket_risk_assessment(appsec_slack_channel, ticket_context
     """
     client.chat_postMessage(
         channel=appsec_slack_channel,
-        text="Jira ticket review",
         attachments=[{"blocks":[
             {
                 "type": "section",

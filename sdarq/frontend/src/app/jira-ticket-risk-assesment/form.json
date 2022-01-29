@@ -38,7 +38,7 @@
         "title": "Please provide some context:",
         "enableIf": "{status} = 'No'",
         "isRequired": true,
-        "maxLength": 500
+        "maxLength": 1000
        },
        {
         "type": "radiogroup",
