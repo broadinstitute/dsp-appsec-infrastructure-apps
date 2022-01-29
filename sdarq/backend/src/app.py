@@ -580,7 +580,6 @@ def notifyAppSecJTRA():
     """
     user_data = request.get_json()
     jira_ticket_link = user_data['jira_ticket_link']
-    print(user_data)
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if user_data['high_level'] == 'add_SA' \
