@@ -20,11 +20,18 @@ export class SecurityControlsListComponent implements OnInit {
   security_pentest: boolean;
   threat_model_results: boolean;
   searchString: any;
+  errorMessage: string;
+  showModalError: boolean;
+  showSearch: boolean;
+  showTable: boolean;
 
 
   constructor(private getSecurityControls: GetSecurityControlsService) { }
 
   ngOnInit() {
+    this.showModalError = false;
+    this.showSearch = true;
+    this.showTable = true;
     this.getResults()
   }
 
@@ -94,6 +101,10 @@ export class SecurityControlsListComponent implements OnInit {
       this.serviceSecurityControl = serviceSecurityControl;
     },
       (serviceSecurityControl) => {
+        this.errorMessage = serviceSecurityControl;
+        this.showModalError = true;
+        this.showSearch = false;
+        this.showTable = false;
       });
   }
 }

@@ -1,5 +1,14 @@
 <div class="jumbotron min-vh-100">
+    <div class="container">
         <div class="row">
+            <div class="col-sm text-center">
+                <div class="alert alert-danger animated fadeInRight" role="alert" *ngIf="showModalError">
+                    <h4 class="alert-heading">Oops!</h4>
+                    <p> {{errorMessage}} </p>
+                    <p class="mb-0">Please contact AppSec team for more information!</p>
+                  </div>
+        </div>
+        <div class="row" *ngIf="showSearch">
             <div class="col animated fadeIn">
             </div>
             <div class="col">
@@ -11,7 +20,7 @@
             </div>
         </div>
         <br>
-            <table class="table table-hover">
+            <table class="table table-hover" *ngIf="showTable">
                 <th *ngFor="let head of headElements">
                     <strong>{{ head }}</strong>
                 </th>
