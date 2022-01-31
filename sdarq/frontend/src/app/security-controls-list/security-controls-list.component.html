@@ -36,18 +36,26 @@
                                 <img src="../assets/defectdojo.png" width="23px"></a></td>
                         <td>
                             <div [innerHTML]="threatmodelShowValue(controls.threat_model)"></div>
+                            <div *ngIf="threat_model_results">
+                                <a href="{{ controls.threat_model_link }}" target="_blank" rel="noreferrer noopener"> <!-- nosemgrep-->
+                                    <i class="fas fa-check-circle green-color fa-2x"></i></a>
+                            </div>
                         </td>
                         <td>
                             <div [innerHTML]="trivyShowValue(controls.docker_scan)"></div>
                         </td>
                         <td>
                             <div [innerHTML]="burpShowValue(controls.burp)"></div>
+                            <div *ngIf="security_pentest">
+                                <a href="{{ controls.security_pentest_link }}" target="_blank" rel="noreferrer noopener"> <!-- nosemgrep-->
+                                    <i class="fas fa-check-circle green-color fa-2x"></i></a>
+                            </div>
                         </td>
                         <td>
                             <div [innerHTML]="zapShowValue(controls.zap)"></div>
                             <div *ngIf="zap_results">
                            <a href="{{ controls.vulnerability_management }}" target="_blank" rel="noreferrer noopener"> <!-- nosemgrep-->
-                                 <img src="../assets/codedx.png" width="27px"></a>
+                            <i class="fas fa-check-circle green-color fa-2x"></i></a>
                                 </div>
                         </td>
                         <td>
