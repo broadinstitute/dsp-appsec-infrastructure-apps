@@ -224,7 +224,7 @@ steps:
 # deploy Ramper to GKE cluster
 - id: ramper
   name: *kubectl
-  waitFor: ['shared', 'ramper-image']
+  waitFor: ['shared']
   entrypoint: ./deploy.sh
   dir: ramper
 
