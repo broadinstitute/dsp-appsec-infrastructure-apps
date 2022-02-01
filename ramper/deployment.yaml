@@ -36,7 +36,7 @@ spec:
           containerPort: 80
         readinessProbe: &readinessProbe
           httpGet:
-            path: /
+            path: /health
             port: ${TARGET_PORT}
           timeoutSeconds: 5
           initialDelaySeconds: 15
