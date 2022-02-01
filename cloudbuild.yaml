@@ -18,6 +18,7 @@ options:
   - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
   - DOCS_IMAGE=us.gcr.io/${PROJECT_ID}/docs:${SHORT_SHA}
   - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx
+  - RAMPER_IMAGE=us.gcr.io/${PROJECT_ID}/ramper:2.3.1
   - SDARQ_FRONTEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-frontend:${SHORT_SHA}
   - SDARQ_BACKEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-backend:${SHORT_SHA}
   - DNS_DOMAIN=${_DNS_DOMAIN}
@@ -219,6 +220,13 @@ steps:
   waitFor: ['shared', 'defectdojo-django-image', 'defectdojo-nginx-image']
   entrypoint: ./deploy.sh
   dir: defectdojo
+
+# deploy Ramper to GKE cluster
+- id: ramper
+  name: *kubectl
+  waitFor: ['shared', 'ramper-image']
+  entrypoint: ./deploy.sh
+  dir: ramper
 
 # deploy SDARQ to GKE cluster
 - id: sdarq

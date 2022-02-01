@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ${STATEFUL_SET}
+  namespace: ${NAMESPACE}
+spec:
+  serviceName: ${SERVICE}
+  selector:
+    matchLabels:
+      service: ${SERVICE}
+  template:
+    metadata:
+      labels:
+        service: ${SERVICE}
+    spec:
+      runtimeClassName: gvisor
+      nodeSelector:
+        cloud.google.com/gke-nodepool: apps
+
+      volumes:
+      - name: ${SERVICE_VOLUME}
+        persistentVolumeClaim:
+          claimName: ${SERVICE_VOLUME}
+
+      containers:
+      - name: ramper
+        image: ${RAMPER_IMAGE}
+        imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+            name: ${SERVICE_CONFIG}
+        - secretRef:
+            name: ${SERVICE_SECRET}
+        ports:
+        - name: ${TARGET_PORT}
+          containerPort: 80
+        readinessProbe: &readinessProbe
+          httpGet:
+            path: /
+            port: ${TARGET_PORT}
+          timeoutSeconds: 5
+          initialDelaySeconds: 15
+        livenessProbe: *readinessProbe
+
+      - name: ramper-db
+        image: mysql
+        imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+            name: ${SERVICE_CONFIG}
+        - secretRef:
+            name: ${SERVICE_SECRET}
+        volumeMounts:
+        - name: ${SERVICE_VOLUME}
+          mountPath: /var/lib/mysql
+          subPath: db
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${SERVICE_CONFIG}
+  namespace: ${NAMESPACE}
+data:
+  MYSQL_HOST: localhost
+  MYSQL_DATABASE: rampercore
+  MYSQL_USER: ramper
