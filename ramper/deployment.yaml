@@ -31,6 +31,10 @@ spec:
             name: ${SERVICE_CONFIG}
         - secretRef:
             name: ${SERVICE_SECRET}
+        volumeMounts:
+        - name: ${SERVICE_VOLUME}
+          mountPath: /usr/share/ramper
+          subPath: app
         ports:
         - name: ${TARGET_PORT}
           containerPort: 80
