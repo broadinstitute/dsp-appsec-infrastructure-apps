@@ -30,9 +30,7 @@ spec:
         - configMapRef:
             name: ${SERVICE_CONFIG}
         - secretRef:
-            name: ${DB_SECRET}
-        - secretRef:
-            name: ${EMAIL_SECRET}
+            name: ${SERVICE_SECRET}
         ports:
         - name: ${TARGET_PORT}
           containerPort: 80
@@ -51,7 +49,7 @@ spec:
         - configMapRef:
             name: ${SERVICE_CONFIG}
         - secretRef:
-            name: ${DB_SECRET}
+            name: ${SERVICE_SECRET}
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /var/lib/mysql

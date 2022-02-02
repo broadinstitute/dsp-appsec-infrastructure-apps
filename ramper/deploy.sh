@@ -17,11 +17,10 @@ export NAMESPACE="ramper"
 # Generate secrets
 
 export SERVICE="${NAMESPACE}"
+export SERVICE_SECRET="${SERVICE}"
 export SERVICE_CONFIG="${SERVICE}"
-export DB_SECRET="${SERVICE}"
-export EMAIL_SECRET="${SERVICE}-email"
 
-./gen-secret.sh "${DB_SECRET}" \
+./gen-secret.sh "${SERVICE_SECRET}" \
   MYSQL_ROOT_PASSWORD 32 \
   MYSQL_PASSWORD 32 \
 

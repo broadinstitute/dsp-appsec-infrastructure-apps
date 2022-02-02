@@ -4,12 +4,12 @@
     "DatabaseContext": "Server=${MYSQL_HOST};Database=${MYSQL_DATABASE};Uid=${MYSQL_USER};Pwd=${MYSQL_PASSWORD};"
   },
   "EmailSender": {
-    "Host": "${EMAIL_HOST}",
-    "Port": ${EMAIL_PORT},
-    "Username": "${EMAIL_USERNAME}",
-    "Password": "${EMAIL_PASSWORD}",
-    "FromName": "${EMAIL_NAME}",
-    "FromAddress": "${EMAIL_ADDRESS}",
+    "Host": "",
+    "Port": 25,
+    "Username": "",
+    "Password": "",
+    "FromName": "",
+    "FromAddress": "",
     "SkipCertificateValidation": false
   },
   "Logging": {
