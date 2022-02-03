@@ -16,12 +16,22 @@ export class SecurityControlsListComponent implements OnInit {
 
   sourceclear_results: boolean;
   zap_results: boolean;
-  searchString: any;
   dev_link: boolean;
+  security_pentest: boolean;
+  threat_model_results: boolean;
+  searchString: any;
+  errorMessage: string;
+  showModalError: boolean;
+  showSearch: boolean;
+  showTable: boolean;
+
 
   constructor(private getSecurityControls: GetSecurityControlsService) { }
 
   ngOnInit() {
+    this.showModalError = false;
+    this.showSearch = true;
+    this.showTable = true;
     this.getResults()
   }
 
@@ -35,16 +45,18 @@ export class SecurityControlsListComponent implements OnInit {
 
   burpShowValue(burp) {
     if (burp === true) {
-      return '<i class="fas fa-check-circle green-color fa-2x"></i>'
+      this.security_pentest = true;
     } else {
+      this.security_pentest = false;
       return '<i class="fas fa-times-circle red-color fa-2x"></i>'
     }
   }
 
   threatmodelShowValue(threat_model) {
     if (threat_model === true) {
-      return '<i class="fas fa-check-circle green-color fa-2x"></i>'
+      this.threat_model_results = true;
     } else {
+      this.threat_model_results = false;
       return '<i class="fas fa-times-circle red-color fa-2x"></i>'
     }
   }
@@ -89,6 +101,10 @@ export class SecurityControlsListComponent implements OnInit {
       this.serviceSecurityControl = serviceSecurityControl;
     },
       (serviceSecurityControl) => {
+        this.errorMessage = serviceSecurityControl;
+        this.showModalError = true;
+        this.showSearch = false;
+        this.showTable = false;
       });
   }
 }
