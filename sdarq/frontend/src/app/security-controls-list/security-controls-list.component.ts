@@ -37,7 +37,7 @@ export class SecurityControlsListComponent implements OnInit {
 
   trivyShowValue(docker_scan) {
     if (docker_scan === true) {
-      return '<i class="fas fa-check-circle green-color fa-2x" ></i>'
+      return '<i class="fas fa-check-circle light-green-color fa-2x" ></i>'
     } else {
       return '<i class="fas fa-times-circle red-color fa-2x"></i>'
     }
@@ -72,7 +72,7 @@ export class SecurityControlsListComponent implements OnInit {
 
   cisscannerShowValue(cis_scanner) {
     if (cis_scanner === true) {
-      return '<i class="fas fa-check-circle green-color fa-2x"></i>'
+      return '<i class="fas fa-check-circle light-green-color fa-2x"></i>'
     } else {
       return '<i class="fas fa-times-circle red-color fa-2x"></i>'
     }
