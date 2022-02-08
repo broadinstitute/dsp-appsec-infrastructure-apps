@@ -18,7 +18,7 @@ options:
   - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
   - DOCS_IMAGE=us.gcr.io/${PROJECT_ID}/docs:${SHORT_SHA}
   - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx
-  - RAMPER_IMAGE=us.gcr.io/${PROJECT_ID}/ramper:2.3.1
+  - RAMPER_IMAGE=us.gcr.io/${PROJECT_ID}/ramper:2.3.2
   - SDARQ_FRONTEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-frontend:${SHORT_SHA}
   - SDARQ_BACKEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-backend:${SHORT_SHA}
   - DNS_DOMAIN=${_DNS_DOMAIN}
