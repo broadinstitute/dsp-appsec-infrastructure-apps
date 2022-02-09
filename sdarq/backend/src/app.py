@@ -25,6 +25,7 @@ from urllib.parse import urlparse
 
 import requests
 from flask import Response, request
+from flask_talisman import Talisman
 from flask_api import FlaskAPI
 from flask_cors import cross_origin
 from google.cloud import bigquery, firestore, pubsub_v1
@@ -63,6 +64,7 @@ logging.basicConfig(level=logging.INFO)
 
 # Flask App
 app = FlaskAPI(__name__)
+Talisman(app)
 
 # Instantiate the Jira backend wrapper
 global jira
@@ -74,14 +76,6 @@ client = bigquery.Client()
 
 # Firestore Client
 db = firestore.Client()
-
-@app.after_request
-@app.before_request
-def add_header(response):
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-    response.headers['X-Frame-Options'] = 'deny'
-    response.headers['X-XSS-Protection'] = '1; mode=block'
-    return response
 
 
 @app.route('/health/', methods=['GET'])
