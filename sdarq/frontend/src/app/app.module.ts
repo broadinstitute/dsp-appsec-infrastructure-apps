@@ -11,7 +11,6 @@ import { MainpageComponent } from './mainpage/mainpage.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { CisComponent } from './cis/cis.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { ScanpageComponent } from './scanpage/scanpage.component';
 import { FooterComponent } from './footer/footer.component';
 import { CisResultsComponent } from './cis-results/cis-results.component';
 import { CisScanComponent } from './cis-scan/cis-scan.component';
@@ -51,7 +50,6 @@ import { AppRoutingModule } from './app-routing.module';
     HomepageComponent,
     CisComponent,
     NavbarComponent,
-    ScanpageComponent,
     FooterComponent,
     CisResultsComponent,
     CisScanComponent,
