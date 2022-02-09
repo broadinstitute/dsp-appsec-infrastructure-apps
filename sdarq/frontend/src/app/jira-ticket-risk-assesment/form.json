@@ -72,7 +72,7 @@
         "name": "infrastructure_gcp",
         "visible": false,
         "visibleIf": "{high_level} = 'change_infrastructure'",
-        "title": "You selected this change is about Infrastructure/GCP. Please select all that apply: ",
+        "title": "You selected this change is about Infrastructure/GCP. Please what applies: ",
         "choices": [
          {
           "value": "Access control change that involves granting privileged or public access to an entity.",
@@ -98,7 +98,7 @@
         "name": "main_product",
         "visible": false,
         "visibleIf": "{high_level} = 'change_product_api'",
-        "title": "You selected this change is about Product-API. Please select all that apply: ",
+        "title": "You selected this change is about Product-API. Please what applies: ",
         "isRequired": true,
         "choices": [
          {
@@ -124,7 +124,7 @@
         "name": "product_ui_question_change",
         "visible": false,
         "visibleIf": "{high_level} = 'change_product_ui'",
-        "title": "You selected this change is about Product  - UI. Please select all that apply:",
+        "title": "You selected this change is about Product  - UI. Please select what applies:",
         "isRequired": true,
         "choices": [
          {
@@ -197,7 +197,7 @@
         "type": "radiogroup",
         "name": "integrity",
         "visible": false,
-        "visibleIf": "{product_features_other} = ['None/other'] and {confidentiality} = 'No' and {product_features_other} = 'None/other'",
+        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'No'",
         "title": "Integrity: Suppose an attacker would be able to find a vulnerability that is introduced as part of this change, and successfully exploit it.  Integrity is about protecting data from being modified by an unauthorized party. Would the exploitation of a potential vulnerability in this component lead to loss of Integrity?",
         "isRequired": true,
         "choices": [
@@ -242,7 +242,6 @@
         "visible": false,
         "visibleIf": "{infrastructure_gcp} anyof ['Access control change that involves granting privileged or public access to an entity.', 'Changing an existing firewall rule or adding a new one', 'Changing logging configs'] and {high_level} = 'change_infrastructure'",
         "title": "I have followed one of our standard playbooks to make this change or this change is similar to a previous change that went through a security review",
-        "requiredErrorText": "test",
         "choices": [
          {
           "value": "Yes",
@@ -299,7 +298,7 @@
         "type": "html",
         "name": "risk_low_infrastructure_only",
         "visible": false,
-        "visibleIf": "{high_level} = 'change_infrastructure' and {if_access_control_change_playbook} = 'Yes'",
+        "visibleIf": "{high_level} = 'change_infrastructure' and {infrastructure_gcp} anyof ['Access control change that involves granting privileged or public access to an entity.', 'Changing an existing firewall rule or adding a new one', 'Changing logging configs'] and {if_access_control_change_playbook} = 'Yes'",
         "html": "<div class=\"alert alert-info\">\nRisk: <b>LOW</b>\n<hr>\n</div>\n\n"
        },
        {
