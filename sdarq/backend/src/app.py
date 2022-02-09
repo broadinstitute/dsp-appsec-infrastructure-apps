@@ -27,6 +27,7 @@ import requests
 from flask import Response, request
 from flask_api import FlaskAPI
 from flask_cors import cross_origin
+from flask_talisman import Talisman
 from google.cloud import bigquery, firestore, pubsub_v1
 from jira import JIRA
 from trigger import parse_tags
@@ -63,6 +64,7 @@ logging.basicConfig(level=logging.INFO)
 
 # Flask App
 app = FlaskAPI(__name__)
+Talisman(app)
 
 # Instantiate the Jira backend wrapper
 global jira

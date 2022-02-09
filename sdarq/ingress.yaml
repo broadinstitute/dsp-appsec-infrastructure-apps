@@ -106,11 +106,6 @@ metadata:
   name: ${BACKEND_CONFIG}
   namespace: ${NAMESPACE}
 spec:
-  customRequestHeaders:
-    headers:
-    - "X-Content-Type-Options:nosniff"
-    - "X-Frame-Option:deny"
-    - "X-XSS-Protection:1; mode=block"
   timeoutSec: 300
   connectionDraining:
     drainingTimeoutSec: 600
