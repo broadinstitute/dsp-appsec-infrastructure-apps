@@ -76,6 +76,7 @@ client = bigquery.Client()
 db = firestore.Client()
 
 @app.after_request
+@app.before_request
 def add_header(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['X-Frame-Options'] = 'deny'
