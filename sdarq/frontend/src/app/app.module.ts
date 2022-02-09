@@ -24,6 +24,8 @@ import { SecurityControlsFormComponent } from './security-controls-form/security
 import { SecurityControlsListComponent } from './security-controls-list/security-controls-list.component';
 import { EditSecurityControlsFormComponent } from './edit-security-controls-form/edit-security-controls-form.component';
 import { SecurityPentestComponent } from './security-pentest/security-pentest.component';
+import { SecurityRequestsComponent } from './security-requests/security-requests.component';
+import { SecurityControlsComponent } from './security-controls/security-controls.component';
 import { GetSecurityControlsService } from './services/get-all-security-controls/get-security-controls.service';
 import { CreateNewSctService } from './services/create-new-security-controls/create-new-sct.service';
 import { ScanServiceService } from './services/scan-service/scan-service.service';
@@ -64,7 +66,9 @@ import { AppRoutingModule } from './app-routing.module';
     SecurityControlsFormComponent,
     SecurityControlsListComponent,
     EditSecurityControlsFormComponent,
-    SecurityPentestComponent
+    SecurityPentestComponent,
+    SecurityRequestsComponent,
+    SecurityControlsComponent
     ],
   imports: [
     BrowserModule,
