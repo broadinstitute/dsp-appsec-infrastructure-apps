@@ -582,18 +582,20 @@ def notifyAppSecJTRA():
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if user_data['high_level'] == 'add_SA' \
-        or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'item5' and user_data['product_features_other'] == 'item1' and user_data['confidentiality'] == 'item1' \
-        or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'item5' and user_data['product_features_other'] == 'item1' and user_data['confidentiality'] == 'item3' \
-        or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'item5' and user_data['product_features_other'] == 'item1' and user_data['confidentiality'] == 'item2' and user_data['integrity'] == 'item1' \
-        or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'item5' and user_data['product_features_other'] == 'item1' and user_data['confidentiality'] == 'item2' and user_data['integrity'] == 'item3' \
+        or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'Other' and user_data['product_features_other'] == 'None/other' and user_data['confidentiality'] == 'Yes' \
+        or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'Other' and user_data['product_features_other'] == 'None/other' and user_data['confidentiality'] == 'Not sure' \
+        or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'Other' and user_data['product_features_other'] == 'None/other' and user_data['confidentiality'] == 'No' and user_data['integrity'] == 'Yes' \
+        or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'Other' and user_data['product_features_other'] == 'None/other' and user_data['confidentiality'] == 'No' and user_data['integrity'] == 'Not sure' \
+        or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'Other' and user_data['product_features_other'] == 'None/other' and user_data['confidentiality'] == 'No' and user_data['integrity'] == 'No' and user_data['availability'] == 'Yes' \
+        or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'Other' and user_data['product_features_other'] == 'None/other' and user_data['confidentiality'] == 'No' and user_data['integrity'] == 'No' and user_data['availability'] == 'Not sure' \
         or user_data['high_level'] == 'change_product_ui' and user_data['product_ui_question_change'] in ['change_ui_url_inputs', 'change_ui_load_active_content', 'change_ui_change_dom'] \
-        or user_data['high_level'] == 'change_product_api' and user_data['main_product'] in ['item1', 'item2', 'item4'] \
-        or user_data['high_level'] == 'change_infrastructure' and user_data['infrastructure_gcp'] in ['infrastructure_q1', 'infrastructure_q2', 'infrastructure_q3'] and user_data['if_access_control_change_playbook'] == 'item3':
+        or user_data['high_level'] == 'change_product_api' and user_data['main_product'] in ['Changing or adding an API endpoint that processes XML files from user input', 'Introducing/changing a file upload feature', 'Making use of Cryptography'] \
+        or user_data['high_level'] == 'change_infrastructure' and user_data['infrastructure_gcp'] in ['Access control change that involves granting privileged or public access to an entity.', 'Changing an existing firewall rule or adding a new one', 'Changing logging configs'] and user_data['if_access_control_change_playbook'] == 'Not sure':
         logging.info("User %s submitted a HIGH Risk JIRA Ticket", user_email)
         if 'jira_ticket_link' in user_data:
-            slacknotify.slacknotify_jira_ticket_risk_assessment(appsec_slack_channel, user_data['jira_ticket_link'], user_email)
+            slacknotify.slacknotify_jira_ticket_risk_assessment(appsec_slack_channel, user_data['jira_ticket_link'], user_email, user_data)
         else:
-            slacknotify.slacknotify_jira_ticket_risk_assessment(appsec_slack_channel, user_data['context'], user_email)
+            slacknotify.slacknotify_jira_ticket_risk_assessment(appsec_slack_channel, user_data['context'], user_email, user_data)
     else:
         logging.info("User %s submitted a MEDIUM/LOW Risk Jira Ticket", user_email)
     return ''
