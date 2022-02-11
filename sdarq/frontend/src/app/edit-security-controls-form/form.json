@@ -1,4 +1,5 @@
-{ "completedHtml": "<p><h3>Thank you for editing!</h3></p>",
+{
+    "completedHtml": "<p><h3>Thank you for editing!</h3></p>",
     "pages": [
      {
       "name": "Security Controls Template",
@@ -12,15 +13,15 @@
        },
        {
         "type": "text",
-        "name": "github",
-        "title": "Github link",
+        "name": "security_champion",
+        "title": "Security Champion",
         "hideNumber": true,
         "isRequired": true
        },
        {
         "type": "text",
-        "name": "security_champion",
-        "title": "Security Champion",
+        "name": "github",
+        "title": "Github link",
         "hideNumber": true,
         "isRequired": true
        },
@@ -46,6 +47,15 @@
         "isRequired": true
        },
        {
+        "type": "text",
+        "name": "threat_model_link",
+        "hideNumber": true,
+        "visibleIf": "{threat_model} = true",
+        "title": "Enter threat model documentation link",
+        "enableIf": "{threat_model} = true",
+        "isRequired": true
+       },
+       {
         "type": "boolean",
         "name": "zap",
         "title": "Service scan ( via Zap or similar tool)",
@@ -55,6 +65,7 @@
        {
         "type": "text",
         "name": "vulnerability_management",
+        "hideNumber": true,
         "visibleIf": "{zap} = true",
         "title": "Vulnerability management results link",
         "enableIf": "{zap} = true",
@@ -73,9 +84,9 @@
         "name": "sourceclear_link",
         "visibleIf": "{sourceclear} = true",
         "title": "Enter downstream dependency result link",
+        "hideNumber": true,
         "enableIf": "{sourceclear} = true",
         "isRequired": true,
-        "hideNumber": true,
         "requiredIf": "{sourceclear} = true"
        },
        {
@@ -97,6 +108,15 @@
         "name": "burp",
         "title": "Have you performed any manual security pentest (via Burp or similar tool)",
         "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "text",
+        "name": "security_pentest_link",
+        "hideNumber": true,
+        "visibleIf": "{burp} = true",
+        "title": "Enter security pentest results link",
+        "enableIf": "{burp} = true",
         "isRequired": true
        }
       ],
