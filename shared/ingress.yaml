@@ -36,11 +36,6 @@ metadata:
   name: ${BACKEND_CONFIG}
   namespace: ${NAMESPACE}
 spec:
-  customResponseHeaders:
-    headers:
-    - "X-Content-Type-Options:nosniff"
-    - "X-Frame-Option:deny"
-    - "X-XSS-Protection:1; mode=block"
   securityPolicy:
     name: ${BROAD_INGRESS_CSP}
   iap:
