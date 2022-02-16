@@ -42,7 +42,7 @@ export class CisScanComponent implements OnInit {
       });
     } else {
       this.sendProject.sendCisProject(result).subscribe((data: any) => {
-        location.href = location.origin + '/cis/results?project_id=' + result.project_id;
+        location.href = location.origin + '/gcp-project-security-posture/results?project_id=' + result.project_id;
       },
       (data) => {
         this.showModal = false;
