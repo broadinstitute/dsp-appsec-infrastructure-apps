@@ -80,6 +80,7 @@ def add_header(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['X-Frame-Options'] = 'deny'
     response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Content-Security-Policy']='default-src \'self\''
     return response
 
 @app.route('/health/', methods=['GET'])
