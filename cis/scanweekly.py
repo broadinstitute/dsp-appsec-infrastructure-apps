@@ -69,7 +69,7 @@ def scan_projects(
     futures = []
     for table in tables:
         gcp_project_id = table.table_id.replace("_", "-")
-        results_url = f"{sdarq_host}/cis/results?project_id={gcp_project_id}"
+        results_url = f"{sdarq_host}/gcp-project-security-posture/results?project_id={gcp_project_id}"
         # When a message is published, the client returns a future.
 
         future = publisher.publish(
