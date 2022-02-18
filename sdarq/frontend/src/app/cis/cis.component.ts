@@ -18,6 +18,6 @@ export class CisComponent implements OnInit {
   ngOnInit() { }
 
   sendData(result) {
-    location.href = location.origin + '/cis/results?project_id=' + result.project_id;
+    location.href = location.origin + '/gcp-project-security-posture/results?project_id=' + result.project_id;
   }
 }

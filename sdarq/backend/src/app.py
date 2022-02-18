@@ -75,6 +75,13 @@ client = bigquery.Client()
 # Firestore Client
 db = firestore.Client()
 
+@app.after_request
+def add_header(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'deny'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Content-Security-Policy']='default-src \'self\''
+    return response
 
 @app.route('/health/', methods=['GET'])
 def health():
@@ -251,7 +258,7 @@ def cis_scan():
     user_project_id = json_data['project_id']
     pattern = "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
     message = ""
-    results_url = f"{sdarq_host}/cis/results?project_id={user_project_id}"
+    results_url = f"{sdarq_host}/gcp-project-security-posture/results?project_id={user_project_id}"
     message = message.encode("utf-8")
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
