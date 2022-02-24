@@ -121,6 +121,7 @@ def zap_save_session(zap: ZAPv2, project: str, scan_type: ScanType):
     if os.path.isdir(share_path_sess):
         os.rmdir(share_path_sess)
     os.mkdir(share_path_sess)
+    os.mkdir(share_path_sess,0o777)
     session_folder = share_path_sess + "/"
     session_filename = f"{project}_{scan_type}-session"
     session_filename = session_filename.replace("-", "_").replace(" ", "")
