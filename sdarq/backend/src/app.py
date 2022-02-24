@@ -120,62 +120,65 @@ def submit():
     appsec_jira_ticket_description = github_url + '\n' + architecture_diagram
     appsec_jira_ticket_summury = 'Threat Model request ' + dojo_name
 
-    jira.create_issue(project=appsec_jira_project_key,
-                      summary=appsec_jira_ticket_summury,
-                      description=str(
-                          appsec_jira_ticket_description),
-                      issuetype={'name': 'Task'})
-    logging.info("Jira ticket in appsec board created")
+    try:
+        jira.create_issue(project=appsec_jira_project_key,
+                        summary=appsec_jira_ticket_summury,
+                        description=str(
+                            appsec_jira_ticket_description),
+                        issuetype={'name': 'Task'})
+        logging.info("Jira ticket in appsec board created")
 
-    # Create a Jira ticket if user chooses a Jira project
-    if 'JiraProject' in json_data:
-        project_key_id = json_data['JiraProject']
-        jira_description = json.dumps(
-            json_data['Ticket_Description']).strip('[]')
+        # Create a Jira ticket if user chooses a Jira project
+        if 'JiraProject' in json_data:
+            project_key_id = json_data['JiraProject']
+            jira_description = json.dumps(
+                json_data['Ticket_Description']).strip('[]')
 
-        formatted_jira_description = jira_description.strip(
-            '", "').replace('", "', '\n-')
+            formatted_jira_description = jira_description.strip(
+                '", "').replace('", "', '\n-')
 
-        jira_ticket = jira.create_issue(project=project_key_id,
-                                        summary='New security requirements issue',
-                                        description=str(
-                                            formatted_jira_description),
-                                        issuetype={'name': 'Task'})
-        logging.info("Jira ticket in %s board created by %s", project_key_id, user_email)
+            jira_ticket = jira.create_issue(project=project_key_id,
+                                            summary='New service security requirements',
+                                            description=str(
+                                                formatted_jira_description),
+                                            issuetype={'name': 'Task'})
+            logging.info("Jira ticket in %s board created by %s", project_key_id, user_email)
 
-        # Delete Ticket_Description from json
-        del json_data['Ticket_Description']
+            # Delete Ticket_Description from json
+            del json_data['Ticket_Description']
 
-        # Create DefectDojo product
-        data = {'name': dojo_name, 'description': parse_json_data.prepare_dojo_input(
-            json_data), 'prod_type': product_type}
-        res = requests.post(products_endpoint,
-                            headers=headers, data=json.dumps(data))
-        res.raise_for_status()
-        product_id = res.json()['id']
+            # Create DefectDojo product
+            data = {'name': dojo_name, 'description': parse_json_data.prepare_dojo_input(
+                json_data), 'prod_type': product_type}
+            res = requests.post(products_endpoint,
+                                headers=headers, data=json.dumps(data))
+            res.raise_for_status()
+            product_id = res.json()['id']
 
-        logging.info("Product created: %s by %s request", dojo_name, user_email)
+            logging.info("Product created: %s by %s request", dojo_name, user_email)
 
-        # Set Slack notification
-        slacknotify.slacknotify_jira(appsec_slack_channel, dojo_name, security_champion,
-                                     product_id, dojo_host_url, jira_instance,
-                                     project_key_id, jira_ticket)
-    else:
-        # Create DefectDojo product
-        data = {'name': dojo_name, 'description': parse_json_data.prepare_dojo_input(
-            json_data), 'prod_type': product_type}
-        res = requests.post(products_endpoint,
-                            headers=headers, data=json.dumps(data))
-        res.raise_for_status()
-        product_id = res.json()['id']
+            # Set Slack notification
+            slacknotify.slacknotify_jira(appsec_slack_channel, dojo_name, security_champion,
+                                        product_id, dojo_host_url, jira_instance,
+                                        project_key_id, jira_ticket)
+        else:
+            # Create DefectDojo product
+            data = {'name': dojo_name, 'description': parse_json_data.prepare_dojo_input(
+                json_data), 'prod_type': product_type}
+            res = requests.post(products_endpoint,
+                                headers=headers, data=json.dumps(data))
+            res.raise_for_status()
+            product_id = res.json()['id']
 
-        logging.info("Product created: %s by %s request", dojo_name, user_email)
+            logging.info("Product created: %s by %s request", dojo_name, user_email)
 
-        # When Jira ticket creation is not selected
-        slacknotify.slacknotify(
-            appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url)
-
-    return ''
+            # When Jira ticket creation is not selected
+            slacknotify.slacknotify(
+                appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url)
+        return ''
+    except Exception as error:
+            status_code = 404
+            return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
 
 
 @app.route('/cis_results/', methods=['POST'])
@@ -263,51 +266,62 @@ def cis_scan():
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if re.match(pattern, user_project_id):
-        publisher = pubsub_v1.PublisherClient()
-        topic_path = publisher.topic_path(pubsub_project_id, cis_topic_name)
-        user_proj = user_project_id.replace('-', '_')
-        logging.info(
-            "Request by %s to assess security posture for project %s ", user_email, user_proj)
-        db.collection(firestore_collection).document(user_proj)
-        if 'slack_channel' in json_data:
-            slack_channel = f"#{json_data['slack_channel']}"
-            publisher.publish(topic_path,
-                              data=message,
-                              GCP_PROJECT_ID=user_project_id,
-                              SLACK_CHANNEL=slack_channel,
-                              SLACK_RESULTS_URL=results_url,
-                              FIRESTORE_COLLECTION=firestore_collection)
-        else:
-            publisher.publish(topic_path,
-                              data=message,
-                              GCP_PROJECT_ID=user_project_id,
-                              FIRESTORE_COLLECTION=firestore_collection)
+        try:
+            publisher = pubsub_v1.PublisherClient()
+            topic_path = publisher.topic_path(pubsub_project_id, cis_topic_name)
+            user_proj = user_project_id.replace('-', '_')
+            logging.info(
+                "Request by %s to assess security posture for project %s ", user_email, user_proj)
+            db.collection(firestore_collection).document(user_proj)
+            if 'slack_channel' in json_data:
+                slack_channel = f"#{json_data['slack_channel']}"
+                publisher.publish(topic_path,
+                                data=message,
+                                GCP_PROJECT_ID=user_project_id,
+                                SLACK_CHANNEL=slack_channel,
+                                SLACK_RESULTS_URL=results_url,
+                                FIRESTORE_COLLECTION=firestore_collection)
+            else:
+                publisher.publish(topic_path,
+                                data=message,
+                                GCP_PROJECT_ID=user_project_id,
+                                FIRESTORE_COLLECTION=firestore_collection)
 
-    callback_done = threading.Event()
+            callback_done = threading.Event()
 
-    def on_snapshot(doc_snapshots: List[firestore.DocumentSnapshot], _changes, _read_time):
-        for doc in doc_snapshots:
-            if doc.exists:
-                callback_done.set()
-                return
+            def on_snapshot(doc_snapshots: List[firestore.DocumentSnapshot], _changes, _read_time):
+                for doc in doc_snapshots:
+                    if doc.exists:
+                        callback_done.set()
+                        return
 
-    user_proj = user_project_id.replace('-', '_')
-    doc_ref = db.collection(firestore_collection).document(user_proj)
-    doc_ref.delete()
-    doc_watch = doc_ref.on_snapshot(on_snapshot)
-    callback_done.wait(timeout=3600)
-    doc_watch.unsubscribe()
-    doc = doc_ref.get()
+            user_proj = user_project_id.replace('-', '_')
+            doc_ref = db.collection(firestore_collection).document(user_proj)
+            doc_ref.delete()
+            doc_watch = doc_ref.on_snapshot(on_snapshot)
+            callback_done.wait(timeout=3600)
+            doc_watch.unsubscribe()
+            doc = doc_ref.get()
 
-    check_dict = doc.to_dict()
-    if check_dict:
-        status_code = 404
-        text_message = check_dict['Error']
-        doc_ref.delete()
-        return Response(json.dumps({'statusText': text_message}), status=status_code, mimetype='application/json')
+            check_dict = doc.to_dict()
+            if check_dict:
+                status_code = 404
+                text_message = check_dict['Error']
+                doc_ref.delete()
+                return Response(json.dumps({'statusText': text_message}), status=status_code, mimetype='application/json')
+            else:
+                doc_ref.delete()
+            return ''
+        except Exception as error:
+            status_code = 404
+            return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
     else:
-        doc_ref.delete()
-        return ''
+        message = """
+        Your GCP project_id is not valid
+        """
+        status_code = 404
+        return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
+
 
 
 @app.route('/request_tm/', methods=['POST'])
@@ -330,23 +344,27 @@ def request_tm():
                                     '\n' + user_data['Document'] + \
                                     '\n' + user_data['Github']
 
-    logging.info("Threat model request for %s by %s", project_name, user_email)
+    try:
+        logging.info("Threat model request for %s by %s", project_name, user_email)
 
-    jira_ticket_appsec = jira.create_issue(project=appsec_jira_project_key,
-                                           summary=appsec_jira_ticket_summury,
-                                           description=str(
-                                               appsec_jira_ticket_description),
-                                           issuetype={'name': 'Task'})
-    logging.info(
-        "Jira ticket created in appsec board for %s threat model", project_name)
+        jira_ticket_appsec = jira.create_issue(project=appsec_jira_project_key,
+                                            summary=appsec_jira_ticket_summury,
+                                            description=str(
+                                                appsec_jira_ticket_description),
+                                            issuetype={'name': 'Task'})
+        logging.info(
+            "Jira ticket created in appsec board for %s threat model", project_name)
 
-    slacknotify.slacknotify_threat_model(appsec_slack_channel,
-                                         security_champion,
-                                         request_type, project_name,
-                                         jira_instance,
-                                         jira_ticket_appsec,
-                                         appsec_jira_project_key)
-    return ''
+        slacknotify.slacknotify_threat_model(appsec_slack_channel,
+                                            security_champion,
+                                            request_type, project_name,
+                                            jira_instance,
+                                            jira_ticket_appsec,
+                                            appsec_jira_project_key)
+        return ''
+    except Exception as error:
+        status_code = 404
+        return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
 
 
 @app.route('/zap_scan/', methods=['POST'])
@@ -376,28 +394,31 @@ def zap_scan():
 
     if not re.match(r'^(http|https)://', user_supplied_url):
         user_supplied_url = 'https://' + user_supplied_url
-
-    parsed_user_url = urlparse(user_supplied_url)
-    for endpoint in endpoints:
-        if endpoint['host'] == parsed_user_url.netloc and (endpoint['path'] or '/').rstrip('/') == parsed_user_url.path.rstrip('/'):
-            service_codex_project, default_slack_channel, service_scan_type, engagement_id = parse_tags(
-                endpoint)
-            if endpoint['path'] is None:
-                service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}"
-            else:
-                service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}/{endpoint['path']}"
-            severities = parse_json_data.parse_severities(
-                json_data['severities'])
-            publisher.publish(zap_topic_path,
-                              data=message,
-                              URL=service_full_endpoint,
-                              CODEDX_PROJECT=service_codex_project,
-                              SCAN_TYPE=service_scan_type.name,
-                              SEVERITIES=severities,
-                              SLACK_CHANNEL=dev_slack_channel,
-                              ENGAGEMENT_ID=engagement_id)
-            logging.info("User %s requested to scan via ZAP %s service", user_email, service_full_endpoint)
-            return ''
+        try:
+            parsed_user_url = urlparse(user_supplied_url)
+            for endpoint in endpoints:
+                if endpoint['host'] == parsed_user_url.netloc and (endpoint['path'] or '/').rstrip('/') == parsed_user_url.path.rstrip('/'):
+                    service_codex_project, default_slack_channel, service_scan_type, engagement_id = parse_tags(
+                        endpoint)
+                    if endpoint['path'] is None:
+                        service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}"
+                    else:
+                        service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}/{endpoint['path']}"
+                    severities = parse_json_data.parse_severities(
+                        json_data['severities'])
+                    publisher.publish(zap_topic_path,
+                                    data=message,
+                                    URL=service_full_endpoint,
+                                    CODEDX_PROJECT=service_codex_project,
+                                    SCAN_TYPE=service_scan_type.name,
+                                    SEVERITIES=severities,
+                                    SLACK_CHANNEL=dev_slack_channel,
+                                    ENGAGEMENT_ID=engagement_id)
+                    logging.info("User %s requested to scan via ZAP %s service", user_email, service_full_endpoint)
+                    return ''
+        except Exception as error:
+            status_code = 404
+            return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
     else:
         status_code = 404
         text_message = """
@@ -423,18 +444,22 @@ def create_sec_control_template():
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if re.match(pattern, service_name):
-        doc_ref = db.collection(security_controls_firestore_collection).document(service_name.lower())
-        doc = doc_ref.get()
-        if bool(doc.to_dict()) is True:
-            message = """
-            This service already exists, if you want to edit it, go to the edit page.
-            """
-            logging.info("User %s requested to create SCT for a service, but it already exists", user_email)
-            return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
-        else:
-            db.collection(security_controls_firestore_collection).document(service_name.lower()).set(json_data)
-            logging.info("A new security controls template is created by %s", user_email)
-            return ''
+        try:
+            doc_ref = db.collection(security_controls_firestore_collection).document(service_name.lower())
+            doc = doc_ref.get()
+            if bool(doc.to_dict()) is True:
+                message = """
+                This service already exists, if you want to edit it, go to the edit page.
+                """
+                logging.info("User %s requested to create SCT for a service, but it already exists", user_email)
+                return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
+            else:
+                db.collection(security_controls_firestore_collection).document(service_name.lower()).set(json_data)
+                logging.info("A new security controls template is created by %s", user_email)
+                return ''
+        except Exception as error:
+            status_code = 404
+            return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
     else:
         message = """
         Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.
@@ -458,21 +483,25 @@ def edit_sec_controls():
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if re.match(pattern, service_name):
-        doc_ref = db.collection(security_controls_firestore_collection).document(
-            service_name.lower())
-        doc = doc_ref.get()
-        if bool(doc.to_dict()) is True:
-            db.collection(security_controls_firestore_collection).document(
-                service_name.lower()).set(json_data)
-            logging.info(
-                "Security controls for the choosen service have changed by %s !", user_email)
-            return ''
-        else:
-            message = """
-            This service does not exist!
-            """
-            logging.info("User %s requested to edit a service security controls, but this service does not exist!", user_email)
-            return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
+        try:
+            doc_ref = db.collection(security_controls_firestore_collection).document(
+                service_name.lower())
+            doc = doc_ref.get()
+            if bool(doc.to_dict()) is True:
+                db.collection(security_controls_firestore_collection).document(
+                    service_name.lower()).set(json_data)
+                logging.info(
+                    "Security controls for the choosen service have changed by %s !", user_email)
+                return ''
+            else:
+                message = """
+                This service does not exist!
+                """
+                logging.info("User %s requested to edit a service security controls, but this service does not exist!", user_email)
+                return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
+        except Exception as error:
+            status_code = 404
+            return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
     else:
         message = """
         Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.
@@ -491,11 +520,15 @@ def get_sec_controls():
     """
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
     data = []
-    docs = db.collection(security_controls_firestore_collection).stream()
-    logging.info("User %s read security controls for the list of services.", user_email)
-    for doc in docs:
-        data.append(doc.to_dict())
-    return data
+    try:
+        docs = db.collection(security_controls_firestore_collection).stream()
+        logging.info("User %s read security controls for the list of services.", user_email)
+        for doc in docs:
+            data.append(doc.to_dict())
+        return data
+    except Exception as error:
+        status_code = 404
+        return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
 
 
 @app.route('/get_sec_controls_service/', methods=['POST'])
@@ -513,17 +546,21 @@ def get_sec_controls_service():
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if re.match(pattern, service_name, re.IGNORECASE):
-        doc_ref = db.collection(security_controls_firestore_collection).document(
-            service_name.lower())
-        doc = doc_ref.get()
-        if doc.exists:
-            return doc.to_dict()
-        else:
-            message = """
-            This service does not exist! Contact AppSec team for more information!
-            """
-            logging.info("User %s requested to read security controls of a service that does not exist.", user_email)
-            return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
+        try:
+            doc_ref = db.collection(security_controls_firestore_collection).document(
+                service_name.lower())
+            doc = doc_ref.get()
+            if doc.exists:
+                return doc.to_dict()
+            else:
+                message = """
+                This service does not exist! Contact AppSec team for more information!
+                """
+                logging.info("User %s requested to read security controls of a service that does not exist.", user_email)
+                return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
+        except Exception as error:
+            status_code = 404
+            return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
     else:
         message = """
         Please enter a valid value for your service name! Contact AppSec team for more information.
@@ -554,23 +591,25 @@ def request_manual_pentest():
         '\n' + 'Documentation: ' + user_data['document'] + \
         '\n' + 'Security champion: ' + user_data['security_champion']
 
-    logging.info("Security pentest request for  %s by %s", project_name, user_email)
+    try:    
+        jira_ticket_appsec = jira.create_issue(project=appsec_jira_project_key,
+                                            summary=appsec_jira_ticket_summury,
+                                            description=str(
+                                                appsec_jira_ticket_description),
+                                            issuetype={'name': 'Task'})
+        logging.info(
+            "Jira ticket created in appsec board for %s security pentest request by %s", project_name, user_email)
 
-    jira_ticket_appsec = jira.create_issue(project=appsec_jira_project_key,
-                                           summary=appsec_jira_ticket_summury,
-                                           description=str(
-                                               appsec_jira_ticket_description),
-                                           issuetype={'name': 'Task'})
-    logging.info(
-        "Jira ticket created in appsec board for %s security pentest request by %s", project_name, user_email)
-
-    slacknotify.slacknotify_security_pentest(appsec_slack_channel,
-                                             security_champion,
-                                             project_name,
-                                             jira_instance,
-                                             jira_ticket_appsec,
-                                             appsec_jira_project_key)
-    return ''
+        slacknotify.slacknotify_security_pentest(appsec_slack_channel,
+                                                security_champion,
+                                                project_name,
+                                                jira_instance,
+                                                jira_ticket_appsec,
+                                                appsec_jira_project_key)
+        return ''
+    except Exception as error:
+        status_code = 404
+        return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
 
 
 if __name__ == "__main__":
