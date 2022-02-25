@@ -416,17 +416,17 @@ def zap_scan():
                                     ENGAGEMENT_ID=engagement_id)
                     logging.info("User %s requested to scan via ZAP %s service", user_email, service_full_endpoint)
                     return ''
+                else:
+                    status_code = 404
+                    text_message = """
+                    You should NOT run a security pentest against the URL you entered, 
+                    or maybe it doesn't exist in AppSec list. Please contact AppSec team.
+                    """
+                    logging.info("User %s requested to scan via ZAP a service that does not exist in DefectDojo endpoint list", user_email)
+                    return Response(json.dumps({'statusText': text_message}), status=status_code, mimetype='application/json')
         except Exception as error:
             status_code = 404
             return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
-    else:
-        status_code = 404
-        text_message = """
-        You should NOT run a security pentest against the URL you entered, 
-        or maybe it doesn't exist in AppSec list. Please contact AppSec team.
-        """
-        logging.info("User %s requested to scan via ZAP a service that does not exist in DefectDojo endpoint list", user_email)
-        return Response(json.dumps({'statusText': text_message}), status=status_code, mimetype='application/json')
 
 
 @app.route('/create_sec_control_template/', methods=['POST'])
