@@ -193,6 +193,16 @@ spec:
   versioning:
     enabled: true
 ---
+apiVersion: storage.cnrm.cloud.google.com/v1beta1
+kind: StorageBucket
+metadata:
+  name: ${SESSION_BUCKET}
+  namespace: ${NAMESPACE}
+spec:
+  uniformBucketLevelAccess: true
+  versioning:
+    enabled: false
+---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember
 metadata:

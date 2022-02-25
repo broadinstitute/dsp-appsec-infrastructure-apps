@@ -284,6 +284,7 @@ def main(): # pylint: disable=too-many-locals
             scan_type = ScanType[getenv("SCAN_TYPE").upper()]
 
             bucket_name = getenv("BUCKET_NAME")
+            session_bucket = getenv("SESSION_BUCKET")
 
             slack_channel = getenv("SLACK_CHANNEL")
             slack_token = getenv("SLACK_TOKEN")
@@ -321,7 +322,7 @@ def main(): # pylint: disable=too-many-locals
                     zap_filename,
                 )
                 upload_gcs(
-                    bucket_name,
+                    session_bucket,
                     scan_type,
                     session_filename,
                 )

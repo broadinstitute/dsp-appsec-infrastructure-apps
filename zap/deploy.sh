@@ -17,6 +17,7 @@ export CODEDX_URL="http://${CODEDX_SERVICE}.${CODEDX_NAMESPACE}.svc.cluster.loca
 export DEFECT_DOJO_URL="http://${DOJO_SERVICE}.${DOJO_NAMESPACE}.svc.cluster.local"
 export ZAP_PORT='8008'
 export BUCKET_NAME="${PROJECT_ID}-vuln-reports"
+export SESSION_BUCKET="${PROJECT_ID}-zap-sessions"
 
 ./kube-apply.py \
   "namespace.yaml" \
