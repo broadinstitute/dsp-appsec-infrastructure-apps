@@ -22,7 +22,7 @@ data:
           image: owasp/zap2docker-weekly
           volumeMounts:
             - name: shared-data
-              mountPath: /tmp/share
+              mountPath: ${VOLUME_SHARE}
           command: ['zap.sh']
           args: [
             '-daemon',
@@ -39,7 +39,7 @@ data:
           image: ${ZAP_IMAGE}
           volumeMounts:
             - name: shared-data
-              mountPath: /tmp/share
+              mountPath: ${VOLUME_SHARE}
           imagePullPolicy: Always
           args: ['scan']
           env:
@@ -49,6 +49,8 @@ data:
             value: ${BUCKET_NAME}
           - name: SESSION_BUCKET
             value: ${SESSION_BUCKET}
+          - name: VOLUME_SHARE
+            value: ${VOLUME_SHARE}
           - name: ZAP_PORT
             value: '${ZAP_PORT}'
           - name: DEFECT_DOJO_URL
@@ -217,3 +219,16 @@ spec:
     apiVersion: storage.cnrm.cloud.google.com/v1beta1
     kind: StorageBucket
     name: ${BUCKET_NAME}
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: ${SESSION_BUCKET}-policy
+  namespace: ${NAMESPACE}
+spec:
+  member: serviceAccount:${JOB_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
+  role: roles/storage.objectAdmin
+  resourceRef:
+    apiVersion: storage.cnrm.cloud.google.com/v1beta1
+    kind: StorageBucket
+    name: ${SESSION_BUCKET}

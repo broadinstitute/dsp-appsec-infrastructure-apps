@@ -268,7 +268,7 @@ def main(): # pylint: disable=too-many-locals
     - Upload ZAP XML report to GCS, if needed
     - Send a Slack alert with Code Dx report, if needed.
     """
-    max_retries = int(getenv("MAX_RETRIES", '5'))
+    max_retries = int(getenv("MAX_RETRIES", '1'))
 
     for attempt in range(max_retries):
         # run Zap scan
