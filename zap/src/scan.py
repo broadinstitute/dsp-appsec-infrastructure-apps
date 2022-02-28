@@ -226,8 +226,7 @@ def slack_alert_with_report(  # pylint: disable=too-many-arguments
     else:
         logging.warning("No findings for alert to Slack")
         return
-    logging.info("Alert sent to Slack channel: %s", 
-    )
+    logging.info("Alert sent to Slack channel: %s")
 
 
 def slack_alert_without_report(  # pylint: disable=too-many-arguments
@@ -285,6 +284,7 @@ def main(): # pylint: disable=too-many-locals
             scan_type = ScanType[getenv("SCAN_TYPE").upper()]
 
             bucket_name = getenv("BUCKET_NAME")
+            session_bucket = getenv("SESSION_BUCKET")
 
             slack_channel = getenv("SLACK_CHANNEL")
             slack_token = getenv("SLACK_TOKEN")
@@ -306,7 +306,7 @@ def main(): # pylint: disable=too-many-locals
             logging.info("Severities: %s", ", ".join(
                 s.value for s in severities))
 
-            zap_filename = zap_compliance_scan(
+            (zap_filename, session_filename) = zap_compliance_scan(
                 codedx_project, zap_port, target_url, scan_type)
 
             # upload its results in defectDojo
@@ -320,6 +320,11 @@ def main(): # pylint: disable=too-many-locals
                     bucket_name,
                     scan_type,
                     zap_filename,
+                )
+                upload_gcs(
+                    session_bucket,
+                    scan_type,
+                    session_filename,
                 )
 
             if codedx_api_key == '""':

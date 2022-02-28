@@ -3,15 +3,16 @@ Provides high-level methods to interface with ZAP.
 """
 
 import logging
+import os
+import shutil
 from enum import Enum
 
 import google.auth
 from google.auth.transport.requests import Request as GoogleAuthRequest
-from zapv2 import ZAPv2
-
 from zap_common import (wait_for_zap_start, write_report, zap_access_target,
                         zap_active_scan, zap_ajax_spider, zap_spider,
                         zap_wait_for_passive_scan)
+from zapv2 import ZAPv2
 
 TIMEOUT_MINS = 5
 
@@ -111,6 +112,23 @@ def zap_report(zap: ZAPv2, project: str, scan_type: ScanType):
 
     return filename
 
+def zap_save_session(zap: ZAPv2, project: str, scan_type: ScanType):
+    """
+    Save and zip zap session.
+    """
+    share_path = os.getenv("VOLUME_SHARE")
+    share_path_sess = "/tmp/share/session/"
+    session_filename = f"{project}_{scan_type}-session"
+    session_filename = session_filename.replace("-", "_").replace(" ", "")
+    #zap scanner container saves session to shared volume
+    zap.core.save_session(share_path_sess+session_filename)
+    #scan controller uses same shared volume to zip session and return the filename
+    try:
+        shutil.make_archive(session_filename, 'zip' , share_path_sess)
+    except:
+        print("Unable to zip session file.")
+    return session_filename + ".zip"
+
 
 def zap_compliance_scan(
     project: str,
@@ -140,5 +158,6 @@ def zap_compliance_scan(
         zap_active_scan(zap, target_url, None)
 
     filename = zap_report(zap, project, scan_type)
+    sessionFile = zap_save_session(zap, project, scan_type)
 
-    return filename
+    return (filename, sessionFile)
