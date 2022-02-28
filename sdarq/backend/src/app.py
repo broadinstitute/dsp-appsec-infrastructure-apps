@@ -114,13 +114,13 @@ def submit():
     products_endpoint = f"{dojo_host}api/v2/products/"
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
-    # Create a Jira ticket for Threat Model in Appsec team board
     architecture_diagram = json_data['Architecture Diagram']
     github_url = json_data['Github URL']
     appsec_jira_ticket_description = github_url + '\n' + architecture_diagram
     appsec_jira_ticket_summury = 'Threat Model request ' + dojo_name
 
     try:
+        # Create a Jira ticket for Threat Model in Appsec team board
         jira.create_issue(project=appsec_jira_project_key,
                         summary=appsec_jira_ticket_summury,
                         description=str(
@@ -131,6 +131,7 @@ def submit():
         # Create a Jira ticket if user chooses a Jira project
         if 'JiraProject' in json_data:
             project_key_id = json_data['JiraProject']
+            dev_jira_ticket_summury = dojo_name + 'security requirements'
             jira_description = json.dumps(
                 json_data['Ticket_Description']).strip('[]')
 
@@ -138,7 +139,7 @@ def submit():
                 '", "').replace('", "', '\n-')
 
             jira_ticket = jira.create_issue(project=project_key_id,
-                                            summary='New service security requirements',
+                                            summary=dev_jira_ticket_summury,
                                             description=str(
                                                 formatted_jira_description),
                                             issuetype={'name': 'Task'})
@@ -392,9 +393,10 @@ def zap_scan():
     res.raise_for_status()
     endpoints = res.json()["results"]
 
-    if not re.match(r'^(http|https)://', user_supplied_url):
-        user_supplied_url = 'https://' + user_supplied_url
-        try:
+    try:
+        if not re.match(r'^(http|https)://', user_supplied_url):
+            user_supplied_url = 'https://' + user_supplied_url
+
             parsed_user_url = urlparse(user_supplied_url)
             for endpoint in endpoints:
                 if endpoint['host'] == parsed_user_url.netloc and (endpoint['path'] or '/').rstrip('/') == parsed_user_url.path.rstrip('/'):
@@ -424,9 +426,9 @@ def zap_scan():
                     """
                     logging.info("User %s requested to scan via ZAP a service that does not exist in DefectDojo endpoint list", user_email)
                     return Response(json.dumps({'statusText': text_message}), status=status_code, mimetype='application/json')
-        except Exception as error:
-            status_code = 404
-            return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
+    except Exception as error:
+        status_code = 404
+        return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
 
 
 @app.route('/create_sec_control_template/', methods=['POST'])
