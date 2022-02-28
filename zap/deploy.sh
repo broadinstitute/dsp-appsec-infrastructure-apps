@@ -18,6 +18,7 @@ export DEFECT_DOJO_URL="http://${DOJO_SERVICE}.${DOJO_NAMESPACE}.svc.cluster.loc
 export ZAP_PORT='8008'
 export BUCKET_NAME="${PROJECT_ID}-vuln-reports"
 export SESSION_BUCKET="${PROJECT_ID}-zap-sessions"
+export VOLUME_SHARE="/tmp/share"
 
 ./kube-apply.py \
   "namespace.yaml" \
