@@ -386,20 +386,21 @@ def zap_scan():
     endpoint = f"{dojo_host}api/v2/endpoints?limit=1000"
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
-    publisher = pubsub_v1.PublisherClient()
-    zap_topic_path = publisher.topic_path(pubsub_project_id, zap_topic_name)
-
-    res = requests.get(endpoint, headers=headers, timeout=30)
-    res.raise_for_status()
-    endpoints = res.json()["results"]
-
     try:
-        if not re.match(r'^(http|https)://', user_supplied_url):
-            user_supplied_url = 'https://' + user_supplied_url
+            publisher = pubsub_v1.PublisherClient()
+            zap_topic_path = publisher.topic_path(pubsub_project_id, zap_topic_name)
+
+            res = requests.get(endpoint, headers=headers, timeout=30)
+            res.raise_for_status()
+            endpoints = res.json()["results"]
+
+            if not re.match(r'^(http|https)://', user_supplied_url):
+                user_supplied_url = 'https://' + user_supplied_url
+                print(f'user supplied {user_supplied_url}')
 
             parsed_user_url = urlparse(user_supplied_url)
             for endpoint in endpoints:
-                if endpoint['host'] == parsed_user_url.netloc and (endpoint['path'] or '/').rstrip('/') == parsed_user_url.path.rstrip('/'):
+                if endpoint['host'] == parsed_user_url.netloc and endpoint['path'].strip('/') == parsed_user_url.path.strip('/'):
                     service_codex_project, default_slack_channel, service_scan_type, engagement_id = parse_tags(
                         endpoint)
                     if endpoint['path'] is None:
