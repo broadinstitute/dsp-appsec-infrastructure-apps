@@ -389,7 +389,7 @@ def zap_scan():
     message = b""
     user_supplied_url = json_data['URL']
     dev_slack_channel = f"#{json_data['slack_channel']}"
-    endpoint = f"{dojo_host}api/v2/endpoints?limit=1000"
+    endpoint = f"{dojo_host}api/v2/endpoints?tag=scan&limit=1000"
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
     status_code = 404
     text_message = """
