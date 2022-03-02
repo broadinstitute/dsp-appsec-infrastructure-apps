@@ -358,9 +358,12 @@ def request_tm():
                                              jira_ticket_appsec,
                                              appsec_jira_project_key)
         return ''
-    except Exception as error:
+    except Exception:
         status_code = 404
-        return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
+        message = """
+        Server did not respond correctly to your request! 
+        """
+        return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
 
 
 @app.route('/zap_scan/', methods=['POST'])
@@ -565,7 +568,7 @@ def get_sec_controls_service():
                 return doc.to_dict()
             else:
                 message = """
-                This service does not exist! Contact AppSec team for more information!
+                This service does not exist!
                 """
                 logging.info(
                     "User %s requested to read security controls of a service that does not exist.", user_email)
@@ -620,9 +623,12 @@ def request_manual_pentest():
                                                  jira_ticket_appsec,
                                                  appsec_jira_project_key)
         return ''
-    except Exception as error:
+    except Exception:
         status_code = 404
-        return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
+        message = """
+        Server did not respond correctly to your request! 
+        """
+        return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
 
 
 if __name__ == "__main__":
