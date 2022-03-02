@@ -17,7 +17,7 @@ export class CisResultsComponent implements OnInit {
   value: string;
   showModal: boolean;
   showSpinner: boolean;
-  errors: any[];
+  errors: string;
   showTable: boolean;
   filename: string;
   projectId: string;
@@ -42,7 +42,7 @@ export class CisResultsComponent implements OnInit {
   }
 
   private getResults(value) {
-    this.getProjectScan.getCisScan(this.value).subscribe((data: any) => {
+    this.getProjectScan.getCisScan(this.value).subscribe((data) => {
       this.projectFindings = data.findings;
       this.projectId = data.meta.projectId;
       this.updateDate = new Date(data.meta.lastModifiedDatetime);
