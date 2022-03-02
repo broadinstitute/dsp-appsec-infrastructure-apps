@@ -11,7 +11,7 @@ import formJson from './form.json';
 })
 export class FormComponent implements OnInit {
 
-  errors: any;
+  errors: string;
   json = formJson
   arrRequired = {};
   showAlert: boolean;

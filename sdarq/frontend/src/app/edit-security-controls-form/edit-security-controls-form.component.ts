@@ -91,7 +91,7 @@ export class EditSecurityControlsFormComponent implements OnInit {
   onSubmit(result) {
     result['service'] = this.service
     this.showServiceData = false;
-    this.editSecurityControls.editSCT(result).subscribe((data: any) => {
+    this.editSecurityControls.editSCT(result).subscribe((data) => {
     },
       (data) => {
         this.errorMessage = data;
