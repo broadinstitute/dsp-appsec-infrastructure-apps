@@ -34,15 +34,14 @@ from trigger import parse_tags
 import parse_data as parse_json_data
 import slacknotify
 
-# Env variables
-dojo_host = os.getenv('dojo_host')  # dojo host
+dojo_host = os.getenv('dojo_host')  
 dojo_api_key = os.getenv('dojo_api_key')
 slack_token = os.getenv('slack_token')
 jira_username = os.getenv('jira_username')
 jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
 sdarq_host = os.getenv('sdarq_host')
-dojo_host_url = os.getenv('dojo_host_url')  # slack messages url
+dojo_host_url = os.getenv('dojo_host_url')  
 appsec_slack_channel = os.getenv('appsec_slack_channel')
 appsec_jira_project_key = os.getenv('appsec_jira_project_key')
 
@@ -53,26 +52,20 @@ zap_topic_name = os.environ['ZAP_JOB_TOPIC']
 security_controls_firestore_collection = os.environ['SC_FIRESTORE_COLLECTION']
 
 
-# Create headers for DefectDojo API call
 headers = {
     "content-type": "application/json",
     "Authorization": f"Token {dojo_api_key}",
 }
-# Logging configuration
 logging.basicConfig(level=logging.INFO)
 
-# Flask App
 app = FlaskAPI(__name__)
 
-# Instantiate the Jira backend wrapper
 global jira
 jira = JIRA(basic_auth=(jira_username, jira_api_token),
             options={'server': jira_instance})
 
-# BigQuery Client
 client = bigquery.Client()
 
-# Firestore Client
 db = firestore.Client()
 
 
@@ -122,7 +115,6 @@ def submit():
     appsec_jira_ticket_summury = 'Threat Model request ' + dojo_name
 
     try:
-        # Create a Jira ticket for Threat Model in Appsec team board
         jira.create_issue(project=appsec_jira_project_key,
                           summary=appsec_jira_ticket_summury,
                           description=str(
@@ -130,7 +122,6 @@ def submit():
                           issuetype={'name': 'Task'})
         logging.info("Jira ticket in appsec board created")
 
-        # Create a Jira ticket if user chooses a Jira project
         if 'JiraProject' in json_data:
             project_key_id = json_data['JiraProject']
             dev_jira_ticket_summury = dojo_name + ' security requirements'
@@ -148,10 +139,8 @@ def submit():
             logging.info("Jira ticket in %s board created by %s",
                          project_key_id, user_email)
 
-            # Delete Ticket_Description from json
             del json_data['Ticket_Description']
 
-            # Create DefectDojo product
             data = {'name': dojo_name, 'description': parse_json_data.prepare_dojo_input(
                 json_data), 'prod_type': product_type}
             res = requests.post(products_endpoint,
@@ -162,12 +151,10 @@ def submit():
             logging.info("Product created: %s by %s request",
                          dojo_name, user_email)
 
-            # Set Slack notification
             slacknotify.slacknotify_jira(appsec_slack_channel, dojo_name, security_champion,
                                          product_id, dojo_host_url, jira_instance,
                                          project_key_id, jira_ticket)
         else:
-            # Create DefectDojo product
             data = {'name': dojo_name, 'description': parse_json_data.prepare_dojo_input(
                 json_data), 'prod_type': product_type}
             res = requests.post(products_endpoint,
@@ -178,13 +165,15 @@ def submit():
             logging.info("Product created: %s by %s request",
                          dojo_name, user_email)
 
-            # When Jira ticket creation is not selected
             slacknotify.slacknotify(
                 appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url)
         return ''
-    except Exception as error:
+    except Exception:
         status_code = 404
-        return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
+        message= """
+        Server did not respond correctly to your request! 
+        """
+        return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
 
 
 @app.route('/cis_results/', methods=['POST'])
