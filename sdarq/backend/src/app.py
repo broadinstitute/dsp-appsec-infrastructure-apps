@@ -133,7 +133,7 @@ def submit():
         # Create a Jira ticket if user chooses a Jira project
         if 'JiraProject' in json_data:
             project_key_id = json_data['JiraProject']
-            dev_jira_ticket_summury = dojo_name + 'security requirements'
+            dev_jira_ticket_summury = dojo_name + ' security requirements'
             jira_description = json.dumps(
                 json_data['Ticket_Description']).strip('[]')
 
@@ -454,7 +454,7 @@ def create_sec_control_template():
     """
     json_data = request.get_json()
     service_name = json_data['service']
-    pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
+    pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if re.match(pattern, service_name):
@@ -498,7 +498,7 @@ def edit_sec_controls():
     """
     json_data = request.get_json()
     service_name = json_data['service']
-    pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
+    pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if re.match(pattern, service_name):
@@ -564,7 +564,7 @@ def get_sec_controls_service():
     """
     json_data = request.get_json()
     service_name = json_data['service']
-    pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,28}[a-zA-Z0-9]$"
+    pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if re.match(pattern, service_name, re.IGNORECASE):
