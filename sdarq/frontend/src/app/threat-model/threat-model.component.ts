@@ -10,16 +10,26 @@ import formJson from './form.json';
 })
 export class ThreatModelComponent implements OnInit {
 
+  showForm: boolean;
+  showModalError: boolean;
+
   constructor(private sendForm: RequestTmService, private http: HttpClient) { }
 
   ngOnInit(): void {
+    this.showForm = true;
+    this.showModalError = false;
   }
 
   json = formJson
 
   sendData(result) {
     this.sendForm.sendFormData(result).subscribe((res) => {
+      this.showForm = true;
+      this.showModalError = false;
     },
-      (res) => { });
+      (res) => { 
+        this.showForm = false;
+        this.showModalError = true;
+      });
   }
 }

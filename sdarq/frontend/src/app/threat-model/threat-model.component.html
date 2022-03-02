@@ -1,6 +1,11 @@
 <div class="jumbotron min-vh-100">
   <div class="container">
-    <div class="row">
+    <div class="alert alert-danger animated fadeInRight" role="alert" *ngIf="showModalError">
+      <h4 class="alert-heading">Oops!</h4>
+      <p> {{showModalError}} </p>
+      <p class="mb-0">Please contact AppSec team for more information!</p>
+    </div>
+    <div class="row" *ngIf="showForm">
       <div class="col-sm">
         <h5>Threat modeling is an approach for analyzing the security of an application. It is a structured approach
           that enables you to identify, quantify, and address the security risks associated with an application.
