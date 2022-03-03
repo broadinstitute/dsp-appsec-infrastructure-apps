@@ -17,7 +17,7 @@ export class ServiceScanComponent implements OnInit {
   constructor(private sendServiceScanrRequest: ScanServiceService) { }
 
   ngOnInit(): void {
-    this.showModalError = false;
+    this.showModalErr = false;
     this.showForm = true;
   }
 

@@ -16,37 +16,40 @@ export class CisScanComponent implements OnInit {
   showSpinner: boolean;
   showModal: boolean;
   showForm: boolean;
-  showModalError: boolean;
+  showModalErr: boolean;
+  showModalError: string;
 
   constructor(private sendProject: CisProjectService) { }
 
   ngOnInit(): void {
     this.showModal = false;
     this.showForm = true;
-    this.showModalError = false;
+    this.showModalErr = false;
   }
 
   sendData(result) {
     this.showSpinner = true;
     if (result.slack_channel) {
-      this.sendProject.sendCisProject(result).subscribe((data: any) => {
+      this.sendProject.sendCisProject(result).subscribe((data) => {
         this.showModal = true;
         this.showForm = false;
         this.showSpinner = false;
       },
       (data) => {
         this.showModal = false;
+        this.showModalErr = true;
         this.showModalError = data;
         this.showForm = false;
         this.showSpinner = false;
       });
     } else {
-      this.sendProject.sendCisProject(result).subscribe((data: any) => {
+      this.sendProject.sendCisProject(result).subscribe((data) => {
         location.href = location.origin + '/gcp-project-security-posture/results?project_id=' + result.project_id;
       },
       (data) => {
         this.showModal = false;
         this.showModalError = data;
+        this.showModalErr = true;
         this.showForm = false;
         this.showSpinner = false;
       });

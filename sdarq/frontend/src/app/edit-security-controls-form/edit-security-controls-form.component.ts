@@ -48,7 +48,7 @@ export class EditSecurityControlsFormComponent implements OnInit {
   }
 
   chooseServiceForm = new FormGroup({
-    service: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]),
+    service: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
   })
 
 
@@ -91,7 +91,7 @@ export class EditSecurityControlsFormComponent implements OnInit {
   onSubmit(result) {
     result['service'] = this.service
     this.showServiceData = false;
-    this.editSecurityControls.editSCT(result).subscribe((data: any) => {
+    this.editSecurityControls.editSCT(result).subscribe((data) => {
     },
       (data) => {
         this.errorMessage = data;

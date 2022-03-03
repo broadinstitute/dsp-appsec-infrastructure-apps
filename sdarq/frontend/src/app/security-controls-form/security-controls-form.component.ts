@@ -12,19 +12,19 @@ export class SecurityControlsFormComponent implements OnInit {
 
   showModalErr: boolean;
   showForm: boolean;
-  showModalError: any;
+  showModalError: string;
 
   json = formJson;
 
   constructor(private createSCT: CreateNewSctService) { }
 
   ngOnInit(): void {
-    this.showModalError = false;
+    this.showModalErr = false;
     this.showForm = true;
   }
 
   sendSCTData(result) {
-    this.createSCT.createNewSCT(result).subscribe((data: any) => {
+    this.createSCT.createNewSCT(result).subscribe((data) => {
     },
       (data) => {
         this.showModalErr = true;
