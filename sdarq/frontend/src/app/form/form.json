@@ -470,7 +470,7 @@
        {
         "type": "html",
         "name": "Alert-Compliance",
-        "html": "<div class=\"highs\">Get Started with the SIA doc:\n <ul>\n <li>SIA (Security Impact Analysis) Doc\n Build a concept of operations/Security Impact Assessment document.\n </li>\n <li>Update/build the Design Specification Document</li>\n <li>Update/build the Network Diagram and Architecture</li>\n <li>Make a user flow of your component, make sure to show how it connects to rest of product\n <a href=\"https://www.lucidchart.com/blog/why-user-flow-diagrams-are-worth-your-time\">User Flow</a>\n </li>\n <li>Make a data flow diagram of your component, make sure to show how it connects\n to rest of product<a href=\"https://www.lucidchart.com/pages/data-flow-diagram\">Data Flow Diagram</a>\n </li>\n </ul></div>"
+        "html": "<div class=\"highs\">Get Started with the SIA doc:\n <ul>\n <li>SIA (Security Impact Analysis) Doc\n Build a concept of operations/Security Impact Assessment document.\n </li>\n <li>Update/build the Design Specification Document</li>\n <li>Update/build the Network Diagram and Architecture</li>\n <li>Make a user flow of your component, make sure to show how it connects to rest of product\n<a href=\"https://www.lucidchart.com/blog/why-user-flow-diagrams-are-worth-your-time\">(User Flow)</a>\n </li>\n <li>Make a data flow diagram of your component, make sure to show how it connects\n to rest of product<a href=\"https://www.lucidchart.com/pages/data-flow-diagram\">(Data Flow Diagram)</a>\n </li>\n </ul></div>"
        },
        {
         "type": "html",
@@ -652,8 +652,8 @@
           "text": "Please reach out to AppSec team for initial security discussion. This is basically a Threat Modeling and Security Architecture Review session. The main purpose of the meeting is for us to take  an iterative, recursive look at the architecture and design of a new service/system."
          },
          {
-          "value": "Get Started with the SIA doc, build a concept of operations/Security Impact Assessment document. Update/build the Design Specification document. Update/build the Network Diagram and Architecture. Make a user flow of your component, make sure to show how it connects to rest of product. Make a data flow diagram of your component, make sure to show how it connects to rest of product",
-          "text": "Get Started with the SIA doc, build a concept of operations/Security Impact Assessment document. Update/build the Design Specification document. Update/build the Network Diagram and Architecture. Make a user flow of your component, make sure to show how it connects to rest of product. Make a data flow diagram of your component, make sure to show how it connects to rest of product"
+          "value": "Get Started with the SIA doc, build a concept of operations/Security Impact Assessment document. Update/build the Design Specification document. Update/build the Network Diagram and Architecture. Make a user flow of your component, make sure to show how it connects to rest of product. Make a data flow diagram of your component, make sure to show how it connects to rest of product.",
+          "text": "Get Started with the SIA doc, build a concept of operations/Security Impact Assessment document. Update/build the Design Specification document. Update/build the Network Diagram and Architecture. Make a user flow of your component, make sure to show how it connects to rest of product. Make a data flow diagram of your component, make sure to show how it connects to rest of product."
            },
          {
           "value": "You must use SourceClear for downstream dependency/3rd  party component management. Ask AppSec team to add your repo.",
