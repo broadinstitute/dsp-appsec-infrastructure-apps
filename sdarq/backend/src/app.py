@@ -46,6 +46,7 @@ sdarq_host = os.getenv('sdarq_host')
 dojo_host_url = os.getenv('dojo_host_url')
 appsec_slack_channel = os.getenv('appsec_slack_channel')
 appsec_jira_project_key = os.getenv('appsec_jira_project_key')
+jtra_slack_channel = os.getenv('jtra_slack_channel')
 
 firestore_collection = os.environ['CIS_FIRESTORE_COLLECTION']
 cis_topic_name = os.environ['CIS_JOB_TOPIC']
@@ -680,10 +681,10 @@ def notifyAppSecJTRA():
                 "User %s submitted a HIGH Risk JIRA Ticket", user_email)
             if 'jira_ticket_link' in user_data:
                 slacknotify.slacknotify_jira_ticket_risk_assessment(
-                    appsec_slack_channel, user_data['jira_ticket_link'], user_email, user_data)
+                    jtra_slack_channel, user_data['jira_ticket_link'], user_email, user_data)
             else:
                 slacknotify.slacknotify_jira_ticket_risk_assessment(
-                    appsec_slack_channel, user_data['context'], user_email, user_data)
+                    jtra_slack_channel, user_data['context'], user_email, user_data)
         else:
             logging.info(
                 "User %s submitted a MEDIUM/LOW Risk Jira Ticket", user_email)
