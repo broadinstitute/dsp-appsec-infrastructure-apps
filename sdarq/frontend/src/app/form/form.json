@@ -161,54 +161,38 @@
         "title": "Please select applicable items",
         "choices": [
          {
-          "value": "Sourceclear",
-          "text": "We are currently using SourceClear for downstream dependency/3rd party component management "
+          "value": "dependency_scan",
+          "text": "We are currently using SourceClear/Snyk or similar tools for downstream dependency/3rd party component management "
          },
          {
           "value": "Git-secrets",
           "text": "We are currently using git-secrets in our repository"
          },
          {
-          "value": "Vault-SecretManager",
+          "value": "Secret_management",
           "text": "We are currently using Vault/Secret Manager to store our secrets"
          },
          {
-          "value": "Sentry",
-          "text": " We are currently using Sentry or something else (ex: Google Debug) for exception handling and reporting"
+          "value": "Monitoring_tool",
+          "text": " We are currently using Sentry or a similar tool (ex: Google Debug) for exception handling and reporting"
          },
          {
-          "value": "Codacy",
-          "text": "We are currently using Codacy for security static code analysis"
+          "value": "SAST",
+          "text": "We are currently using Codacy, SOnacCloud or similar tools for security static code analysis"
          },
          {
-          "value": "Trivy",
+          "value": "Image_scan",
           "text": "We are currently using tools to scan our Docker images"
          },
          {
-          "value": "ZAP",
+          "value": "DAST",
           "text": "Our service is currently scanned weekly/monthly via ZAP or similar tools"
          }
         ]
        },
        {
         "type": "radiogroup",
-        "name": "ApacheProxy for frontend encryption",
-        "title": "Are you using the Apache Proxy for the front-end to your application to terminate Encryption?",
-        "choices": [
-         "Yes",
-         "No"
-        ]
-       },
-       {
-        "type": "comment",
-        "name": "Https implementation",
-        "visibleIf": "{ApacheProxy for frontend encryption} = \"No\"",
-        "title": "Explain how you are implementing HTTPS",
-        "enableIf": "{ApacheProxy for frontend encryption} = \"No\""
-       },
-       {
-        "type": "radiogroup",
-        "name": "Runtime protection in your stack",
+        "name": "Runtime protection",
         "title": "Do you have runtime application self-protection in your stack?",
         "choices": [
          "Yes",
@@ -218,20 +202,16 @@
        {
         "type": "radiogroup",
         "name": "Stack protection",
-        "visibleIf": "{Runtime protection in your stack} = \"Yes\"",
+        "visibleIf": "{Runtime protection} = \"Yes\"",
         "title": "Choose what's applicable:",
         "choices": [
          {
-          "value": "We are behind orchestration layer",
-          "text": "We are behind orchestration layer"
+          "value": "RASP",
+          "text": "We are using Tcell or a similar tool to enable RASP (Runtime application self-protection) mode"
          },
          {
-          "value": "We are using TCell RASP functionality",
-          "text": "We are using TCell RASP functionality"
-         },
-         {
-          "value": "We are using Apache/Nginx proxy",
-          "text": "We are using Apache/Nginx proxy"
+          "value": "Proxy",
+          "text": "We are using a Apache-Nginx proxy"
          }
         ]
        },
@@ -241,11 +221,11 @@
         "title": "Check what's applicable",
         "choices": [
          {
-          "value": "Certificate for a URL",
+          "value": "URL_certificate",
           "text": "I need a certificate for a URL "
          },
          {
-          "value": "Using persistent storage",
+          "value": "Persistent_storage",
           "text": "We are using persistent storage (other than a SQL database)"
          }
         ]
@@ -259,7 +239,7 @@
        {
         "type": "radiogroup",
         "name": "Logging",
-        "title": "Are you currently logging or plan to log to either Logit.io or Stackdriver?",
+        "title": "Are you currently logging or plan to log to either Logit.io/Stackdriver or similar tools?",
         "choices": [
          "Yes",
          "No"
@@ -415,28 +395,28 @@
       "elements": [
        {
         "type": "checkbox",
-        "name": "Reliability1",
+        "name": "Reliability",
         "title": "Please select what's applicable",
         "choices": [
          {
           "value": "Status endpoint to indicate service health",
-          "text": " We have a status endpoint to indicate service health (it should monitor real things like database connections and downstream dependencies) "
+          "text": "We have a status endpoint to indicate service health (it should monitor real things like database connections and downstream dependencies) "
          },
          {
-          "value": "Stackdriver monitoring",
-          "text": " We have Stackdriver to monitor status "
+          "value": "Tools to monitor status",
+          "text": "We have Stackdriver or similar tools to monitor status "
          },
          {
-          "value": "PagerDuty for our new service",
-          "text": " We have configured PagerDuty for our new service "
+          "value": "Incident response tool",
+          "text": "We have configured PagerDuty or similar tools for incident response "
          },
          {
           "value": "Service is able to scale in response to load",
-          "text": " Our service is able to scale in response to load, either manually or automatically "
+          "text": "Our service is able to scale in response to load, either manually or automatically "
          },
          {
           "value": "An on-call playbook for the service, linked it into the main on-call documentation",
-          "text": " We have created an on-call playbook for your service, linked it into the main on-call documentation"
+          "text": "We have created an on-call playbook for your service, linked it into the main on-call documentation"
          }
         ]
        }
@@ -459,11 +439,6 @@
       "elements": [
        {
         "type": "html",
-        "name": "JIRA_alert",
-        "html": "<p class=\"jira_ticket_alert\">Please create a JIRA ticket for all the recommendations listed below in the next step.<p>"
-       },
-       {
-        "type": "html",
         "name": "Alert-general",
         "html": "<div class=\"tip\">Please reach out to AppSec team for initial security discussion. This is basically a\n            Threat Modeling and Security Architecture Review session. The main purpose of the meeting is for us to take\n an iterative, recursive look at the architecture and design of a new service/system.</div>"
        },
@@ -475,19 +450,19 @@
        {
         "type": "html",
         "name": "Alert-Sourceclear",
-        "visibleIf": "{Security tools} notcontains \"Sourceclear\"",
-        "html": "<div class=\"highs\">You must use SourceClear for downstream dependency/3rd\n            party component management. Ask AppSec team to add your repo.</div>"
+        "visibleIf": "{Security tools} notcontains \"dependency_scan\"",
+        "html": "<div class=\"highs\">You must use SourceClear, Snuk or similar tools for downstream dependency/3rd\n            party component management. Ask AppSec team to add your repo.</div>"
        },
        {
         "type": "html",
         "name": "Alert-Trivy",
-        "visibleIf": "{Security tools} notcontains \"Trivy\"",
+        "visibleIf": "{Security tools} notcontains \"Image_scan\"",
         "html": "<div class=\"highs\">You must use security tools to scan your Docker images. Ask AppSec team to help you setup this tool.</div>"
        },
        {
         "type": "html",
         "name": "Alert-ZAP",
-        "visibleIf": "{Security tools} notcontains \"ZAP\"",
+        "visibleIf": "{Security tools} notcontains \"DAST\"",
         "html": "<div class=\"highs\">Your service must be scanned weekly/mothly via SAST tools. Ask AppSec team to help you setup this tool.</div>"
        },
        {
@@ -499,38 +474,44 @@
        {
         "type": "html",
         "name": "Alert-vault",
-        "visibleIf": "{Security tools} notcontains 'Vault-SecretManager'",
-        "html": "<div class=\"highs\">You should only store secrets in\n            <a href=\"https://www.vaultproject.io/\">Vault</a> , <a href=\"https://cloud.google.com/secret-manager\">Google Secret Manager</a> or similar tools. </div>  "
+        "visibleIf": "{Security tools} notcontains 'Secret_management'",
+        "html": "<div class=\"highs\">You should only store secrets in\n Vault , Google Secret Manager or similar tools. </div>  "
        },
        {
         "type": "html",
         "name": "Alert-sentry",
-        "visibleIf": "{Security tools} notcontains \"Sentry\"",
-        "html": "<div class=\"highs\">You should setup\n            <a href=\"https://sentry.io/welcome/\">Sentry</a>. Reach out to #dsp-devops to get started.</div>"
+        "visibleIf": "{Security tools} notcontains \"Monitoring_tool\"",
+        "html": "<div class=\"highs\">You should setup\n Sentry or a similar tool. Reach out to #dsp-devops to get started.</div>"
        },
        {
         "type": "html",
         "name": "Alert-codacy",
-        "visibleIf": "{Security tools} notcontains \"Codacy\"",
-        "html": "<div class=\"highs\">You should use\n            <a href=\"https://www.codacy.com/\">Codacy</a> or similar tools for security static code analysis.\n  Reach out to Appsec team to set it up for your repository.\n</div>"
+        "visibleIf": "{Security tools} notcontains \"SAST\"",
+        "html": "<div class=\"highs\">You should use\n  Codacy, SOnacCloud or similar tools for security static code analysis.\n  Reach out to Appsec team to set it up for your repository.\n</div>"
        },
        {
         "type": "html",
         "name": "Alert-RuntimeProtection",
-        "visibleIf": "{Stack protection} empty or {Runtime protection in your stack} = 'No'",
-        "html": "<div class=\"highs\">Please make sure your service is using Tcell Rapid functionalities or is behind the orchestration layer to add some runtime protection in your stack. RASP in the app is preferred over WAF/Apache proxy. Ask appsec team if you need more clarification on this.</div>"
+        "visibleIf": "{Stack protection} empty or {Runtime protection} = 'No'",
+        "html": "<div class=\"highs\">Please make sure your service is using TCell or a similar tool to add some runtime protection in your stack. RASP in the app is preferred over WAF/Apache proxy. Ask appsec team if you need more clarification on this.</div>"
        },
        {
         "type": "html",
         "name": "question1",
         "visibleIf": "{GCP best practices} = 'No'",
-        "html": "<div class=\"highs\">Please check this <a href=\"https://docs.google.com/document/d/1adV0LC2f_GIpl3A1AeoQuNiwcP59NToIt6VYT3xRCkU/edit#heading=h.80ef333b1wz\">doc</a> to  manage your GCP project.</div>"
+        "html": "<div class=\"highs\">Please check this <a href=\"https://dsp-security.broadinstitute.org/cloud-security/google-cloud-platform\">post</a> to  manage your GCP project.</div>"
        },
        {
         "type": "html",
         "name": "Alert-encryptionBackupOptions",
-        "visibleIf": "{Applicable} contains \"Using persistent storage\"",
+        "visibleIf": "{Applicable} contains \"Persistent_storage\"",
         "html": "<div class=\"highs\">Reach out to DevOps team about persistence about Encryption and Backup options for your persistence storage.</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert-logs",
+        "visibleIf": "{Logging} = \"No\"",
+        "html": "<div class=\"highs\">Please make sure to start planning using Logit.io/Stackdriver or similar tools for logging.</div>"
        },
        {
         "type": "html",
@@ -559,7 +540,7 @@
        {
         "type": "html",
         "name": "Alert-certificate",
-        "visibleIf": "{Applicable} contains \"Certificate for a URL\"",
+        "visibleIf": "{Applicable} contains \"URL_certificate\"",
         "html": "<div class=\"medium\">Reach out to DevOps team about certificates for a URL\n</div>"
        },
        {
@@ -607,25 +588,25 @@
        {
         "type": "html",
         "name": "Alert-statusEndpoint",
-        "visibleIf": "{Reliability1} notcontains \"Status endpoint to indicate service health\"",
+        "visibleIf": "{Reliability} notcontains \"Status endpoint to indicate service health\"",
         "html": "<div class=\"medium\">Have a status endpoint to indicate service health (it should monitor real things like database connections and downstream dependencies)</div>"
        },
        {
         "type": "html",
         "name": "Alert-relicSynthetic",
-        "visibleIf": "{Reliability1} notcontains 'Stackdriver monitoring'",
-        "html": "<div class=\"medium\">Have Stackdriver configured to monitor/status.</div>"
+        "visibleIf": "{Reliability} notcontains 'Tools to monitor status'",
+        "html": "<div class=\"medium\">Have Stackdriver or similar tools configured to monitor/status.</div>"
        },
        {
         "type": "html",
         "name": "Alert-pagerDuty",
-        "visibleIf": "{Reliability1} contains \"PagerDuty for our new service\"",
-        "html": "<div class=\"medium\">Configure PagerDuty for your new service. Reach out to DevOps if you have questions.</div>"
+        "visibleIf": "{Reliability} contains \"Incident response tool\"",
+        "html": "<div class=\"medium\">Configure PagerDuty or similar tools for incident response for your new service. Reach out to DevOps if you have questions.</div>"
        },
        {
         "type": "html",
         "name": "Alert-oncallPlaybook",
-        "visibleIf": "{Reliability1} notcontains \"An on-call playbook for the service, linked it into the main on-call documentation\"",
+        "visibleIf": "{Reliability} notcontains \"An on-call playbook for the service, linked it into the main on-call documentation\"",
         "html": "<div class=\"medium\">You should create an on-call playbook for your service, and link it into the main on-call documentation</div>"
        }
       ],
@@ -656,44 +637,47 @@
           "text": "Get Started with the SIA doc, build a concept of operations/Security Impact Assessment document. Update/build the Design Specification document. Update/build the Network Diagram and Architecture. Make a user flow of your component, make sure to show how it connects to rest of product. Make a data flow diagram of your component, make sure to show how it connects to rest of product."
            },
          {
-          "value": "You must use SourceClear for downstream dependency/3rd  party component management. Ask AppSec team to add your repo.",
-          "visibleIf": "{Security tools} notcontains \"Sourceclear\""
+          "value": "You must use SourceClear, Snyk or similar tools for downstream dependency/3rd  party component management. Ask AppSec team to add your repo.",
+          "visibleIf": "{Security tools} notcontains \"dependency_scan\""
          },
          {
           "value": "You must use security tools to scan your Docker images. Ask AppSec team to help you setup this tool.",
-          "visibleIf": "{Security tools} notcontains \"Trivy\""
+          "visibleIf": "{Security tools} notcontains \"Image_scan\""
          },
          {
           "value": "Your service must be scanned weekly/mothly via SAST tools. Ask AppSec team to help you setup this tool.",
-          "visibleIf": "{Security tools} notcontains \"ZAP\""
+          "visibleIf": "{Security tools} notcontains \"DAST\""
          },
          {
           "value": "You should only store secrets in Vault, Secret Manager or similar tools.",
-          "visibleIf": "{Security tools} notcontains 'Vault-SecretManager'"
+          "visibleIf": "{Security tools} notcontains 'Secret_management'"
          },
          {
           "value": "You should setup Sentry. Reach out to AppSec team to get started.",
-          "visibleIf": "{Security tools} notcontains \"Sentry\""
+          "visibleIf": "{Security tools} notcontains \"Monitoring_tool\""
          },
          {
-          "value": "You should use Codacy or smilar tools for security static code analysis. Ask AppSec team to help you setup this tool.",
-          "visibleIf": "{Security tools} notcontains \"Codacy\""
+          "value": "You should use Codacy, SonarCloud or similar tools for security static code analysis. Ask AppSec team to help you setup this tool.",
+          "visibleIf": "{Security tools} notcontains \"SAST\""
          },
          {
           "value": "Please make sure your service is using Tcell Rapid functionalities or is behind the orchestration layer to add some runtime protection in your stack. RASP in the app is preferred over WAF/Apache proxy. Ask appsec team if you need more clarification on this.",
-          "visibleIf": "{Stack protection} empty or {Runtime protection in your stack} = 'No'"
+          "visibleIf": "{Stack protection} empty or {Runtime protection} = 'No'"
          },
          {
           "value": "Reach out to DevOps team about certificates for a URL.",
-          "visibleIf": "{Applicable} contains \"Certificate for a URL\""
+          "visibleIf": "{Applicable} contains \"URL_certificate\""
          },
          {
           "value": "Reach out to DevOps team about persistence about Encryption and Backup options for your persistence storage.",
-          "visibleIf": "{Applicable} contains \"Using persistent storage\""
+          "visibleIf": "{Applicable} contains \"Persistent_storage\""
+         },
+         {
+          "visibleIf": "{Logging} = \"No\"",
+          "text": "Please make sure to start planning using Logit.io/Stackdriver or similar tools for logging"
          },
          {
           "value": "Please make sure to allow logs to persist for at least 90 days in a searchable form. If you don't have a good idea of what events to audit, ask DevOps.If your service is part of the Terra system, the minimum set of events that must be audited are: Account Management: account created, account deleted, account disabled, account expired, password changed. Directory Service: Object (user, machine,etc) Added to domain/directory. Object removed from domain/directory. Domain policy change. Filesystem Events: Directory created. Directory deleted. Directory read. Directory write. Directory permissions changed. File created. File deleted. File read. File write. File permissions changed. Object access. >Logging Event: Event log full. Event log overwritten. Network Events: ACL changed. Traffic blocked at firewall. Policy Change: All. Privilege Use: Privilege escalation (i.e sudo). Privileged object or service called. Object accessed by privileged account. Process Tracking: Process executed. Process terminated. Scheduled event executed. Scheduled event failed. System Events: Service stopped. System startup. System shutting down. Session disconnected.",
-          "text": "Please make sure to allow logs to persist for at least 90 days in a searchable form. If you don't have a good idea of what events to audit, ask DevOps.If your service is part of the Terra system, the minimum set of events that must be audited are: Account Management: account created, account deleted, account disabled, account expired, password changed. Directory Service: Object (user, machine,etc) Added to domain/directory. Object removed from domain/directory. Domain policy change. Filesystem Events: Directory created. Directory deleted. Directory read. Directory write. Directory permissions changed. File created. File deleted. File read. File write. File permissions changed. Object access. Logging Event: Event log full. Event log overwritten. Network Events: ACL changed. Traffic blocked at firewall. Policy Change: All Privilege Use: Privilege escalation (i.e sudo). Privileged object or service called. Object accessed by privileged account. Process Tracking: Process executed. Process terminated. Scheduled event executed. Scheduled event failed.System Events: Service stopped. System startup. System shutting down. Session disconnected.",
           "visibleIf": "{Logs persistence for at least 90 days} = \"No\""
          },
          {
@@ -734,26 +718,26 @@
          },
          {
           "value": "Have a status endpoint to indicate service health (it should monitor real things like database connections and downstream dependencies)",
-          "visibleIf": "{Reliability1} notcontains \"Status endpoint to indicate service health\""
+          "visibleIf": "{Reliability} notcontains \"Status endpoint to indicate service health\""
          },
          {
-          "value": "Have Stackdriver configured to monitor/status.",
-          "visibleIf": "{Reliability1} notcontains 'Stackdriver monitoring'"
+          "value": "Have Stackdriver or similar tools configured to monitor/status.",
+          "visibleIf": "{Reliability} notcontains 'Tools to monitor status'"
          },
          {
-          "value": "Configure PagerDuty for your new service. Reach out to DevOps if you have questions.",
-          "visibleIf": "{Reliability1} contains \"PagerDuty for our new service\""
+          "value": "Configure PagerDuty or similar tools for incident response for your new service. Reach out to DevOps if you have questions.",
+          "visibleIf": "{Reliability} contains \"Incident response tool\""
          },
          {
           "value": "Your service must be able to scale in response to load, either manually or automatically. Ask DevOps if you need more clarification on this.",
-          "visibleIf": "{Reliability1} notcontains \"Service is able to scale in response to load\""
+          "visibleIf": "{Reliability} notcontains \"Service is able to scale in response to load\""
          },
          {
           "value": "You should create an on-call playbook for your service, and link it into the main on-call documentation.",
-          "visibleIf": "{Reliability1} notcontains \"An on-call playbook for the service, linked it into the main on-call documentation\""
+          "visibleIf": "{Reliability} notcontains \"An on-call playbook for the service, linked it into the main on-call documentation\""
          },
          {
-          "value": "Please check this doc (https://docs.google.com/document/d/1adV0LC2f_GIpl3A1AeoQuNiwcP59NToIt6VYT3xRCkU/edit#heading=h.80ef333b1wz ) to  manage your GCP project.",
+          "value": "Please check this post (https://dsp-security.broadinstitute.org/cloud-security/google-cloud-platform ) to  manage your GCP project.",
           "visibleIf": "{GCP best practices} = 'No'"
          }
         ],
