@@ -690,7 +690,8 @@ def notifyAppSecJTRA():
                 "User %s submitted a MEDIUM/LOW Risk Jira Ticket", user_email)
         return ''
     except Exception:
-        slacknotify.slacknotify_jira_ticket_risk_assessment_error(jtra_slack_channel, user_email, user_data)
+        slacknotify.slacknotify_jira_ticket_risk_assessment_error(
+            jtra_slack_channel, user_email, user_data)
         status_code = 404
         message = """
             Server did not respond correctly to your request! 
