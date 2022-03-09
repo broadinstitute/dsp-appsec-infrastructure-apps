@@ -293,3 +293,44 @@ def slacknotify_jira_ticket_risk_assessment(jtra_slack_channel, ticket_context, 
             }
         ], "color": "#bd3022"}]
     )
+
+
+def slacknotify_jira_ticket_risk_assessment_error(jtra_slack_channel, user_email, user_data):
+    """
+    Sends Slack notifications to AppSec when there is an error happening in the server
+
+    Args:
+        jtra_slack_channel: Jira Ticket Risk Assessment Slack channel 
+        user_email: Dev email that filled the form
+        user_data: All data submitted by users
+
+    Returns:
+        Sends slack notification
+    """
+    client.chat_postMessage(
+        channel=jtra_slack_channel,
+        attachments=[{"blocks":[
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*An error happened to Jira Ticket Risk Assessment questionnaire*"
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Dev:* `{0}` " .format(str(user_email))
+                }
+            },
+                        {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*All user's data:* `{0}` " .format(str(user_data))
+                }
+            }
+        ], "color": "#bd3022"}]
+    )
+
