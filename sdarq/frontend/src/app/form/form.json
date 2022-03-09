@@ -178,7 +178,7 @@
          },
          {
           "value": "SAST",
-          "text": "We are currently using Codacy, SOnacCloud or similar tools for security static code analysis"
+          "text": "We are currently using Codacy, SonacCloud or similar tools for security static code analysis"
          },
          {
           "value": "Image_scan",
@@ -451,7 +451,7 @@
         "type": "html",
         "name": "Alert-Sourceclear",
         "visibleIf": "{Security tools} notcontains \"dependency_scan\"",
-        "html": "<div class=\"highs\">You must use SourceClear, Snuk or similar tools for downstream dependency/3rd\n            party component management. Ask AppSec team to add your repo.</div>"
+        "html": "<div class=\"highs\">You must use SourceClear, Snyk or similar tools for downstream dependency/3rd\n            party component management. Ask AppSec team to add your repo.</div>"
        },
        {
         "type": "html",
@@ -487,7 +487,7 @@
         "type": "html",
         "name": "Alert-codacy",
         "visibleIf": "{Security tools} notcontains \"SAST\"",
-        "html": "<div class=\"highs\">You should use\n  Codacy, SOnacCloud or similar tools for security static code analysis.\n  Reach out to Appsec team to set it up for your repository.\n</div>"
+        "html": "<div class=\"highs\">You should use\n  Codacy, SonacCloud or similar tools for security static code analysis.\n  Reach out to Appsec team to set it up for your repository.\n</div>"
        },
        {
         "type": "html",
