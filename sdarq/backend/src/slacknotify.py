@@ -13,7 +13,6 @@ slack_token = os.getenv('slack_token')
 client = WebClient(token=slack_token,
                          ssl=ssl_context)
 
-
 def slacknotify(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url):
     """
     Sends slack notification where: 
@@ -21,7 +20,6 @@ def slacknotify(appsec_slack_channel, dojo_name, security_champion, product_id, 
         2. No QA person must be notified 
 
     Args:
-        slack_token: Slack token 
         appsec_slack_channel: Slack channel name
         dojo_name: Engagement name in defect dojo
         security_champion: Security champion name
@@ -31,7 +29,7 @@ def slacknotify(appsec_slack_channel, dojo_name, security_champion, product_id, 
     Returns:
         Sends slack notification
     """
-    response = client.chat_postMessage(
+    client.chat_postMessage(
         channel=appsec_slack_channel,
         attachments=[{"blocks": [
             {
@@ -70,7 +68,6 @@ def slacknotify(appsec_slack_channel, dojo_name, security_champion, product_id, 
             }], "color": "#0731b0",}]
     )
 
-
 def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket):
     """
     Sends slack notification where: 
@@ -78,7 +75,6 @@ def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product
         2. QA person will not be notified 
 
     Args:
-        slack_token: Slack token 
         appsec_slack_channel: Slack channel name
         dojo_name: Engagement name in defect dojo
         security_champion: Security champion name
@@ -91,7 +87,7 @@ def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product
     Returns:
         Sends slack notification
     """
-    response = client.chat_postMessage(
+    client.chat_postMessage(
         channel=appsec_slack_channel,
         attachments=[{"blocks": [
             {
@@ -139,13 +135,11 @@ def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product
         ], "color": "#0731b0"}]
     )
 
-
 def slacknotify_threat_model(appsec_slack_channel, security_champion, request_type, project_name,  jira_instance, jira_ticket_appsec, appsec_jira_board):
     """
     Sends slack notification when there is a request for threat model
 
     Args:
-        slack_token: Slack token 
         appsec_slack_channel: Slack channel name
         security_champion: Security champion name
         request_type: Create or update threat model
@@ -157,7 +151,7 @@ def slacknotify_threat_model(appsec_slack_channel, security_champion, request_ty
     Returns:
         Sends slack notification
     """
-    response = client.chat_postMessage(
+    client.chat_postMessage(
         channel=appsec_slack_channel,
         text="There is a request for a threat model",
         attachments=[{"blocks":[
@@ -203,7 +197,6 @@ def slacknotify_security_pentest(appsec_slack_channel, security_champion, projec
     Sends slack notification when there is a request for a security request
 
     Args:
-        slack_token: Slack token 
         appsec_slack_channel: Slack channel name
         security_champion: Security champion name
         project_name: Project name
@@ -214,9 +207,8 @@ def slacknotify_security_pentest(appsec_slack_channel, security_champion, projec
     Returns:
         Sends slack notification
     """
-    response = client.chat_postMessage(
+    client.chat_postMessage(
         channel=appsec_slack_channel,
-        text="There is a request for security pentest",
         attachments=[{"blocks":[
             {
                 "type": "section",
@@ -253,5 +245,92 @@ def slacknotify_security_pentest(appsec_slack_channel, security_champion, projec
                 ]
             }
         ], "color": "#0731b0"}]
+    )
+
+def slacknotify_jira_ticket_risk_assessment(jtra_slack_channel, ticket_context, user_email, user_data):
+    """
+    Sends Slack notifications to AppSec when there is high risk Jira ticket
+
+    Args:
+        jtra_slack_channel: Jira Ticket Risk Assessment Slack channel 
+        jira_ticket_link: Jira ticket link
+        user_email: Dev email that filled the form
+        user_data: All data submitted by users
+
+    Returns:
+        Sends slack notification
+    """
+    client.chat_postMessage(
+        channel=jtra_slack_channel,
+        attachments=[{"blocks":[
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Jira Ticket Risk Assessment: HIGH*"
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Ticket link/context:* `{0}` " .format(str(ticket_context))
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Dev:* `{0}` " .format(str(user_email))
+                }
+            },
+                        {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*All user's data:* `{0}` " .format(str(user_data))
+                }
+            }
+        ], "color": "#bd3022"}]
+    )
+
+
+def slacknotify_jira_ticket_risk_assessment_error(jtra_slack_channel, user_email, user_data):
+    """
+    Sends Slack notifications to AppSec when there is an error happening in the server
+
+    Args:
+        jtra_slack_channel: Jira Ticket Risk Assessment Slack channel 
+        user_email: Dev email that filled the form
+        user_data: All data submitted by users
+
+    Returns:
+        Sends slack notification
+    """
+    client.chat_postMessage(
+        channel=jtra_slack_channel,
+        attachments=[{"blocks":[
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*An error happened to Jira Ticket Risk Assessment questionnaire*"
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Dev:* `{0}` " .format(str(user_email))
+                }
+            },
+                        {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*All user's data:* `{0}` " .format(str(user_data))
+                }
+            }
+        ], "color": "#bd3022"}]
     )
 
