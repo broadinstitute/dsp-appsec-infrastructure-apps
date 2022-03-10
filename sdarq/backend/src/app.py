@@ -4,6 +4,7 @@ This module
         - creates a new product in Defect Dojo
         - optionally creates a Jira Ticket
         - notifies several Slack channels about service requirements request
+        - creates a new security controls template for a new service/product
 - sends request to scan a GCP project against the CIS Benchmark
 - get results from BigQuery for a scanned GCP project
 - send a request for threat model
@@ -12,6 +13,7 @@ This module
 - add security controls for a service
 - edit security controls for a service
 - list all security controls for all services
+- calculates the risk of a Jira ticket and notifies AppSec team
 """
 #!/usr/bin/env python3
 
@@ -34,16 +36,17 @@ from trigger import parse_tags
 import parse_data as parse_json_data
 import slacknotify
 
-dojo_host = os.getenv('dojo_host')  
+dojo_host = os.getenv('dojo_host')
 dojo_api_key = os.getenv('dojo_api_key')
 slack_token = os.getenv('slack_token')
 jira_username = os.getenv('jira_username')
 jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
 sdarq_host = os.getenv('sdarq_host')
-dojo_host_url = os.getenv('dojo_host_url')  
+dojo_host_url = os.getenv('dojo_host_url')
 appsec_slack_channel = os.getenv('appsec_slack_channel')
 appsec_jira_project_key = os.getenv('appsec_jira_project_key')
+jtra_slack_channel = os.getenv('jtra_slack_channel')
 
 firestore_collection = os.environ['CIS_FIRESTORE_COLLECTION']
 cis_topic_name = os.environ['CIS_JOB_TOPIC']
@@ -160,18 +163,18 @@ def submit():
 
             slacknotify.slacknotify(
                 appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url)
-                
+
         jira.create_issue(project=appsec_jira_project_key,
-                    summary=appsec_jira_ticket_summury,
-                    description=str(
-                        appsec_jira_ticket_description),
-                    issuetype={'name': 'Task'})
+                          summary=appsec_jira_ticket_summury,
+                          description=str(
+                              appsec_jira_ticket_description),
+                          issuetype={'name': 'Task'})
         logging.info("Jira ticket in appsec board created")
 
         return ''
     except Exception:
         status_code = 404
-        message= """
+        message = """
         Server did not respond correctly to your request! 
         """
         return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
@@ -432,8 +435,11 @@ def zap_scan():
             logging.info(
                 "User %s requested to scan via ZAP a service that does not exist in DefectDojo endpoint list", user_email)
             return Response(json.dumps({'statusText': text_message}), status=status_code, mimetype='application/json')
-    except Exception as error:
-        return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
+    except Exception:
+        message = """ 
+        Server did not respond correctly to your request! 
+        """
+        return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
 
 
 @app.route('/create_sec_control_template/', methods=['POST'])
@@ -629,6 +635,67 @@ def request_manual_pentest():
         message = """
         Server did not respond correctly to your request! 
         """
+        return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
+
+
+@app.route('/submitJTRA/', methods=['POST'])
+@cross_origin(origins=sdarq_host)
+def notifyAppSecJTRA():
+    """
+    Calculates the risk based on the user data and notifies AppSec team for the review
+    Args:
+        JSON data supplied by user
+    """
+    user_data = request.get_json()
+    user_email = request.headers.get('X-Goog-Authenticated-User-Email')
+
+    try:
+        if user_data['high_level'] == 'add_SA' \
+            or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'Other'  \
+                and user_data['product_features_other'] == 'None/other' and user_data['confidentiality'] == 'Yes' \
+            or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'Other'  \
+                and user_data['product_features_other'] == 'None/other' and user_data['confidentiality'] == 'Not sure' \
+            or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'Other'  \
+                and user_data['product_features_other'] == 'None/other' and user_data['confidentiality'] == 'No' \
+            and user_data['integrity'] == 'Yes' \
+            or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'Other'  \
+                and user_data['product_features_other'] == 'None/other' and user_data['confidentiality'] == 'No' \
+            and user_data['integrity'] == 'Not sure' \
+            or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'Other'  \
+                and user_data['product_features_other'] == 'None/other' and user_data['confidentiality'] == 'No' \
+            and user_data['integrity'] == 'No' and user_data['availability'] == 'Yes' \
+            or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'Other'  \
+                and user_data['product_features_other'] == 'None/other' and user_data['confidentiality'] == 'No' \
+            and user_data['integrity'] == 'No' and user_data['availability'] == 'Not sure' \
+            or user_data['high_level'] == 'change_product_ui' \
+                and user_data['product_ui_question_change'] \
+            in ['change_ui_url_inputs', 'change_ui_load_active_content', 'change_ui_change_dom'] \
+            or user_data['high_level'] == 'change_product_api' \
+                and user_data['main_product'] \
+            in ['Changing or adding an API endpoint that processes XML files from user input', 'Introducing/changing a file upload feature', 'Making use of Cryptography'] \
+            or user_data['high_level'] == 'change_infrastructure' \
+                and user_data['infrastructure_gcp'] \
+            in ['Access control change that involves granting privileged or public access to an entity.', 'Changing an existing firewall rule or adding a new one', 'Changing logging configs'] \
+                and user_data['if_access_control_change_playbook'] == 'Not sure':
+            logging.info(
+                "User %s submitted a HIGH Risk JIRA Ticket", user_email)
+            if 'jira_ticket_link' in user_data:
+                slacknotify.slacknotify_jira_ticket_risk_assessment(
+                    jtra_slack_channel, user_data['jira_ticket_link'], user_email, user_data)
+            else:
+                slacknotify.slacknotify_jira_ticket_risk_assessment(
+                    jtra_slack_channel, user_data['context'], user_email, user_data)
+        else:
+            logging.info(
+                "User %s submitted a MEDIUM/LOW Risk Jira Ticket", user_email)
+        return ''
+    except Exception:
+        slacknotify.slacknotify_jira_ticket_risk_assessment_error(
+            jtra_slack_channel, user_email, user_data)
+        status_code = 404
+        message = """
+            Server did not respond correctly to your request! 
+            """
         return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
 
 
