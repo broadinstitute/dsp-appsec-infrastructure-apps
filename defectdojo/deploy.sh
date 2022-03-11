@@ -63,7 +63,7 @@ export DD_DATABASE_NAME="${DD_DATABASE_TYPE}"
 # set Database URL as required by DefectDojo 2.8+
 DD_DATABASE_PASSWORD=$(kubectl get secret "${DJANGO_SECRET}" -n "${NAMESPACE}" --template={{.data.DD_DATABASE_PASSWORD}} | base64 --decode)
 DD_DATABASE_URL="${DD_DATABASE_TYPE}://${DD_DATABASE_USER}:${DD_DATABASE_PASSWORD}@${DD_DATABASE_HOST}:${DD_DATABASE_PORT}/${DD_DATABASE_NAME}"
-kubectl patch secret "${DJANGO_SECRET}" -n "${NAMESPACE}" -p "{\"data\":\"DD_DATABASE_URL\":\"$(printf ${DD_DATABASE_URL} | base64 -w0)\"}}"
+kubectl patch secret "${DJANGO_SECRET}" -n "${NAMESPACE}" -p "{\"data\": {\"DD_DATABASE_URL\":\"$(printf ${DD_DATABASE_URL} | base64 -w0)\"}}"
 
 export INGRESS="${SERVICE}"
 export MANAGED_CERT="${SERVICE}"
