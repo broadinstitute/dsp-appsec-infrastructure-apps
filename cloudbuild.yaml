@@ -202,7 +202,7 @@ steps:
 # deploy DefectDojo to GKE cluster
 - id: defectdojo
   name: *kubectl
-  waitFor: ['shared', 'defectdojo-django-image', 'defectdojo-nginx-image']
+  waitFor: ['shared', 'defectdojo-django-image']
   entrypoint: ./deploy.sh
   dir: defectdojo
 
