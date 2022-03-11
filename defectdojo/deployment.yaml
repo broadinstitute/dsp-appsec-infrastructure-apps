@@ -204,7 +204,10 @@ metadata:
   name: ${CELERY_CONFIG}
   namespace: ${NAMESPACE}
 data:
+  DD_CELERY_BROKER_SCHEME: amqp
   DD_CELERY_BROKER_HOST: ${LOCALHOST}
+  DD_CELERY_BROKER_PORT: '5672'
+  DD_CELERY_BROKER_PATH: /
   DD_CELERY_BROKER_USER: celery
 ---
 apiVersion: v1
