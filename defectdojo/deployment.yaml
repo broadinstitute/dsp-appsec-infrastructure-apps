@@ -197,6 +197,7 @@ data:
   DD_DATABASE_PORT: '${DD_DATABASE_PORT}'
   DD_DATABASE_NAME: postgres
   DD_DATABASE_USER: ${DD_DATABASE_USER}
+  DD_PROFILE: postgres-rabbitmq
 ---
 apiVersion: v1
 kind: ConfigMap
