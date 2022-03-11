@@ -85,7 +85,10 @@ spec:
       - name: celerybeat
         image: ${DD_DJANGO_IMAGE}
         command:
-        - /entrypoint-celery-beat.sh
+        - /bin/sleep
+        args:
+        - infinity
+        # - /entrypoint-celery-beat.sh
         envFrom:
         - configMapRef:
             name: ${DJANGO_CONFIG}
