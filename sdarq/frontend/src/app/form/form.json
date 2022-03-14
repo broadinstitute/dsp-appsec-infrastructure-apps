@@ -237,59 +237,113 @@
             "name": "Authentication and Authorization",
             "elements": [{
                     "type": "checkbox",
-                    "name": "Authentication & authorization",
+                    "name": "Auth&Authz",
                     "title": "Check what is applicable:",
                     "choices": [
-                        "Our application requires regular users to log in. Most features aren't available without logging in.",
-                        "In addition to an interface for regular users, our application provides an administration interface.",
-                        "Our application features complex user management. Various roles can be assigned to user accounts."
+                      {
+                        "value": "Regular log in",
+                        "text": "Our application requires regular users to log in. Most features aren't available without logging in."
+                      },
+                      {
+                        "value": "Admin interface",
+                        "text": "In addition to an interface for regular users, our application provides an administration interface."
+                      },
+                      {
+                        "value": "Complex user manag",
+                        "text": "Our application features complex user management. Various roles can be assigned to user accounts."
+                      }
                     ]
             },
                 {
                     "type": "checkbox",
                     "name": "SSO mechanisms",
-                    "visibleIf": "{Authentication & authorization} = [\"Our application requires regular users to log in. Most features aren\\'t available without logging in.\"] or {Authentication & authorization} = [\"In addition to an interface for regular users, our application provides an administration interface.\"] or {Authentication & authorization} = [\"Our application requires regular users to log in. Most features aren\\'t available without logging in.\",\"In addition to an interface for regular users, our application provides an administration interface.\"]",
+                    "visibleIf": "{Auth&Authz} = [\"Regular log in\"] or {Auth&Authz} = [\"Admin interface\"] or {Auth&Authz} = [\"Regular log in\",\"Admin interface\"]",
+                    "enableIf": "{Auth&Authz} = [\"Regular log in\"] or {Auth&Authz} = [\"Admin interface\"] or {Auth&Authz} = [\"Regular log in\",\"Admin interface\"]",
                     "title": "Is your application integrated with any of the following single sign-on (SSO) mechanisms?",
                     "hasOther": true,
                     "choices": [
-                        "SAML 2.0",
-                        "OpenID Connect / OAuth2 Login",
-                        "OpenID 2.0",
-                        "LDAP / Active Directory"
+                      {
+                        "value": "SAML2.0",
+                        "text": "SAML 2.0"
+                      },
+                      {
+                        "value": "OpenIDConnect/Oauth2",
+                        "text": "OpenID Connect/OAuth2 Login"
+                      },
+                      {
+                        "value": "OpenID2.0",
+                        "text": "OpenID 2.0"
+                      },
+                      {
+                        "value": "LDAP/AD",
+                        "text": "LDAP / Active Directory"
+                      }
                     ]
             },
                 {
                     "type": "checkbox",
-                    "name": " OAuth2_OpenIDC login implementation",
-                    "visibleIf": "{SSO mechanisms} = [\"OpenID Connect / OAuth2 Login\"]",
-                    "title": "Implementing OAuth2 Login / OpenID Connect from scratch is fairly complex and error-prone, and mistakes can result in security vulnerabilities. Select the option that best describes your implementation:",
+                    "name": "OAuth2_OpenIDC",
+                    "visibleIf": "{SSO mechanisms} = [\"OpenIDConnect/Oauth2\"]",
+                    "enableIf": "{SSO mechanisms} = [\"OpenIDConnect/Oauth2\"]",
+                    "title": "Select the option that best describes your implementation:",
                     "choices": [
-                        "Very secure: We're using a standard OAuth2 library, and we update it when security fixes are released.",
-                        "Secure: We implemented OAuth2 on our own, but our employees are experts and we're convinced that it is implemented securely.",
-                        "Not sure: We implemented OAuth2 on our own, and it seemed simple at the time. I'm not sure about the security of our implementation."
+                      {
+                        "value": "Very secure",
+                        "text": "Very secure: We're using a standard OAuth2 library, and we update it when security fixes are released."
+                      },
+                      {
+                        "value": "Secure",
+                        "text": "Secure: We implemented OAuth2 on our own, but our employees are experts and we're convinced that it is implemented securely."
+                      },
+                      {
+                        "value": "Not sure",
+                        "text": "Not sure: We implemented OAuth2 on our own, and it seemed simple at the time. I'm not sure about the security of our implementation."
+                      }
                     ]
             },
                 {
                     "type": "radiogroup",
-                    "name": "Username/password-based authentication",
+                    "name": "Usern/passw",
                     "title": "Does any part of the application employ username/password-based authentication?",
                     "choices": [
-                        "Yes",
-                        "No"
+                      {
+                        "value": "Yes",
+                        "text": "Yes"
+                      },
+                      {
+                        "value": "No",
+                        "text": "No"
+                      }
                     ]
             },
                 {
                     "type": "checkbox",
                     "name": "Password_storage",
-                    "visibleIf": "{Username/password-based authentication} = \"Yes\"",
+                    "visibleIf": "{Usern/passw} = \"Yes\"",
+                    "enableIf": "{Usern/passw} = \"Yes\"",
                     "title": "How does the application store passwords?",
                     "hasOther": true,
                     "choices": [
-                        "In plain text (unencrypted)",
-                        "Using reversible encryption (e.g., DES, 3DES, AES, etc.)",
-                        "Using a secure cryptographic one-way hash function (such as SHA-256) of the password, without the use of a salt",
-                        "Using a secure cryptographic one-way hash function (such as SHA-256) of the salted password",
-                        "Using a dedicated password-based key derivation function, such as bcrypt, PBKDF2 or scrypt"
+                      {
+                        "value": "Plain text",
+                        "text": "In plain text (unencrypted)"
+                      },
+                      {
+                        "value": "Reversible encryption",
+                        "text": "Using reversible encryption (e.g., DES, 3DES, AES, etc.)"
+                      },
+                      {
+                        "value": "SHA-256",
+                        "text": "Using a secure cryptographic one-way hash function (such as SHA-256) of the password, without the use of a salt"
+                      },
+                      {
+                        "value": "SHA-256+salt",
+                        "text": "Using a secure cryptographic one-way hash function (such as SHA-256) of the salted password"
+                      },
+                      {
+                        "value": "Key derivation func",
+                        "text": "Using a dedicated password-based key derivation function, such as bcrypt, PBKDF2 or scrypt"
+                      }
                     ]
             }
             ],
@@ -608,31 +662,31 @@
                 {
                     "type": "html",
                     "name": "Alert-general1",
-                    "visibleIf": "{ OAuth2_OpenIDC login implementation} = [\"Secure: We implemented OAuth2 on our own, but our employees are experts and we\\'re convinced that it is implemented securely.\"]",
+                    "visibleIf": "{ OAuth2_OpenIDC} = [\"Secure: We implemented OAuth2 on our own, but our employees are experts and we\\'re convinced that it is implemented securely.\"]",
                     "html": "<div class=\"tip\">Standard libraries have had vulnerabilities due to the intricacies of the standard. Be sure to ask your penetration testing provider to take a look at the OAuth2 implementation.</div>"
                 },
                 {
                     "type": "html",
                     "name": "Alert-OpenIDC-implementation",
-                    "visibleIf": "{ OAuth2_OpenIDC login implementation} = [\"Not sure: We implemented OAuth2 on our own, and it seemed simple at the time. I\\'m not sure about the security of our implementation.\"]",
+                    "visibleIf": "{ OAuth2_OpenIDC} = [\"Not sure: We implemented OAuth2 on our own, and it seemed simple at the time. I\\'m not sure about the security of our implementation.\"]",
                     "html": "<div class=\"highs\">Implementing OAuth2 on your own is extremely dangerous. The only way to securely implement it is through a well-known and well-tested library.\n</div>"
                 },
                 {
                     "type": "html",
                     "name": "OpenID2.0 ",
-                    "visibleIf": "{SSO mechanisms} = [\"OpenID 2.0\"]",
+                    "visibleIf": "{SSO mechanisms} = [\"OpenID2.0\"]",
                     "html": "<div class=\"highs\">OpenID 2.0 has been replaced by OpenID Connect (also called OAuth2 Login). We recommend updating your application's SSO integration to support OpenID Connect\n</div>"
                 },
                 {
                     "type": "html",
                     "name": "ldap",
-                    "visibleIf": "{SSO mechanisms} = [\"LDAP / Active Directory\"]",
+                    "visibleIf": "{SSO mechanisms} = [\"LDAP/AD\"]",
                     "html": "<div class=\"highs\">Integrating with LDAP and/or Active Directory has a significant downside: any application that integrates with it has to receive the user's SSO password. As a result, a vulnerability in any integrated application puts the password at risk for all other applications. We recommend using an SSO mechanism that does not require the password to be sent anywhere other than a central authentication system.\n</div>"
                 },
                 {
                     "type": "html",
                     "name": "plaintext_password",
-                    "visibleIf": "{Password_storage} = [\"In plain text (unencrypted)\"]  or {Password_storage} = [\"Using reversible encryption (e.g., DES, 3DES, AES, etc.)\"]  or {Password_storage} = [\"Using a secure cryptographic one-way hash function (such as SHA-256) of the password, without the use of a salt\"]  or {Password_storage} = [\"In plain text (unencrypted)\",\"Using reversible encryption (e.g., DES, 3DES, AES, etc.)\",\"Using a secure cryptographic one-way hash function (such as SHA-256) of the password, without the use of a salt\"]",
+                    "visibleIf": "{Password_storage} = [\"Plain text\"]  or {Password_storage} = [\"Reversible encryption\"]  or {Password_storage} = [\"SHA-256\"]  or {Password_storage} = [\"Plain text\",\"Reversible encryption\",\"SHA-256\"]",
                     "html": "<div class=\"highs\">Passwords should be stored in such a way that the original passwords cannot be easily recovered, even if an attacker manages to get access to the storage location (e.g., through a SQL injection vulnerability). At a minimum, passwords should be secured using a cryptographic one-way hash function and a salt. We strongly recommended using password-based key derivation function like bcrypt PBKDF2 or scrypt instead; they were specifically designed for this use case and make it significantly harder for attackers to crack password hashes.\n</div>"
                 },
                 {
@@ -765,23 +819,23 @@
                             "visibleIf": "{Applicable} contains \"Persistent_storage\""
                         },
                         {
-                            "visibleIf": "{ OAuth2_OpenIDC login implementation} = [\"Secure: We implemented OAuth2 on our own, but our employees are experts and we\\'re convinced that it is implemented securely.\"]",
+                            "visibleIf": "{ OAuth2_OpenIDC} = [\"Secure: We implemented OAuth2 on our own, but our employees are experts and we\\'re convinced that it is implemented securely.\"]",
                             "value": "Standard libraries have had vulnerabilities due to the intricacies of the standard. Be sure to ask your penetration testing provider to take a look at the OAuth2 implementation."
                         },
                         {
-                            "visibleIf": "{ OAuth2_OpenIDC login implementation} = [\"Not sure: We implemented OAuth2 on our own, and it seemed simple at the time. I\\'m not sure about the security of our implementation.\"]",
+                            "visibleIf": "{ OAuth2_OpenIDC} = [\"Not sure: We implemented OAuth2 on our own, and it seemed simple at the time. I\\'m not sure about the security of our implementation.\"]",
                             "value": "Implementing OAuth2 on your own is extremely dangerous. The only way to securely implement it is through a well-known and well-tested library."
                         },
                         {
-                            "visibleIf": "{SSO mechanisms} = [\"OpenID 2.0\"]",
+                            "visibleIf": "{SSO mechanisms} = [\"OpenID2.0\"]",
                             "value": "OpenID 2.0 has been replaced by OpenID Connect (also called OAuth2 Login). We recommend updating your application's SSO integration to support OpenID Connect."
                         },
                         {
-                            "visibleIf": "{SSO mechanisms} = [\"LDAP / Active Directory\"]",
+                            "visibleIf": "{SSO mechanisms} = [\"LDAP/AD\"]",
                             "value": "Integrating with LDAP and/or Active Directory has a significant downside: any application that integrates with it has to receive the user's SSO password. As a result, a vulnerability in any integrated application puts the password at risk for all other applications. We recommend using an SSO mechanism that does not require the password to be sent anywhere other than a central authentication system."
                         },
                         {
-                            "visibleIf": "{Password_storage} = [\"In plain text (unencrypted)\"]  or {Password_storage} = [\"Using reversible encryption (e.g., DES, 3DES, AES, etc.)\"]  or {Password_storage} = [\"Using a secure cryptographic one-way hash function (such as SHA-256) of the password, without the use of a salt\"]  or {Password_storage} = [\"In plain text (unencrypted)\",\"Using reversible encryption (e.g., DES, 3DES, AES, etc.)\",\"Using a secure cryptographic one-way hash function (such as SHA-256) of the password, without the use of a salt\"]",
+                            "visibleIf": "{Password_storage} = [\"Plain text\"]  or {Password_storage} = [\"Reversible encryption\"]  or {Password_storage} = [\"SHA-256\"]  or {Password_storage} = [\"Plain text\",\"Reversible encryption\",\"SHA-256\"]",
                             "value": "Passwords should be stored in such a way that the original passwords cannot be easily recovered, even if an attacker manages to get access to the storage location (e.g., through a SQL injection vulnerability). At a minimum, passwords should be secured using a cryptographic one-way hash function and a salt. We strongly recommended using password-based key derivation function like bcrypt PBKDF2 or scrypt instead; they were specifically designed for this use case and make it significantly harder for attackers to crack password hashes."
                         },
                         {
