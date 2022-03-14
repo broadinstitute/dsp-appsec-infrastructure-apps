@@ -255,7 +255,6 @@
                     "visibleIf": "{Auth&Authz} = [\"Regular log in\"] or {Auth&Authz} = [\"Admin interface\"] or {Auth&Authz} = [\"Regular log in\",\"Admin interface\"]",
                     "enableIf": "{Auth&Authz} = [\"Regular log in\"] or {Auth&Authz} = [\"Admin interface\"] or {Auth&Authz} = [\"Regular log in\",\"Admin interface\"]",
                     "title": "Is your application integrated with any of the following single sign-on (SSO) mechanisms?",
-                    "hasOther": true,
                     "choices": [
                       {
                         "value": "SAML2.0",
@@ -317,7 +316,6 @@
                     "visibleIf": "{Usern/passw} = \"Yes\"",
                     "enableIf": "{Usern/passw} = \"Yes\"",
                     "title": "How does the application store passwords?",
-                    "hasOther": true,
                     "choices": [
                       {
                         "value": "Plain text",
@@ -638,41 +636,41 @@
                     "html": "<div class=\"highs\">Your service must be able to scale in response to load, either manually or automatically. Ask DevOps if you need more clarification on this.</div>"
                 },
                 {
-                    "type": "html",
-                    "name": "Alert-certificate",
-                    "visibleIf": "{Applicable} contains \"URL_certificate\"",
-                    "html": "<div class=\"medium\">Reach out to DevOps team about certificates for a URL\n</div>"
-                },
+                  "type": "html",
+                  "name": "Alert-general1",
+                  "visibleIf": "{OAuth2_OpenIDC} contains \"Secure\"",
+                  "html": "<div class=\"highs\">Standard libraries have had vulnerabilities due to the intricacies of the standard. Be sure to ask your penetration testing provider to take a look at the OAuth2 implementation.</div>"
+              },
                 {
                     "type": "html",
-                    "name": "Alert-general1",
-                    "visibleIf": "{ OAuth2_OpenIDC} = [\"Secure: We implemented OAuth2 on our own, but our employees are experts and we\\'re convinced that it is implemented securely.\"]",
-                    "html": "<div class=\"tip\">Standard libraries have had vulnerabilities due to the intricacies of the standard. Be sure to ask your penetration testing provider to take a look at the OAuth2 implementation.</div>"
-                },
-                {
-                    "type": "html",
-                    "name": "Alert-OpenIDC-implementation",
-                    "visibleIf": "{ OAuth2_OpenIDC} = [\"Not sure: We implemented OAuth2 on our own, and it seemed simple at the time. I\\'m not sure about the security of our implementation.\"]",
-                    "html": "<div class=\"highs\">Implementing OAuth2 on your own is extremely dangerous. The only way to securely implement it is through a well-known and well-tested library.\n</div>"
-                },
-                {
-                    "type": "html",
-                    "name": "OpenID2.0 ",
-                    "visibleIf": "{SSO mechanisms} = [\"OpenID2.0\"]",
+                    "name": "Alert-OpenID2.0",
+                    "visibleIf": "{SSO mechanisms} contains \"OpenID2.0\"",
                     "html": "<div class=\"highs\">OpenID 2.0 has been replaced by OpenID Connect (also called OAuth2 Login). We recommend updating your application's SSO integration to support OpenID Connect\n</div>"
                 },
                 {
                     "type": "html",
-                    "name": "ldap",
-                    "visibleIf": "{SSO mechanisms} = [\"LDAP/AD\"]",
-                    "html": "<div class=\"highs\">Integrating with LDAP and/or Active Directory has a significant downside: any application that integrates with it has to receive the user's SSO password. As a result, a vulnerability in any integrated application puts the password at risk for all other applications. We recommend using an SSO mechanism that does not require the password to be sent anywhere other than a central authentication system.\n</div>"
+                    "name": "Alert-ldap",
+                    "visibleIf": "{SSO mechanisms} contains \"LDAP/AD\"",
+                    "html": "<div class=\"highs\">Integrating with LDAP and/or Active Directory has a significant downside: any application that integrates with it has to receive the user's SSO password. As a result, a vulnerability in any integrated application puts the password at risk for all other applications. We recommend using an SSO mechanism that does not require the password to be sent anywhere other than a authentication system.\n</div>"
                 },
                 {
                     "type": "html",
-                    "name": "plaintext_password",
-                    "visibleIf": "{Password_storage} = [\"Plain text\"]  or {Password_storage} = [\"Reversible encryption\"]  or {Password_storage} = [\"SHA-256\"]  or {Password_storage} = [\"Plain text\",\"Reversible encryption\",\"SHA-256\"]",
+                    "name": "Alert-OpenIDC-implementation",
+                    "visibleIf": "{OAuth2_OpenIDC} contains \"Not sure\"",
+                    "html": "<div class=\"highs\">Implementing OAuth2 on your own is extremely dangerous. The only way to securely implement it is through a well-known and well-tested library.\n</div>"
+                },
+                {
+                    "type": "html",
+                    "name": "Alert-plaintext_password",
+                    "visibleIf": "{Password_storage} contains \"Plain text\"  or {Password_storage} contains \"Reversible encryption\"  or {Password_storage} contains \"SHA-256\"",
                     "html": "<div class=\"highs\">Passwords should be stored in such a way that the original passwords cannot be easily recovered, even if an attacker manages to get access to the storage location (e.g., through a SQL injection vulnerability). At a minimum, passwords should be secured using a cryptographic one-way hash function and a salt. We strongly recommended using password-based key derivation function like bcrypt PBKDF2 or scrypt instead; they were specifically designed for this use case and make it significantly harder for attackers to crack password hashes.\n</div>"
                 },
+                {
+                  "type": "html",
+                  "name": "Alert-certificate",
+                  "visibleIf": "{Applicable} contains \"URL_certificate\"",
+                  "html": "<div class=\"medium\">Reach out to DevOps team about certificates for a URL\n</div>"
+              },
                 {
                     "type": "html",
                     "name": "Alert-unitTesting",
@@ -803,23 +801,23 @@
                             "visibleIf": "{Applicable} contains \"Persistent_storage\""
                         },
                         {
-                            "visibleIf": "{ OAuth2_OpenIDC} = [\"Secure: We implemented OAuth2 on our own, but our employees are experts and we\\'re convinced that it is implemented securely.\"]",
+                            "visibleIf": "{OAuth2_OpenIDC} contains \"Secure\"",
                             "value": "Standard libraries have had vulnerabilities due to the intricacies of the standard. Be sure to ask your penetration testing provider to take a look at the OAuth2 implementation."
                         },
                         {
-                            "visibleIf": "{ OAuth2_OpenIDC} = [\"Not sure: We implemented OAuth2 on our own, and it seemed simple at the time. I\\'m not sure about the security of our implementation.\"]",
+                            "visibleIf": "{OAuth2_OpenIDC} contains \"Not sure\"",
                             "value": "Implementing OAuth2 on your own is extremely dangerous. The only way to securely implement it is through a well-known and well-tested library."
                         },
                         {
-                            "visibleIf": "{SSO mechanisms} = [\"OpenID2.0\"]",
+                            "visibleIf": "{SSO mechanisms} contains \"OpenID2.0\"",
                             "value": "OpenID 2.0 has been replaced by OpenID Connect (also called OAuth2 Login). We recommend updating your application's SSO integration to support OpenID Connect."
                         },
                         {
-                            "visibleIf": "{SSO mechanisms} = [\"LDAP/AD\"]",
-                            "value": "Integrating with LDAP and/or Active Directory has a significant downside: any application that integrates with it has to receive the user's SSO password. As a result, a vulnerability in any integrated application puts the password at risk for all other applications. We recommend using an SSO mechanism that does not require the password to be sent anywhere other than a central authentication system."
+                            "visibleIf": "{SSO mechanisms} contains \"LDAP/AD\"",
+                            "value": "Integrating with LDAP and/or Active Directory has a significant downside: any application that integrates with it has to receive the user's SSO password. As a result, a vulnerability in any integrated application puts the password at risk for all other applications. We recommend using an SSO mechanism that does not require the password to be sent anywhere other than a authentication system."
                         },
                         {
-                            "visibleIf": "{Password_storage} = [\"Plain text\"]  or {Password_storage} = [\"Reversible encryption\"]  or {Password_storage} = [\"SHA-256\"]  or {Password_storage} = [\"Plain text\",\"Reversible encryption\",\"SHA-256\"]",
+                            "visibleIf": "{Password_storage} contains \"Plain text\"  or {Password_storage} contains \"Reversible encryption\" or {Password_storage} contains \"SHA-256\"",
                             "value": "Passwords should be stored in such a way that the original passwords cannot be easily recovered, even if an attacker manages to get access to the storage location (e.g., through a SQL injection vulnerability). At a minimum, passwords should be secured using a cryptographic one-way hash function and a salt. We strongly recommended using password-based key derivation function like bcrypt PBKDF2 or scrypt instead; they were specifically designed for this use case and make it significantly harder for attackers to crack password hashes."
                         },
                         {
