@@ -187,34 +187,29 @@
                         {
                             "value": "DAST",
                             "text": "Our service is currently scanned weekly/monthly via ZAP or similar tools"
-                        }
-                    ]
-                },
-                {
-                    "type": "radiogroup",
-                    "name": "Runtime protection",
-                    "title": "Do you have runtime application self-protection in your stack?",
-                    "choices": [
-                        "Yes",
-                        "No"
-                    ]
-                },
-                {
-                    "type": "radiogroup",
-                    "name": "Stack protection",
-                    "visibleIf": "{Runtime protection} = \"Yes\"",
-                    "title": "Choose what's applicable:",
-                    "choices": [
-                        {
-                            "value": "RASP",
-                            "text": "We are using Tcell or a similar tool to enable RASP (Runtime application self-protection) mode"
                         },
                         {
-                            "value": "Proxy",
-                            "text": "We are using a Apache-Nginx proxy"
-                        }
+                          "value": "RASP",
+                          "text": "We are using Tcell Rapid or a similar tool to enable RASP (Runtime application self-protection) mode"
+                      }
                     ]
                 },
+                {
+                  "type": "radiogroup",
+                  "name": "ApacheProxy for frontend encryption",
+                  "title": "Are you using the Apache Proxy for the front-end to your application to terminate Encryption?",
+                  "choices": [
+                      "Yes",
+                      "No"
+                  ]
+              },
+              {
+                  "type": "comment",
+                  "name": "Https implementation",
+                  "visibleIf": "{ApacheProxy for frontend encryption} = \"No\"",
+                  "title": "Explain how you are implementing HTTPS",
+                  "enableIf": "{ApacheProxy for frontend encryption} = \"No\""
+              },
                 {
                     "type": "checkbox",
                     "name": "Applicable",
@@ -597,7 +592,7 @@
                 {
                     "type": "html",
                     "name": "Alert-RuntimeProtection",
-                    "visibleIf": "{Stack protection} empty or {Runtime protection} = 'No'",
+                    "visibleIf": "{Security tools} notcontains \"RASP\"",
                     "html": "<div class=\"highs\">Please make sure your service is using TCell or a similar tool to add some runtime protection in your stack. RASP in the app is preferred over WAF/Apache proxy. Ask appsec team if you need more clarification on this.</div>"
                 },
                 {
@@ -797,7 +792,7 @@
                         },
                         {
                             "value": "Please make sure your service is using Tcell Rapid functionalities or is behind the orchestration layer to add some runtime protection in your stack. RASP in the app is preferred over WAF/Apache proxy. Ask appsec team if you need more clarification on this.",
-                            "visibleIf": "{Stack protection} empty or {Runtime protection} = 'No'"
+                            "visibleIf": "{Security tools} notcontains \"RASP\""
                         },
                         {
                             "value": "Reach out to DevOps team about certificates for a URL.",
