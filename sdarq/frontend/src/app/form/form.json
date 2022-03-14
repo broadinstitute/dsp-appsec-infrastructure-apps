@@ -540,17 +540,6 @@
             "title": "Reliability"
         },
         {
-            "name": "Notes",
-            "elements": [
-                {
-                    "type": "comment",
-                    "name": "Notes",
-                    "title": "Provide any additional information that you think it's important in regards to your application/service"
-                }
-            ],
-            "title": "Notes"
-        },
-        {
             "name": "Alerts",
             "elements": [
                 {
