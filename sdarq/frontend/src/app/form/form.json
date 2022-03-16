@@ -52,40 +52,70 @@
         {
             "name": "Compliance",
             "elements": [
-                {
-                    "type": "radiogroup",
-                    "name": "Compliance",
-                    "title": "Is an SIA (Security Impact Analysis) needed? In order to determine this please select what's applicable. My application:",
-                    "choices": [
-                        {
-                            "value": "Uses a Global Load Balancer that doesn’t already exist",
-                            "text": " Uses a Global Load Balancer that doesn’t already exist "
-                        },
-                        {
-                            "value": "Cloud Function that can be accessed from anywhere on the internet",
-                            "text": " Is a new Cloud Function that can be accessed from anywhere on the Internet "
-                        },
-                        {
-                            "value": "New GAE app that doesn’t use Firewall Rules to limit the app that can talk to it",
-                            "text": " Is a new GAE application that doesn’t use Firewall Rules to limit the applications that can talk to it "
-                        },
-                        {
-                            "value": "Not behind an API Gateway",
-                            "text": " Is not behind an API Gateway "
-                        },
-                        {
-                            "value": "Does not require government oversight",
-                            "text": "Does not require government oversight"
-                        },
-                        {
-                            "value": "Uses a new cloud component (GCP) that hasn’t been used before by our microservices",
-                            "text": "Uses a new cloud component (GCP service) that hasn’t been used before by our microservices."
-                        }
-                    ]
-                }
+             {
+              "type": "radiogroup",
+              "name": "Federal compliance oversight",
+              "title": "Does your application require federal compliance oversight? In order to determine this, please select the most appropriate option.",
+              "isRequired": true,
+              "choices": [
+               {
+                "value": "System governed by compliance",
+                "text": "My application is hosted in a system environment that is governed by compliance such as NIST 800-52, HIPAA, HITRUST, etc."
+               },
+               {
+                "value": "Interconnected with system governed by compliance",
+                "text": "My application is not hosted in a system environment that is governed by compliance such as NIST 800-52, HIPAA, HITRUST, etc but will interconnect with this system environment"
+               },
+               {
+                "value": "Not a system governed by compliance",
+                "text": "My application is not hosted in a system environment that is governed by compliance such as NIST 800-52, HIPAA, HITRUST, etc environment and does not require government oversight"
+               }
+              ]
+             },
+             {
+              "type": "checkbox",
+              "name": "SIA",
+              "visible": false,
+              "visibleIf": "{Federal compliance oversight} = 'System governed by compliance'",
+              "title": "Is an SIA (Security Impact Analysis) needed? In order to determine this, please select what's applicable. My application:",
+              "choices": [
+               {
+                "value": "Global Load Balancer",
+                "text": "Uses a Global Load Balancer that doesn’t already exist"
+               },
+               {
+                "value": "Cloud Function",
+                "text": "Is a new Cloud Function that can be accessed from anywhere on the Internet"
+               },
+               {
+                "value": "Not behind API Gateway",
+                "text": "Is not behind an API Gateway"
+               },
+               {
+                "value": "New Cloud Component",
+                "text": "Uses a new cloud component (Google service offering) that hasn’t been used before by our microservices. How can you tell if your component is new? Ask Compliance or Appsec team for more info. "
+               },
+               {
+                "value": "New functionality",
+                "text": "Introduces functionality that is brand new to a system environment that is governed by compliance such as NIST 800-52, HIPAA, HITRUST, etc."
+               },
+               {
+                "value": "Infrastructure migration",
+                "text": "Migrates an existing application to new infrastructure (e.g., a GAE application is being rewritten to launch in GKE)"
+               },
+               {
+                "value": "Share data with 3rd-party",
+                "text": "Communicates or shares data with a new third-party application or service"
+               },
+               {
+                "value": "GAE app without firewall rules",
+                "text": "Is a new GAE application that doesn’t use Firewall Rules to limit the applications that can talk to it"
+               }
+              ]
+             }
             ],
             "title": "Compliance"
-        },
+           },
         {
             "name": "Architecture",
             "elements": [
@@ -542,8 +572,15 @@
                 },
                 {
                     "type": "html",
-                    "name": "Alert-Compliance",
+                    "name": "Alert-SIA",
+                    "visibleIf": "{Federal compliance oversight} = \"System governed by compliance\"",
                     "html": "<div class=\"highs\">Get Started with the SIA doc:\n <ul>\n <li>SIA (Security Impact Analysis) Doc\n Build a concept of operations/Security Impact Assessment document.\n </li>\n <li>Update/build the Design Specification Document</li>\n <li>Update/build the Network Diagram and Architecture</li>\n <li>Make a user flow of your component, make sure to show how it connects to rest of product\n<a href=\"https://www.lucidchart.com/blog/why-user-flow-diagrams-are-worth-your-time\">(User Flow)</a>\n </li>\n <li>Make a data flow diagram of your component, make sure to show how it connects\n to rest of product<a href=\"https://www.lucidchart.com/pages/data-flow-diagram\">(Data Flow Diagram)</a>\n </li>\n </ul></div>"
+                },
+                {
+                    "type": "html",
+                    "name": "Alert-SIA",
+                    "visibleIf": "{Federal compliance oversight} = \"Interconnected with system governed by compliance\"",
+                    "html": "<div class=\"highs\">Your application will not be hosted within a system environment that is governed by compliance such as NIST 800-52, HIPAA, HITRUST, etc. but will interconnect with this system environment. Depending on the details of the interconnection, your application may be required to align with certain information security compliance standards and/or meet specific requirements. Our compliance team will need to evaluate the interconnection to determine what, if any, requirements will be for your application. Please start a discussion with the Compliance Team.</div>"
                 },
                 {
                     "type": "html",
@@ -761,8 +798,12 @@
                             "text": "Please reach out to AppSec team for initial security discussion. This is basically a Threat Modeling and Security Architecture Review session. The main purpose of the meeting is for us to take  an iterative, recursive look at the architecture and design of a new service/system."
                         },
                         {
-                            "value": "Get Started with the SIA doc, build a concept of operations/Security Impact Assessment document. Update/build the Design Specification document. Update/build the Network Diagram and Architecture. Make a user flow of your component, make sure to show how it connects to rest of product. Make a data flow diagram of your component, make sure to show how it connects to rest of product.",
-                            "text": "Get Started with the SIA doc, build a concept of operations/Security Impact Assessment document. Update/build the Design Specification document. Update/build the Network Diagram and Architecture. Make a user flow of your component, make sure to show how it connects to rest of product. Make a data flow diagram of your component, make sure to show how it connects to rest of product."
+                            "visibleIf": "{Federal compliance oversight} = \"Interconnected with system governed by compliance\"",
+                            "text": "Your application will not be hosted within a system environment that is governed by compliance such as NIST 800-52, HIPAA, HITRUST, etc. but will interconnect with this system environment. Depending on the details of the interconnection, your application may be required to align with certain information security compliance standards and/or meet specific requirements. Our compliance team will need to evaluate the interconnection to determine what, if any, requirements will be for your application. Please start a discussion with the Compliance Team."
+                        },
+                        {
+                            "visibleIf": "{Federal compliance oversight} = \"System governed by compliance\"",
+                            "value": "Get Started with the SIA doc, build a concept of operations/Security Impact Assessment document. Update/build the Design Specification document. Update/build the Network Diagram and Architecture. Make a user flow of your component, make sure to show how it connects to rest of product. Make a data flow diagram of your component, make sure to show how it connects to rest of product."
                         },
                         {
                             "value": "You must use SourceClear, Snyk or similar tools for downstream dependency/3rd  party component management. Ask AppSec team to add your repo.",
