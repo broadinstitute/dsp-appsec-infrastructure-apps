@@ -101,7 +101,7 @@
                },
                {
                 "value": "Infrastructure migration",
-                "text": "Migrates an existing application to new infrastructure (e.g., a GAE application is being rewritten to launch in GKE)"
+                "text": "Migrates an existing application to new infrastructure (e.g., a Google App ENgine application is being rewritten to launch in GKE)"
                },
                {
                 "value": "Share data with 3rd-party",
@@ -163,21 +163,6 @@
                     "name": "project_id",
                     "visibleIf": "{Architecture} = 'GKE' or {Architecture} = 'GCF' or {Architecture} = 'GAE'",
                     "title": "Google project name"
-                },
-                {
-                    "type": "radiogroup",
-                    "name": "GCP best practices",
-                    "title": "Have the GCP best practices been followed in the design and use of cloud services?",
-                    "choices": [
-                        {
-                            "value": "Yes",
-                            "text": "Yes"
-                        },
-                        {
-                            "value": "No",
-                            "text": "No"
-                        }
-                    ]
                 }
             ],
             "title": "Architecture"
@@ -632,12 +617,6 @@
                 },
                 {
                     "type": "html",
-                    "name": "question1",
-                    "visibleIf": "{GCP best practices} = 'No'",
-                    "html": "<div class=\"highs\">Please check this <a href=\"https://dsp-security.broadinstitute.org/cloud-security/google-cloud-platform\">post</a> to  manage your GCP project.</div>"
-                },
-                {
-                    "type": "html",
                     "name": "Alert-encryptionBackupOptions",
                     "visibleIf": "{Applicable} contains \"Persistent_storage\"",
                     "html": "<div class=\"highs\">Reach out to DevOps team about persistence about Encryption and Backup options for your persistence storage.</div>"
@@ -783,13 +762,13 @@
                 {
                     "type": "text",
                     "name": "JiraProject",
-                    "title": "Add Jira project to create ticket",
+                    "title": "Track all security actions by creating a Jira ticket in your board.",
                     "description": "Please add the KEY of your Jira project. For example: ATP"
                 },
                 {
                     "type": "checkbox",
                     "name": "Ticket_Description",
-                    "title": "Add alerts in your ticket description:",
+                    "title": "Add actions to your ticket:",
                     "enableIf": "{JiraProject} notempty",
                     "isRequired": true,
                     "choices": [
@@ -924,10 +903,6 @@
                         {
                             "value": "You should create an on-call playbook for your service, and link it into the main on-call documentation.",
                             "visibleIf": "{Reliability} notcontains \"An on-call playbook for the service, linked it into the main on-call documentation\""
-                        },
-                        {
-                            "value": "Please check this post (https://dsp-security.broadinstitute.org/cloud-security/google-cloud-platform ) to  manage your GCP project.",
-                            "visibleIf": "{GCP best practices} = 'No'"
                         }
                     ],
                     "hasSelectAll": true
@@ -939,5 +914,6 @@
     "showNavigationButtons": "top",
     "showQuestionNumbers": "off",
     "questionErrorLocation": "bottom",
-    "showProgressBar": "top"
+    "showProgressBar": "top",
+    "description": "Welcome to New Service Questionnaire"
 }
