@@ -25,8 +25,6 @@ export class FormComponent implements OnInit {
     this.showForm = true;
   }
 
-
-
   sendData(result) {
     this.sendForm.sendFormData(result).subscribe((submitNewServiceQuestionnaireResponse) => {
     },

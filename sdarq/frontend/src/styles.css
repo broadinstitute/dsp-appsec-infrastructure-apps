@@ -205,36 +205,32 @@ label {
 
 
 .tip {
-  background: #aad7fb !important;
-  padding: 10px;
+  background: #0983e6 !important;
+  padding: 15px;
   border-radius: 10px;
-  color: #000 !important;
-}
-
-.tip a {
-  color: #000 !important;
+  color: #fff !important;
 }
 
 .highs {
-  background: #faadad !important;
-  padding: 10px;
+  background: #dd1616 !important;
+  padding: 15px;
   border-radius: 10px;
-  color: #000 !important;
+  color: #fff !important;
 }
 
 .highs a {
-  color: #000 !important;
+  color: #fb1 !important;
 }
 
 .medium {
-  background: #f7da9a !important;
-  padding: 10px;
+  background: #e4a40e !important;
+  padding: 15px;
   border-radius: 10px;
-  color: #000 !important;
+  color: #fff !important;
 }
 
 .medium a {
-  color: #000 !important;
+  color: #007bff !important;
 }
 
 .jira_ticket_alert {
