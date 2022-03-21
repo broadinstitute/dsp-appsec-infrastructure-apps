@@ -6,37 +6,69 @@
                     <h4 class="alert-heading">Oops!</h4>
                     <p> {{errorMessage}} </p>
                     <p class="mb-0">Please contact AppSec team for more information!</p>
-                  </div>
-            <form [formGroup]="chooseServiceForm" (ngSubmit)="editService()" *ngIf="chooseServiceToEditForm">
-                <label class="label-edit-security-controls">Enter service name to start editing security controls: </label><br>
-                <input class="input-edit-security-control" id="service" type="text" formControlName="service"><br><br>
-                <button [disabled]="!chooseServiceForm.valid" class="continue-button" type="submit">Continue</button>
-            </form>
-        </div>
+                </div>
+                <form [formGroup]="chooseServiceForm" (ngSubmit)="editService()" *ngIf="chooseServiceToEditForm">
+                    <label class="label-edit-security-controls">Enter service name to start editing security controls:
+                    </label><br>
+                    <input class="input-edit-security-control" id="service" type="text"
+                        formControlName="service"><br><br>
+                    <button [disabled]="!chooseServiceForm.valid" class="continue-button"
+                        type="submit">Continue</button>
+                </form>
+            </div>
         </div>
         <div class="row" *ngIf="serviceToEditForm">
             <div class="col-sm" *ngIf="showServiceData">
                 <div class="service-security-controls-block">
-                    <p class="service-cecurity-controls-title"> {{ service | uppercase }} security controls:</p>  <br><br>
-                    <p>This block purpose is to show current security controls implemented for {{ service | uppercase }} and to help you replace with new values.</p><br>
+                    <p class="service-cecurity-controls-title"> {{ service | uppercase }} security controls:</p>
+                    <br><br>
+                    <p>This block purpose is to show current security controls implemented for {{ service | uppercase }}
+                        and to help you replace with new values.</p><br>
                     <p>
-                    <strong>Service name:</strong> {{ service }} <br><br>
-                    <strong>Product name:</strong> {{ product }} <br><br>
-                    <strong>Security champion:</strong> {{ security_champion }} <br><br>
-                    <strong>Github:</strong> {{ github }} <br><br>
-                    <strong>Dev URL:</strong> {{ dev_url }} <br><br>
-                    <strong>Defect Dojo URL:</strong> {{ defect_dojo }} <br><br>
-                    <strong>Threat model:</strong> {{ threat_model }} <br><br>
-                    <strong>Threat model link:</strong> {{ threat_model_link }} <br><br>
-                    <strong>DAST (dynamic application security testing):</strong> {{ zap }} <br><br>
-                    <strong>Vulnerability management results link:</strong> {{ vulnerability_management }} <br><br>
-                    <strong>Downstream dependencies scan:</strong> {{ sourceclear }} <br><br>
-                    <strong>Dependecies scan results link:</strong> {{ sourceclear_link }} <br><br>
-                    <strong>Docker image scan:</strong> {{ docker_scan }} <br><br>
-                    <strong>SAST (static application security testing):</strong> {{ sast }} <br><br>
-                    <strong>GCP project scan:</strong> {{ cis_scanner }} <br><br>
-                    <strong>Security manual pentest run last 6 months:</strong> {{ burp }} <br><br>
-                    <strong>Security manual pentest results link:</strong> {{ security_pentest_link }} <br><br><br>
+                        <strong>Service name:</strong> {{ service }}<br><br>
+                        <strong>Product name:</strong> {{ product }}
+                        <button type="button" class="btn btn-warning" (click)="copyProductName()">
+                            <i class="fas fa-copy"></i> Copy
+                        </button><br><br>
+                        <strong>Security champion:</strong> {{ security_champion }}
+                        <button type="button" class="btn btn-warning" (click)="copySecChamp()">
+                            <i class="fas fa-copy"></i> Copy
+                        </button><br><br>
+                        <strong>Github:</strong> {{ github }}
+                        <button type="button" class="btn btn-warning" (click)="copyGithubUrl()">
+                            <i class="fas fa-copy"></i> Copy
+                        </button><br><br>
+                        <strong>Dev URL:</strong> {{ dev_url }}
+                        <button type="button" class="btn btn-warning" (click)="copyDevUrl()">
+                            <i class="fas fa-copy"></i> Copy
+                        </button><br><br>
+                        <strong>Defect Dojo URL:</strong> {{ defect_dojo }}
+                        <button type="button" class="btn btn-warning" (click)="copyDefectDojoUrl()">
+                            <i class="fas fa-copy"></i> Copy
+                        </button><br><br>
+                        <strong>Threat model:</strong> {{ threat_model }} <br><br>
+                        <strong>Threat model link:</strong> {{ threat_model_link }}
+                        <button type="button" class="btn btn-warning" (click)="copyTMLink()">
+                            <i class="fas fa-copy"></i> Copy
+                        </button><br><br>
+                        <strong>DAST (dynamic application security testing):</strong> {{ zap }} <br><br>
+                        <strong>Vulnerability management results link:</strong> {{ vulnerability_management }}
+                        <button type="button" class="btn btn-warning" (click)="copyVMLink()">
+                            <i class="fas fa-copy"></i> Copy
+                        </button><br><br>
+                        <strong>Downstream dependencies scan:</strong> {{ sourceclear }} <br><br>
+                        <strong>Dependecies scan results link:</strong> {{ sourceclear_link }}
+                        <button type="button" class="btn btn-warning" (click)="copySourcelearLink()">
+                            <i class="fas fa-copy"></i> Copy
+                        </button><br><br>
+                        <strong>Docker image scan:</strong> {{ docker_scan }} <br><br>
+                        <strong>SAST (static application security testing):</strong> {{ sast }} <br><br>
+                        <strong>GCP project scan:</strong> {{ cis_scanner }} <br><br>
+                        <strong>Security manual pentest run last 6 months:</strong> {{ burp }} <br><br>
+                        <strong>Security manual pentest results link:</strong> {{ security_pentest_link }}
+                        <button type="button" class="btn btn-warning" (click)="copyManualPentestLink()">
+                            <i class="fas fa-copy"></i> Copy
+                        </button><br><br><br>
                     </p>
                 </div>
             </div>
