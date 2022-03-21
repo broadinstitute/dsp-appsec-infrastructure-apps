@@ -1,7 +1,7 @@
 .service-security-controls-block {
-    background: linear-gradient(87deg,#494a50 0,#5c6164 100%) !important;
+    background: linear-gradient(87deg,#133f9b 0,#1255b3 100%) !important;
     color: white;
-    padding: 0 10% 0 10%;
+    padding: 0 6% 0 6%;
     border-radius: 2%;
 }
 
@@ -17,7 +17,7 @@
 }
 
 strong {
-    color: orange !important
+    color: #ffc009 !important;
 }
 
 .continue-button {
@@ -49,4 +49,10 @@ strong {
     margin: 2%;
     line-height: 2em;
     border: 1px solid #cecfd2;
+}
+
+.btn {
+    padding: 0.325rem 0.5rem !important;
+    font-size: 0.5rem !important;
+    line-height: 1 !important;
 }
