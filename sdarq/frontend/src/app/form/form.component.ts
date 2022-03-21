@@ -46,7 +46,8 @@ export class FormComponent implements OnInit {
       'docker_scan': false,
       'sourceclear': false,
       'threat_model': false,
-      'zap': false
+      'zap': false,
+      'sast': false
     };
     this.createNewSctService.createNewSCT(this.arrRequired).subscribe((createNewSCTResponse) => {
     });
