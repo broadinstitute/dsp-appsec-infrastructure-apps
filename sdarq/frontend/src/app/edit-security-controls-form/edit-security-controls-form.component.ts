@@ -28,6 +28,7 @@ export class EditSecurityControlsFormComponent implements OnInit {
   security_pentest_link: string;
   threat_model: boolean;
   threat_model_link: string;
+  sast: boolean;
   data: any;
   item: any;
   chooseServiceToEditForm: boolean;
@@ -78,6 +79,7 @@ export class EditSecurityControlsFormComponent implements OnInit {
         this.cis_scanner = serviceSecurityControl.cis_scanner;
         this.burp = serviceSecurityControl.burp;
         this.security_pentest_link = serviceSecurityControl.security_pentest_link;
+        this.sast = serviceSecurityControl.sast;
     },
     (serviceSecurityControl) => {
       this.errorMessage = serviceSecurityControl;
