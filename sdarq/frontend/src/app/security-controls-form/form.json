@@ -65,7 +65,7 @@
        {
         "type": "boolean",
         "name": "zap",
-        "title": "Service scan (via Zap or similar tool)",
+        "title": "Do you run a dynamic application security scan (via Zap or similar tool)?",
         "hideNumber": true,
         "isRequired": true
        },
@@ -82,7 +82,7 @@
        {
         "type": "boolean",
         "name": "sourceclear",
-        "title": "Downstream dependency scan (via Sourceclear, Snyk or similar tool)",
+        "title": "Do you scan downstream dependencies (via Sourceclear, Snyk or similar tool)?",
         "hideNumber": true,
         "isRequired": true
        },
@@ -107,6 +107,13 @@
         "type": "boolean",
         "name": "cis_scanner",
         "title": "GCP project scan (via CIS scanner or similar tool)",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "boolean",
+        "name": "SAST",
+        "title": "Are you using a static application security testing?",
         "hideNumber": true,
         "isRequired": true
        },

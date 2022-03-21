@@ -58,7 +58,7 @@
        {
         "type": "boolean",
         "name": "zap",
-        "title": "Service scan ( via Zap or similar tool)",
+        "title": "Do you run a dynamic application security scan (via Zap or similar tool)?",
         "hideNumber": true,
         "isRequired": true
        },
@@ -75,7 +75,7 @@
        {
         "type": "boolean",
         "name": "sourceclear",
-        "title": "Downstream dependency scan (via Sourceclear, Snyk or similar tool)",
+        "title": "Do you scan downstream dependencies (via Sourceclear, Snyk or similar tool)?",
         "hideNumber": true,
         "isRequired": true
        },
@@ -105,8 +105,15 @@
        },
        {
         "type": "boolean",
+        "name": "SAST",
+        "title": "Are you using a static application security testing?",
+        "hideNumber": true,
+        "isRequired": true
+       },
+       {
+        "type": "boolean",
         "name": "burp",
-        "title": "Have you performed any manual security pentest (via Burp or similar tool)",
+        "title": "Have you performed any manual security pentest (via Burp or similar tool)?",
         "hideNumber": true,
         "isRequired": true
        },

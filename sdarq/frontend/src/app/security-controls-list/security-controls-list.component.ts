@@ -12,7 +12,7 @@ export class SecurityControlsListComponent implements OnInit {
 
   serviceSecurityControl: ServiceSecurityControl[];
   // tslint:disable-next-line
-  headElements = ['Service', 'Product', 'Contact', 'Dev URL', 'Sourcecode', 'DefectDojo', 'Threat Model', 'Docker Scan', 'Manual Pentest', 'DAST', 'CIS scan', 'Dependecies scan'];
+  headElements = ['Service', 'Product', 'Contact', 'Dev URL', 'Sourcecode', 'DefectDojo', 'Threat Model', 'Docker Scan', 'Manual Pentest', 'DAST', 'SAST', 'CIS scan', 'Dependecies scan'];
 
   sourceclear_results: boolean;
   zap_results: boolean;
@@ -72,6 +72,14 @@ export class SecurityControlsListComponent implements OnInit {
 
   cisscannerShowValue(cis_scanner) {
     if (cis_scanner === true) {
+      return '<i class="fas fa-check-circle light-green-color fa-2x"></i>'
+    } else {
+      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
+    }
+  }
+
+  sastShowValue(sast) {
+    if (sast === true) {
       return '<i class="fas fa-check-circle light-green-color fa-2x"></i>'
     } else {
       return '<i class="fas fa-times-circle red-color fa-2x"></i>'
