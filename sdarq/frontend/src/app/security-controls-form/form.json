@@ -112,7 +112,7 @@
        },
        {
         "type": "boolean",
-        "name": "SAST",
+        "name": "sast",
         "title": "Are you using a static application security testing?",
         "hideNumber": true,
         "isRequired": true
