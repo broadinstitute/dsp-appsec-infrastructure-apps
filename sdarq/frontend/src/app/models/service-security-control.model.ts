@@ -1,3 +1,4 @@
+import { BooleanLiteral } from 'typescript';
 import {Deserializable} from './deserializable.model';
 
 export class ServiceSecurityControl implements Deserializable {
@@ -21,4 +22,5 @@ export class ServiceSecurityControl implements Deserializable {
     zap: boolean;
     vulnerability_management: string;
     defect_dojo: string;
+    sast: boolean;
   }
