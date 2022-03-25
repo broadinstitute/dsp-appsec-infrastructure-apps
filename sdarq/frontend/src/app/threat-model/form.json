@@ -1,69 +1,88 @@
 {
     "pages": [
-     {
-      "name": "page1",
-      "elements": [
-       {
-        "type": "dropdown",
-        "name": "Type",
-        "title": "Choose your request",
-        "isRequired": true,
-        "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_\\s]{1,30}[a-zA-Z0-9]$",
-        "choices": [
-         {
-          "value": "First time threat model ",
-          "text": "First time threat model"
-         },
-         {
-          "value": "Edit existing threat model ",
-          "text": "Edit existing threat model"
-         }
-        ]
-       },
-       {
-        "type": "text",
-        "name": "Name",
-        "title": "Service name",
-        "text": "Please include numbers, a-z characters, _,- (3-20 long).",
-        "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_\\s]{1,20}[a-zA-Z0-9]$",
-        "isRequired": true
-       },
-       {
-        "type": "text",
-        "name": "Github",
-        "title": "Github link",
-        "text": "Please include numbers, a-z characters, _,-,/,: (3-60 long).",
-        "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\/:]{1,60}[a-zA-Z0-9\\/]$",
-        "isRequired": true
-       },
-       {
-        "type": "text",
-        "name": "Diagram",
-        "title": "Architecture diagram",
-        "text": "Please include numbers, a-z characters, _,-,/,: (3-60 long).",
-        "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\/:]{1,60}[a-zA-Z0-9\\/]$",
-        "isRequired": true
-       },
-       {
-        "type": "text",
-        "name": "Document",
-        "title": "Architecture document",
-        "text": "Please include numbers, a-z characters, _,-,/,: (3-60 long).",
-        "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\/:]{1,60}[a-zA-Z0-9\\/]$",
-        "isRequired": true
-       },
-       {
-        "type": "text",
-        "name": "Eng",
-        "title": "Security Champion",
-          "text": "Please include numbers, a-z characters, _,- (4-20 long).",
-          "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{4,20}[a-zA-Z0-9]$",
-        "isRequired": true
-       }
-      ]
-     }
+        {
+            "name": "page1",
+            "elements": [
+                {
+                    "type": "dropdown",
+                    "name": "Type",
+                    "title": "Choose your request",
+                    "isRequired": true,
+                    "validators": [
+                        {
+                            "type": "regex",
+                            "text": "Please choose one of the options",
+                            "regex": "^[a-zA-Z0-9][a-zA-Z0-9\\s]{1,30}[a-zA-Z0-9\\s]$"}],
+                    "choices": [
+                        {
+                            "value": "First time threat model ",
+                            "text": "First time threat model"
+                        },
+                        {
+                            "value": "Edit existing threat model ",
+                            "text": "Edit existing threat model"
+                        }
+                    ]
+                },
+                {
+                    "type": "text",
+                    "name": "Name",
+                    "title": "Service name",
+                    "validators": [
+                        {
+                            "text": "Please include numbers, a-z characters, _,- (3-20 long).",
+                            "type": "regex",
+                            "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_\\s]{1,20}[a-zA-Z0-9]$"}],
+                    "isRequired": true
+                },
+                {
+                    "type": "text",
+                    "name": "Github",
+                    "title": "Github link",
+                    "validators": [
+                        {
+                            "type": "regex",
+                            "text": "Please include numbers, a-z characters, _,-,/,: (3-60 long).",
+                            "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\/:]{1,60}[a-zA-Z0-9\\/]$"}],
+                    "isRequired": true
+                },
+                {
+                    "type": "text",
+                    "name": "Diagram",
+                    "title": "Architecture diagram",
+                    "validators": [
+                        {
+                            "type": "regex",
+                            "text": "Please include numbers, a-z characters, _,-,/,: (3-60 long).",
+                            "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\/:]{1,60}[a-zA-Z0-9\\/]$"}],
+                    "isRequired": true
+                },
+                {
+                    "type": "text",
+                    "name": "Document",
+                    "title": "Architecture document",
+                    "validators": [
+                        {
+                            "type": "regex",
+                            "text": "Please include numbers, a-z characters, _,-,/,: (3-60 long).",
+                            "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\/:]{1,60}[a-zA-Z0-9\\/]$"}],
+                    "isRequired": true
+                },
+                {
+                    "type": "text",
+                    "name": "Eng",
+                    "title": "Security Champion",
+                    "validators": [
+                        {
+                            "type": "regex",
+                            "text": "Please include numbers, a-z characters, _,- (4-20 long).",
+                            "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{4,20}[a-zA-Z0-9]$"}],
+                    "isRequired": true
+                }
+            ]
+        }
     ],
     "showCompletedPage": true,
     "showQuestionNumbers": "off",
     "completedHtml": "<p><h3>Thank you!</h3><br><h5>Appsec team will review your request!</h5></p>"
-   }
+}

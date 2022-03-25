@@ -33,7 +33,7 @@ from google.cloud import bigquery, firestore, pubsub_v1
 from jira import JIRA
 from jsonschema import validate
 from trigger import parse_tags
-from schemas import threat_model_request_schema 
+from schemas.threat_model_request_schema import tm_schema
 
 import parse_data as parse_json_data
 import slacknotify
@@ -335,20 +335,19 @@ def request_tm():
         JSON data supplied by user
     """
     user_data = request.get_json()
-    security_champion = user_data['Eng']
-    request_type = user_data['Type']
-    project_name = user_data['Name']
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
-    appsec_jira_ticket_summury = user_data['Type'] + user_data['Name']
-    appsec_jira_ticket_description = user_data['Diagram'] + \
-        '\n' + user_data['Document'] + \
-        '\n' + user_data['Github']
-
     try:
-        validate(instance=user_data, schema=threat_model_request_schema) 
+        validate(instance=user_data, schema=tm_schema)
+        security_champion = user_data['Eng']
+        request_type = user_data['Type']
+        project_name = user_data['Name']
         logging.info("Threat model request for %s by %s",
                      project_name, user_email)
+        appsec_jira_ticket_summury = user_data['Type'] + user_data['Name']
+        appsec_jira_ticket_description = user_data['Diagram'] + \
+            '\n' + user_data['Document'] + \
+            '\n' + user_data['Github']
 
         jira_ticket_appsec = jira.create_issue(project=appsec_jira_project_key,
                                                summary=appsec_jira_ticket_summury,
