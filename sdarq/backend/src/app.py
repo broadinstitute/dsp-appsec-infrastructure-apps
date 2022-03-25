@@ -35,6 +35,7 @@ from jsonschema import validate
 from trigger import parse_tags
 from schemas.threat_model_request_schema import tm_schema
 from schemas.manual_pentest_request_schema import mp_schema
+from schemas.cis_scan_schema import cis_scan_schema
 
 import parse_data as parse_json_data
 import slacknotify
@@ -269,6 +270,7 @@ def cis_scan():
 
     if re.match(pattern, user_project_id):
         try:
+            validate(instance=json_data, schema=cis_scan_schema)
             publisher = pubsub_v1.PublisherClient()
             topic_path = publisher.topic_path(
                 pubsub_project_id, cis_topic_name)
