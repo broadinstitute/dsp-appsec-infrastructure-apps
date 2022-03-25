@@ -34,6 +34,7 @@ from jira import JIRA
 from jsonschema import validate
 from trigger import parse_tags
 from schemas.threat_model_request_schema import tm_schema
+from schemas.manual_pentest_request_schema import mp_schema
 
 import parse_data as parse_json_data
 import slacknotify
@@ -605,18 +606,19 @@ def request_manual_pentest():
     """
     user_data = request.get_json()
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
-    security_champion = user_data['security_champion']
-    project_name = user_data['service']
-
-    appsec_jira_ticket_summury = 'Security pentest request for ' + \
-        user_data['service']
-    appsec_jira_ticket_description = 'URL to pentest: ' + user_data['URL'] + \
-        '\n' + 'Environment: ' + user_data['env'] + \
-        '\n' + 'Permission levels:' + user_data['permission_level'] + \
-        '\n' + 'Documentation: ' + user_data['document'] + \
-        '\n' + 'Security champion: ' + user_data['security_champion']
 
     try:
+        validate(instance=user_data, schema=mp_schema)
+        security_champion = user_data['security_champion']
+        project_name = user_data['service']
+
+        appsec_jira_ticket_summury = 'Security pentest request for ' + \
+            user_data['service']
+        appsec_jira_ticket_description = 'URL to pentest: ' + user_data['URL'] + \
+            '\n' + 'Environment: ' + user_data['env'] + \
+            '\n' + 'Permission levels:' + user_data['permission_level'] + \
+            '\n' + 'Documentation: ' + user_data['document'] + \
+            '\n' + 'Security champion: ' + user_data['security_champion']
         jira_ticket_appsec = jira.create_issue(project=appsec_jira_project_key,
                                                summary=appsec_jira_ticket_summury,
                                                description=str(
