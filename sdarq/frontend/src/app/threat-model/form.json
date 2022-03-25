@@ -8,6 +8,7 @@
         "name": "Type",
         "title": "Choose your request",
         "isRequired": true,
+        "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_\\s]{1,30}[a-zA-Z0-9]$",
         "choices": [
          {
           "value": "First time threat model ",
@@ -23,30 +24,40 @@
         "type": "text",
         "name": "Name",
         "title": "Service name",
+        "text": "Please include numbers, a-z characters, _,- (3-20 long).",
+        "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_\\s]{1,20}[a-zA-Z0-9]$",
         "isRequired": true
        },
        {
         "type": "text",
         "name": "Github",
         "title": "Github link",
+        "text": "Please include numbers, a-z characters, _,-,/,: (3-60 long).",
+        "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\/:]{1,60}[a-zA-Z0-9\\/]$",
         "isRequired": true
        },
        {
         "type": "text",
         "name": "Diagram",
         "title": "Architecture diagram",
+        "text": "Please include numbers, a-z characters, _,-,/,: (3-60 long).",
+        "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\/:]{1,60}[a-zA-Z0-9\\/]$",
         "isRequired": true
        },
        {
         "type": "text",
         "name": "Document",
         "title": "Architecture document",
+        "text": "Please include numbers, a-z characters, _,-,/,: (3-60 long).",
+        "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\/:]{1,60}[a-zA-Z0-9\\/]$",
         "isRequired": true
        },
        {
         "type": "text",
         "name": "Eng",
         "title": "Security Champion",
+          "text": "Please include numbers, a-z characters, _,- (4-20 long).",
+          "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{4,20}[a-zA-Z0-9]$",
         "isRequired": true
        }
       ]

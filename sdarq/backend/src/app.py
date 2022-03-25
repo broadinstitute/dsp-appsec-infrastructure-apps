@@ -31,7 +31,9 @@ from flask_api import FlaskAPI
 from flask_cors import cross_origin
 from google.cloud import bigquery, firestore, pubsub_v1
 from jira import JIRA
+from jsonschema import validate
 from trigger import parse_tags
+from schemas import threat_model_request_schema 
 
 import parse_data as parse_json_data
 import slacknotify
@@ -344,6 +346,7 @@ def request_tm():
         '\n' + user_data['Github']
 
     try:
+        validate(instance=user_data, schema=threat_model_request_schema) 
         logging.info("Threat model request for %s by %s",
                      project_name, user_email)
 
