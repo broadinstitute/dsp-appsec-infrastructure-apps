@@ -60,7 +60,7 @@
         "validators": [
          {
           "type": "regex",
-          "text": "Please enter a valid URL",
+          "text": "Please enter a valid channel",
           "regex": "^[a-z0-9-_]{1}[a-z0-9-_]{0,20}$"
          }
         ]
