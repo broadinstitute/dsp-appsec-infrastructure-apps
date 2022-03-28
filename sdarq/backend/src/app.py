@@ -43,6 +43,7 @@ from threat_model_request_schema import tm_schema
 from zap_scan_schema import zap_scan_schema
 from cis_scan_schema import cis_scan_schema
 from security_controls_schema import security_controls_schema
+from edit_security_controls_schema import edit_security_controls_schema
 
 
 dojo_host = os.getenv('dojo_host')
@@ -514,6 +515,7 @@ def edit_sec_controls():
 
     if re.match(pattern, service_name):
         try:
+            validate(instance=json_data, schema=edit_security_controls_schema)
             doc_ref = db.collection(security_controls_firestore_collection).document(
                 service_name.lower())
             doc = doc_ref.get()
