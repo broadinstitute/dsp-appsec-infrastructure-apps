@@ -9,7 +9,7 @@
             "requiredErrorText": "Project Id is required.",
             "validators": [{
                 "type": "regex",
-                "text": "Start with an alphabetic character and include only '-' , '_' , numbers and alphabetic characters.",
+                "text": "Please enter a valid GCP project name.Start with an alphabetic character and include only '-' , '_' , numbers and alphabetic characters.",
                 "regex": "^[a-z][a-z0-9-_]{4,28}[a-z0-9]$"
             }]
         }],

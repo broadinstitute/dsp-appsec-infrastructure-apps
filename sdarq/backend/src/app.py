@@ -17,6 +17,7 @@ This module
 """
 #!/usr/bin/env python3
 
+import imp
 import json
 import logging
 import os
@@ -33,12 +34,13 @@ from google.cloud import bigquery, firestore, pubsub_v1
 from jira import JIRA
 from jsonschema import validate
 from trigger import parse_tags
-from schemas.threat_model_request_schema import tm_schema
-from schemas.manual_pentest_request_schema import mp_schema
-from schemas.cis_scan_schema import cis_scan_schema
 
 import parse_data as parse_json_data
 import slacknotify
+from schemas.cis_scan_schema import cis_scan_schema
+from schemas.manual_pentest_request_schema import mp_schema
+from schemas.threat_model_request_schema import tm_schema
+from schemas.zap_scan_schema import zap_scan_schema
 
 dojo_host = os.getenv('dojo_host')
 dojo_api_key = os.getenv('dojo_api_key')
@@ -388,8 +390,6 @@ def zap_scan():
     """
     json_data = request.get_json()
     message = b""
-    user_supplied_url = json_data['URL']
-    dev_slack_channel = f"#{json_data['slack_channel']}"
     endpoint = f"{dojo_host}api/v2/endpoints?tag=scan&limit=1000"
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
     status_code = 404
@@ -398,6 +398,9 @@ def zap_scan():
                     or maybe it doesn't exist in AppSec list. Please contact AppSec team.
                     """
     try:
+        validate(instance=json_data, schema=zap_scan_schema)
+        user_supplied_url = json_data['URL']
+        dev_slack_channel = f"#{json_data['slack_channel']}"
         publisher = pubsub_v1.PublisherClient()
         zap_topic_path = publisher.topic_path(
             pubsub_project_id, zap_topic_name)
