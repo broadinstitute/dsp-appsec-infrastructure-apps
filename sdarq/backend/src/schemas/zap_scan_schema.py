@@ -3,13 +3,12 @@ zap_scan_schema = {
     "properties": {
         "URL": {
             "type": "string",
-            "pattern": "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
+            "pattern": "^(https?://)?[a-z0-9/\\./\\-]+(/[a-zA-Z0-9/\\-/\\/]*)?$"
         },
         "severities": {
             "type": "array",
             "items": {
-                "type": "string",
-                "pattern": "[a-zA-Z]{10}"
+                "enum": ["Critical", "High", "Medium", "Low", "Info"]
             }
 
         },
