@@ -37,10 +37,12 @@ from trigger import parse_tags
 
 import parse_data as parse_json_data
 import slacknotify
-from schemas.cis_scan_schema import cis_scan_schema
-from schemas.manual_pentest_request_schema import mp_schema
-from schemas.threat_model_request_schema import tm_schema
-from schemas.zap_scan_schema import zap_scan_schema
+
+from schemas.manual_pentest_request_schema import mp_schema as mp_schema 
+from schemas.threat_model_request_schema import tm_schema as tm_schema
+from schemas.zap_scan_schema import zap_scan_schema as zap_scan_schema
+from schemas.cis_scan_schema import cis_scan_schema as cis_scan_schema
+
 
 dojo_host = os.getenv('dojo_host')
 dojo_api_key = os.getenv('dojo_api_key')
