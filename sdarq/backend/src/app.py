@@ -328,8 +328,11 @@ def cis_scan():
         except Exception as error:
             error_message = f"Exception /cis_scan enspoint: {error}"
             logging.warning(error_message)
+            message = """
+            There is something wrong with the input! Server did not respond correctly to your request! 
+            """
             status_code = 404
-            return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
+            return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
     else:
         message = """
         Your GCP project_id is not valid! Enter a valid value!
