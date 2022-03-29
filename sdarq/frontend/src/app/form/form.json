@@ -9,7 +9,7 @@
                     "name": "Service",
                     "title": "Service name",
                     "isRequired": true,
-                    "requiredErrorText": "Required.",
+                    "requiredErrorText": "Required field",
                     "validators": [
                         {
                          "type": "regex",
@@ -23,7 +23,7 @@
                     "name": "Product",
                     "title": "Product name",
                     "isRequired": true,
-                    "requiredErrorText": "Required.",
+                    "requiredErrorText": "Required field",
                     "validators": [
                         {
                          "type": "regex",
@@ -37,7 +37,7 @@
                     "name": "Description",
                     "title": "A brief description of the application/service (provide link to external doc if easier)",
                     "isRequired": true,
-                    "requiredErrorText": "Required.",
+                    "requiredErrorText": "Required field",
                     "validators": [
                      {
                       "type": "regex",
@@ -51,7 +51,7 @@
                     "name": "Security champion",
                     "title": "Security champion (main point of contact from a security perspective):",
                     "isRequired": true,
-                    "requiredErrorText": "Required.",
+                    "requiredErrorText": "Required field",
                     "validators": [
                      {
                       "type": "regex",
@@ -65,7 +65,7 @@
                     "name": "Github URL",
                     "title": "Github URL (N/A if you have not written a line of code yet)",
                     "isRequired": true,
-                    "requiredErrorText": "Required.",
+                    "requiredErrorText": "Required field",
                     "validators": [
                      {
                       "type": "regex",
@@ -79,7 +79,7 @@
                     "name": "Architecture Diagram",
                     "title": "Link to Architecture Diagram, ideally a Lucidchart diagram.",
                     "isRequired": true,
-                    "requiredErrorText": "Required.",
+                    "requiredErrorText": "Required field",
                     "validators": [
                      {
                       "type": "regex",
@@ -99,10 +99,11 @@
               "name": "Federal compliance oversight",
               "title": "Does your application require federal compliance oversight? In order to determine this, please select the most appropriate option.",
               "isRequired": true,
+              "requiredErrorText": "Required field",
               "validators": [
                 {
                  "type": "regex",
-                 "text": "Please include numbers, a-z characters, _,- (4-200 long).",
+                 "text": "Please include numbers, a-z, 0-9 characters, _,- (4-200 long).",
                  "regex": "[a-zA-Z0-9-_,. ]{1,100}"
                 }],
               "choices": [
