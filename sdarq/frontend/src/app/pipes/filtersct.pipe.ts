@@ -13,9 +13,8 @@ export class FiltersctPipe implements PipeTransform {
             return value.filter((it) => {
                 const service = it.service.toLowerCase().includes(searchString.toLowerCase());
                 const security_champion = it.security_champion.toLowerCase().includes(searchString.toLowerCase());
-                const dev_url = it.dev_url.toLowerCase().includes(searchString.toLowerCase());
                 const github = it.github.toLowerCase().includes(searchString.toLowerCase());
-                return service + security_champion + dev_url + github;
+                return service + security_champion + github;
             });
         }
     }
