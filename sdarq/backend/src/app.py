@@ -44,6 +44,7 @@ from zap_scan_schema import zap_scan_schema
 from cis_scan_schema import cis_scan_schema
 from security_controls_schema import security_controls_schema
 from edit_security_controls_schema import edit_security_controls_schema
+from new_service_schema import new_service_schema
 
 
 dojo_host = os.getenv('dojo_host')
@@ -128,6 +129,7 @@ def submit():
     appsec_jira_ticket_summury = 'Threat Model request ' + dojo_name
 
     try:
+        validate(instance=json_data, schema=new_service_schema)
         if 'JiraProject' in json_data:
             project_key_id = json_data['JiraProject']
             dev_jira_ticket_summury = dojo_name + ' security requirements'

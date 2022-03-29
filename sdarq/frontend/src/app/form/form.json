@@ -9,42 +9,84 @@
                     "name": "Service",
                     "title": "Service name",
                     "isRequired": true,
-                    "requiredErrorText": "Required."
-                },
+                    "requiredErrorText": "Required.",
+                    "validators": [
+                        {
+                         "type": "regex",
+                         "text": "Please include numbers, a-z characters, _,- (3-20 long).",
+                         "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
+                        }
+                       ]
+                      },
                 {
                     "type": "text",
                     "name": "Product",
                     "title": "Product name",
                     "isRequired": true,
-                    "requiredErrorText": "Required."
-                },
+                    "requiredErrorText": "Required.",
+                    "validators": [
+                        {
+                         "type": "regex",
+                         "text": "Please include numbers, a-z characters, _,- (3-20 long).",
+                         "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
+                        }
+                       ]
+                      },
                 {
                     "type": "comment",
                     "name": "Description",
                     "title": "A brief description of the application/service (provide link to external doc if easier)",
                     "isRequired": true,
-                    "requiredErrorText": "Required."
+                    "requiredErrorText": "Required.",
+                    "validators": [
+                     {
+                      "type": "regex",
+                      "text": "Please include numbers, a-z characters, _,- (4-200 long).",
+                      "regex": "^[a-zA-Z0-9][a-zA-Z0-9,.!?-_\\s]{4,200}[a-zA-Z0-9,.!?-_\\s]$"
+                     }
+                    ]
                 },
                 {
                     "type": "text",
                     "name": "Security champion",
                     "title": "Security champion (main point of contact from a security perspective):",
                     "isRequired": true,
-                    "requiredErrorText": "Required."
+                    "requiredErrorText": "Required.",
+                    "validators": [
+                     {
+                      "type": "regex",
+                      "text": "Please include numbers, a-z characters, _,- (4-200 long).",
+                      "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{4,20}[a-zA-Z0-9]$"
+                     }
+                    ]
                 },
                 {
                     "type": "text",
                     "name": "Github URL",
                     "title": "Github URL (N/A if you have not written a line of code yet)",
                     "isRequired": true,
-                    "requiredErrorText": "Required."
+                    "requiredErrorText": "Required.",
+                    "validators": [
+                     {
+                      "type": "regex",
+                      "text": "Please include numbers, a-z characters, _,- (4-200 long).",
+                      "regex": "^(https?://)?[a-z0-9/\\./\\-]+(/[a-zA-Z0-9/\\-/\\/]*)?$"
+                     }
+                    ]
                 },
                 {
                     "type": "text",
                     "name": "Architecture Diagram",
                     "title": "Link to Architecture Diagram, ideally a Lucidchart diagram.",
                     "isRequired": true,
-                    "requiredErrorText": "Required."
+                    "requiredErrorText": "Required.",
+                    "validators": [
+                     {
+                      "type": "regex",
+                      "text": "Please include numbers, a-z characters, _,- (4-200 long).",
+                      "regex": "^(https?://)?[a-z0-9/\\./\\-]+(/[a-zA-Z0-9/\\-/\\/]*)?$"
+                     }
+                    ]
                 }
             ],
             "title": "Metadata"
