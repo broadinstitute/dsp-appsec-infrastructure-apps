@@ -16,7 +16,7 @@ RUN apt-get update -q && \
 
 
 COPY --from=owasp/zap2docker-weekly /zap/zap_common.py ./
-COPY sdarq/backend/src/schemas/*py ./
+COPY sdarq/backend/src/schemas/*py ./schemas/
 COPY sdarq/backend/src/*.py zap/src/*.py ./
 
 ENV PORT 8080

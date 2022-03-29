@@ -37,15 +37,13 @@ from trigger import parse_tags
 
 import parse_data as parse_json_data
 import slacknotify
-
-from manual_pentest_request_schema import mp_schema
-from threat_model_request_schema import tm_schema
-from zap_scan_schema import zap_scan_schema
-from cis_scan_schema import cis_scan_schema
-from security_controls_schema import security_controls_schema
-from edit_security_controls_schema import edit_security_controls_schema
-from new_service_schema import new_service_schema
-
+from schemas.cis_scan_schema import cis_scan_schema
+from schemas.edit_security_controls_schema import edit_security_controls_schema
+from schemas.manual_pentest_request_schema import mp_schema
+from schemas.new_service_schema import new_service_schema
+from schemas.security_controls_schema import security_controls_schema
+from schemas.threat_model_request_schema import tm_schema
+from schemas.zap_scan_schema import zap_scan_schema
 
 dojo_host = os.getenv('dojo_host')
 dojo_api_key = os.getenv('dojo_api_key')
@@ -184,10 +182,12 @@ def submit():
         logging.info("Jira ticket in appsec board created")
 
         return ''
-    except Exception:
+    except Exception as error:
+        error_message = f"Exception /submit enspoint: {error}"
+        logging.warning(error_message)
         status_code = 404
         message = """
-        Server did not respond correctly to your request! 
+        There is something wrong with the input! Server did not respond correctly to your request! 
         """
         return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
 
@@ -246,18 +246,18 @@ def cis_results():
                     'lastModifiedDatetime': last_modified_datetime,
                 }
             }, indent=2)
-        except Exception:
+        except Exception as error:
+            error_message = f"Exception /cis_results enspoint: {error}"
+            logging.warning(error_message)
             status_code = 404
             notfound = """
-            This Google project is not found! Did you make sure to supply the right GCP Project ID?
-            You can verify the ID of the project you want to scan by running the following command:
-            gcloud config list project --format='value(core.project)'
+            This Google project is not found! Did you make sure to supply the right GCP Project ID? Please check again!
             """
             return Response(json.dumps({'statusText': notfound}), status=status_code, mimetype='application/json')
     else:
         status_code = 404
         message = """
-        Your GCP project_id is not valid
+        Your GCP project_id is not valid! Enter a valid value!
         """
         return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
 
@@ -312,7 +312,7 @@ def cis_scan():
             doc_ref = db.collection(firestore_collection).document(user_proj)
             doc_ref.delete()
             doc_watch = doc_ref.on_snapshot(on_snapshot)
-            callback_done.wait(timeout=3600)
+            callback_done.wait(timeout=36000)
             doc_watch.unsubscribe()
             doc = doc_ref.get()
 
@@ -326,11 +326,13 @@ def cis_scan():
                 doc_ref.delete()
             return ''
         except Exception as error:
+            error_message = f"Exception /cis_scan enspoint: {error}"
+            logging.warning(error_message)
             status_code = 404
             return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
     else:
         message = """
-        Your GCP project_id is not valid
+        Your GCP project_id is not valid! Enter a valid value!
         """
         status_code = 404
         return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
@@ -375,10 +377,12 @@ def request_tm():
                                              jira_ticket_appsec,
                                              appsec_jira_project_key)
         return ''
-    except Exception:
+    except Exception as error:
+        error_message = f"Exception /request_tm enspoint: {error}"
+        logging.warning(error_message)
         status_code = 404
         message = """
-        Server did not respond correctly to your request! 
+        There is something wrong with the input! Server did not respond correctly to your request! 
         """
         return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
 
@@ -449,9 +453,11 @@ def zap_scan():
             logging.info(
                 "User %s requested to scan via ZAP a service that does not exist in DefectDojo endpoint list", user_email)
             return Response(json.dumps({'statusText': text_message}), status=status_code, mimetype='application/json')
-    except Exception:
+    except Exception as error:
+        error_message = f"Exception /zap_scan enspoint: {error}"
+        logging.warning(error_message)
         message = """ 
-        Server did not respond correctly to your request! 
+        There is something wrong with the input! Server did not respond correctly to your request! 
         """
         return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
 
@@ -490,8 +496,13 @@ def create_sec_control_template():
                     "A new security controls template is created by %s", user_email)
                 return ''
         except Exception as error:
+            error_message = f"Exception /create_sec_controls_template enspoint: {error}"
+            logging.warning(error_message)
             status_code = 404
-            return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
+            message = """ 
+            There is something wrong with the input! Server did not respond correctly to your request! 
+            """
+            return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
     else:
         message = """
         Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.
@@ -535,8 +546,13 @@ def edit_sec_controls():
                     "User %s requested to edit a service security controls, but this service does not exist!", user_email)
                 return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
         except Exception as error:
+            error_message = f"Exception /edit_sec_controls enspoint: {error}"
+            logging.warning(error_message)
+            message = """ 
+            There is something wrong with the input! Server did not respond correctly to your request! 
+            """
             status_code = 404
-            return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
+            return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
     else:
         message = """
         Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.
@@ -564,8 +580,13 @@ def get_sec_controls():
             data.append(doc.to_dict())
         return data
     except Exception as error:
+        error_message = f"Exception /get_sec_controls enspoint: {error}"
+        logging.warning(error_message)
+        message = """
+        Server can't get security controls! Contact AppSec team for more information.
+        """
         status_code = 404
-        return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
+        return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
 
 
 @app.route('/get_sec_controls_service/', methods=['POST'])
@@ -597,8 +618,13 @@ def get_sec_controls_service():
                     "User %s requested to read security controls of a service that does not exist.", user_email)
                 return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
         except Exception as error:
+            error_message = f"Exception /get_sec_controls_service enspoint: {error}"
+            logging.warning(error_message)
+            message = """ 
+            There is something wrong with the input! Server did not respond correctly to your request! 
+            """
             status_code = 404
-            return Response(json.dumps({'statusText': error}), status=status_code, mimetype='application/json')
+            return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
     else:
         message = """
         Please enter a valid value for your service name! Contact AppSec team for more information.
@@ -647,17 +673,19 @@ def request_manual_pentest():
                                                  jira_ticket_appsec,
                                                  appsec_jira_project_key)
         return ''
-    except Exception:
+    except Exception as error:
+        error_message = f"Exception /request_manual_pentest enspoint: {error}"
+        logging.warning(error_message)
         status_code = 404
         message = """
-        Server did not respond correctly to your request! 
+        There is something wrong with the input! Server did not respond correctly to your request! 
         """
         return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
 
 
 @app.route('/submitJTRA/', methods=['POST'])
 @cross_origin(origins=sdarq_host)
-def notifyAppSecJTRA():
+def submitJTRA():
     """
     Calculates the risk based on the user data and notifies AppSec team for the review
     Args:
@@ -706,12 +734,14 @@ def notifyAppSecJTRA():
             logging.info(
                 "User %s submitted a MEDIUM/LOW Risk Jira Ticket", user_email)
         return ''
-    except Exception:
+    except Exception as error:
+        error_message = f"Exception /submitJTRA enspoint: {error}"
+        logging.warning(error_message)
         slacknotify.slacknotify_jira_ticket_risk_assessment_error(
             jtra_slack_channel, user_email, user_data)
         status_code = 404
         message = """
-            Server did not respond correctly to your request! 
+            There is something wrong with the input! Server did not respond correctly to your request! 
             """
         return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
 
