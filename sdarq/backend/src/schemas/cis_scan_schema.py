@@ -1,7 +1,7 @@
 cis_scan_schema = {
     "type": "object",
     "properties": {
-        "name": {
+        "project_id": {
             "type": "string",
             "pattern": "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
         },
@@ -14,5 +14,5 @@ cis_scan_schema = {
             "pattern": "^[a-z0-9-_]{1}[a-z0-9-_]{0,20}$"
         }
     },
-    "required": ["name"]
+    "required": ["project_id"]
 }
