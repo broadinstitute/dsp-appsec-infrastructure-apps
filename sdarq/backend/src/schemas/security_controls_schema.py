@@ -26,44 +26,37 @@ security_controls_schema = {
             "pattern": "^(https?://)?[a-z0-9/\\./\\-]+(/[a-zA-Z0-9/\\-/\\/]*)?$"
         },
         "threat_model": {
-            "type": "string",
-            "pattern": "[a-zA-Z]{5}"
+            "type": "boolean",
         },
         "threat_model_link": {
             "type": "string",
             "pattern": "^(https?://)?[a-z0-9/\\./\\-]+(/[a-zA-Z0-9/\\-/\\/]*)?$"
         },
         "zap": {
-            "type": "string",
-            "pattern": "[a-zA-Z]{5}"
+            "type": "boolean",
         },
         "vulnerability_management": {
             "type": "string",
             "pattern": "^(https?://)?[a-z0-9/\\./\\-]+(/[a-zA-Z0-9/\\-/\\/]*)?$"
         },
         "sourceclear": {
-            "type": "string",
-            "pattern": "[a-zA-Z]{5}"
+            "type": "boolean",
         },
         "sourceclear_link": {
             "type": "string",
             "pattern": "^(https?://)?[a-z0-9/\\./\\-]+(/[a-zA-Z0-9/\\-/\\/]*)?$"
         },
         "docker_scan": {
-            "type": "string",
-            "pattern": "[a-zA-Z]{5}"
+            "type": "boolean",
         },
         "cis_scanner": {
-            "type": "string",
-            "pattern": "[a-zA-Z]{5}"
+            "type": "boolean",
         },
         "sast": {
-            "type": "string",
-            "pattern": "[a-zA-Z]{5}"
+            "type": "boolean",
         },
         "burp": {
-            "type": "string",
-            "pattern": "[a-zA-Z]{5}"
+            "type": "boolean",
         },
         "security_pentest_link": {
             "type": "string",
