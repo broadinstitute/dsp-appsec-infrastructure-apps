@@ -28,13 +28,6 @@
         "type": "checkbox",
         "name": "results_in_slack",
         "title": "Info: Average scan time is about 3 min depending on the resources and APIs enabled on your GCP Project.",
-        "validators": [
-            {
-             "type": "regex",
-             "text": "Please enter value",
-             "regex": "[a-zA-Z]{3}"
-            }
-           ],
         "choices": [
          {
           "value": "Yes",

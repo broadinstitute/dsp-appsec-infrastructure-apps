@@ -6,8 +6,10 @@ cis_scan_schema = {
             "pattern": "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
         },
         "results_in_slack": {
-            "type": "string",
-            "pattern": "[a-zA-Z]{3}"
+            "type": "array",
+            "items": {
+                "enum": ["Yes"]
+            }
         },
         "slack_channel": {
             "type": "string",
