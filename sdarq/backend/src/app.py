@@ -184,12 +184,12 @@ def submit():
         logging.info("Jira ticket in appsec board created")
 
         return ''
-    except Exception:
+    except Exception as e:
         status_code = 404
         message = """
         Server did not respond correctly to your request! 
         """
-        return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
+        return Response(json.dumps({'statusText': e}), status=status_code, mimetype='application/json')
 
 
 @app.route('/cis_results/', methods=['POST'])

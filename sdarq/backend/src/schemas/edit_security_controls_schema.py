@@ -66,5 +66,5 @@ edit_security_controls_schema = {
             "pattern": "^(https?://)?[a-z0-9/\\./\\-]+(/[a-zA-Z0-9/\\-/\\/]*)?$"
         }
     },
-    "required": ["product", "security_champion", "github", "dev_url", "defect_dojo", "threat_model", "zap", "sourceclear", "docker_scan", "cis_scanner", "sast", "burp"]
+    "required": ["product", "security_champion", "github", "dev_url"]
 }
