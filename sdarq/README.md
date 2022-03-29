@@ -17,10 +17,12 @@ Run `ng serve` , it will run in the port `4200` of your localhost
 
 
 #### Backend 
+Backend has a list of env variables that need to be exported with their values. 
+
 To run locally SDARQ backend, go to `backend/src` folder of SDARQ
 
 Run `python3 app.py` , it will run in the port 8080 of your localhost
 
 
 ### Questions
-If you have questions, please reach out to appsec team. 
+If you have questions, please reach out to AppSec team `appsec@broadinstitute.org`. 
