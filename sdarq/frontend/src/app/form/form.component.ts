@@ -40,7 +40,7 @@ export class FormComponent implements OnInit {
       'security_champion': result['Security champion'],
       'product': result['Product'],
       'defect_dojo': '',
-      'dev_url': '',
+      'dev_url': ' ',
       'burp': false,
       'cis_scanner': false,
       'docker_scan': false,
