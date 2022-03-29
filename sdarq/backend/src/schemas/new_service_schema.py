@@ -30,5 +30,5 @@ new_service_schema = {
             "pattern": "[a-zA-Z0-9-_,. ]{1,100}"
         }
     },
-    "required": ["Service", "Product", "Description", "Security champion", "Github URL", "Architecture Diagram", "Compliance"]
+    "required": ["Service", "Product", "Description", "Security champion", "Github URL", "Architecture Diagram", "Federal compliance oversight"]
 }
