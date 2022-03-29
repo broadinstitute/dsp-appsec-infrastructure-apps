@@ -23,7 +23,7 @@ tm_schema = {
         },
         "Eng": {
             "type": "string",
-            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-._\s]{4,20}[a-zA-Z0-9]$"
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{1,20}[a-zA-Z0-9]$"
         }
     },
     "required": ["Type", "Name", "Github", "Diagram", "Document", "Eng"]
