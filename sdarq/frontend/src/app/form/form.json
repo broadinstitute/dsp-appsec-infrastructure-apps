@@ -99,6 +99,12 @@
               "name": "Federal compliance oversight",
               "title": "Does your application require federal compliance oversight? In order to determine this, please select the most appropriate option.",
               "isRequired": true,
+              "validators": [
+                {
+                 "type": "regex",
+                 "text": "Please include numbers, a-z characters, _,- (4-200 long).",
+                 "regex": "[a-zA-Z0-9-_,. ]{1,100}"
+                }],
               "choices": [
                {
                 "value": "System governed by compliance",
