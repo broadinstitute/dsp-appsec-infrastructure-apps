@@ -114,6 +114,7 @@ def submit():
         Json data
     Returns:
         200 status
+        400 status
     """
     json_data = request.get_json()
     dojo_name = json_data['Service']
@@ -201,7 +202,8 @@ def cis_results():
     Args:
         project_id: GCP project that will be scanned for security configurations
     Returns:
-        json: Security scan results for given project_id
+      200 status -> json: Security scan results for given project_id
+      400 status
     """
     project_id_encoded = request.get_data()
     project_id = project_id_encoded.decode("utf-8")
@@ -268,6 +270,10 @@ def cis_results():
 def cis_scan():
     """
     Scans a specific google project
+    Args: Project_id (json data)
+    Return:
+        200 status
+        400 status
     """
     json_data = request.get_json()
     user_project_id = json_data['project_id']
@@ -350,6 +356,9 @@ def request_tm():
     Creates a Jira ticket and notifies team in Slack
     Args:
         JSON data supplied by user
+    Return:
+        200 status
+        400 status
     """
     user_data = request.get_json()
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
@@ -399,8 +408,8 @@ def zap_scan():
     Args:
         Json file
     Returns:
-        200 if a Zap Scan is triggered
-        404 if project not found
+        200 status if a Zap Scan is triggered
+        404 status if project not found
     """
     json_data = request.get_json()
     message = b""
@@ -472,8 +481,8 @@ def create_sec_control_template():
     """
     Store data to Firestore
     Args: Provided json data from user
-    Returns: 200 if data stored to Firestore
-             404 if input is invalid/ service already exists
+    Returns: 200 status if data stored to Firestore
+             400 status if input is invalid/ service already exists
     """
     json_data = request.get_json()
     service_name = json_data['service']
@@ -522,8 +531,8 @@ def edit_sec_controls():
     """
     Edit data for a specific service
     Args: Provided json data from user
-    Returns: 200 if data stored to Firestore
-             404 if input is invalid/service does not exist
+    Returns: 200 status if data stored to Firestore
+             400 status if input is invalid/service does not exist
     """
     json_data = request.get_json()
     service_name = json_data['service']
@@ -572,7 +581,9 @@ def get_sec_controls():
     """
     Get all data from Firestore
     Args: None
-    Returns: Json data
+    Returns:
+        200 status -> Json Data
+        400 status
     """
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
     data = []
@@ -599,8 +610,8 @@ def get_sec_controls_service():
     """
     Get all security controls for a service
     Args: Service name (Json format)
-    Returns: Json data if 200
-             404 if project not found
+    Returns: 200 status (Json data)
+             404 status if project not found
     """
     json_data = request.get_json()
     service_name = json_data['service']
@@ -646,6 +657,9 @@ def request_manual_pentest():
     Creates a Jira ticket and notifies team in Slack
     Args:
         JSON data supplied by user
+    Returns:
+        200 status
+        400 status
     """
     user_data = request.get_json()
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
@@ -694,6 +708,9 @@ def submitJTRA():
     Calculates the risk based on the user data and notifies AppSec team for the review
     Args:
         JSON data supplied by user
+    Returns:
+        200 status
+        400 status
     """
     user_data = request.get_json()
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
