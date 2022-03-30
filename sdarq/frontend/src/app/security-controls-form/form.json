@@ -50,7 +50,7 @@
          {
              "type": "regex",
              "text": "Please include a valid link.",
-             "regex": "^(https?://)?[a-z0-9/\\./\\-]+(/[a-zA-Z0-9/\\-/\\/]*)?$"}]
+             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
        },
        {
         "type": "text",
@@ -62,7 +62,7 @@
          {
              "type": "regex",
              "text": "Please include a valid link.",
-             "regex": "^(https?://)?[a-z0-9/\\./\\-]+(/[a-zA-Z0-9/\\-/\\/]*)?$"}]
+             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
        },
        {
         "type": "text",
@@ -74,7 +74,7 @@
          {
              "type": "regex",
              "text": "Please include a valid link.",
-             "regex": "^(https?://)?[a-z0-9/\\./\\-]+(/[a-zA-Z0-9/\\-/\\/]*)?$"}]
+             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
        },
        {
         "type": "boolean",
@@ -95,7 +95,7 @@
          {
              "type": "regex",
              "text": "Please include a valid link.",
-             "regex": "^(https?://)?[a-z0-9/\\./\\-]+(/[a-zA-Z0-9/\\-/\\/]*)?$"}]
+             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
        },
        {
         "type": "boolean",
@@ -117,7 +117,7 @@
          {
              "type": "regex",
              "text": "Please include a valid link.",
-             "regex": "^(https?://)?[a-z0-9/\\./\\-]+(/[a-zA-Z0-9/\\-/\\/]*)?$"}]
+             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
        },
        {
         "type": "boolean",
@@ -139,7 +139,7 @@
          {
              "type": "regex",
              "text": "Please include a valid link.",
-             "regex": "^(https?://)?[a-z0-9/\\./\\-]+(/[a-zA-Z0-9/\\-/\\/]*)?$"}]
+             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
        },
        {
         "type": "boolean",
@@ -181,7 +181,7 @@
          {
              "type": "regex",
              "text": "Please include a valid link.",
-             "regex": "^(https?://)?[a-z0-9/\\./\\-]+(/[a-zA-Z0-9/\\-/\\/]*)?$"}]
+             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
        }
       ],
       "questionTitleLocation": "top",
