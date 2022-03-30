@@ -79,6 +79,7 @@ def add_header(response):
     response.headers['X-XSS-Protection'] = '1; mode=block'
     response.headers['Content-Security-Policy'] = 'default-src \'self\''
     response.headers['Cache-Control'] = 'no-cache'
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
     return response
 
 
