@@ -9,35 +9,60 @@
         "name": "product",
         "title": "Product name",
         "hideNumber": true,
-        "isRequired": true
+        "isRequired": true,
+        "validators": [
+         {
+             "type": "regex",
+             "text": "Please include a valid value.",
+             "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"}]
        },
        {
         "type": "text",
         "name": "security_champion",
         "title": "Security Champion",
         "hideNumber": true,
-        "isRequired": true
+        "isRequired": true,
+        "validators": [
+         {
+             "type": "regex",
+             "text": "Please include a valid value.",
+             "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{1,20}[a-zA-Z0-9]$"}]
        },
        {
         "type": "text",
         "name": "github",
         "title": "Github link",
         "hideNumber": true,
-        "isRequired": true
+        "isRequired": true,
+        "validators": [
+         {
+             "type": "regex",
+             "text": "Please include a valid link.",
+             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
        },
        {
         "type": "text",
         "name": "dev_url",
         "title": "Dev URL",
         "hideNumber": true,
-        "isRequired": true
+        "isRequired": true,
+        "validators": [
+         {
+             "type": "regex",
+             "text": "Please include a valid link.",
+             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
        },
        {
         "type": "text",
         "name": "defect_dojo",
         "title": "Defect Dojo URL",
         "hideNumber": true,
-        "isRequired": true
+        "isRequired": true,
+        "validators": [
+         {
+             "type": "regex",
+             "text": "Please include a valid link.",
+             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
        },
        {
         "type": "boolean",
@@ -53,7 +78,12 @@
         "visibleIf": "{threat_model} = true",
         "title": "Enter threat model documentation link",
         "enableIf": "{threat_model} = true",
-        "isRequired": true
+        "isRequired": true,
+        "validators": [
+         {
+             "type": "regex",
+             "text": "Please include a valid link.",
+             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
        },
        {
         "type": "boolean",
@@ -70,7 +100,12 @@
         "title": "Vulnerability management results link",
         "enableIf": "{zap} = true",
         "isRequired": true,
-        "requiredIf": "{zap} = true"
+        "requiredIf": "{zap} = true",
+        "validators": [
+         {
+             "type": "regex",
+             "text": "Please include a valid link.",
+             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
        },
        {
         "type": "boolean",
@@ -87,7 +122,12 @@
         "hideNumber": true,
         "enableIf": "{sourceclear} = true",
         "isRequired": true,
-        "requiredIf": "{sourceclear} = true"
+        "requiredIf": "{sourceclear} = true",
+        "validators": [
+         {
+             "type": "regex",
+             "text": "Please include a valid link.",
+             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
        },
        {
         "type": "boolean",
@@ -124,7 +164,12 @@
         "visibleIf": "{burp} = true",
         "title": "Enter security pentest results link",
         "enableIf": "{burp} = true",
-        "isRequired": true
+        "isRequired": true,
+        "validators": [
+         {
+             "type": "regex",
+             "text": "Please include a valid link.",
+             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
        }
       ],
       "questionTitleLocation": "top",

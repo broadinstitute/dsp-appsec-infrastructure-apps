@@ -16,3 +16,4 @@ google-cloud-resource-manager
 google-api-core[grpc]>=1.14.0
 python-owasp-zap-v2.4
 werkzeug
+jsonschema

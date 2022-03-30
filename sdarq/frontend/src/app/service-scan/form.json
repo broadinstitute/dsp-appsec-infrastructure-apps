@@ -19,7 +19,7 @@
          {
           "type": "regex",
           "text": "Please enter a valid URL",
-          "regex": "^(https?://)?[a-z0-9/\\./\\-]+(/[a-zA-Z0-9/\\-/\\/]*)?$"
+          "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"
          }
         ]
        },
@@ -56,7 +56,14 @@
         "type": "text",
         "name": "slack_channel",
         "title": "Enter slack channel to get scan results ",
-        "isRequired": true
+        "isRequired": true,
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please enter a valid channel",
+          "regex": "^[a-z0-9-_]{1}[a-z0-9-_]{0,20}$"
+         }
+        ]
        }
       ],
       "title": "Service Scan"

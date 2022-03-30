@@ -29,8 +29,15 @@
         "visibleIf": "{Do you have a Jira ticket?} = 'Yes'",
         "title": "Please include Jira ticket link:",
         "enableIf": "{Do you have a Jira ticket?} = 'Yes'",
-        "isRequired": true
-       },
+        "isRequired": true,
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please enter a valid link",
+          "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"
+         }
+        ]
+    },
        {
         "type": "comment",
         "name": "context",
