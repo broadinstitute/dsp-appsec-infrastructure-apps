@@ -315,10 +315,10 @@
             },
                 {
                     "type": "checkbox",
-                    "name": "SSO mechanisms",
+                    "name": "mechanisms",
                     "visibleIf": "{Auth&Authz} = [\"Regular log in\"] or {Auth&Authz} = [\"Admin interface\"] or {Auth&Authz} = [\"Regular log in\",\"Admin interface\"]",
                     "enableIf": "{Auth&Authz} = [\"Regular log in\"] or {Auth&Authz} = [\"Admin interface\"] or {Auth&Authz} = [\"Regular log in\",\"Admin interface\"]",
-                    "title": "Is your application integrated with any of the following single sign-on (SSO) mechanisms?",
+                    "title": "Is your application integrated with any of the following mechanisms?",
                     "choices": [
                       {
                         "value": "SAML2.0",
@@ -335,14 +335,18 @@
                       {
                         "value": "LDAP/AD",
                         "text": "LDAP / Active Directory"
+                      },
+                      {
+                        "value": "IAP",
+                        "text": "Identity Aware Proxy"
                       }
                     ]
             },
                 {
                     "type": "checkbox",
                     "name": "OAuth2_OpenIDC",
-                    "visibleIf": "{SSO mechanisms} = [\"OpenIDConnect/Oauth2\"]",
-                    "enableIf": "{SSO mechanisms} = [\"OpenIDConnect/Oauth2\"]",
+                    "visibleIf": "{mechanisms} = [\"OpenIDConnect/Oauth2\"]",
+                    "enableIf": "{mechanisms} = [\"OpenIDConnect/Oauth2\"]",
                     "title": "Select the option that best describes your implementation:",
                     "choices": [
                       {
@@ -709,13 +713,13 @@
                 {
                     "type": "html",
                     "name": "Alert-OpenID2.0",
-                    "visibleIf": "{SSO mechanisms} contains \"OpenID2.0\"",
+                    "visibleIf": "{mechanisms} contains \"OpenID2.0\"",
                     "html": "<div class=\"highs\">OpenID 2.0 has been replaced by OpenID Connect (also called OAuth2 Login). We recommend updating your application's SSO integration to support OpenID Connect\n</div>"
                 },
                 {
                     "type": "html",
                     "name": "Alert-ldap",
-                    "visibleIf": "{SSO mechanisms} contains \"LDAP/AD\"",
+                    "visibleIf": "{mechanisms} contains \"LDAP/AD\"",
                     "html": "<div class=\"highs\">Integrating with LDAP and/or Active Directory has a significant downside: any application that integrates with it has to receive the user's SSO password. As a result, a vulnerability in any integrated application puts the password at risk for all other applications. We recommend using an SSO mechanism that does not require the password to be sent anywhere other than a authentication system.\n</div>"
                 },
                 {
@@ -878,11 +882,11 @@
                             "value": "Implementing OAuth2 on your own is extremely dangerous. The only way to securely implement it is through a well-known and well-tested library."
                         },
                         {
-                            "visibleIf": "{SSO mechanisms} contains \"OpenID2.0\"",
+                            "visibleIf": "{mechanisms} contains \"OpenID2.0\"",
                             "value": "OpenID 2.0 has been replaced by OpenID Connect (also called OAuth2 Login). We recommend updating your application's SSO integration to support OpenID Connect."
                         },
                         {
-                            "visibleIf": "{SSO mechanisms} contains \"LDAP/AD\"",
+                            "visibleIf": "{mechanisms} contains \"LDAP/AD\"",
                             "value": "Integrating with LDAP and/or Active Directory has a significant downside: any application that integrates with it has to receive the user's SSO password. As a result, a vulnerability in any integrated application puts the password at risk for all other applications. We recommend using an SSO mechanism that does not require the password to be sent anywhere other than a authentication system."
                         },
                         {
