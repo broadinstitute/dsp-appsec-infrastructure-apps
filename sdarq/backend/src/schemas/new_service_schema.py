@@ -11,7 +11,7 @@ new_service_schema = {
         },
         "Description": {
             "type": "string",
-            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9,.!?-//_\\s]{4,200}[a-zA-Z0-9,.!?-_\\s]$"
+            "pattern": "[a-zA-Z0-9-_/ .?!]{4,200}"
         },
         "Security champion": {
             "type": "string",

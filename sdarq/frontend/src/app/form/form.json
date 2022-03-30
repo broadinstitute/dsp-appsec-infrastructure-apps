@@ -41,8 +41,8 @@
                     "validators": [
                      {
                       "type": "regex",
-                      "text": "Please include numbers, a-z characters, _,- (4-200).",
-                      "regex": "^[a-zA-Z0-9][a-zA-Z0-9,.!?-//_\\s]{4,200}[a-zA-Z0-9,.!?-_\\s]$"
+                      "text": "Please include numbers, a-z characters, _,- . ? !(4-200).",
+                      "regex": "[[a-zA-Z0-9-_/ .?!]{4,200}"
                      }
                     ]
                 },
