@@ -81,8 +81,9 @@ export class SecurityControlsListComponent implements OnInit {
 
   sastShowValue(sast) {
     if (sast === true) {
-      this.sast_results =  true;
+      this.sast_results = true;
     } else {
+      this.sast_results = false;
       return '<i class="fas fa-times-circle red-color fa-2x"></i>'
     }
   }
