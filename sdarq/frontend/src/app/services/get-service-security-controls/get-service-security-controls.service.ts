@@ -14,7 +14,7 @@ export class GetServiceSecurityControlsService {
 
   getServiceSecurityControls(data): Observable<any> {
     const options = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Accept': 'application/json' }),
     };
     return this.http.post(this.Url, data, options).pipe(
       catchError(this.handleError)
