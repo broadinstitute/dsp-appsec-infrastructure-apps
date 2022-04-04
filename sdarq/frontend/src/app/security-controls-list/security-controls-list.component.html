@@ -71,6 +71,10 @@
                         </td>
                         <td>
                             <div [innerHTML]="sastShowValue(controls.sast)"></div>
+                            <div *ngIf="sast_results">
+                                <a href="{{ controls.sast_link }}" target="_blank" rel="noreferrer noopener"> <!-- nosemgrep-->
+                                 <i class="fas fa-check-circle green-color fa-2x"></i></a>
+                                     </div>
                         </td>
                         <td>
                             <div [innerHTML]="cisscannerShowValue(controls.cis_scanner)"></div>

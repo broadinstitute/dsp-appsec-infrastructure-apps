@@ -29,6 +29,7 @@ export class EditSecurityControlsFormComponent implements OnInit {
   threat_model: boolean;
   threat_model_link: string;
   sast: boolean;
+  sast_link: string;
   data: any;
   item: any;
   chooseServiceToEditForm: boolean;
@@ -80,6 +81,7 @@ export class EditSecurityControlsFormComponent implements OnInit {
         this.burp = serviceSecurityControl.burp;
         this.security_pentest_link = serviceSecurityControl.security_pentest_link;
         this.sast = serviceSecurityControl.sast;
+        this.sast_link = serviceSecurityControl.sast_link;
       },
       (serviceSecurityControl) => {
         this.errorMessage = serviceSecurityControl;
@@ -208,6 +210,20 @@ export class EditSecurityControlsFormComponent implements OnInit {
     attempt();
   }
 
+  copySASTLink() {
+    const pending =
+    this.clipboard.beginCopy(this.sast_link);
+  let remainingAttempts = 3;
+  const attempt = () => {
+    const result = pending.copy();
+    if (!result && --remainingAttempts) {
+      setTimeout(attempt);
+    } else {
+      pending.destroy();
+    }
+  };
+  attempt();
+  }
 
   copyManualPentestLink() {
     const pending =

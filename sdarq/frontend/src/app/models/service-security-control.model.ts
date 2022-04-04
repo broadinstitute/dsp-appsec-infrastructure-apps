@@ -23,4 +23,5 @@ export class ServiceSecurityControl implements Deserializable {
     vulnerability_management: string;
     defect_dojo: string;
     sast: boolean;
+    sast_link: string;
   }

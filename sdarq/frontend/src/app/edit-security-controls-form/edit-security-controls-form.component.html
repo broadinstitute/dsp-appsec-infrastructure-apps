@@ -63,6 +63,10 @@
                         </button><br><br>
                         <strong>Docker image scan:</strong> {{ docker_scan }} <br><br>
                         <strong>SAST (static application security testing):</strong> {{ sast }} <br><br>
+                        <strong>SAST link:</strong> {{ sast_link }} 
+                        <button type="button" class="btn btn-warning" (click)="copySASTLink()">
+                            <i class="fas fa-copy"></i> Copy
+                        </button><br><br>
                         <strong>GCP project scan:</strong> {{ cis_scanner }} <br><br>
                         <strong>Security manual pentest run last 6 months:</strong> {{ burp }} <br><br>
                         <strong>Security manual pentest results link:</strong> {{ security_pentest_link }}

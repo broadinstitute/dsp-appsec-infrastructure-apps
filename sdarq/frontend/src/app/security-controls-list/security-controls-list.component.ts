@@ -16,6 +16,7 @@ export class SecurityControlsListComponent implements OnInit {
 
   sourceclear_results: boolean;
   zap_results: boolean;
+  sast_results: boolean;
   dev_link: boolean;
   security_pentest: boolean;
   threat_model_results: boolean;
@@ -80,8 +81,9 @@ export class SecurityControlsListComponent implements OnInit {
 
   sastShowValue(sast) {
     if (sast === true) {
-      return '<i class="fas fa-check-circle light-green-color fa-2x"></i>'
+      this.sast_results = true;
     } else {
+      this.sast_results = false;
       return '<i class="fas fa-times-circle red-color fa-2x"></i>'
     }
   }
