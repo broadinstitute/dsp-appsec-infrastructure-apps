@@ -51,6 +51,10 @@ edit_security_controls_schema = {
         "sast": {
             "type": "boolean",
         },
+        "sast_link": {
+            "type": "string",
+            "pattern": "(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?"
+        },
         "burp": {
             "type": "boolean",
         },

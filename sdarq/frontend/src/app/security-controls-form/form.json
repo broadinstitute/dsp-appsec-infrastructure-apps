@@ -163,6 +163,20 @@
         "isRequired": true
        },
        {
+        "type": "text",
+        "name": "sast_link",
+        "hideNumber": true,
+        "visibleIf": "{sast} = true",
+        "title": "Enter security pentest results link",
+        "enableIf": "{sast} = true",
+        "isRequired": true,
+        "validators": [
+         {
+             "type": "regex",
+             "text": "Please include a valid link.",
+             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
+       },
+       {
         "type": "boolean",
         "name": "burp",
         "title": "Have you performed any manual security pentest (via Burp or similar tool)",
