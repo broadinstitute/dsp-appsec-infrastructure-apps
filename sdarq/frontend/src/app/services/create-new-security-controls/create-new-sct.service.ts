@@ -15,7 +15,7 @@ export class CreateNewSctService {
 
   createNewSCT(data): Observable<any> {
     const options = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json'  }),
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
     return this.http.post(this.Url, data, options).pipe(
       catchError(this.handleError)
