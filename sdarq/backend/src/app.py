@@ -28,7 +28,6 @@ from urllib.parse import urlparse
 
 import requests
 from flask import Response, request
-from flask_accept import accept
 from flask_api import FlaskAPI
 from flask_cors import cross_origin
 from google.cloud import bigquery, firestore, pubsub_v1
@@ -94,7 +93,6 @@ def add_header(response):
 
 
 @app.route('/health/', methods=['GET'])
-@accept('application/json')
 def health():
     """
     Check health for ingress
@@ -107,7 +105,6 @@ def health():
 
 
 @app.route('/submit/', methods=['POST'])
-@accept('application/json')
 @cross_origin(origins=sdarq_host)
 def submit():
     """
@@ -199,7 +196,6 @@ def submit():
 
 
 @app.route('/cis_results/', methods=['POST'])
-@accept('application/json')
 @cross_origin(origins=sdarq_host)
 def cis_results():
     """
@@ -271,7 +267,6 @@ def cis_results():
 
 
 @app.route('/cis_scan/', methods=['POST'])
-@accept('application/json')
 @cross_origin(origins=sdarq_host)
 def cis_scan():
     """
@@ -355,7 +350,6 @@ def cis_scan():
 
 
 @app.route('/request_tm/', methods=['POST'])
-@accept('application/json')
 @cross_origin(origins=sdarq_host)
 def request_tm():
     """
@@ -408,7 +402,6 @@ def request_tm():
 
 
 @app.route('/zap_scan/', methods=['POST'])
-@accept('application/json')
 @cross_origin(origins=sdarq_host)
 def zap_scan():
     """
@@ -484,7 +477,6 @@ def zap_scan():
 
 
 @app.route('/create_sec_control_template/', methods=['POST'])
-@accept('application/json')
 @cross_origin(origins=sdarq_host)
 def create_sec_control_template():
     """
@@ -535,7 +527,6 @@ def create_sec_control_template():
 
 
 @app.route('/edit_sec_controls/', methods=['PUT'])
-@accept('application/json')
 @cross_origin(origins=sdarq_host)
 def edit_sec_controls():
     """
@@ -586,7 +577,6 @@ def edit_sec_controls():
 
 
 @app.route('/get_sec_controls/', methods=['GET'])
-@accept('application/json')
 @cross_origin(origins=sdarq_host)
 def get_sec_controls():
     """
@@ -616,7 +606,6 @@ def get_sec_controls():
 
 
 @app.route('/get_sec_controls_service/', methods=['POST'])
-@accept('application/json')
 @cross_origin(origins=sdarq_host)
 def get_sec_controls_service():
     """
@@ -662,7 +651,6 @@ def get_sec_controls_service():
 
 
 @app.route('/request_manual_pentest/', methods=['POST'])
-@accept('application/json')
 @cross_origin(origins=sdarq_host)
 def request_manual_pentest():
     """
@@ -715,7 +703,6 @@ def request_manual_pentest():
 
 
 @app.route('/submitJTRA/', methods=['POST'])
-@accept('application/json')
 @cross_origin(origins=sdarq_host)
 def submitJTRA():
     """

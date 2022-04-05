@@ -17,7 +17,7 @@ export class GetSecurityControlsService {
 
   getAllSecurityControls(): Observable<ServiceSecurityControl[]> {
     const options = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json', 'Accept': 'application/json' }),
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
     return this.http.get<ServiceSecurityControl[]>(this.URL, options).pipe(
       map(res => res.map((serviceSecurityControl: ServiceSecurityControl) => new ServiceSecurityControl().deserialize(serviceSecurityControl))), // tslint:disable-line
