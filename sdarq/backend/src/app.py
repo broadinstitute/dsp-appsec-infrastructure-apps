@@ -129,7 +129,7 @@ def submit():
     appsec_jira_ticket_description = github_url + '\n' + architecture_diagram
     appsec_jira_ticket_summury = 'Threat Model request ' + dojo_name
 
-    if request.headers.get['Content-Type'] == 'application/json':
+    if request.headers.get('Content-Type') == 'application/json':
         try:
             validate(instance=json_data, schema=new_service_schema)
             if 'JiraProject' in json_data:
@@ -216,7 +216,7 @@ def cis_results():
     logging.info(
         "Request by %s to read CIS scanner results for project %s ", user_email, project_id_edited)
 
-    if request.headers.get['Content-Type'] == 'application/json':
+    if request.headers.get('Content-Type') == 'application/json':
         if re.match(pattern, project_id_edited):
             table_id = u"{0}.{1}.{2}".format(
                 pubsub_project_id, 'cis', project_id_edited)
@@ -286,7 +286,7 @@ def cis_scan():
     message = message.encode("utf-8")
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
-    if request.headers.get['Content-Type'] == 'application/json':
+    if request.headers.get('Content-Type') == 'application/json':
         if re.match(pattern, user_project_id):
             try:
                 validate(instance=json_data, schema=cis_scan_schema)
@@ -367,7 +367,7 @@ def request_tm():
     user_data = request.get_json()
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
-    if request.headers.get['Content-Type'] == 'application/json':
+    if request.headers.get('Content-Type') == 'application/json':
         try:
             validate(instance=user_data, schema=tm_schema)
             security_champion = user_data['Eng']
@@ -425,7 +425,7 @@ def zap_scan():
                     You should NOT run a security pentest against the URL you entered, 
                     or maybe it doesn't exist in AppSec list. Please contact AppSec team.
                     """
-    if request.headers.get['Content-Type'] == 'application/json':
+    if request.headers.get('Content-Type') == 'application/json':
         try:
             validate(instance=json_data, schema=zap_scan_schema)
             user_supplied_url = json_data['URL']
@@ -495,7 +495,7 @@ def create_sec_control_template():
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
-    if request.headers.get['Content-Type'] == 'application/json':
+    if request.headers.get('Content-Type') == 'application/json':
         if re.match(pattern, service_name):
             try:
                 validate(instance=json_data, schema=security_controls_schema)
@@ -546,7 +546,7 @@ def edit_sec_controls():
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
-    if request.headers.get['Content-Type'] == 'application/json':
+    if request.headers.get('Content-Type') == 'application/json':
         if re.match(pattern, service_name):
             try:
                 validate(instance=json_data, schema=edit_security_controls_schema)
@@ -596,7 +596,7 @@ def get_sec_controls():
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
     data = []
 
-    if request.headers.get['Content-Type'] == 'application/json':
+    if request.headers.get('Content-Type') == 'application/json':
         try:
             docs = db.collection(security_controls_firestore_collection).stream()
             logging.info(
@@ -628,7 +628,7 @@ def get_sec_controls_service():
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
-    if request.headers.get['Content-Type'] == 'application/json':
+    if request.headers.get('Content-Type') == 'application/json':
         if re.match(pattern, service_name, re.IGNORECASE):
             try:
                 doc_ref = db.collection(security_controls_firestore_collection).document(
@@ -675,7 +675,7 @@ def request_manual_pentest():
     user_data = request.get_json()
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
-    if request.headers.get['Content-Type'] == 'application/json':
+    if request.headers.get('Content-Type') == 'application/json':
         try:
             validate(instance=user_data, schema=mp_schema)
             security_champion = user_data['security_champion']
@@ -727,7 +727,7 @@ def submitJTRA():
     user_data = request.get_json()
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
-    if request.headers.get['Content-Type'] == 'application/json':
+    if request.headers.get('Content-Type') == 'application/json':
         try:
             if user_data['high_level'] == 'add_SA' \
                 or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'Other'  \
