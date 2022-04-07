@@ -17,7 +17,6 @@ This module
 """
 #!/usr/bin/env python3
 
-import imp
 import json
 import logging
 import os
@@ -149,7 +148,7 @@ def submit():
                                                 formatted_jira_description),
                                             issuetype={'name': 'Task'})
             logging.info("Jira ticket in %s board created by %s",
-                        project_key_id, user_email)
+                         project_key_id, user_email)
 
             del json_data['Ticket_Description']
 
@@ -161,11 +160,11 @@ def submit():
             product_id = res.json()['id']
 
             logging.info("Product created: %s by %s request",
-                        dojo_name, user_email)
+                         dojo_name, user_email)
 
             slacknotify.slacknotify_jira(appsec_slack_channel, dojo_name, security_champion,
-                                        product_id, dojo_host_url, jira_instance,
-                                        project_key_id, jira_ticket)
+                                         product_id, dojo_host_url, jira_instance,
+                                         project_key_id, jira_ticket)
         else:
             data = {'name': dojo_name, 'description': parse_json_data.prepare_dojo_input(
                 json_data), 'prod_type': product_type}
@@ -175,16 +174,16 @@ def submit():
             product_id = res.json()['id']
 
             logging.info("Product created: %s by %s request",
-                        dojo_name, user_email)
+                         dojo_name, user_email)
 
             slacknotify.slacknotify(
                 appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url)
 
         jira.create_issue(project=appsec_jira_project_key,
-                        summary=appsec_jira_ticket_summury,
-                        description=str(
-                            appsec_jira_ticket_description),
-                        issuetype={'name': 'Task'})
+                          summary=appsec_jira_ticket_summury,
+                          description=str(
+                              appsec_jira_ticket_description),
+                          issuetype={'name': 'Task'})
         logging.info("Jira ticket in appsec board created")
 
         return ''
@@ -306,16 +305,16 @@ def cis_scan():
             if 'slack_channel' in json_data:
                 slack_channel = f"#{json_data['slack_channel']}"
                 publisher.publish(topic_path,
-                                data=message,
-                                GCP_PROJECT_ID=user_project_id,
-                                SLACK_CHANNEL=slack_channel,
-                                SLACK_RESULTS_URL=results_url,
-                                FIRESTORE_COLLECTION=firestore_collection)
+                                  data=message,
+                                  GCP_PROJECT_ID=user_project_id,
+                                  SLACK_CHANNEL=slack_channel,
+                                  SLACK_RESULTS_URL=results_url,
+                                  FIRESTORE_COLLECTION=firestore_collection)
             else:
                 publisher.publish(topic_path,
-                                data=message,
-                                GCP_PROJECT_ID=user_project_id,
-                                FIRESTORE_COLLECTION=firestore_collection)
+                                  data=message,
+                                  GCP_PROJECT_ID=user_project_id,
+                                  FIRESTORE_COLLECTION=firestore_collection)
 
             callback_done = threading.Event()
 
@@ -382,26 +381,26 @@ def request_tm():
         request_type = user_data['Type']
         project_name = user_data['Name']
         logging.info("Threat model request for %s by %s",
-                    project_name, user_email)
+                     project_name, user_email)
         appsec_jira_ticket_summury = user_data['Type'] + user_data['Name']
         appsec_jira_ticket_description = user_data['Diagram'] + \
             '\n' + user_data['Document'] + \
             '\n' + user_data['Github']
 
         jira_ticket_appsec = jira.create_issue(project=appsec_jira_project_key,
-                                            summary=appsec_jira_ticket_summury,
-                                            description=str(
-                                                appsec_jira_ticket_description),
-                                            issuetype={'name': 'Task'})
+                                               summary=appsec_jira_ticket_summury,
+                                               description=str(
+                                                   appsec_jira_ticket_description),
+                                               issuetype={'name': 'Task'})
         logging.info(
             "Jira ticket created in appsec board for %s threat model", project_name)
 
         slacknotify.slacknotify_threat_model(appsec_slack_channel,
-                                            security_champion,
-                                            request_type, project_name,
-                                            jira_instance,
-                                            jira_ticket_appsec,
-                                            appsec_jira_project_key)
+                                             security_champion,
+                                             request_type, project_name,
+                                             jira_instance,
+                                             jira_ticket_appsec,
+                                             appsec_jira_project_key)
         return ''
     except Exception as error:
         error_message = f"Exception /request_tm enspoint: {error}"
@@ -468,15 +467,15 @@ def zap_scan():
                 severities = parse_json_data.parse_severities(
                     json_data['severities'])
                 publisher.publish(zap_topic_path,
-                                data=message,
-                                URL=service_full_endpoint,
-                                CODEDX_PROJECT=service_codex_project,
-                                SCAN_TYPE=service_scan_type.name,
-                                SEVERITIES=severities,
-                                SLACK_CHANNEL=dev_slack_channel,
-                                ENGAGEMENT_ID=engagement_id)
+                                  data=message,
+                                  URL=service_full_endpoint,
+                                  CODEDX_PROJECT=service_codex_project,
+                                  SCAN_TYPE=service_scan_type.name,
+                                  SEVERITIES=severities,
+                                  SLACK_CHANNEL=dev_slack_channel,
+                                  ENGAGEMENT_ID=engagement_id)
                 logging.info("User %s requested to scan via ZAP %s service",
-                            user_email, service_full_endpoint)
+                             user_email, service_full_endpoint)
                 return ''
         else:
             logging.info(
@@ -612,7 +611,7 @@ def get_sec_controls():
 
     if request.headers.get('Content-Type') != 'application/json':
         return Response(json.dumps({'statusText': 'Bad Request'}), status=400, mimetype='application/json')
-        
+
     try:
         docs = db.collection(security_controls_firestore_collection).stream()
         logging.info(
@@ -709,19 +708,19 @@ def request_manual_pentest():
             '\n' + 'Documentation: ' + user_data['document'] + \
             '\n' + 'Security champion: ' + user_data['security_champion']
         jira_ticket_appsec = jira.create_issue(project=appsec_jira_project_key,
-                                            summary=appsec_jira_ticket_summury,
-                                            description=str(
-                                                appsec_jira_ticket_description),
-                                            issuetype={'name': 'Task'})
+                                               summary=appsec_jira_ticket_summury,
+                                               description=str(
+                                                   appsec_jira_ticket_description),
+                                               issuetype={'name': 'Task'})
         logging.info(
             "Jira ticket created in appsec board for %s security pentest request by %s", project_name, user_email)
 
         slacknotify.slacknotify_security_pentest(appsec_slack_channel,
-                                                security_champion,
-                                                project_name,
-                                                jira_instance,
-                                                jira_ticket_appsec,
-                                                appsec_jira_project_key)
+                                                 security_champion,
+                                                 project_name,
+                                                 jira_instance,
+                                                 jira_ticket_appsec,
+                                                 appsec_jira_project_key)
         return ''
     except Exception as error:
         error_message = f"Exception /request_manual_pentest enspoint: {error}"
