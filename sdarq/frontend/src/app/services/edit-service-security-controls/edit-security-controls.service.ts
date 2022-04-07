@@ -14,7 +14,7 @@ export class EditSecurityControlsService {
 
   editSCT(data): Observable<any> {
     const options = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      headers: new HttpHeaders({ 'Content-Type': 'application/json'}),
     };
     return this.http.put(this.Url, data, options).pipe(
       catchError(this.handleError)

@@ -129,6 +129,9 @@ def submit():
     appsec_jira_ticket_description = github_url + '\n' + architecture_diagram
     appsec_jira_ticket_summury = 'Threat Model request ' + dojo_name
 
+    if request.headers.get('Content-Type') != 'application/json':
+        return Response(json.dumps({'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+
     try:
         validate(instance=json_data, schema=new_service_schema)
         if 'JiraProject' in json_data:
@@ -146,7 +149,7 @@ def submit():
                                                 formatted_jira_description),
                                             issuetype={'name': 'Task'})
             logging.info("Jira ticket in %s board created by %s",
-                         project_key_id, user_email)
+                        project_key_id, user_email)
 
             del json_data['Ticket_Description']
 
@@ -158,11 +161,11 @@ def submit():
             product_id = res.json()['id']
 
             logging.info("Product created: %s by %s request",
-                         dojo_name, user_email)
+                        dojo_name, user_email)
 
             slacknotify.slacknotify_jira(appsec_slack_channel, dojo_name, security_champion,
-                                         product_id, dojo_host_url, jira_instance,
-                                         project_key_id, jira_ticket)
+                                        product_id, dojo_host_url, jira_instance,
+                                        project_key_id, jira_ticket)
         else:
             data = {'name': dojo_name, 'description': parse_json_data.prepare_dojo_input(
                 json_data), 'prod_type': product_type}
@@ -172,16 +175,16 @@ def submit():
             product_id = res.json()['id']
 
             logging.info("Product created: %s by %s request",
-                         dojo_name, user_email)
+                        dojo_name, user_email)
 
             slacknotify.slacknotify(
                 appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url)
 
         jira.create_issue(project=appsec_jira_project_key,
-                          summary=appsec_jira_ticket_summury,
-                          description=str(
-                              appsec_jira_ticket_description),
-                          issuetype={'name': 'Task'})
+                        summary=appsec_jira_ticket_summury,
+                        description=str(
+                            appsec_jira_ticket_description),
+                        issuetype={'name': 'Task'})
         logging.info("Jira ticket in appsec board created")
 
         return ''
@@ -214,6 +217,9 @@ def cis_results():
 
     logging.info(
         "Request by %s to read CIS scanner results for project %s ", user_email, project_id_edited)
+
+    if request.headers.get('Content-Type') != 'application/json':
+        return Response(json.dumps({'statusText': 'Bad Request'}), status=400, mimetype='application/json')
 
     if re.match(pattern, project_id_edited):
         table_id = u"{0}.{1}.{2}".format(
@@ -284,6 +290,9 @@ def cis_scan():
     message = message.encode("utf-8")
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
+    if request.headers.get('Content-Type') != 'application/json':
+        return Response(json.dumps({'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+
     if re.match(pattern, user_project_id):
         try:
             validate(instance=json_data, schema=cis_scan_schema)
@@ -297,16 +306,16 @@ def cis_scan():
             if 'slack_channel' in json_data:
                 slack_channel = f"#{json_data['slack_channel']}"
                 publisher.publish(topic_path,
-                                  data=message,
-                                  GCP_PROJECT_ID=user_project_id,
-                                  SLACK_CHANNEL=slack_channel,
-                                  SLACK_RESULTS_URL=results_url,
-                                  FIRESTORE_COLLECTION=firestore_collection)
+                                data=message,
+                                GCP_PROJECT_ID=user_project_id,
+                                SLACK_CHANNEL=slack_channel,
+                                SLACK_RESULTS_URL=results_url,
+                                FIRESTORE_COLLECTION=firestore_collection)
             else:
                 publisher.publish(topic_path,
-                                  data=message,
-                                  GCP_PROJECT_ID=user_project_id,
-                                  FIRESTORE_COLLECTION=firestore_collection)
+                                data=message,
+                                GCP_PROJECT_ID=user_project_id,
+                                FIRESTORE_COLLECTION=firestore_collection)
 
             callback_done = threading.Event()
 
@@ -320,7 +329,7 @@ def cis_scan():
             doc_ref = db.collection(firestore_collection).document(user_proj)
             doc_ref.delete()
             doc_watch = doc_ref.on_snapshot(on_snapshot)
-            callback_done.wait(timeout=36000)
+            callback_done.wait(timeout=3600)
             doc_watch.unsubscribe()
             doc = doc_ref.get()
 
@@ -364,32 +373,35 @@ def request_tm():
     user_data = request.get_json()
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
+    if request.headers.get('Content-Type') != 'application/json':
+        return Response(json.dumps({'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+
     try:
         validate(instance=user_data, schema=tm_schema)
         security_champion = user_data['Eng']
         request_type = user_data['Type']
         project_name = user_data['Name']
         logging.info("Threat model request for %s by %s",
-                     project_name, user_email)
+                    project_name, user_email)
         appsec_jira_ticket_summury = user_data['Type'] + user_data['Name']
         appsec_jira_ticket_description = user_data['Diagram'] + \
             '\n' + user_data['Document'] + \
             '\n' + user_data['Github']
 
         jira_ticket_appsec = jira.create_issue(project=appsec_jira_project_key,
-                                               summary=appsec_jira_ticket_summury,
-                                               description=str(
-                                                   appsec_jira_ticket_description),
-                                               issuetype={'name': 'Task'})
+                                            summary=appsec_jira_ticket_summury,
+                                            description=str(
+                                                appsec_jira_ticket_description),
+                                            issuetype={'name': 'Task'})
         logging.info(
             "Jira ticket created in appsec board for %s threat model", project_name)
 
         slacknotify.slacknotify_threat_model(appsec_slack_channel,
-                                             security_champion,
-                                             request_type, project_name,
-                                             jira_instance,
-                                             jira_ticket_appsec,
-                                             appsec_jira_project_key)
+                                            security_champion,
+                                            request_type, project_name,
+                                            jira_instance,
+                                            jira_ticket_appsec,
+                                            appsec_jira_project_key)
         return ''
     except Exception as error:
         error_message = f"Exception /request_tm enspoint: {error}"
@@ -421,6 +433,9 @@ def zap_scan():
                     You should NOT run a security pentest against the URL you entered, 
                     or maybe it doesn't exist in AppSec list. Please contact AppSec team.
                     """
+    if request.headers.get('Content-Type') != 'application/json':
+        return Response(json.dumps({'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+
     try:
         validate(instance=json_data, schema=zap_scan_schema)
         user_supplied_url = json_data['URL']
@@ -453,15 +468,15 @@ def zap_scan():
                 severities = parse_json_data.parse_severities(
                     json_data['severities'])
                 publisher.publish(zap_topic_path,
-                                  data=message,
-                                  URL=service_full_endpoint,
-                                  CODEDX_PROJECT=service_codex_project,
-                                  SCAN_TYPE=service_scan_type.name,
-                                  SEVERITIES=severities,
-                                  SLACK_CHANNEL=dev_slack_channel,
-                                  ENGAGEMENT_ID=engagement_id)
+                                data=message,
+                                URL=service_full_endpoint,
+                                CODEDX_PROJECT=service_codex_project,
+                                SCAN_TYPE=service_scan_type.name,
+                                SEVERITIES=severities,
+                                SLACK_CHANNEL=dev_slack_channel,
+                                ENGAGEMENT_ID=engagement_id)
                 logging.info("User %s requested to scan via ZAP %s service",
-                             user_email, service_full_endpoint)
+                            user_email, service_full_endpoint)
                 return ''
         else:
             logging.info(
@@ -489,6 +504,9 @@ def create_sec_control_template():
     service_name = json_data['service']
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
+
+    if request.headers.get('Content-Type') != 'application/json':
+        return Response(json.dumps({'statusText': 'Bad Request'}), status=400, mimetype='application/json')
 
     if re.match(pattern, service_name):
         try:
@@ -540,6 +558,9 @@ def edit_sec_controls():
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
+    if request.headers.get('Content-Type') != 'application/json':
+        return Response(json.dumps({'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+
     if re.match(pattern, service_name):
         try:
             validate(instance=json_data, schema=edit_security_controls_schema)
@@ -588,6 +609,10 @@ def get_sec_controls():
     """
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
     data = []
+
+    if request.headers.get('Content-Type') != 'application/json':
+        return Response(json.dumps({'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+        
     try:
         docs = db.collection(security_controls_firestore_collection).stream()
         logging.info(
@@ -618,6 +643,9 @@ def get_sec_controls_service():
     service_name = json_data['service']
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
+
+    if request.headers.get('Content-Type') != 'application/json':
+        return Response(json.dumps({'statusText': 'Bad Request'}), status=400, mimetype='application/json')
 
     if re.match(pattern, service_name, re.IGNORECASE):
         try:
@@ -665,6 +693,9 @@ def request_manual_pentest():
     user_data = request.get_json()
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
+    if request.headers.get('Content-Type') != 'application/json':
+        return Response(json.dumps({'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+
     try:
         validate(instance=user_data, schema=mp_schema)
         security_champion = user_data['security_champion']
@@ -678,19 +709,19 @@ def request_manual_pentest():
             '\n' + 'Documentation: ' + user_data['document'] + \
             '\n' + 'Security champion: ' + user_data['security_champion']
         jira_ticket_appsec = jira.create_issue(project=appsec_jira_project_key,
-                                               summary=appsec_jira_ticket_summury,
-                                               description=str(
-                                                   appsec_jira_ticket_description),
-                                               issuetype={'name': 'Task'})
+                                            summary=appsec_jira_ticket_summury,
+                                            description=str(
+                                                appsec_jira_ticket_description),
+                                            issuetype={'name': 'Task'})
         logging.info(
             "Jira ticket created in appsec board for %s security pentest request by %s", project_name, user_email)
 
         slacknotify.slacknotify_security_pentest(appsec_slack_channel,
-                                                 security_champion,
-                                                 project_name,
-                                                 jira_instance,
-                                                 jira_ticket_appsec,
-                                                 appsec_jira_project_key)
+                                                security_champion,
+                                                project_name,
+                                                jira_instance,
+                                                jira_ticket_appsec,
+                                                appsec_jira_project_key)
         return ''
     except Exception as error:
         error_message = f"Exception /request_manual_pentest enspoint: {error}"
@@ -716,6 +747,8 @@ def submitJTRA():
     user_data = request.get_json()
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
+    if request.headers.get('Content-Type') != 'application/json':
+        return Response(json.dumps({'statusText': 'Bad Request'}), status=400, mimetype='application/json')
     try:
         if user_data['high_level'] == 'add_SA' \
             or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'Other'  \
