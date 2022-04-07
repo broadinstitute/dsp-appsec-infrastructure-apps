@@ -44,6 +44,25 @@ steps:
   name: &kaniko gcr.io/kaniko-project/executor:v1.6.0-debug
   entrypoint: 'true'
 
+# build Docs image
+- id: docs-image
+  name: *kaniko
+  waitFor: ['kaniko']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/docs/src
+      --destination=$${DOCS_IMAGE}
+      --cache
+
+# deploy Docs to GKE cluster
+- id: docs
+  name: *kubectl
+  waitFor: ['shared', 'docs-image']
+  entrypoint: ./deploy.sh
+  dir: docs
+
 # build bastion proxy Docker image
 - id: bastion-image
   name: *kaniko
@@ -181,7 +200,6 @@ steps:
   name: &kubectl gcr.io/cloud-builders/kubectl
   entrypoint: ./global.sh
   dir: shared
-
 
 # deploy CIS scanner resources
 - id: cis
