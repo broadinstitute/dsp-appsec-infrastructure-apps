@@ -131,7 +131,7 @@ def submit():
 
     if request.headers.get('Content-Type') != 'application/json':
         return Response(json.dumps({'statusText': 'Bad Request'}), status=400, mimetype='application/json')
-        
+
     try:
         validate(instance=json_data, schema=new_service_schema)
         if 'JiraProject' in json_data:
@@ -329,7 +329,7 @@ def cis_scan():
             doc_ref = db.collection(firestore_collection).document(user_proj)
             doc_ref.delete()
             doc_watch = doc_ref.on_snapshot(on_snapshot)
-            callback_done.wait(timeout=36000)
+            callback_done.wait(timeout=3600)
             doc_watch.unsubscribe()
             doc = doc_ref.get()
 
