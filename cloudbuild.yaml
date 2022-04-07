@@ -3,7 +3,7 @@ substitutions:
   _ORG_VIEWER_SA_EMAIL: '' # email of an existing Service Account with Org Viewer role
   _DNS_DOMAIN: '' # fully-resolved DNS domain name (e.g. appsec.example.org)
   _DNS_ZONE: '' # DNS zone name to be created/updated (e.g. appsec)
-  _CIS_CONTROLS_IGNORE: ''
+  _CIS_CONTROLS_IGNORE: '' # CIS controls rule to ignore 
 
 options:
   machineType: N1_HIGHCPU_8
@@ -15,7 +15,6 @@ options:
   - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis
   - ZAP_IMAGE=us.gcr.io/${PROJECT_ID}/zap:${SHORT_SHA}
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
-  - DOCS_IMAGE=us.gcr.io/${PROJECT_ID}/docs:${SHORT_SHA}
   - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx
   - SDARQ_FRONTEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-frontend:${SHORT_SHA}
   - SDARQ_BACKEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-backend:${SHORT_SHA}
@@ -43,25 +42,6 @@ steps:
 - id: kaniko
   name: &kaniko gcr.io/kaniko-project/executor:v1.6.0-debug
   entrypoint: 'true'
-
-# build Docs image
-- id: docs-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/docs/src
-      --destination=$${DOCS_IMAGE}
-      --cache
-
-# deploy Docs to GKE cluster
-- id: docs
-  name: *kubectl
-  waitFor: ['shared', 'docs-image']
-  entrypoint: ./deploy.sh
-  dir: docs
 
 # build bastion proxy Docker image
 - id: bastion-image
@@ -200,6 +180,7 @@ steps:
   name: &kubectl gcr.io/cloud-builders/kubectl
   entrypoint: ./global.sh
   dir: shared
+
 
 # deploy CIS scanner resources
 - id: cis
