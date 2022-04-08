@@ -1,0 +1,273 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Kubernetes Cluster Architecture · AppSec Infrastructure Automation</title><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Check the [documentation](https://dsp-security.broadinstitute.org) for how we do AppSec. "/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Kubernetes Cluster Architecture · AppSec Infrastructure Automation"/><meta property="og:type" content="website"/><meta property="og:url" content="https://broadinstitute.github.io//dsp-appsec-infrastructure-apps/"/><meta property="og:description" content="Check the [documentation](https://dsp-security.broadinstitute.org) for how we do AppSec. "/><meta property="og:image" content="https://broadinstitute.github.io//dsp-appsec-infrastructure-apps/img/undraw_online.svg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://broadinstitute.github.io//dsp-appsec-infrastructure-apps/img/undraw_tweetstorm.svg"/><link rel="shortcut icon" href="/dsp-appsec-infrastructure-apps/img/broad-logo-white.png"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://broadinstitute.github.io//dsp-appsec-infrastructure-apps/blog/atom.xml" title="AppSec Infrastructure Automation Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://broadinstitute.github.io//dsp-appsec-infrastructure-apps/blog/feed.xml" title="AppSec Infrastructure Automation Blog RSS Feed"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/dsp-appsec-infrastructure-apps/js/scrollSpy.js"></script><link rel="stylesheet" href="/dsp-appsec-infrastructure-apps/css/main.css"/><script src="/dsp-appsec-infrastructure-apps/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/dsp-appsec-infrastructure-apps/"><img class="logo" src="/dsp-appsec-infrastructure-apps/img/broad-logo-white.png" alt="AppSec Infrastructure Automation"/><h2 class="headerTitleWithLogo">AppSec Infrastructure Automation</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive siteNavItemActive"><a href="/dsp-appsec-infrastructure-apps/docs/kubernetes-cluster" target="_self">Docs</a></li><li class="siteNavGroupActive"><a href="/dsp-appsec-infrastructure-apps/docs/security-apps" target="_self">Apps</a></li><li class=""><a href="/dsp-appsec-infrastructure-apps/help" target="_self">Help</a></li><li class=""><a href="/dsp-appsec-infrastructure-apps/blog/" target="_self">Blog</a></li><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Kubernetes Cluster</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Kubernetes Cluster</h3><ul class=""><li class="navListItem navListItemActive"><a class="navItem" href="/dsp-appsec-infrastructure-apps/docs/kubernetes-cluster">AppSec Infrastructure</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Cluster Deployed Applications</h3><ul class=""><li class="navListItem"><a class="navItem" href="/dsp-appsec-infrastructure-apps/docs/security-apps">Cluster Deployed Security Apps</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">Kubernetes Cluster Architecture</h1></header><article><div><span><p>Check the <a href="https://dsp-security.broadinstitute.org">documentation</a> for how we do AppSec.</p>
+<h2><a class="anchor" aria-hidden="true" id="deployment"></a><a href="#deployment" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Deployment</h2>
+<p>All apps are deployed via Cloud Build, as defined in <a href="cloudbuild.yaml">cloudbuild.yaml</a>.</p>
+<h3><a class="anchor" aria-hidden="true" id="shared-resources"></a><a href="#shared-resources" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Shared resources</h3>
+<h3><a class="anchor" aria-hidden="true" id="terraform"></a><a href="#terraform" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Terraform</h3>
+<p>First, it sets up some common infrastructure:</p>
+<ol>
+<li><p>Using <a href="terraform">Terraform templates</a>, it deploys a <em>regional</em> GKE cluster with</p>
+<ul>
+<li><p>a dedicated VPC network/subnetwork in <code>us-east1</code> region</p></li>
+<li><p>VPC-native networking with
+<a href="https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips">alias IPs</a>,
+to optimize pod communication and provide some security benefits</p></li>
+<li><p>a minimal-privilege GKE node service account
+with access to Stackdriver logging/monitoring
+and Google Container Registry</p></li>
+<li><p><code>system</code> and <code>sandbox</code> node pools,
+spread across 2 availability zones in the region</p></li>
+<li><p><a href="https://cloud.google.com/kubernetes-engine/sandbox">GKE Sandbox</a>
+enabled for <code>sandbox</code> pool,
+which will be used for app deployments
+(with additional configuration for the pods, see below).</p></li>
+<li><p><a href="https://cloud.google.com/kubernetes-engine/docs/concepts/using-containerd">Container-Optimized OS with <code>containerd</code> runtime</a>
+image for the nodes (this is required by GKE Sandbox,
+but we also use it for &quot;system&quot; nodes, to minimize Docker exposure surface)</p></li>
+<li><p><a href="https://cloud.google.com/security/shielded-cloud/shielded-vm">Shielded VMs</a>
+for all nodes</p></li>
+<li><p><a href="https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity">Workload Identity</a> for minimal-privilege app deployments</p></li>
+<li><p><a href="https://cloud.google.com/kubernetes-engine/docs/tutorials/network-policy">Network Policy</a> cluster add-on for future Pod deployments</p></li>
+<li><p><a href="https://cloud.google.com/kubernetes-engine/docs/concepts/cluster-autoscaler">Cluster Autoscaler</a>
+for <code>sandbox</code> pool, to gradually grow the number of nodes as more workloads are deployed to them</p></li>
+<li><p><em>Regular</em> <a href="https://cloud.google.com/kubernetes-engine/docs/concepts/release-channels">release channel</a> for cluster/node upgrades</p></li>
+</ul></li>
+</ol>
+<h3><a class="anchor" aria-hidden="true" id="gke-config-connector"></a><a href="#gke-config-connector" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>GKE Config Connector</h3>
+<ol start="2">
+<li><p>Then, it installs GKE Config Connector (via <a href="shared/cnrm.sh">shared/cnrm.sh</a> script)
+into <code>system</code> pool.</p>
+<p><a href="https://cloud.google.com/config-connector/docs/overview">Config Connector</a>
+is a new GKE cluster add-on that enables declarative
+deployment of GCP resources directly from Kubernetes templates.</p>
+<p>This is highly convient, as we can deploy a Pod, an associated minimal privilege Service Account,
+and related GCP resources (e.g. CloudSQL instances) within a single template.</p>
+<p>Notice that Config Connector itself needs access to create these GCP resources,
+and as such is assigned a highly-privileged Service Account with the
+required permissions via a custom IAM role in Terraform. However,
+we schedule its pods into <code>system</code> node pool, so it is physically separated
+from all &quot;third-party apps&quot; in the cluster.</p>
+<p>If this becomes a big concern, it's possible to deploy Config Connector
+onto a separate project/cluster altogether,
+and then managing &quot;target project&quot; resources from there
+(or alternatively, we could use Terraform to deploy these GCP resources,
+but that introduces its own complexities).</p>
+<p>However, even the current setup may provide sufficient isolation, and is
+still better than the regular &quot;Default Compute Engine Service Account Identity&quot;
+typically used for GKE nodes and pods, since
+the workloads (apps) are now isolated by multiple layers
+(workload identity, containerization, GKE Sandbox where possible,
+physical nodes, and Network Policies in the future).</p>
+<p>It's also possible to protect GCP resources from deletion when
+an associated Config Connector resource is removed. This can be done
+via <code>cnrm.cloud.google.com/deletion-policy: abandon</code> annotation for the resource.
+We use it for such resources as <code>SQLInstance/Database/User</code>,
+<code>ComputeAddress</code>, <code>DNSManagedZone</code>, <code>ComputeDisk</code>, and <code>ComputeResourcePolicy</code>,
+as those generally need to &quot;survive&quot; any cluster/app re-deployments.</p>
+<p>Since Config Connector relies on the project-global names of such resources,
+they are automatically &quot;acquired&quot; by it on re-deployment. This allows us
+to safely delete an entire namespace or even the cluster, and
+re-create it later on, so the cluster/namespaces can be treated as &quot;dispensable&quot;
+resources that can be completely and easily reproduced via Cloud Build, when needed.</p>
+<p><a href="https://cloud.google.com/config-connector/docs/reference/resources">Here</a>
+is a comprehensive list of all possible GCP resources available via Config Connector.</p></li>
+</ol>
+<h3><a class="anchor" aria-hidden="true" id="global-namespace-in-gke"></a><a href="#global-namespace-in-gke" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Global Namespace in GKE</h3>
+<ol start="3">
+<li><p>Finally, using Config Connector we set up <code>global</code> namespace (see below)
+and the following GCP resources in it (<a href="shared/global.yaml">shared/global.yaml</a>):</p>
+<ul>
+<li><p>Cloud Armor <a href="https://cloud.google.com/armor/docs/security-policy-concepts">Security Policy</a>,
+which firewalls all Ingress endpoints to the Broad CIDRs.</p></li>
+<li><p><a href="https://cloud.google.com/dns/zones">Cloud DNS Managed Zone</a>
+for <code>dsp-appsec.broadinstitute.org.</code></p></li>
+<li><p><a href="https://cloud.google.com/compute/docs/disks/scheduled-snapshots">GCE Resource Policy</a>
+for disk snapshots (see below).</p></li>
+</ul></li>
+</ol>
+<h2><a class="anchor" aria-hidden="true" id="apps"></a><a href="#apps" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Apps</h2>
+<p>Next, Cloud Build applies both app-specific and some <a href="shared">shared</a>
+Kubernetes <em>templates</em> to deploy each app.</p>
+<p>Some apps require patches to work properly with Docker/Kubernetes,
+so we build patched images and push them to GCR along the way.
+We use <a href="https://github.com/GoogleContainerTools/kaniko">Kaniko</a> Docker builder
+to speed up the builds through caching.</p>
+<p>Each Kubernetes deployment is done via an associated <code>deploy.sh</code> script
+(e.g. one for <a href="codedx/deploy.sh">CodeDx</a>).
+A quick overview of what that script should do:</p>
+<ol>
+<li><p>Create a <a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/">Kubernetes namespace</a> for the app.
+Namespaces provide mainly logical/deployment separation,
+but also some security boundaries for the apps (notably, while
+Network Policy is not enabled by default, it can be
+<a href="https://kubernetes.io/docs/concepts/services-networking/network-policies/">configured</a>
+to accept internal cluster traffic only from specific namespaces).</p>
+<p>Namespaces are also very convenient for avoiding &quot;spillover&quot; of
+resources between the apps, as one namespace can be created/destroyed
+completely without affecting any others. This is particularly useful
+during the development of each app.</p>
+<p>We use <a href="shared/kube-apply.py">shared/kube-apply.py</a> script to replace
+<code>PROJECT_ID</code> and <code>NAMESPACE</code> environment variables
+in <a href="shared/namespace.yaml">namespace.yaml</a> template with app-specific values,
+and then apply it. This pattern is used throughout
+other resource deployments later as well.</p></li>
+<li><p>Generate Kubernetes secret(s) used by the app, unless they're &quot;external&quot; (e.g. a Slack token).
+This is done via <a href="shared/gen-secret.sh">shared/gen-secret.sh</a> script, which currently uses
+<code>/dev/urandom</code> to generate a random sequence of alphanumeric characters. However,
+it may be better to use a crypto library in the future instead.</p>
+<p>The secrets are generated only once, when they don't exist yet. Otherwise,
+the script doesn't overwrite them. This provides a simple way to rotate the secrets,
+should we need that, by just removing them in Kubernetes and re-running the latest
+build in Cloud Build.</p>
+<p>For the manually created secrets, we'll provide a sample template to deploy them
+from your local shell.</p></li>
+<li><p>Set up a Kubernetes volume for the app, if it stores some of its state on disk
+(e.g. DefectDojo and CodeDx).</p>
+<p>This is done via <a href="shared/volume.sh">shared/volume.sh</a> script that</p>
+<ul>
+<li>declares a regional GCE disk (which can be accessed from any of the 2 zones
+in the cluster, while also providing regional replication)</li>
+<li>sets up daily snapshots of disk content for disaster recovery</li>
+<li>waits for the disk to be created on GCE</li>
+<li>sets up Kubernetes
+<a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/">PersistentVolume and PersistentVolumeClaim</a>,
+where the latter can be used to associate the volume with a Pod.</li>
+</ul></li>
+<li><p>If the app needs access to GCP services (e.g. Cloud SQL), apply
+<a href="shared/service-account.yaml">shared/service-account.yaml</a> template to:</p>
+<ul>
+<li>create a Kubernetes Service Account (KSA) for its Pod</li>
+<li>create a Google Service Account (GSA) that will have access to GCP resources</li>
+<li>binds these 2 accounts via a Kubernetes annotation and <code>iam.workloadIdentityUser</code> role.</li>
+</ul>
+<p>Note that <code>service-account.yaml</code> is generic and <em>doesn't</em> grant access to GCP resources,
+so after applying it, the actual role binding has to be done via an app-specific template
+(but at least, that step is simple).</p></li>
+<li><p>Apply the app-specific template,
+which creates either a Deployment (for stateless apps),
+or a StatefulSet (if the app uses disk).</p>
+<p>We also deploy any app-specific GCP resources (e.g. SQLInstance, SQLUser etc.)
+via Config Connector resource types, and create a role binding for the service account
+(if any in use), e.g. <code>roles/cloudsql.client</code> for Cloud SQL.</p>
+<p>Finally, it's recommended to set <code>runtimeClassName: gvisor</code> for the Pod,
+to enable GKE Sandbox around it. However, some apps (e.g. DefectDojo) may fail
+to work properly with it. In that case, the app can still be deployed without it, but
+will need an extra configuration snippet for <code>nodeSelector</code> and <code>tolerations</code>
+(e.g. see how this is done in <a href="defectdojo/deployment.yaml">defectdojo/deployment.yaml</a>).</p>
+<p>For the next steps, this template should also expose
+a <code>containerPort</code> and a <code>readinessProbe</code>, both of which are used
+to reach the app http endpoint from Ingress and to mark it as healthy.</p>
+<p>Take a look, for example, at how all of this is done in
+<a href="codedx/deployment.yaml">codedx/deployment.yaml</a>.</p></li>
+<li><p>Call <a href="shared/host.sh">shared/host.sh</a> script, which:</p>
+<ul>
+<li>declares a global static IP for the service</li>
+<li>waits for the IP to be created</li>
+<li>sets up its DNS hostname record in the Managed Zone</li>
+<li>waits for DNS propagation by repeated host resolution</li>
+<li>deploys <a href="https://cloud.google.com/kubernetes-engine/docs/how-to/managed-certs">GKE Managed Certificate</a>
+for the hostname</li>
+</ul></li>
+<li><p>Finally, deploy <a href="shared/ingress.yaml">shared/ingress.yaml</a>, which sets up:</p>
+<ul>
+<li><p><a href="https://cloud.google.com/kubernetes-engine/docs/concepts/backendconfig">Backend Config</a>
+for Cloud Armor</p></li>
+<li><p><a href="https://kubernetes.io/docs/concepts/services-networking/service/">Kubernetes Service</a>, which:</p>
+<ul>
+<li>exposes internal port(s) to the load balancer</li>
+<li>applies Backend Config to those</li>
+<li>sets up container-native load balancing via a
+<a href="https://cloud.google.com/kubernetes-engine/docs/how-to/standalone-neg">Network Endpoint Group</a></li>
+</ul></li>
+<li><p><a href="https://cloud.google.com/kubernetes-engine/docs/concepts/ingress">GKE Ingress</a>,
+which ties together all of the above using:</p>
+<ul>
+<li>IP address binding</li>
+<li>Disallowing raw HTTP (to keep only HTTPS)</li>
+<li>Managed Certificate binding</li>
+<li>DNS hostname mapping via Host header of the request</li>
+<li>URL path mapping for each Service port</li>
+</ul></li>
+</ul>
+<p>Please note that <code>ingress.yaml</code> may need to be adjusted in an app-specific way
+(e.g. for Sdarq, which exposes multiple internal paths/ports,
+and could use Cloud DNS for Backend Config), in which case
+a customized copy of <code>ingress.yaml</code> would need to be referenced from <code>deploy.sh</code>.</p></li>
+</ol>
+<h2><a class="anchor" aria-hidden="true" id="questions"></a><a href="#questions" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Questions</h2>
+<p><code>appsec@broadinstitute.org</code></p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-next button" href="/dsp-appsec-infrastructure-apps/docs/security-apps"><span>Cluster Deployed Security Apps</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#deployment">Deployment</a><ul class="toc-headings"><li><a href="#shared-resources">Shared resources</a></li><li><a href="#terraform">Terraform</a></li><li><a href="#gke-config-connector">GKE Config Connector</a></li><li><a href="#global-namespace-in-gke">Global Namespace in GKE</a></li></ul></li><li><a href="#apps">Apps</a></li><li><a href="#questions">Questions</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/dsp-appsec-infrastructure-apps/" class="nav-home"><img src="/dsp-appsec-infrastructure-apps/img/broad-logo-white.png" alt="AppSec Infrastructure Automation" width="66" height="58"/></a><div><h5>Docs</h5><a href="/dsp-appsec-infrastructure-apps/docs/en/doc1.html">Getting Started (or other categories)</a><a href="/dsp-appsec-infrastructure-apps/docs/en/doc2.html">Guides (or other categories)</a><a href="/dsp-appsec-infrastructure-apps/docs/en/doc3.html">API Reference (or other categories)</a></div><div><h5>Community</h5><a href="https://broadinstitute.slack.com/">Join chat group in Slack</a><a href="https://twitter.com/aldrazhi" target="_blank" rel="noreferrer noopener">Twitter</a><a href="/dsp-appsec-infrastructure-apps/en/users.html">User Showcase</a></div><div><h5>More</h5><a href="/dsp-appsec-infrastructure-apps/blog">Blog</a><a href="https://github.com/broadinstitute/dsp-appsec-infrastructure-apps">GitHub</a><a class="github-button" href="https://github.com/broadinstitute/dsp-appsec-infrastructure-apps" data-icon="octicon-star" data-count-href="/facebook/docusaurus/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><section class="copyright">Copyright © 2022 DSP AppSec - Broad Institute</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>
+                document.addEventListener('keyup', function(e) {
+                  if (e.target !== document.body) {
+                    return;
+                  }
+                  // keyCode for '/' (slash)
+                  if (e.keyCode === 191) {
+                    const search = document.getElementById('search_input_react');
+                    search && search.focus();
+                  }
+                });
+              </script><script>
+              var search = docsearch({
+                
+                apiKey: 'my-api-key',
+                indexName: 'my-index-name',
+                inputSelector: '#search_input_react',
+                algoliaOptions: {}
+              });
+            </script></body></html>
