@@ -13,6 +13,7 @@ from os import getenv
 from sys import exit  # pylint: disable=redefined-builtin
 from time import sleep
 from typing import List
+from urllib.parse import urlparse, urlunparse
 
 from codedx_api.CodeDxAPI import CodeDx  # pylint: disable=import-error
 from google.cloud import storage
@@ -266,7 +267,9 @@ def clean_uri_path(xmlReport):
     root = tree.getroot()
     #There's a hash in bundled files that is causing flaws to not match, this should remove the hash.
     for uri in root.iter('uri'):
-        uri.text=re.sub('\.([a-zA-Z0-9]+){8,9}', '', uri.text)
+        r=urlparse(uri.text)
+        r=r._replace(path=re.sub('\.([a-zA-Z0-9]+){8,9}', '', r.path))
+        uri.text = urlunparse(r)
     tree.write(xmlReport)
 
 
@@ -318,12 +321,9 @@ def main(): # pylint: disable=too-many-locals
             (zap_filename, session_filename) = zap_compliance_scan(
                 codedx_project, zap_port, target_url, scan_type)
 
-            clean_uri_path(zap_filename)
+            
 
-            # upload its results in defectDojo
-            defectdojo_upload(engagement_id, zap_filename,
-                              defect_dojo_key, defect_dojo_user, defect_dojo)
-
+            
             # optionally, upload them to GCS
             xml_report_url = ""
             if scan_type == ScanType.UI:
@@ -337,6 +337,15 @@ def main(): # pylint: disable=too-many-locals
                     scan_type,
                     session_filename,
                 )
+            
+            #removes hash from certain static files to improve flaw matching. 
+            #done after upload of raw report to GCS to preserve raw report xml.
+            clean_uri_path(zap_filename)
+
+            # upload its results in defectDojo
+            defectdojo_upload(engagement_id, zap_filename,
+                              defect_dojo_key, defect_dojo_user, defect_dojo)
+
 
             if codedx_api_key == '""':
                 slack_alert_without_report(
@@ -349,6 +358,7 @@ def main(): # pylint: disable=too-many-locals
             else:
                 # upload its results to Code Dx
                 cdx = CodeDx(codedx_url, codedx_api_key)
+
                 codedx_upload(cdx, codedx_project, zap_filename)
 
                 # alert Slack, if needed
