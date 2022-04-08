@@ -6,7 +6,6 @@ Runs ZAP scan, uploads results to Code Dx and GCS, and alerts Slack.
 import logging
 import os
 import re
-import defusedxml.etree.ElementTree as ET
 from datetime import datetime
 from enum import Enum
 from os import getenv
@@ -15,6 +14,7 @@ from time import sleep
 from typing import List
 from urllib.parse import urlparse, urlunparse
 
+import defusedxml.ElementTree as ET
 from codedx_api.CodeDxAPI import CodeDx  # pylint: disable=import-error
 from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
@@ -337,8 +337,8 @@ def main(): # pylint: disable=too-many-locals
                     scan_type,
                     session_filename,
                 )
-            
-            #removes hash from certain static files to improve flaw matching. 
+
+            #removes hash from certain static files to improve flaw matching.
             #done after upload of raw report to GCS to preserve raw report xml.
             clean_uri_path(zap_filename)
 
