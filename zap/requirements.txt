@@ -6,3 +6,4 @@ google-cloud-storage==1.38.0
 python-owasp-zap-v2.4==0.0.18
 requests==2.25.1
 slack-sdk==3.5.1
+defusedxml==0.7.1

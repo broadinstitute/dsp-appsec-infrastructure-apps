@@ -6,7 +6,7 @@ Runs ZAP scan, uploads results to Code Dx and GCS, and alerts Slack.
 import logging
 import os
 import re
-import xml.etree.ElementTree as ET
+import defusedxml.etree.ElementTree as ET
 from datetime import datetime
 from enum import Enum
 from os import getenv
