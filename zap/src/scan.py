@@ -5,6 +5,8 @@ Runs ZAP scan, uploads results to Code Dx and GCS, and alerts Slack.
 
 import logging
 import os
+import re
+import xml.etree.ElementTree as ET
 from datetime import datetime
 from enum import Enum
 from os import getenv
@@ -259,6 +261,13 @@ def slack_alert_without_report(  # pylint: disable=too-many-arguments
         slack.chat_postMessage(channel=channel, text=gcs_slack_text)
         logging.info("Alert sent to Slack channel for DefectDojo upload report")
 
+def clean_uri_path(xmlReport):
+    tree = ET.parse(xmlReport)
+    root = tree.getroot()
+    #There's a hash in bundled files that is causing flaws to not match, this should remove the hash.
+    for uri in root.iter('uri'):
+        uri.text=re.sub('\.([a-zA-Z0-9]+){8,9}', '', uri.text)
+    tree.write(xmlReport)
 
 
 def main(): # pylint: disable=too-many-locals
@@ -268,7 +277,7 @@ def main(): # pylint: disable=too-many-locals
     - Upload ZAP XML report to GCS, if needed
     - Send a Slack alert with Code Dx report, if needed.
     """
-    max_retries = int(getenv("MAX_RETRIES", '5'))
+    max_retries = int(getenv("MAX_RETRIES", '1'))
 
     for attempt in range(max_retries):
         # run Zap scan
@@ -308,6 +317,8 @@ def main(): # pylint: disable=too-many-locals
 
             (zap_filename, session_filename) = zap_compliance_scan(
                 codedx_project, zap_port, target_url, scan_type)
+
+            clean_uri_path(zap_filename)
 
             # upload its results in defectDojo
             defectdojo_upload(engagement_id, zap_filename,
