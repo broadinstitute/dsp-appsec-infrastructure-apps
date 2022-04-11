@@ -2,28 +2,28 @@
 <rss version="2.0">
     <channel>
         <title>AppSec Infrastructure Automation Blog</title>
-        <link>https://fuzzy-journey-50160b5b.pages.github.io//dsp-appsec-infrastructure-apps/blog</link>
+        <link>https://broadinstitute.github.io/https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/blog</link>
         <description>The best place to stay up-to-date with the latest AppSec Infrastructure Automation news and events.</description>
         <lastBuildDate>Tue, 24 Oct 2017 06:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <image>
             <title>AppSec Infrastructure Automation Blog</title>
-            <url>https://fuzzy-journey-50160b5b.pages.github.io//dsp-appsec-infrastructure-apps/img/broad-logo-white.png</url>
-            <link>https://fuzzy-journey-50160b5b.pages.github.io//dsp-appsec-infrastructure-apps/blog</link>
+            <url>https://broadinstitute.github.io/https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/img/broad-logo-white.png</url>
+            <link>https://broadinstitute.github.io/https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/blog</link>
         </image>
         <copyright>Copyright © 2022 DSP AppSec - Broad Institute</copyright>
         <item>
             <title><![CDATA[New Version 1.0.0]]></title>
-            <link>https://fuzzy-journey-50160b5b.pages.github.io//dsp-appsec-infrastructure-apps/blog/2017/10/24/new-version-1.0.0.html</link>
-            <guid>https://fuzzy-journey-50160b5b.pages.github.io//dsp-appsec-infrastructure-apps/blog/2017/10/24/new-version-1.0.0.html</guid>
+            <link>https://broadinstitute.github.io/https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/blog/2017/10/24/new-version-1.0.0.html</link>
+            <guid>https://broadinstitute.github.io/https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/blog/2017/10/24/new-version-1.0.0.html</guid>
             <pubDate>Tue, 24 Oct 2017 06:00:00 GMT</pubDate>
             <description><![CDATA[<p>This blog post will test file name parsing issues when periods are present.</p> ]]></description>
         </item>
         <item>
             <title><![CDATA[Adding RSS Support]]></title>
-            <link>https://fuzzy-journey-50160b5b.pages.github.io//dsp-appsec-infrastructure-apps/blog/2017/09/26/adding-rss.html</link>
-            <guid>https://fuzzy-journey-50160b5b.pages.github.io//dsp-appsec-infrastructure-apps/blog/2017/09/26/adding-rss.html</guid>
+            <link>https://broadinstitute.github.io/https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/blog/2017/09/26/adding-rss.html</link>
+            <guid>https://broadinstitute.github.io/https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/blog/2017/09/26/adding-rss.html</guid>
             <pubDate>Tue, 26 Sep 2017 06:00:00 GMT</pubDate>
             <description><![CDATA[<p>This is a test post.</p> <p>A whole bunch of other information.</p> ]]></description>
         </item>
