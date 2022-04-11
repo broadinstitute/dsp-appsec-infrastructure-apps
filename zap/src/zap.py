@@ -117,7 +117,7 @@ def zap_save_session(zap: ZAPv2, project: str, scan_type: ScanType):
     Save and zip zap session.
     """
     share_path = os.getenv("VOLUME_SHARE")
-    share_path_sess = "/tmp/share/session/"
+    share_path_sess = share_path+"/session/"
     session_filename = f"{project}_{scan_type}-session"
     session_filename = session_filename.replace("-", "_").replace(" ", "")
     #zap scanner container saves session to shared volume

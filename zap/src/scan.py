@@ -5,13 +5,16 @@ Runs ZAP scan, uploads results to Code Dx and GCS, and alerts Slack.
 
 import logging
 import os
+import re
 from datetime import datetime
 from enum import Enum
 from os import getenv
 from sys import exit  # pylint: disable=redefined-builtin
 from time import sleep
 from typing import List
+from urllib.parse import urlparse, urlunparse
 
+import defusedxml.ElementTree as ET
 from codedx_api.CodeDxAPI import CodeDx  # pylint: disable=import-error
 from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
@@ -259,6 +262,15 @@ def slack_alert_without_report(  # pylint: disable=too-many-arguments
         slack.chat_postMessage(channel=channel, text=gcs_slack_text)
         logging.info("Alert sent to Slack channel for DefectDojo upload report")
 
+def clean_uri_path(xmlReport):
+    tree = ET.parse(xmlReport)
+    root = tree.getroot()
+    #There's a hash in bundled files that is causing flaws to not match, this should remove the hash.
+    for uri in root.iter('uri'):
+        r=urlparse(uri.text)
+        r=r._replace(path=re.sub('\.([a-zA-Z0-9]+){8,9}', '', r.path))
+        uri.text = urlunparse(r)
+    tree.write(xmlReport)
 
 
 def main(): # pylint: disable=too-many-locals
@@ -268,7 +280,7 @@ def main(): # pylint: disable=too-many-locals
     - Upload ZAP XML report to GCS, if needed
     - Send a Slack alert with Code Dx report, if needed.
     """
-    max_retries = int(getenv("MAX_RETRIES", '5'))
+    max_retries = int(getenv("MAX_RETRIES", '1'))
 
     for attempt in range(max_retries):
         # run Zap scan
@@ -309,10 +321,9 @@ def main(): # pylint: disable=too-many-locals
             (zap_filename, session_filename) = zap_compliance_scan(
                 codedx_project, zap_port, target_url, scan_type)
 
-            # upload its results in defectDojo
-            defectdojo_upload(engagement_id, zap_filename,
-                              defect_dojo_key, defect_dojo_user, defect_dojo)
+            
 
+            
             # optionally, upload them to GCS
             xml_report_url = ""
             if scan_type == ScanType.UI:
@@ -327,6 +338,15 @@ def main(): # pylint: disable=too-many-locals
                     session_filename,
                 )
 
+            #removes hash from certain static files to improve flaw matching.
+            #done after upload of raw report to GCS to preserve raw report xml.
+            clean_uri_path(zap_filename)
+
+            # upload its results in defectDojo
+            defectdojo_upload(engagement_id, zap_filename,
+                              defect_dojo_key, defect_dojo_user, defect_dojo)
+
+
             if codedx_api_key == '""':
                 slack_alert_without_report(
                     slack_token,
@@ -338,6 +358,7 @@ def main(): # pylint: disable=too-many-locals
             else:
                 # upload its results to Code Dx
                 cdx = CodeDx(codedx_url, codedx_api_key)
+
                 codedx_upload(cdx, codedx_project, zap_filename)
 
                 # alert Slack, if needed
