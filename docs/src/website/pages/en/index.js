@@ -96,7 +96,7 @@ class Index extends React.Component {
       <div
         className="productShowcaseSection paddingBottom"
         style={{textAlign: 'center'}}>
-        <h2>Contributions Welcomed. Check out <a href="https://github.com/broadinstitute/dsp-appsec-infrastructure-apps">our Github Repo</a></h2>
+        <h2>Contributions Welcomed. Check out <a href="https://github.com/broadinstitute/dsp-appsec-infrastructure-apps">our Github</a>></h2>
         <MarkdownBlock>We welcome contributions to this project</MarkdownBlock>
       </div>
     );
@@ -155,7 +155,7 @@ class Index extends React.Component {
             title: 'Kubernetes Ready',
           },
           {
-            content: 'OWASP ZAP / CIS Scanner Automation',
+            content: 'Burpsuite / OWASP ZAP / NMAP Automation',
             image: `${baseUrl}img/tooling-logo.svg`,
             imageAlign: 'top',
             title: 'Security Automation Tools',
