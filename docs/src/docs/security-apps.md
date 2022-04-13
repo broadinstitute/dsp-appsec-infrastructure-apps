@@ -10,3 +10,4 @@ title: Cluster Deployed Security Apps
 - [Sdarq](https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/tree/master/sdarq)
 - [CIS scanner](https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/tree/master/cis)
 - [ZAP scanner](https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/tree/master/zap)
+- [Batch Job generator](https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/tree/master/batch)

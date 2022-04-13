@@ -1,7 +1,8 @@
 {
   "docs": {
-    "Kubernetes Cluster": ["kubernetes-cluster"],
     "Cluster Deployed Applications": ["security-apps"],
-    "Sdarq": ["sdarq"]
+    "Kubernetes Cluster": ["kubernetes-cluster"],
+    "Sdarq": ["sdarq"],
+    "ZAP Scan Automation": ["zap_scan"]
   }
 }
