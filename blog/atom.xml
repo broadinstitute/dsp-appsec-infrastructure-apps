@@ -15,8 +15,8 @@
         <updated>2017-10-24T06:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>This blog post will test file name parsing issues when periods are present.</p> ]]></summary>
         <author>
-            <name>Albano Drazhi</name>
-            <uri>http://twitter.com/aldrazhi</uri>
+            <name>Broad Institute</name>
+            <uri>http://twitter.com/broadinstitute</uri>
         </author>
     </entry>
     <entry>
@@ -24,10 +24,10 @@
         <id>https://broadinstitute.github.io/https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/blog/2017/09/26/adding-rss.html</id>
         <link href="https://broadinstitute.github.io/https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/blog/2017/09/26/adding-rss.html"/>
         <updated>2017-09-26T06:00:00.000Z</updated>
-        <summary type="html"><![CDATA[<p>This is a test post.</p> <p>A whole bunch of other information.</p> ]]></summary>
+        <summary type="html"><![CDATA[<p>This is a test post.</p> ]]></summary>
         <author>
-            <name>Albano Drazhi</name>
-            <uri>http://twitter.com/aldrazhi</uri>
+            <name>Broad Institute</name>
+            <uri>http://twitter.com/broadinstitute</uri>
         </author>
     </entry>
 </feed>
