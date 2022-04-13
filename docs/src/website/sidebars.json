@@ -3,8 +3,5 @@
     "Kubernetes Cluster": ["kubernetes-cluster"],
     "Cluster Deployed Applications": ["security-apps"],
     "Sdarq": ["sdarq"]
-  },
-  "docs-other": {
-    "First Category": ["doc4", "doc5"]
   }
 }

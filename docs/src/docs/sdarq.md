@@ -1,6 +1,6 @@
 ---
 id: sdarq
-title: Sdarq App
+title: Sdarq
 ---
 
 A tool built by the Application Security Team at the DSP, Broad Institute.
