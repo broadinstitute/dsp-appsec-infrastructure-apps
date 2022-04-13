@@ -3,6 +3,7 @@
     "Cluster Deployed Applications": ["security-apps"],
     "Kubernetes Cluster": ["kubernetes-cluster"],
     "Sdarq": ["sdarq"],
-    "ZAP Scan Automation": ["zap_scan"]
+    "ZAP Scan Automation": ["zap_scan"],
+    "CIS Scan Automation": ["cis_scan"]
   }
 }
