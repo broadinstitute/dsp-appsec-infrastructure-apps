@@ -4,6 +4,8 @@
     "Kubernetes Cluster": ["kubernetes-cluster"],
     "Sdarq": ["sdarq"],
     "ZAP Scan Automation": ["zap_scan"],
-    "CIS Scan Automation": ["cis_scan"]
+    "CIS Scan Automation": ["cis_scan"],
+    "Secret Deployment": ["secret_deployment"],
+    "Configuration": ["configuration"]
   }
 }

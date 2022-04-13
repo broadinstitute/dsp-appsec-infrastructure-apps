@@ -1,6 +1,6 @@
 ---
 id: zap_scan
-title: Zap Scans
+title: Zap Scan Automation
 ---
 
 ZAP Scans
