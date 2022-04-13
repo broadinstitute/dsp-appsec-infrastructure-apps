@@ -18,7 +18,7 @@ SDARQ orchestrates different security tools and scanners owned by the DSP Appsec
 
 ### New Service Requirements
 
-- Create a security checklist for dev teams
+- Create a security checklist (recommendations) for dev teams
 - Report to Slack
 - Create tickets in Jira
 - Create product in DefectDojo

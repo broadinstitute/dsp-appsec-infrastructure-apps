@@ -22,7 +22,7 @@ const users = [
 ];
 
 const siteConfig = {
-  title: 'AppSec Infrastructure Automation', // Title for your website.
+  title: 'AppSec Infrastructure Apps', // Title for your website.
   tagline: 'Broad Institute - DSP AppSec Team',
   url: 'https://broadinstitute.github.io/', // Your website URL
   baseUrl: 'https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/', // Base URL for your project */
@@ -44,7 +44,7 @@ const siteConfig = {
     { doc: 'kubernetes-cluster', label: 'Docs' },
     { doc: 'security-apps', label: 'Apps' },
     { page: 'help', label: 'Help' },
-    { blog: true, label: 'Blog' },
+    { blog: false, label: 'Blog' },
   ],
 
   // If you have users set above, you add it here:
