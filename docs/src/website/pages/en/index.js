@@ -95,8 +95,8 @@ class Index extends React.Component {
       <div
         className="productShowcaseSection paddingBottom"
         style={{textAlign: 'center'}}>
-        <h2>Contributions Welcomed. Check out <a href="https://github.com/broadinstitute/dsp-appsec-infrastructure-apps">our Github</a></h2>
-        <MarkdownBlock>We welcome contributions to this project</MarkdownBlock>
+        <h2>Contributions are welcomed. Check out <a href="https://github.com/broadinstitute/dsp-appsec-infrastructure-apps">our Github repository</a></h2>
+        <MarkdownBlock>Please check our CODE OF CONDUCT</MarkdownBlock>
       </div>
     );
 
