@@ -163,7 +163,7 @@ class Index extends React.Component {
             content: 'Easily extend the infrastructure by plugging in new tools',
             image: `${baseUrl}img/modular-logo.svg`,
             imageAlign: 'top',
-            title: 'Modular',
+            title: 'Modular Architecture',
           },
         ]}
       </Block>
@@ -202,8 +202,8 @@ class Index extends React.Component {
       <div>
         <HomeSplash siteConfig={siteConfig} language={language} />
         <div className="mainContainer">
-          {/* <Features /> */}
-          {/* <FeatureCallout /> */}
+          <Features />
+          <FeatureCallout />
           {/* <LearnHow /> */}
           {/* <TryOut /> */}
           {/* <Description /> */}
