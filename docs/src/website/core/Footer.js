@@ -27,15 +27,25 @@ class Footer extends React.Component {
         <section className="sitemap">
           <div>
             <h5>Docs</h5>
-            <a href={this.docUrl('security-apps.md', this.props.language)}>
+            <a href={this.docUrl('doc1.html', this.props.language)}>
               Getting Started (or other categories)
+            </a>
+            <a href={this.docUrl('doc2.html', this.props.language)}>
+              Guides (or other categories)
+            </a>
+            <a href={this.docUrl('doc3.html', this.props.language)}>
+              API Reference (or other categories)
             </a>
           </div>
           <div>
             <h5>Community</h5>
+            
             <a href="https://broadinstitute.slack.com/">
               Join chat group in Slack
             </a>
+
+           
+
           </div>
           <div>
             <h5>More</h5>

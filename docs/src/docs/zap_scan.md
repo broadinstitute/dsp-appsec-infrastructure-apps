@@ -17,3 +17,8 @@ Baseline Scans - Spidering and Passive scans
 Auth Scans - Spidering and Passive scans but authenticate every 30 minutes by fetching a GCP OAuth token and using Zap’s Replacer tool
 API Scan - Imports an OpenAPI file (via URL) before running an auth scan
 UI Scan - Auth scan + Active Scan
+
+
+ZAP scanner runs:
+- independent (weekly & monthly scanner)
+- on-demand (integrated to Sdarq)
