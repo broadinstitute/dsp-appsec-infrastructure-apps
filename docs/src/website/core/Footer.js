@@ -44,16 +44,6 @@ class Footer extends React.Component {
               Join chat group in Slack
             </a>
 
-            <a
-              href="https://twitter.com/broadinstitute"
-              target="_blank"
-              rel="noreferrer noopener">
-              Twitter
-            </a>
-
-            <a href={this.pageUrl('users.html', this.props.language)}>
-              User Showcase
-            </a>
            
 
           </div>
