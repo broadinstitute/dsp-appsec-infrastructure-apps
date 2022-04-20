@@ -7,7 +7,7 @@
        {
         "type": "html",
         "name": "Important information",
-        "html": "<h4> Important information </h4><br>\n\n- Please make sure you are NOT running a security pentest against a service in PRODUCTION.<br>\n\n- AppSec team has a limited list of endpoints that you are allowed to pentest. <br>\n- If you want to run a security pentest against a service that is not whitelisted, please advise with AppSec team.<br>\n- Security pentest is necessary to assess the security posture of our services, but it is forbidden to run them against random URLs that you can find on the web. <br>\n\n\n\n\n"
+        "html": "<h4> Important information </h4><br>\n\n- The service scan runs a one time OWASP ZAP scan against your web service.<br>\n\n- Please make sure you are NOT running a security pentest against a service in PRODUCTION.<br>\n\n- AppSec team has a limited list of endpoints that you are allowed to run a dynamic scan against. <br>\n- If you want to run a security scan against a service that is not whitelisted, please advise with AppSec team.<br>\n- Dynamic scans are necessary to assess the security posture of our services, but it is forbidden to run them against random URLs that you can find on the web. <br>\n\n\n\n\n"
        },
        {
         "type": "text",
