@@ -1,10 +1,12 @@
 {
   "docs": {
-    "Kubernetes Cluster": ["kubernetes-cluster"],
     "Cluster Deployed Applications": ["security-apps"],
-    "Security Automation Tools": ["security-tools"]
-  },
-  "docs-other": {
-    "First Category": ["doc4", "doc5"]
+    "Kubernetes Cluster": ["kubernetes-cluster"],
+    "Sdarq": ["sdarq"],
+    "ZAP Scan Automation": ["zap_scan"],
+    "CIS Scan Automation": ["cis_scan"],
+    "DefectDojo & CodeDx": ["defectdojo_codedx"],
+    "Secret Deployment": ["secret_deployment"],
+    "Configuration": ["configuration"]
   }
 }
