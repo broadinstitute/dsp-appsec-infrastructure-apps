@@ -4,6 +4,11 @@
      {
       "name": "Scan GCP Project",
       "elements": [
+        {
+          "type": "html",
+          "name": "Important information",
+          "html": "<h4> Important information </h4><br>\n\n- Submiting this form will run a CIS scan against the provided GCP project. It will also add the project to weekly CIS scans run by the AppSec team. <br>\n\n\n\n\n"
+        },
        {
         "type": "text",
         "name": "project_id",
