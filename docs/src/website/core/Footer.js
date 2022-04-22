@@ -38,7 +38,7 @@ class Footer extends React.Component {
               Join chat group in Slack
             </a>
           </div> */}
-          <div>
+          {/* <div> */}
             {/* <h5>More</h5> */}
             {/* <a href={`${this.props.config.baseUrl}blog`}>Blog</a> */}
             {/* <a href="https://github.com/broadinstitute/dsp-appsec-infrastructure-apps">GitHub</a> */}
