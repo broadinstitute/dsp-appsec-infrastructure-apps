@@ -27,7 +27,8 @@ class Footer extends React.Component {
         <section className="sitemap">
           <div>
             <h5>Docs</h5>
-            <a href={docUrl('security-apps')}>Docs
+            <a href={docUrl('kubernetes-cluster')}>
+             Guides
             </a>
           </div>
           <div>
