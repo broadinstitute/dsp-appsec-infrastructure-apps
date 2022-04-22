@@ -22,7 +22,7 @@ const users = [
 ];
 
 const siteConfig = {
-  title: 'AppSec Infrastructure Apps', // Title for your website.
+  title: 'DSP AppSec Infrastructure Apps', // Title for your website.
   tagline: 'Broad Institute - DSP AppSec Team',
   url: 'https://broadinstitute.github.io/', // Your website URL
   baseUrl: 'https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/', // Base URL for your project */
@@ -42,8 +42,7 @@ const siteConfig = {
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
     { doc: 'kubernetes-cluster', label: 'Docs' },
-    { doc: 'security-apps', label: 'Apps' },
-    { page: 'help', label: 'Help' },
+    { doc: 'security-apps', label: 'Apps' }
   ],
 
   // If you have users set above, you add it here:
@@ -57,17 +56,17 @@ const siteConfig = {
   /* Colors for website */
   colors: {
     primaryColor: '#396fc3',
-    secondaryColor: '#fff6dd',
-    backgroundColor: '#fff6dd',
+    secondaryColor: '#ededed',
+    backgroundColor: '#ededed',
   },
 
 
   // Search config through Algolia
-  algolia: {
-    apiKey: 'my-api-key',
-    indexName: 'my-index-name',
-    algoliaOptions: {} // Optional, if provided by Algolia
-  },
+  // algolia: {
+  //   apiKey: 'my-api-key',
+  //   indexName: 'my-index-name',
+  //   algoliaOptions: {} // Optional, if provided by Algolia
+  // },
 
 
   /* Custom fonts for website */
