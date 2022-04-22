@@ -22,7 +22,7 @@ const users = [
 ];
 
 const siteConfig = {
-  title: 'AppSec Infrastructure Apps', // Title for your website.
+  title: 'DSP AppSec Infrastructure Apps', // Title for your website.
   tagline: 'Broad Institute - DSP AppSec Team',
   url: 'https://broadinstitute.github.io/', // Your website URL
   baseUrl: 'https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/', // Base URL for your project */
