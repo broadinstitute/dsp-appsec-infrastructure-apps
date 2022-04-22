@@ -3,11 +3,11 @@ id: secret_deployment
 title: Secret deployment for each app
 ---
 
-Values must be encoded. 
+Secrets deployed for each namespace in cluster. Values must be encoded. 
 
 ### Sdarq secrets
  
- '''
+```
 apiVersion: v1
 data:
   appsec_jira_project_key: Appsec team Jira board Key
@@ -24,15 +24,57 @@ metadata:
   name: sdarq
   namespace: sdarq
 type: Opaque
- '''
+```
 
 ### CodeDx secrets
 
+```
+apiVersion: v1
+data:
+  DB_PASSWORD: Database password
+  DB_ROOT_PASSWORD: Database root password
+  SUPERUSER_PASSWORD: Superuser password
+kind: Secret
+metadata:
+  name: codedx
+  namespace: codedx
+type: Opaque
+```
 
 ### ZAP Scanner secrets
 
+If you are using CODEDX to send your ZAP results, replace CODEDX API KEY with your CODEDX API KEY,
+if you are not using CODEDX, replace CODEDX API KEY value with encoded value of `""`
+
+```
+apiVersion: v1
+data:
+  CODEDX_API_KEY: CodeDx API key
+  DEFECT_DOJO: DefectDojo host
+  DEFECT_DOJO_KEY: DefectDojo key
+  DEFECT_DOJO_USER: DefectDojo token
+  SLACK_TOKEN: SLack token
+kind: Secret
+metadata:
+  name: zap-scans
+  namespace: zap
+type: Opaque
+```
 
 ### CIS Scanner secrets
 
+```
+apiVersion: v1
+data:
+  SDARQ_HOST: SDARQ host link
+  SLACK_CHANNEL_WEEKLY_REPORT: Slack channel where to send weekly reports
+  SLACK_TOKEN: Slack token
+kind: Secret
+metadata:
+  name: cis-scans
+  namespace: cis
+type: Opaque
+```
 
 ### DefectDojo secrets
+
