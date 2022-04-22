@@ -3,7 +3,7 @@ id: secret_deployment
 title: Secret deployment for each app
 ---
 
-Secrets deployed for each namespace in cluster. Values must be encoded. 
+Secrets deployed for each namespace in the cluster. Values must be encoded. 
 
 ### Sdarq secrets
  
