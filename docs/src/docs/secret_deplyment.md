@@ -78,3 +78,42 @@ type: Opaque
 
 ### DefectDojo secrets
 
+#### Django secret
+```
+apiVersion: v1
+data:
+  DD_CREDENTIAL_AES_256_KEY: 
+  DD_DATABASE_PASSWORD: 
+  DD_SECRET_KEY:
+kind: Secret
+metadata:
+  name: django
+  namespace: defectdojo
+type: Opaque
+```
+
+#### Celery secret
+
+```
+apiVersion: v1
+data:
+  DD_CELERY_BROKER_PASSWORD:
+kind: Secret
+metadata:
+  name: celery
+  namespace: defectdojo
+type: Opaque
+```
+
+#### Admin secret
+
+```
+apiVersion: v1
+data:
+  DD_ADMIN_PASSWORD:
+kind: Secret
+metadata:
+  name: admin
+  namespace: defectdojo
+type: Opaque
+```
