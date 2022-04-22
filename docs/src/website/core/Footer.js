@@ -25,27 +25,24 @@ class Footer extends React.Component {
     return (
       <footer className="nav-footer" id="footer">
         <section className="sitemap">
-          <div>
+          {/* <div>
             <h5>Docs</h5>
             <a href={docUrl('kubernetes-cluster')}>
              Guides
             </a>
-          </div>
-          <div>
+          </div> */}
+          {/* <div>
             <h5>Community</h5>
             
             <a href="https://broadinstitute.slack.com/">
               Join chat group in Slack
             </a>
-
-           
-
-          </div>
+          </div> */}
           <div>
-            <h5>More</h5>
+            {/* <h5>More</h5> */}
             {/* <a href={`${this.props.config.baseUrl}blog`}>Blog</a> */}
-            <a href="https://github.com/broadinstitute/dsp-appsec-infrastructure-apps">GitHub</a>
-            <a
+            {/* <a href="https://github.com/broadinstitute/dsp-appsec-infrastructure-apps">GitHub</a> */}
+            {/* <a
               className="github-button"
               href={this.props.config.repoUrl}
               data-icon="octicon-star"
@@ -54,8 +51,8 @@ class Footer extends React.Component {
               data-count-aria-label="# stargazers on GitHub"
               aria-label="Star this project on GitHub">
               Star
-            </a>
-            {this.props.config.twitterUsername && (
+            </a> */}
+            {/* {this.props.config.twitterUsername && (
               <div className="social">
                 <a
                   href={`https://twitter.com/${this.props.config.twitterUsername}`}
@@ -63,8 +60,8 @@ class Footer extends React.Component {
                   Follow @{this.props.config.twitterUsername}
                 </a>
               </div>
-            )}
-            {this.props.config.facebookAppId && (
+            )} */}
+            {/* {this.props.config.facebookAppId && (
               <div className="social">
                 <div
                   className="fb-like"
@@ -77,7 +74,7 @@ class Footer extends React.Component {
                 />
               </div>
             )}
-          </div>
+          </div> */}
         </section>
 
         {/* <a
