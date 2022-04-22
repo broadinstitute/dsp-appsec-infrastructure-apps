@@ -62,11 +62,11 @@ const siteConfig = {
 
 
   // Search config through Algolia
-  algolia: {
-    apiKey: 'my-api-key',
-    indexName: 'my-index-name',
-    algoliaOptions: {} // Optional, if provided by Algolia
-  },
+  // algolia: {
+  //   apiKey: 'my-api-key',
+  //   indexName: 'my-index-name',
+  //   algoliaOptions: {} // Optional, if provided by Algolia
+  // },
 
 
   /* Custom fonts for website */
