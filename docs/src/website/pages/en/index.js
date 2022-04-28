@@ -155,7 +155,7 @@ class Index extends React.Component {
           },
           {
             content: 'ZAP and CIS scanner automation',
-            image: `${baseUrl}img/undraw_code_review.svg`,
+            image: `${baseUrl}img/tooling-logo.svg`,
             imageAlign: 'top',
             title: 'Security Automation Tools',
           },
