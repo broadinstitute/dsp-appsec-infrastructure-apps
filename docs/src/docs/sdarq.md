@@ -49,3 +49,8 @@ SDARQ orchestrates different security tools and scanners owned by the DSP Appsec
 
 - Send requests to AppSec team to build a threat model for your service.
 - Send requests to AppSec team to run a security pentest against your service.
+
+
+## Architecture
+
+![architecture](https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/img/sdarq.png)
