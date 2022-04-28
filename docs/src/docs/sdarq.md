@@ -53,4 +53,4 @@ SDARQ orchestrates different security tools and scanners owned by the DSP Appsec
 
 ## Architecture
 
-![architecture](docs/src/website/static/img/sdarq.png)
+![architecture](../docs/src/website/static/img/sdarq.png)
