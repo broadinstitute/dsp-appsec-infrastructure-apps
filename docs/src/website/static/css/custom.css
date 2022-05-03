@@ -27,7 +27,15 @@
   color: #fff;
   font-weight: 700;
   font-size: 24px;
-  padding: 48px;
+  padding: 10% !important;
   margin: 0 auto -40px;
   text-align: center;
+}
+
+.appsecEdit{
+background: #ededed !important;
+}
+
+.nav-footer {
+  padding-top: 0em !important;
 }
