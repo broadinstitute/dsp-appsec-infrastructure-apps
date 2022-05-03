@@ -23,7 +23,7 @@ class Footer extends React.Component {
 
   render() {
     return (
-      <footer className="nav-footer" id="footer">
+      <footer className="nav-footer" id="footer" style="padding-top: 0em !important;">
         <section className="sitemap">
           {/* <div>
             <h5>Docs</h5>

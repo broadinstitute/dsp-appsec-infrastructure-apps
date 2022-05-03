@@ -199,7 +199,7 @@ class Index extends React.Component {
     };
 
     return (
-      <div class="appsecEdit">
+      <div class="appsecEdit" style="background: #ededed;">
         <HomeSplash siteConfig={siteConfig} language={language} />
         {/* <div className="mainContainer"> */}
           {/* <Features /> */}
