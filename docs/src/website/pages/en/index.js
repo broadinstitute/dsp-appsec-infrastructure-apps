@@ -201,14 +201,14 @@ class Index extends React.Component {
     return (
       <div>
         <HomeSplash siteConfig={siteConfig} language={language} />
-        <div className="mainContainer">
+        {/* <div className="mainContainer"> */}
           {/* <Features /> */}
           {/* <FeatureCallout /> */}
           {/* <LearnHow /> */}
           {/* <TryOut /> */}
           {/* <Description /> */}
           {/* <Showcase /> */}
-        </div>
+        {/* </div> */}
       </div>
     );
   }
