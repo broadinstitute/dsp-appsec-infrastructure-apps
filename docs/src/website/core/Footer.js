@@ -24,7 +24,7 @@ class Footer extends React.Component {
   render() {
     return (
       <footer className="nav-footer" id="footer">
-        <section className="sitemap">
+        {/* <section className="sitemap"> */}
           {/* <div>
             <h5>Docs</h5>
             <a href={docUrl('kubernetes-cluster')}>
@@ -75,7 +75,7 @@ class Footer extends React.Component {
               </div>
             )}
           </div> */}
-        </section>
+        {/* </section> */}
 
         {/* <a
           href="https://opensource.facebook.com/"
