@@ -51,7 +51,7 @@ const siteConfig = {
   /* path to images for header/footer */
   headerIcon: 'img/broad-logo-white.png',
   footerIcon: 'img/broad-logo-white.png',
-  favicon: 'img/broad-logo-white.png',
+  favicon: 'img/broad-logo.jpg',
 
   /* Colors for website */
   colors: {
