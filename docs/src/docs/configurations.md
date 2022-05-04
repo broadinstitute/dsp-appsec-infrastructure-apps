@@ -3,9 +3,9 @@ id: config
 title: Configurations
 ---
 
-In your Google project set up Cloud Build trigger. 
+In your Google project set up Cloud Build trigger. Check `cloudbuild.yaml` file for more information.
 
-Set up 
+Add these to Substitution variables: 
 - `_ORG_VIEWER_SA_EMAIL`  email of an existing Service Account with Org Viewer role
 - `_DNS_DOMAIN`  fully-resolved DNS domain name (e.g. appsec.example.org)
 - `_DNS_ZONE` DNS zone name to be created/updated (e.g. appsec)
