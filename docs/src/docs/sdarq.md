@@ -58,4 +58,4 @@ SDARQ orchestrates different security tools and scanners owned by the DSP Appsec
 
 ## Sdarq App
 
-![sdarq](https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/img/sdarq_ui.png)
+![sdarq](https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/img/sdarq_app.png)
