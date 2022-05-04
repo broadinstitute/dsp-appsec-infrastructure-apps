@@ -5,6 +5,7 @@
 ### Run it locally
 
 #### Frontend
+It is using AngularJs Framework.
 To run locally SDARQ frontend, go to `frontend` folder of SDARQ
 
 Run:
@@ -13,6 +14,7 @@ Run:
 
 
 #### Backend 
+It is using Flask framework.
 Backend has a list of env variables that need to be exported with their values. 
 
 To run locally SDARQ backend, go to `backend/src` folder of SDARQ
