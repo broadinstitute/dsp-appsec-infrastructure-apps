@@ -6,6 +6,7 @@
     "ZAP Scan Automation": ["zap_scan"],
     "CIS Scan Automation": ["cis_scan"],
     "DefectDojo & CodeDx": ["defectdojo_codedx"],
-    "Secret Deployment": ["secret_deployment"]
+    "Secret Deployment": ["secret_deployment"],
+    "Configurations": ["config"]
   }
 }
