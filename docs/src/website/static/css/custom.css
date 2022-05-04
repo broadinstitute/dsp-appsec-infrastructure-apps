@@ -39,3 +39,12 @@ background: #ededed !important;
 .nav-footer {
   padding-top: 1em !important;
 }
+
+.fixedHeaderContainer header .headerTitleWithLogo {
+  font-size: 1.25em;
+  line-height: 18px;
+  margin: 0;
+  display: none !important;
+  position: relative;
+  z-index: 9999;
+}
