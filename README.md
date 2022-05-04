@@ -9,6 +9,7 @@ This repository hosts dsp-appsec internal infrastructure. These apps are deploye
 - [CodeDx](codedx)
 - [CIS Scanner](cis)
 - [Automated ZAP Scanner](zap)
+- [Job Batch Dispatcher](batch)
 
 
 ### Deployment
