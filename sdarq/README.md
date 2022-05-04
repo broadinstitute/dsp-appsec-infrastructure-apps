@@ -2,10 +2,10 @@
 
 `Sdarq` is a coordination platform to guide both developers and appsec professionals through an SDLC and provide interfaces into various tools and bind them.
 
+It is using `AngularJs` framework for frontend and `Flask` framework for backend.
 ### Run it locally
 
 #### Frontend
-It is using AngularJs Framework.
 To run locally SDARQ frontend, go to `frontend` folder of SDARQ
 
 Run:
@@ -14,7 +14,6 @@ Run:
 
 
 #### Backend 
-It is using Flask framework.
 Backend has a list of env variables that need to be exported with their values. 
 
 To run locally SDARQ backend, go to `backend/src` folder of SDARQ
