@@ -49,3 +49,8 @@ background: #ededed !important;
   position: relative;
   z-index: 9999;
 }
+
+.projectTitle {
+  font-family: Roboto,sans-serif !important;
+  font-weight: 300 !important;
+}
