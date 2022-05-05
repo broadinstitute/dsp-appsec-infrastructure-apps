@@ -11,6 +11,7 @@ It allows product teams to be aware of all security-related and compliance-relat
 
 SDARQ orchestrates different security tools and scanners owned by the DSP Appsec team. These tools include DefectDojo, CodeDx, CIS Scanner, ZAP Scanner.
 
+![sdarq](https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/img/sdarq_app.png)
 
 ## What does it offer?
 
@@ -55,7 +56,3 @@ SDARQ orchestrates different security tools and scanners owned by the DSP Appsec
 
 ![architecture](https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/img/sdarq.png)
 
-
-## Sdarq App
-
-![sdarq](https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/img/sdarq_app.png)
