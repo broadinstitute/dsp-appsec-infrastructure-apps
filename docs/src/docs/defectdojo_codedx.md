@@ -1,6 +1,6 @@
 ---
 id: defectdojo_codedx
-title: DefectDojo & CodeDx
+title: How we use DefectDojo & CodeDx
 ---
 
 ### CodeDx
