@@ -2,6 +2,8 @@
 
 `Sdarq` is a coordination platform to guide both developers and appsec professionals through an SDLC and provide interfaces into various tools and bind them.
 
+![sdarq](https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/img/sdarq_app.png)
+
 It is using `AngularJs` framework for frontend and `Flask` framework for backend.
 ### Run it locally
 
