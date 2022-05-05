@@ -642,7 +642,7 @@
                     "type": "html",
                     "name": "Alert-gitsecrets",
                     "visibleIf": "{Security tools} notcontains \"Git-secrets\"",
-                    "html": "<div class=\"highs\">You must use <a href=\"https://github.com/awslabs/git-secrets\">git-secrets</a>\n            to prevent accidental commit of secrets to source code repository. Get started\n            <a href=\"https://docs.google.com/document/d/1_7deaZd2XbjUetVJs8EsQg6JbW_MEX2iFgXpnR_PyYs/edit#heading=h.4f1e34ah25ia\">here</a></div>"
+                    "html": "<div class=\"highs\">You must use <a href=\"https://github.com/awslabs/git-secrets\">git-secrets</a>\n            to prevent accidental commit of secrets to source code repository.</div>"
                 },
                 {
                     "type": "html",
@@ -840,6 +840,10 @@
                         {
                             "value": "You must use SourceClear, Snyk or similar tools for downstream dependency/3rd  party component management. Ask AppSec team to add your repo.",
                             "visibleIf": "{Security tools} notcontains \"dependency_scan\""
+                        },
+                        {
+                            "visibleIf": "{Security tools} notcontains \"Git-secrets\"",
+                            "value": "You must use git-secrets to prevent accidental commit of secrets to source code repository.</div>"
                         },
                         {
                             "value": "You must use security tools to scan your Docker images. Ask AppSec team to help you setup this tool.",
