@@ -41,8 +41,7 @@ const siteConfig = {
 
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
-    { doc: 'kubernetes-cluster', label: 'Docs' },
-    { doc: 'security-apps', label: 'Apps' }
+    { doc: 'security-apps', label: 'Docs' },
   ],
 
   // If you have users set above, you add it here:

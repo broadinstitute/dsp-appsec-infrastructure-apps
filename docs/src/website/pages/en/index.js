@@ -64,7 +64,7 @@ class HomeSplash extends React.Component {
         <div className="inner">
           <ProjectTitle tagline={siteConfig.tagline} title={siteConfig.title} />
           <PromoSection>
-            <Button href={docUrl('kubernetes-cluster')}>Docs</Button>
+            <Button href={docUrl('security-apps')}>Docs</Button>
             <Button href="https://github.com/broadinstitute/dsp-appsec-infrastructure-apps">Github</Button>
           </PromoSection>
         </div>
