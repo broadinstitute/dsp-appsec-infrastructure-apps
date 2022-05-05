@@ -57,7 +57,7 @@
         "choices": [
          {
           "value": "change_infrastructure",
-          "text": "Infrastructure/GCP (e.g. Changing firewall rules, GCP configs, etc). (Such changes are *typically* handled by DSP DevOps, usually requested through a ticket)"
+          "text": "Infrastructure/GCP (e.g. Changing firewall rules, GCP configs, etc)."
          },
          {
           "value": "change_product_api",
@@ -70,6 +70,10 @@
          {
           "value": "add_SA",
           "text": "Service Account - Add new Service Account or edit privileges of an existing Service Account"
+         },
+         {
+            "value": "update_dependecies",
+            "text": "Dependecies - Update dependecies, clients of an existing service"
          }
         ],
         "otherText": "Not sure - I need further help with this. "
@@ -327,6 +331,13 @@
         "name": "high_risk_SA",
         "visibleIf": "{high_level} = 'add_SA'",
         "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nAdding a new Service Account or editing an existing one must be always followed by the LEAST PRIVILEGE principle.\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>"
+       },
+       {
+        "type": "html",
+        "name": "risk_medium_product_only",
+        "visible": false,
+        "visibleIf": "{high_level} = 'update_dependecies'",
+        "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\n The AppSec team always recommend to update dependencies and clients to safer versions. \n Please reach out to the AppSec team or tag someone from the Appsec team if you have any questions.\n</div>"
        }
       ],
       "title": "Jira Security Risk Assessment Guide"

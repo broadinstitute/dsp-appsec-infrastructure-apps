@@ -5,9 +5,10 @@ title: Cluster Deployed Security Apps
 
 ### Apps
 
-- [DefectDojo](https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/tree/master/defectdojo)
-- [CodeDx](https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/tree/master/codedx)
-- [Sdarq](https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/tree/master/sdarq)
+- [SDARQ](https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/tree/master/sdarq)
 - [CIS scanner](https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/tree/master/cis)
 - [ZAP scanner](https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/tree/master/zap)
 - [Batch Job generator](https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/tree/master/batch)
+- [DefectDojo](https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/tree/master/defectdojo) 
+- [CodeDx](https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/tree/master/codedx)
+

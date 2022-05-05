@@ -301,15 +301,15 @@
                     "choices": [
                       {
                         "value": "Regular log in",
-                        "text": "Our application requires regular users to log in. Most features aren't available without logging in."
+                        "text": "Our service requires regular users to log in. Most features aren't available without logging in."
                       },
                       {
                         "value": "Admin interface",
-                        "text": "In addition to an interface for regular users, our application provides an administration interface."
+                        "text": "In addition to an interface for regular users, our service provides an administration interface."
                       },
                       {
                         "value": "Complex user manag",
-                        "text": "Our application features complex user management. Various roles can be assigned to user accounts."
+                        "text": "Our service features complex user management. Various roles can be assigned to user accounts."
                       }
                     ]
             },
@@ -355,11 +355,11 @@
                       },
                       {
                         "value": "Secure",
-                        "text": "Secure: We implemented OAuth2 on our own, but our employees are experts and we're convinced that it is implemented securely."
+                        "text": "Secure: We implemented OAuth2 on our own"
                       },
                       {
                         "value": "Not sure",
-                        "text": "Not sure: We implemented OAuth2 on our own, and it seemed simple at the time. I'm not sure about the security of our implementation."
+                        "text": "Not sure: We are not sure about the security of our implementation."
                       }
                     ]
             },
@@ -387,11 +387,11 @@
                     "choices": [
                       {
                         "value": "Plain text",
-                        "text": "In plain text (unencrypted)"
+                        "text": "Plain text not unencrypted or without use of salt"
                       },
                       {
                         "value": "Reversible encryption",
-                        "text": "Using reversible encryption (e.g., DES, 3DES, AES, etc.)"
+                        "text": "Using reversible encryption such as DES, 3DES, AES, etc"
                       },
                       {
                         "value": "SHA-256",
@@ -403,7 +403,7 @@
                       },
                       {
                         "value": "Key derivation func",
-                        "text": "Using a dedicated password-based key derivation function, such as bcrypt, PBKDF2 or scrypt"
+                        "text": "Using a dedicated password-based key derivation function KDF, such as bcrypt, PBKDF2 or scrypt"
                       }
                     ]
             }
@@ -642,7 +642,7 @@
                     "type": "html",
                     "name": "Alert-gitsecrets",
                     "visibleIf": "{Security tools} notcontains \"Git-secrets\"",
-                    "html": "<div class=\"highs\">You must use <a href=\"https://github.com/awslabs/git-secrets\">git-secrets</a>\n            to prevent accidental commit of secrets to source code repository. Get started\n            <a href=\"https://docs.google.com/document/d/1_7deaZd2XbjUetVJs8EsQg6JbW_MEX2iFgXpnR_PyYs/edit#heading=h.4f1e34ah25ia\">here</a></div>"
+                    "html": "<div class=\"highs\">You must use <a href=\"https://github.com/awslabs/git-secrets\">git-secrets</a>\n            to prevent accidental commit of secrets to source code repository.</div>"
                 },
                 {
                     "type": "html",
@@ -708,31 +708,31 @@
                   "type": "html",
                   "name": "Alert-general1",
                   "visibleIf": "{OAuth2_OpenIDC} contains \"Secure\"",
-                  "html": "<div class=\"highs\">Standard libraries have had vulnerabilities due to the intricacies of the standard. Be sure to ask your penetration testing provider to take a look at the OAuth2 implementation.</div>"
+                  "html": "<div class=\"highs\">Standard libraries usually have vulnerabilities. Please contact AppSec team to run a security pentest to your service using the OAuth2 implementation.</div>"
               },
                 {
                     "type": "html",
                     "name": "Alert-OpenID2.0",
                     "visibleIf": "{mechanisms} contains \"OpenID2.0\"",
-                    "html": "<div class=\"highs\">OpenID 2.0 has been replaced by OpenID Connect (also called OAuth2 Login). We recommend updating your application's SSO integration to support OpenID Connect\n</div>"
+                    "html": "<div class=\"highs\">We recommend updating your application's SSO integration to support OpenID Connect\n</div>"
                 },
                 {
                     "type": "html",
                     "name": "Alert-ldap",
                     "visibleIf": "{mechanisms} contains \"LDAP/AD\"",
-                    "html": "<div class=\"highs\">Integrating with LDAP and/or Active Directory has a significant downside: any application that integrates with it has to receive the user's SSO password. As a result, a vulnerability in any integrated application puts the password at risk for all other applications. We recommend using an SSO mechanism that does not require the password to be sent anywhere other than a authentication system.\n</div>"
+                    "html": "<div class=\"highs\">We recommend using an authentication mechanism that does not require the password to be sent in many places since it can lead to the compromise of the whole system, if only one component has a vulnerability.\n</div>"
                 },
                 {
                     "type": "html",
                     "name": "Alert-OpenIDC-implementation",
                     "visibleIf": "{OAuth2_OpenIDC} contains \"Not sure\"",
-                    "html": "<div class=\"highs\">Implementing OAuth2 on your own is extremely dangerous. The only way to securely implement it is through a well-known and well-tested library.\n</div>"
+                    "html": "<div class=\"highs\">Implementing OAuth2 on your own is not safe approach. The only way to securely implement it is through a well-known and well-tested library.\n</div>"
                 },
                 {
                     "type": "html",
                     "name": "Alert-plaintext_password",
                     "visibleIf": "{Password_storage} contains \"Plain text\"  or {Password_storage} contains \"Reversible encryption\"  or {Password_storage} contains \"SHA-256\"",
-                    "html": "<div class=\"highs\">Passwords should be stored in such a way that the original passwords cannot be easily recovered, even if an attacker manages to get access to the storage location (e.g., through a SQL injection vulnerability). At a minimum, passwords should be secured using a cryptographic one-way hash function and a salt. We strongly recommended using password-based key derivation function like bcrypt PBKDF2 or scrypt instead; they were specifically designed for this use case and make it significantly harder for attackers to crack password hashes.\n</div>"
+                    "html": "<div class=\"highs\">We strongly recommended using password-based key derivation function like bcrypt PBKDF2 or scrypt. Using secure cryptographic one-way hash function (such as SHA-256) of the salted password is our second preferred choice, but please ask AppSec team for more information\n</div>"
                 },
                 {
                   "type": "html",
@@ -842,6 +842,10 @@
                             "visibleIf": "{Security tools} notcontains \"dependency_scan\""
                         },
                         {
+                            "visibleIf": "{Security tools} notcontains \"Git-secrets\"",
+                            "value": "You must use git-secrets to prevent accidental commit of secrets to source code repository.</div>"
+                        },
+                        {
                             "value": "You must use security tools to scan your Docker images. Ask AppSec team to help you setup this tool.",
                             "visibleIf": "{Security tools} notcontains \"Image_scan\""
                         },
@@ -875,23 +879,23 @@
                         },
                         {
                             "visibleIf": "{OAuth2_OpenIDC} contains \"Secure\"",
-                            "value": "Standard libraries have had vulnerabilities due to the intricacies of the standard. Be sure to ask your penetration testing provider to take a look at the OAuth2 implementation."
+                            "value": "Standard libraries usually have vulnerabilities. Please contact AppSec team to run a security pentest to your service using the OAuth2 implementation."
                         },
                         {
                             "visibleIf": "{OAuth2_OpenIDC} contains \"Not sure\"",
-                            "value": "Implementing OAuth2 on your own is extremely dangerous. The only way to securely implement it is through a well-known and well-tested library."
+                            "value": "Implementing OAuth2 on your own is not a safe approach. The only way to securely implement it is through a well-known and well-tested library."
                         },
                         {
                             "visibleIf": "{mechanisms} contains \"OpenID2.0\"",
-                            "value": "OpenID 2.0 has been replaced by OpenID Connect (also called OAuth2 Login). We recommend updating your application's SSO integration to support OpenID Connect."
+                            "value": "We recommend updating your application's SSO integration to support OpenID Connect."
                         },
                         {
                             "visibleIf": "{mechanisms} contains \"LDAP/AD\"",
-                            "value": "Integrating with LDAP and/or Active Directory has a significant downside: any application that integrates with it has to receive the user's SSO password. As a result, a vulnerability in any integrated application puts the password at risk for all other applications. We recommend using an SSO mechanism that does not require the password to be sent anywhere other than a authentication system."
+                            "value": "We recommend using an authentication mechanism that does not require the password to be sent in many places since it can lead to the compromise of the whole system, if only one component has a vulnerability."
                         },
                         {
                             "visibleIf": "{Password_storage} contains \"Plain text\"  or {Password_storage} contains \"Reversible encryption\" or {Password_storage} contains \"SHA-256\"",
-                            "value": "Passwords should be stored in such a way that the original passwords cannot be easily recovered, even if an attacker manages to get access to the storage location (e.g., through a SQL injection vulnerability). At a minimum, passwords should be secured using a cryptographic one-way hash function and a salt. We strongly recommended using password-based key derivation function like bcrypt PBKDF2 or scrypt instead; they were specifically designed for this use case and make it significantly harder for attackers to crack password hashes."
+                            "value": "We strongly recommended using password-based key derivation function like bcrypt PBKDF2 or scrypt. Using secure cryptographic one-way hash function (such as SHA-256) of the salted password is our second preferred choice, but please ask AppSec team for more information."
                         },
                         {
                             "visibleIf": "{Logging} = \"No\"",
