@@ -16,11 +16,34 @@ Run:
 
 
 #### Backend 
-Backend has a list of env variables that need to be exported with their values. 
 
-To run locally SDARQ backend, go to `backend/src` folder of SDARQ
+To run locally SDARQ backend, go to `backend` folder of SDARQ
 
-Run `python3 app.py` , it will run in the port 8080 of your localhost
+```
+$ python3 -m venv venv
+$ source venv/bin/activate
+(venv) $ python3 -m pip install -r requirements.txt
+```
+
+Backend has a list of env variables that need to be exported with their values.
+```
+  export appsec_jira_project_key="Appsec team Jira board Key"
+  export appsec_slack_channel="Appsec team Slack channel to get notifications"
+  export dojo_api_key="DefectDojo API key"
+  export dojo_host_url="DefectDojo host link"
+  export jira_api_token="Jira API token"
+  export jira_instance="Jira host link"
+  export jira_username="Jira username"
+  export jtra_slack_channel="Slack channel to receive notifications for High risk Jira ticket"
+  export slack_token="DefectDojo API key"
+```
+
+Run 
+``` 
+cd src
+python3 app.py
+```
+SDARQ backend will run in the port 8080 of your localhost
 
 
 ### Questions
