@@ -1,5 +1,5 @@
-# dsp-appsec-infrastructure-apps
-This repository hosts dsp-appsec internal infrastructure. These apps are deployed in GCP.
+# DSP AppSec Infrastructure Apps
+This repository hosts DSP AppSec internal infrastructure. These apps are deployed in GCP.
 
 
 ### Apps
