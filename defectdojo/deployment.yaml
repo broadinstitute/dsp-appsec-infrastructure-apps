@@ -78,7 +78,7 @@ spec:
         - name: DD_SOCIAL_AUTH_GOOGLE_OAUTH2_ENABLED
           value: 'True'
         - name: DD_SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS
-          value: ['broadinstitute.org'] #should be made dynamic
+          value: 'broadinstitute.org' #should be made dynamic
         - name: DD_SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
           valueFrom:
             secretKeyRef:
