@@ -17,3 +17,5 @@ jobs:
         uses: bridgecrewio/checkov-action@master
         with:
           directory: terraform/
+          output_format: sarif
+          framework: terraform
