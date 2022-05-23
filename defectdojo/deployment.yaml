@@ -75,6 +75,22 @@ spec:
           value: '*' # validated by Ingress
         - name: DD_DEBUG
           value: 'False'
+        - name: DD_SOCIAL_AUTH_GOOGLE_OAUTH2_ENABLED
+          value: 'True'
+        - name: DD_SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS
+          value: 'broadinstitute.org' #should be made dynamic
+        - name: DD_SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
+          valueFrom:
+            secretKeyRef:
+              name: googleoauth2
+              key: oauth2_key
+              optional: false
+        - name: DD_SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: googleoauth2
+              key: oauth2_secret
+              optional: false  
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /app/media
