@@ -117,3 +117,17 @@ metadata:
   namespace: defectdojo
 type: Opaque
 ```
+
+#### Google Oauth integration to DefectDojo
+
+```
+apiVersion: v1
+data:
+  oauth2_key: 
+  oauth2_secret: 
+kind: Secret
+metadata:
+  name: googleoauth2
+  namespace: defectdojo
+type: Opaque
+```
