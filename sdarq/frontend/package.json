@@ -1,5 +1,5 @@
 {
-  "name": "sdarq_survey",
+  "name": "sdarq",
   "version": "1.1.0",
   "license": "MIT",
   "scripts": {
@@ -7,7 +7,11 @@
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "preinstall": "npx npm-force-resolutions"
+  },
+  "resolutions": {
+    "glob-parent": "6.0.1"
   },
   "private": true,
   "dependencies": {
