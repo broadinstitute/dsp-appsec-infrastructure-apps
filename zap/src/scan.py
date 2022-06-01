@@ -72,7 +72,7 @@ def defectdojo_upload(engagement_id: int, zap_filename: str, defect_dojo_key: st
                      file=absolute_path,
                      active=True,
                      verified=False,
-                     close_old_findings=True,
+                     close_old_findings=False,
                      skip_duplicates=True,
                      scan_date=str(datetime.today().strftime('%Y-%m-%d')),
                      tags="Zap_scan")
