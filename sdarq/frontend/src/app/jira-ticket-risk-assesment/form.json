@@ -54,9 +54,9 @@
        "choices": [
         "Less than 1 week",
         "1 week",
-        "2 weeks"
-       ],
-       "hasOther": true
+        "2 weeks",
+        "I don't know."
+       ]
       },
        {
         "type": "radiogroup",

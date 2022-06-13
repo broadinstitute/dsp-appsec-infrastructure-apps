@@ -288,7 +288,7 @@ def slacknotify_jira_ticket_risk_assessment(jtra_slack_channel, ticket_context, 
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Due Date:* `{0}` " .format(str(due_date))
+                    "text": "*AppSec Due Date:* `{0}` " .format(str(due_date))
                 }
             },
             {
