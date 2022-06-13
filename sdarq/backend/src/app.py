@@ -780,10 +780,10 @@ def submitJTRA():
                 "User %s submitted a HIGH Risk JIRA Ticket", user_email)
             if 'jira_ticket_link' in user_data:
                 slacknotify.slacknotify_jira_ticket_risk_assessment(
-                    jtra_slack_channel, user_data['jira_ticket_link'], user_email, user_data)
+                    jtra_slack_channel, user_data['jira_ticket_link'], user_email, user_data, user_data['AppSec_due_date'])
             else:
                 slacknotify.slacknotify_jira_ticket_risk_assessment(
-                    jtra_slack_channel, user_data['context'], user_email, user_data)
+                    jtra_slack_channel, user_data['context'], user_email, user_data,  user_data['AppSec_due_date'])
         else:
             logging.info(
                 "User %s submitted a MEDIUM/LOW Risk Jira Ticket", user_email)

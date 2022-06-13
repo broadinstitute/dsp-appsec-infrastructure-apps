@@ -247,7 +247,7 @@ def slacknotify_security_pentest(appsec_slack_channel, security_champion, projec
         ], "color": "#0731b0"}]
     )
 
-def slacknotify_jira_ticket_risk_assessment(jtra_slack_channel, ticket_context, user_email, user_data):
+def slacknotify_jira_ticket_risk_assessment(jtra_slack_channel, ticket_context, user_email, user_data, due_date):
     """
     Sends Slack notifications to AppSec when there is high risk Jira ticket
 
@@ -284,7 +284,14 @@ def slacknotify_jira_ticket_risk_assessment(jtra_slack_channel, ticket_context, 
                     "text": "*Dev:* `{0}` " .format(str(user_email))
                 }
             },
-                        {
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*AppSec Due Date:* `{0}` " .format(str(due_date))
+                }
+            },
+            {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",

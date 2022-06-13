@@ -47,6 +47,17 @@
         "isRequired": true,
         "maxLength": 1000
        },
+      {
+       "type": "dropdown",
+       "name": "AppSec_due_date",
+       "title": "Due date for AppSec review",
+       "choices": [
+        "Less than 1 week",
+        "1 week",
+        "2 weeks",
+        "I don't know."
+       ]
+      },
        {
         "type": "radiogroup",
         "name": "high_level",
