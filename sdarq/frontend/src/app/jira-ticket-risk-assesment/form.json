@@ -1,52 +1,52 @@
 {
-   "logoPosition": "right",
-   "pages": [
-    {
-     "name": "Jira Risk Assessment",
-     "elements": [
-      {
-       "type": "html",
-       "name": "introduction",
-       "html": "<h4> Introduction </h4>\n\nAssessing the risk of a feature/story without having any code written is a hard thing to do. The majority of the value in this exercise should come from the fact that a general idea about the impact that a particular change may have in the Prod environment allows Product Teams to have a meaningful discussion with the Appsec team in order to determine if there is anything inherently wrong from a security perspective before moving on with the actual implementation. \n\n<hr>\n<hr>\n<h4>Prerequisites</h4>\nPlease make sure you are familiar with <a href='https://owasp.org/www-pdf-archive/OWASP_Top_10-2017_%28en%29.pdf.pdf'>OWASP Top 10.</a>This will be an important reference during the risk assessment process\n<hr>\n\n\n\n"
-      },
-      {
-       "type": "html",
-       "name": "risk_assessment_guide",
-       "html": "<h4>Definitions</h4>\n\n-  <u>Threat</u>: Flaw that results in compromise of Confidentiality, Integrity or Availability<br>\n- <u>Risk</u>: Potential for loss due to some vulnerability being exploited <br>\n- <u>Mitigation</u>: The measures in place to help prevent a vulnerability. <br>\n- <u>Confidentiality:</u>: Confidentiality is the protection of data against unauthorized disclosure, or otherwise put, it is about ensuring that only those with the correct authorization can access the data. Confidentiality applies to data at rest, but also to data in motion <br>\n- <u>Integrity:</u>: Integrity is about protecting data against unauthorized modification, or assuring data trustworthiness  <br>\n- <u>Availability:</u>: Availability is about ensuring the presence of information or resources. <br>\n"
-      },
-      {
-       "type": "radiogroup",
-       "name": "Do you have a Jira ticket?",
-       "isRequired": true,
-       "choices": [
-        "Yes",
-        "No"
-       ]
-      },
-      {
-       "type": "text",
-       "name": "jira_ticket_link",
-       "visibleIf": "{Do you have a Jira ticket?} = 'Yes'",
-       "title": "Please include Jira ticket link:",
-       "enableIf": "{Do you have a Jira ticket?} = 'Yes'",
-       "isRequired": true,
-       "validators": [
-        {
-         "type": "regex",
-         "text": "Please enter a valid link",
-         "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"
-        }
-       ]
-      },
-      {
-       "type": "comment",
-       "name": "context",
-       "visibleIf": "{Do you have a Jira ticket?} = 'No'",
-       "title": "Please provide some context:",
-       "enableIf": "{Do you have a Jira ticket?} = 'No'",
-       "isRequired": true,
-       "maxLength": 1000
-      },
+    "pages": [
+     {
+      "name": "Jira Risk Assessment",
+      "elements": [
+       {
+        "type": "html",
+        "name": "introduction",
+        "html": "<h4> Introduction </h4>\n\nAssessing the risk of a feature/story without having any code written is a hard thing to do. The majority of the value in this exercise should come from the fact that a general idea about the impact that a particular change may have in the Prod environment allows Product Teams to have a meaningful discussion with the Appsec team in order to determine if there is anything inherently wrong from a security perspective before moving on with the actual implementation. \n\n<hr>\n<hr>\n<h4>Prerequisites</h4>\nPlease make sure you are familiar with <a href='https://owasp.org/www-pdf-archive/OWASP_Top_10-2017_%28en%29.pdf.pdf'>OWASP Top 10.</a>This will be an important reference during the risk assessment process\n<hr>\n\n\n\n"
+       },
+       {
+        "type": "html",
+        "name": "risk_assessment_guide",
+        "html": "<h4>Definitions</h4>\n\n-  <u>Threat</u>: Flaw that results in compromise of Confidentiality, Integrity or Availability<br>\n- <u>Risk</u>: Potential for loss due to some vulnerability being exploited <br>\n- <u>Mitigation</u>: The measures in place to help prevent a vulnerability. <br>\n- <u>Confidentiality:</u>: Confidentiality is the protection of data against unauthorized disclosure, or otherwise put, it is about ensuring that only those with the correct authorization can access the data. Confidentiality applies to data at rest, but also to data in motion <br>\n- <u>Integrity:</u>: Integrity is about protecting data against unauthorized modification, or assuring data trustworthiness  <br>\n- <u>Availability:</u>: Availability is about ensuring the presence of information or resources. <br>\n"
+       },
+       {
+        "type": "radiogroup",
+        "name": "Do you have a Jira ticket?",
+        "title": "Do you have a Jira ticket?",
+        "isRequired": true,
+        "choices": [
+         "Yes",
+         "No"
+        ]
+       },
+       {
+        "type": "text",
+        "name": "jira_ticket_link",
+        "visibleIf": "{Do you have a Jira ticket?} = 'Yes'",
+        "title": "Please include Jira ticket link:",
+        "enableIf": "{Do you have a Jira ticket?} = 'Yes'",
+        "isRequired": true,
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please enter a valid link",
+          "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"
+         }
+        ]
+    },
+       {
+        "type": "comment",
+        "name": "context",
+        "visibleIf": "{Do you have a Jira ticket?} = 'No'",
+        "title": "Please provide some context:",
+        "enableIf": "{Do you have a Jira ticket?} = 'No'",
+        "isRequired": true,
+        "maxLength": 1000
+       },
       {
        "type": "dropdown",
        "name": "AppSec_due_date",
@@ -58,267 +58,300 @@
        ],
        "hasOther": true
       },
-      {
-       "type": "radiogroup",
-       "name": "high_level",
-       "title": "At a high level this change is about:",
-       "isRequired": true,
-       "hasComment": true,
-       "commentText": "Use the space below if you need to provide more information or additional context. ",
-       "choices": [
-        {
-         "value": "change_infrastructure",
-         "text": "Infrastructure/GCP (e.g. Changing firewall rules, GCP configs, etc)."
-        },
-        {
-         "value": "change_product_api",
-         "text": "Product - API (changes related to services, such adding a new service or updating/modifying an existing one, new API endpoint, etc)"
-        },
-        {
-         "value": "change_product_ui",
-         "text": "Product - UI (changes related to user interface)"
-        },
-        {
-         "value": "add_SA",
-         "text": "Service Account - Add new Service Account or edit privileges of an existing Service Account"
-        },
-        {
-         "value": "update_dependecies",
-         "text": "Dependecies - Update dependecies, clients of an existing service"
-        }
-       ],
-       "otherText": "Not sure - I need further help with this. "
-      },
-      {
-       "type": "radiogroup",
-       "name": "infrastructure_gcp",
-       "visible": false,
-       "visibleIf": "{high_level} = 'change_infrastructure'",
-       "title": "You selected this change is about Infrastructure/GCP. Please what applies: ",
-       "choices": [
-        {
-         "value": "Access control change that involves granting privileged or public access to an entity.",
-         "text": "Access control change that involves granting privileged or public access to an entity. (E.g. Adding someone as a System Administrator, making a service world-reachable, etc.)"
-        },
-        {
-         "value": "Changing an existing firewall rule or adding a new one",
-         "text": "Changing an existing firewall rule or adding a new one (E.g. changing VPC firewall or Cloud Armor config)"
-        },
-        {
-         "value": "Changing logging configs",
-         "text": "Changing logging configs (E.g. adding a new log stream or disabling audit logging)"
-        },
-        "Other"
-       ],
-       "otherText": "Other"
-      },
-      {
-       "type": "radiogroup",
-       "name": "main_product",
-       "visible": false,
-       "visibleIf": "{high_level} = 'change_product_api'",
-       "title": "You selected this change is about Product-API. Please what applies: ",
-       "isRequired": true,
-       "choices": [
-        {
-         "value": "Changing or adding an API endpoint that processes XML files from user input",
-         "text": "Changing or adding an API endpoint that processes XML files from user input (See OWASP Top 10 A4: https://owasp.org/www-project-top-ten/2017/A4_2017-XML_External_Entities_(XXE).html)"
-        },
-        "Introducing/changing a file upload feature",
-        {
-         "value": "Making use of Cryptography",
-         "text": "Making use of Cryptography  (e.g. for random number generation, custom data encryption, etc)"
-        },
-        "Other"
-       ]
-      },
-      {
-       "type": "radiogroup",
-       "name": "product_ui_question_change",
-       "visible": false,
-       "visibleIf": "{high_level} = 'change_product_ui'",
-       "title": "You selected this change is about Product  - UI. Please select what applies:",
-       "isRequired": true,
-       "choices": [
-        {
-         "value": "change_ui_url_inputs",
-         "text": "Feature that involves URL inputs from users or other systems. E.g. This feature allows the user to add a URL which can contain dynamic script content via javascript: protocol urls."
-        },
-        {
-         "value": "change_ui_load_active_content",
-         "text": "Loading active content, such as scripts or style sheets, from third-parties (i.e., not under our direct control)"
-        },
-        {
-         "value": "change_ui_change_dom",
-         "text": "Accessing the DOM to inject content into DOM nodes directly or directly using `dangerouslySetInnerHTML` in React"
-        },
-        "Other"
-       ],
-       "otherText": "Other"
-      },
-      {
-       "type": "radiogroup",
-       "name": "product_features_other",
-       "visible": false,
-       "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'Other'",
-       "title": "Select all that apply.",
-       "isRequired": true,
-       "choices": [
-        {
-         "value": "change_ui_url_inputs",
-         "text": "This component/feature adds to or changes existing security controls, or otherwise explicitly implements security/privacy features."
-        },
-        {
-         "value": "change_ui_load_active_content",
-         "text": "This component/feature build/parse URLs, read/write URLs, or operate with/consume URLs."
-        },
-        {
-         "value": "change_ui_change_dom",
-         "text": "The implementation of this component/feature includes performing serialization (converting objects to byte strings) and deserialization."
-        },
-        {
-         "value": "None/other",
-         "text": "None of the above or other change"
-        }
-       ],
-       "otherText": "Other"
-      },
-      {
-       "type": "radiogroup",
-       "name": "confidentiality",
-       "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other'",
-       "title": "Confidentiality:  Suppose an attacker would be able to find a vulnerability that is introduced as part of this change and successfully exploit it.  Confidentiality is about protecting the information from being exposed to an unauthorized party. Would the exploitation of a potential vulnerability in this component lead to loss of Confidentiality? ",
-       "choices": [
-        "Yes",
-        "No",
-        {
-         "value": "Not sure",
-         "text": "I am not sure"
-        }
-       ]
-      },
-      {
-       "type": "radiogroup",
-       "name": "integrity",
-       "visible": false,
-       "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'No'",
-       "title": "Integrity: Suppose an attacker would be able to find a vulnerability that is introduced as part of this change, and successfully exploit it.  Integrity is about protecting data from being modified by an unauthorized party. Would the exploitation of a potential vulnerability in this component lead to loss of Integrity?",
-       "isRequired": true,
-       "choices": [
-        "Yes",
-        "No",
-        {
-         "value": "Not sure",
-         "text": "I am not sure"
-        }
-       ]
-      },
-      {
-       "type": "radiogroup",
-       "name": "availability",
-       "visible": false,
-       "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {integrity} = 'No' and {confidentiality} = 'No'",
-       "title": "Availability: Suppose an attacker would be able to find a vulnerability that is introduced as part of this change and successfully exploit it.  Availability means that information is accessible to authorized users, i.e. that data is accessible by authorized users whenever it's needed. Would the exploitation of a potential vulnerability in this component lead to loss of Availability?",
-       "choices": [
-        "Yes",
-        "No",
-        {
-         "value": "Not sure",
-         "text": "I am not sure"
-        }
-       ]
-      },
-      {
-       "type": "radiogroup",
-       "name": "if_access_control_change_playbook",
-       "visible": false,
-       "visibleIf": "{infrastructure_gcp} anyof ['Access control change that involves granting privileged or public access to an entity.', 'Changing an existing firewall rule or adding a new one', 'Changing logging configs'] and {high_level} = 'change_infrastructure'",
-       "title": "I have followed one of our standard playbooks to make this change or this change is similar to a previous change that went through a security review",
-       "choices": [
-        "Yes",
-        {
-         "value": "Not sure",
-         "text": "I am not sure / I'm not aware of any playbooks that could help with this specific change"
-        }
-       ]
-      },
-      {
-       "type": "html",
-       "name": "risk_high_infrastructure_only",
-       "visible": false,
-       "visibleIf": "{high_level} = 'change_infrastructure' and {infrastructure_gcp} anyof ['Access control change that involves granting privileged or public access to an entity.', 'Changing an existing firewall rule or adding a new one', 'Changing logging configs'] and {if_access_control_change_playbook} = 'Not sure'",
-       "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>"
-      },
-      {
-       "type": "html",
-       "name": "risk_high_product_only",
-       "visible": false,
-       "visibleIf": "{high_level} = 'change_product_api' and {main_product} anyof ['Changing or adding an API endpoint that processes XML files from user input', 'Introducing/changing a file upload feature', 'Making use of Cryptography']",
-       "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>"
-      },
-      {
-       "type": "html",
-       "name": "high_ui_change_only",
-       "visible": false,
-       "visibleIf": "{high_level} = 'change_product_ui' and {product_ui_question_change} anyof ['change_ui_url_inputs', 'change_ui_load_active_content', 'change_ui_change_dom']",
-       "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n<hr> \n\n\n</div>"
-      },
-      {
-       "type": "html",
-       "name": "risk_medium",
-       "visible": false,
-       "visibleIf": "{high_level} = 'change_infrastructure' and {infrastructure_gcp} = 'Other'",
-       "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>"
-      },
-      {
-       "type": "html",
-       "name": "risk_low",
-       "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'No' and {integrity} = 'No' and {availability} = 'No'",
-       "html": "<div class=\"alert alert-info\">\nRisk: <b>LOW</b>\n<hr>\n</div>\n\n"
-      },
-      {
-       "type": "html",
-       "name": "risk_low_ui_only",
-       "visible": false,
-       "visibleIf": "{high_level} = 'change_product_ui' and {product_ui_question_change} = 'Other'",
-       "html": "<div class=\"alert alert-info\">\nRisk: <b>LOW</b>\n<hr>\n</div>\n\n"
-      },
-      {
-       "type": "html",
-       "name": "risk_low_infrastructure_only",
-       "visible": false,
-       "visibleIf": "{high_level} = 'change_infrastructure' and {infrastructure_gcp} anyof ['Access control change that involves granting privileged or public access to an entity.', 'Changing an existing firewall rule or adding a new one', 'Changing logging configs'] and {if_access_control_change_playbook} = 'Yes'",
-       "html": "<div class=\"alert alert-info\">\nRisk: <b>LOW</b>\n<hr>\n</div>\n\n"
-      },
-      {
-       "type": "html",
-       "name": "risk_medium_product_only",
-       "visible": false,
-       "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} anyof ['change_ui_change_dom', 'change_ui_load_active_content', 'change_ui_url_inputs']",
-       "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>"
-      },
-      {
-       "type": "html",
-       "name": "risk_high_generic",
-       "visible": false,
-       "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'Yes' or {high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'Not sure' or {high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'No' and {integrity} = 'Yes' or {high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'No' and {integrity} = 'Not sure' or {high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'No' and {integrity} = 'No' and {availability} = 'Yes' or {high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'No' and {integrity} = 'No' and {availability} = 'Not sure'",
-       "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nTo determine the risk of this change, please reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>\n\n"
-      },
-      {
-       "type": "html",
-       "name": "high_risk_SA",
-       "visibleIf": "{high_level} = 'add_SA'",
-       "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nAdding a new Service Account or editing an existing one must be always followed by the LEAST PRIVILEGE principle.\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>"
-      },
-      {
-       "type": "html",
-       "name": "risk_medium_product_only",
-       "visible": false,
-       "visibleIf": "{high_level} = 'update_dependecies'",
-       "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\n The AppSec team always recommend to update dependencies and clients to safer versions. \n Please reach out to the AppSec team or tag someone from the Appsec team if you have any questions.\n</div>"
-      }
-     ],
-     "title": "Jira Security Risk Assessment Guide"
-    }
-   ]
-  }
+       {
+        "type": "radiogroup",
+        "name": "high_level",
+        "title": "At a high level this change is about:",
+        "isRequired": true,
+        "hasComment": true,
+        "commentText": "Use the space below if you need to provide more information or additional context. ",
+        "choices": [
+         {
+          "value": "change_infrastructure",
+          "text": "Infrastructure/GCP (e.g. Changing firewall rules, GCP configs, etc)."
+         },
+         {
+          "value": "change_product_api",
+          "text": "Product - API (changes related to services, such adding a new service or updating/modifying an existing one, new API endpoint, etc)"
+         },
+         {
+          "value": "change_product_ui",
+          "text": "Product - UI (changes related to user interface)"
+         },
+         {
+          "value": "add_SA",
+          "text": "Service Account - Add new Service Account or edit privileges of an existing Service Account"
+         },
+         {
+            "value": "update_dependecies",
+            "text": "Dependecies - Update dependecies, clients of an existing service"
+         }
+        ],
+        "otherText": "Not sure - I need further help with this. "
+       },
+       {
+        "type": "radiogroup",
+        "name": "infrastructure_gcp",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_infrastructure'",
+        "title": "You selected this change is about Infrastructure/GCP. Please what applies: ",
+        "choices": [
+         {
+          "value": "Access control change that involves granting privileged or public access to an entity.",
+          "text": "Access control change that involves granting privileged or public access to an entity. (E.g. Adding someone as a System Administrator, making a service world-reachable, etc.)"
+         },
+         {
+          "value": "Changing an existing firewall rule or adding a new one",
+          "text": "Changing an existing firewall rule or adding a new one (E.g. changing VPC firewall or Cloud Armor config)"
+         },
+         {
+          "value": "Changing logging configs",
+          "text": "Changing logging configs (E.g. adding a new log stream or disabling audit logging)"
+         },
+         {
+          "value": "Other",
+          "text": "Other"
+         }
+        ],
+        "otherText": "Other"
+       },
+       {
+        "type": "radiogroup",
+        "name": "main_product",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_product_api'",
+        "title": "You selected this change is about Product-API. Please what applies: ",
+        "isRequired": true,
+        "choices": [
+         {
+          "value": "Changing or adding an API endpoint that processes XML files from user input",
+          "text": "Changing or adding an API endpoint that processes XML files from user input (See OWASP Top 10 A4: https://owasp.org/www-project-top-ten/2017/A4_2017-XML_External_Entities_(XXE).html)"
+         },
+         {
+          "value": "Introducing/changing a file upload feature",
+          "text": "Introducing/changing a file upload feature"
+         },
+         {
+          "value": "Making use of Cryptography",
+          "text": "Making use of Cryptography  (e.g. for random number generation, custom data encryption, etc)"
+         },
+         {
+          "value": "Other",
+          "text": "Other"
+         }
+        ]
+       },
+       {
+        "type": "radiogroup",
+        "name": "product_ui_question_change",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_product_ui'",
+        "title": "You selected this change is about Product  - UI. Please select what applies:",
+        "isRequired": true,
+        "choices": [
+         {
+          "value": "change_ui_url_inputs",
+          "text": "Feature that involves URL inputs from users or other systems. E.g. This feature allows the user to add a URL which can contain dynamic script content via javascript: protocol urls."
+         },
+         {
+          "value": "change_ui_load_active_content",
+          "text": "Loading active content, such as scripts or style sheets, from third-parties (i.e., not under our direct control)"
+         },
+         {
+          "value": "change_ui_change_dom",
+          "text": "Accessing the DOM to inject content into DOM nodes directly or directly using `dangerouslySetInnerHTML` in React"
+         },
+         {
+          "value": "Other",
+          "text": "Other"
+         }
+        ],
+        "otherText": "Other"
+       },
+       {
+        "type": "radiogroup",
+        "name": "product_features_other",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'Other'",
+        "title": "Select all that apply.",
+        "isRequired": true,
+        "choices": [
+         {
+          "value": "change_ui_url_inputs",
+          "text": "This component/feature adds to or changes existing security controls, or otherwise explicitly implements security/privacy features."
+         },
+         {
+          "value": "change_ui_load_active_content",
+          "text": "This component/feature build/parse URLs, read/write URLs, or operate with/consume URLs."
+         },
+         {
+          "value": "change_ui_change_dom",
+          "text": "The implementation of this component/feature includes performing serialization (converting objects to byte strings) and deserialization."
+         },
+         {
+          "value": "None/other",
+          "text": "None of the above or other change"
+         }
+        ],
+        "otherText": "Other"
+       },
+       {
+        "type": "radiogroup",
+        "name": "confidentiality",
+        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other'",
+        "title": "Confidentiality:  Suppose an attacker would be able to find a vulnerability that is introduced as part of this change and successfully exploit it.  Confidentiality is about protecting the information from being exposed to an unauthorized party. Would the exploitation of a potential vulnerability in this component lead to loss of Confidentiality? ",
+        "choices": [
+         {
+          "value": "Yes",
+          "text": "Yes"
+         },
+         {
+          "value": "No",
+          "text": "No"
+         },
+         {
+          "value": "Not sure",
+          "text": "I am not sure"
+         }
+        ]
+       },
+       {
+        "type": "radiogroup",
+        "name": "integrity",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'No'",
+        "title": "Integrity: Suppose an attacker would be able to find a vulnerability that is introduced as part of this change, and successfully exploit it.  Integrity is about protecting data from being modified by an unauthorized party. Would the exploitation of a potential vulnerability in this component lead to loss of Integrity?",
+        "isRequired": true,
+        "choices": [
+         {
+          "value": "Yes",
+          "text": "Yes"
+         },
+         {
+          "value": "No",
+          "text": "No"
+         },
+         {
+          "value": "Not sure",
+          "text": "I am not sure"
+         }
+        ]
+       },
+       {
+        "type": "radiogroup",
+        "name": "availability",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {integrity} = 'No' and {confidentiality} = 'No'",
+        "title": "Availability: Suppose an attacker would be able to find a vulnerability that is introduced as part of this change and successfully exploit it.  Availability means that information is accessible to authorized users, i.e. that data is accessible by authorized users whenever it's needed. Would the exploitation of a potential vulnerability in this component lead to loss of Availability?",
+        "choices": [
+         {
+          "value": "Yes",
+          "text": "Yes"
+         },
+         {
+          "value": "No",
+          "text": "No"
+         },
+         {
+          "value": "Not sure",
+          "text": "I am not sure"
+         }
+        ]
+       },
+       {
+        "type": "radiogroup",
+        "name": "if_access_control_change_playbook",
+        "visible": false,
+        "visibleIf": "{infrastructure_gcp} anyof ['Access control change that involves granting privileged or public access to an entity.', 'Changing an existing firewall rule or adding a new one', 'Changing logging configs'] and {high_level} = 'change_infrastructure'",
+        "title": "I have followed one of our standard playbooks to make this change or this change is similar to a previous change that went through a security review",
+        "choices": [
+         {
+          "value": "Yes",
+          "text": "Yes"
+         },
+         {
+          "value": "Not sure",
+          "text": "I am not sure / I'm not aware of any playbooks that could help with this specific change"
+         }
+        ]
+       },
+       {
+        "type": "html",
+        "name": "risk_high_infrastructure_only",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_infrastructure' and {infrastructure_gcp} anyof ['Access control change that involves granting privileged or public access to an entity.', 'Changing an existing firewall rule or adding a new one', 'Changing logging configs'] and {if_access_control_change_playbook} = 'Not sure'",
+        "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>"
+       },
+       {
+        "type": "html",
+        "name": "risk_high_product_only",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_product_api' and {main_product} anyof ['Changing or adding an API endpoint that processes XML files from user input', 'Introducing/changing a file upload feature', 'Making use of Cryptography']",
+        "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>"
+       },
+       {
+        "type": "html",
+        "name": "high_ui_change_only",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_product_ui' and {product_ui_question_change} anyof ['change_ui_url_inputs', 'change_ui_load_active_content', 'change_ui_change_dom']",
+        "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n<hr> \n\n\n</div>"
+       },
+       {
+        "type": "html",
+        "name": "risk_medium",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_infrastructure' and {infrastructure_gcp} = 'Other'",
+        "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>"
+       },
+       {
+        "type": "html",
+        "name": "risk_low",
+        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'No' and {integrity} = 'No' and {availability} = 'No'",
+        "html": "<div class=\"alert alert-info\">\nRisk: <b>LOW</b>\n<hr>\n</div>\n\n"
+       },
+       {
+        "type": "html",
+        "name": "risk_low_ui_only",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_product_ui' and {product_ui_question_change} = 'Other'",
+        "html": "<div class=\"alert alert-info\">\nRisk: <b>LOW</b>\n<hr>\n</div>\n\n"
+       },
+       {
+        "type": "html",
+        "name": "risk_low_infrastructure_only",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_infrastructure' and {infrastructure_gcp} anyof ['Access control change that involves granting privileged or public access to an entity.', 'Changing an existing firewall rule or adding a new one', 'Changing logging configs'] and {if_access_control_change_playbook} = 'Yes'",
+        "html": "<div class=\"alert alert-info\">\nRisk: <b>LOW</b>\n<hr>\n</div>\n\n"
+       },
+       {
+        "type": "html",
+        "name": "risk_medium_product_only",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} anyof ['change_ui_change_dom', 'change_ui_load_active_content', 'change_ui_url_inputs']",
+        "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>"
+       },
+       {
+        "type": "html",
+        "name": "risk_high_generic",
+        "visible": false,
+        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'Yes' or {high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'Not sure' or {high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'No' and {integrity} = 'Yes' or {high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'No' and {integrity} = 'Not sure' or {high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'No' and {integrity} = 'No' and {availability} = 'Yes' or {high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'No' and {integrity} = 'No' and {availability} = 'Not sure'",
+        "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nTo determine the risk of this change, please reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>\n\n"
+       },
+       {
+        "type": "html",
+        "name": "high_risk_SA",
+        "visibleIf": "{high_level} = 'add_SA'",
+        "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nAdding a new Service Account or editing an existing one must be always followed by the LEAST PRIVILEGE principle.\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>"
+       },
+       {
+        "type": "html",
+        "name": "risk_medium_product_only",
+        "visible": false,
+        "visibleIf": "{high_level} = 'update_dependecies'",
+        "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\n The AppSec team always recommend to update dependencies and clients to safer versions. \n Please reach out to the AppSec team or tag someone from the Appsec team if you have any questions.\n</div>"
+       }
+      ],
+      "title": "Jira Security Risk Assessment Guide"
+     }
+    ]
+   }
