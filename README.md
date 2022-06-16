@@ -1,10 +1,10 @@
 # DSP AppSec Infrastructure Apps
-This repository hosts DSP AppSec internal infrastructure. These apps are deployed in GCP.
+This repository hosts DSP AppSec internal infrastructure. These apps are deployed in GCP Kubernetes.
 
 
 ### Apps
 
-- [Sdarq](sdarq)
+- [Sdarq](sdarq) - A tool built by the AppSec Team at the DSP, Broad Institute
 - [DefectDojo](defectdojo)
 - [CodeDx](codedx)
 - [CIS Scanner](cis)
