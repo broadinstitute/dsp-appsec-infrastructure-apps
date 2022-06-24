@@ -78,10 +78,11 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
                      active=True,
                      verified=False,
                      close_old_findings=True,
-                     skip_duplicates=True,
+                     skip_duplicates=False,
                      scan_date=str(datetime.today().strftime('%Y-%m-%d')),
                      tags="Zap_scan")
     logging.info("Dojo file upload: %s", dojo_upload)
+    dojo.close_engagement(engagement_id)
 
 class Severity(str, Enum):
     """
