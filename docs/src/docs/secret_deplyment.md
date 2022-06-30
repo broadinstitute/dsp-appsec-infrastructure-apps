@@ -26,20 +26,6 @@ metadata:
 type: Opaque
 ```
 
-### CodeDx secrets
-
-```
-apiVersion: v1
-data:
-  DB_PASSWORD: Database password
-  DB_ROOT_PASSWORD: Database root password
-  SUPERUSER_PASSWORD: Superuser password
-kind: Secret
-metadata:
-  name: codedx
-  namespace: codedx
-type: Opaque
-```
 
 ### ZAP Scanner secrets
 

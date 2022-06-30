@@ -5,7 +5,7 @@
     "Sdarq": ["sdarq"],
     "ZAP Scan Automation": ["zap_scan"],
     "CIS Scan Automation": ["cis_scan"],
-    "How we use DefectDojo & CodeDx": ["defectdojo_codedx"],
+    "How we use DefectDojo": ["defectdojo"],
     "Secret Deployment": ["secret_deployment"],
     "Configurations": ["config"]
   }
