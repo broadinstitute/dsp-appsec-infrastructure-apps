@@ -6,6 +6,7 @@ This repository hosts DSP AppSec internal infrastructure. These apps are deploye
 
 - [Sdarq](sdarq) - A tool built by the AppSec Team at the DSP, Broad Institute 
 - [DefectDojo](defectdojo)
+- [CodeDx](codedx)
 - [CIS Scanner](cis)
 - [Automated ZAP Scanner](zap)
 - [Job Batch Dispatcher](batch)

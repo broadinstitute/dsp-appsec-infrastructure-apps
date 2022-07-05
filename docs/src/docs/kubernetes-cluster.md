@@ -127,7 +127,7 @@ We use [Kaniko](https://github.com/GoogleContainerTools/kaniko) Docker builder
 to speed up the builds through caching.
 
 Each Kubernetes deployment is done via an associated `deploy.sh` script
-(e.g. one for [DefectDojo](defectdojo/deploy.sh)).
+(e.g. one for [CodeDx](codedx/deploy.sh)).
 A quick overview of what that script should do:
 
 1.  Create a [Kubernetes namespace](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/) for the app.
@@ -202,7 +202,7 @@ A quick overview of what that script should do:
     to reach the app http endpoint from Ingress and to mark it as healthy.
 
     Take a look, for example, at how all of this is done in
-    [DefectDojo/deployment.yaml](defectdojo/deployment.yaml).
+    [codedx/deployment.yaml](codedx/deployment.yaml).
 
 6.  Call [shared/host.sh](shared/host.sh) script, which:
     - declares a global static IP for the service
