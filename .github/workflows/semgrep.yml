@@ -2,12 +2,12 @@ name: Semgrep
 on: [pull_request]
 jobs:
   semgrep:
-    runs-on: ubuntu-latest
-    name: Check
+    name: Scan
+    runs-on: ubuntu-20.04
+    container:
+      image: returntocorp/semgrep
     steps:
-    - uses: actions/checkout@v1
-    - name: Semgrep
-      id: semgrep
-      uses: returntocorp/semgrep-action@v1
+    - uses: actions/checkout@v3
+    - run: semgrep ci
       with:
         config: p/r2c-security-audit
