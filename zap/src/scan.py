@@ -330,6 +330,7 @@ def main(): # pylint: disable=too-many-locals
             (zap_filename, session_filename) = zap_compliance_scan(
                 codedx_project, zap_port, target_url, scan_type)
 
+
             # optionally, upload them to GCS
             xml_report_url = ""
             if scan_type == ScanType.UI:
