@@ -58,7 +58,7 @@ def codedx_upload(cdx: CodeDx, project: str, filename: str):
     cdx.analyze(project, filename)
 
 
-def defectdojo_upload(engagement_id: int, zap_filename: str, defect_dojo_key: str, defect_dojo_user: str, defect_dojo: str):  # pylint: disable=line-too-long
+def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, defect_dojo_user: str, defect_dojo: str):  # pylint: disable=line-too-long
     """
     Upload Zap results in DefectDojo engagement
     """
@@ -66,6 +66,14 @@ def defectdojo_upload(engagement_id: int, zap_filename: str, defect_dojo_key: st
         defect_dojo, defect_dojo_key, defect_dojo_user, debug=False)
 
     absolute_path = os.path.abspath(zap_filename)
+    date = datetime.today().strftime("%Y%m%d%H:%M")
+
+    engagement=dojo.create_engagement( name=date, product_id=product_id, lead_id=14,
+        target_start=datetime.today().strftime("%Y-%m-%d"),
+        target_end=datetime.today().strftime("%Y-%m-%d"), status="In Progress", 
+        active='True',deduplication_on_engagement='False')
+    print(engagement.data)
+    engagement_id=engagement.data["id"]
 
     dojo_upload = dojo.upload_scan(engagement_id=engagement_id,
                      scan_type="ZAP Scan",
@@ -77,6 +85,7 @@ def defectdojo_upload(engagement_id: int, zap_filename: str, defect_dojo_key: st
                      scan_date=str(datetime.today().strftime('%Y-%m-%d')),
                      tags="Zap_scan")
     logging.info("Dojo file upload: %s", dojo_upload)
+    dojo._request('POST','engagements/'+str(engagement_id)+'/close/')
 
 class Severity(str, Enum):
     """

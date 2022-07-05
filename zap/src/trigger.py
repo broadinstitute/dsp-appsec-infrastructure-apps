@@ -65,7 +65,7 @@ def trigger_scan(  # pylint: disable=too-many-arguments
     codedx_project: str,
     scan_type: ScanType,
     slack_channel: str,
-    engagement_id: str,
+    product_id: str,
 ):
     """
     Trigger scan for a given endpoint via a Pub/Sub message.
@@ -79,7 +79,7 @@ def trigger_scan(  # pylint: disable=too-many-arguments
         URL=url,
         SCAN_TYPE=scan_type.name,
         SLACK_CHANNEL=slack_channel,
-        ENGAGEMENT_ID=engagement_id,
+        ENGAGEMENT_ID=product_id,
     )
     future.add_done_callback(pubsub_callback(endpoint))
     return future
@@ -108,7 +108,7 @@ def parse_tags(endpoint: Endpoint):
             scan_type = ScanType[tag_val.upper()]
         if tag_key == "slack":
             slack_channel = tag_val
-        if tag_key == "engagement_id":
+        if tag_key == "product_id":
             engagement_id = tag_val
     return codedx_project, slack_channel, scan_type, engagement_id
 
@@ -130,10 +130,10 @@ def trigger_scans(
     for endpoint in endpoints:
         slack_channel = None
         try:
-            codedx_project, slack_channel, scan_type, engagement_id = parse_tags(endpoint)
+            codedx_project, slack_channel, scan_type, product_id = parse_tags(endpoint)
             if codedx_project and (scan_type in scan_types):
                 future = trigger_scan(
-                    publisher, endpoint, topic, codedx_project, scan_type, slack_channel, engagement_id
+                    publisher, endpoint, topic, codedx_project, scan_type, slack_channel, product_id
                 )
                 futures.append(future)
         except BaseException as error:
