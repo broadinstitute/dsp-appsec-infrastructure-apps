@@ -453,7 +453,7 @@ def zap_scan():
         parsed_user_url = urlparse(user_supplied_url)
         for endpoint in endpoints:
             if endpoint['host'] == parsed_user_url.netloc:
-                service_codex_project, default_slack_channel, service_scan_type, engagement_id = parse_tags(
+                service_codex_project, default_slack_channel, service_scan_type, product_id = parse_tags(
                     endpoint)
                 if endpoint['path'] is None:
                     service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}"
@@ -473,7 +473,7 @@ def zap_scan():
                                   SCAN_TYPE=service_scan_type.name,
                                   SEVERITIES=severities,
                                   SLACK_CHANNEL=dev_slack_channel,
-                                  ENGAGEMENT_ID=engagement_id)
+                                  ENGAGEMENT_ID=product_id)
                 logging.info("User %s requested to scan via ZAP %s service",
                              user_email, service_full_endpoint)
                 return ''
