@@ -70,7 +70,7 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
 
     engagement=dojo.create_engagement( name=date, product_id=product_id, lead_id=14,
         target_start=datetime.today().strftime("%Y-%m-%d"),
-        target_end=datetime.today().strftime("%Y-%m-%d"), status="In Progress", 
+        target_end=datetime.today().strftime("%Y-%m-%d"), status="In Progress",
         active='True',deduplication_on_engagement='False')
     print(engagement.data)
     engagement_id=engagement.data["id"]
@@ -330,9 +330,6 @@ def main(): # pylint: disable=too-many-locals
             (zap_filename, session_filename) = zap_compliance_scan(
                 codedx_project, zap_port, target_url, scan_type)
 
-            
-
-            
             # optionally, upload them to GCS
             xml_report_url = ""
             if scan_type == ScanType.UI:
