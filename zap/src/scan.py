@@ -67,8 +67,14 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
 
     absolute_path = os.path.abspath(zap_filename)
     date = datetime.today().strftime("%Y%m%d%H:%M")
+    
+    try:
+        lead_id = dojo.list_users(defect_dojo_user).data["results"][0]["id"]
+    except:
+        logging.error("Did not retrieve dojo user ID, upload failed.")
+        return
 
-    engagement=dojo.create_engagement( name=date, product_id=product_id, lead_id=14,
+    engagement=dojo.create_engagement( name=date, product_id=product_id, lead_id=lead_id,
         target_start=datetime.today().strftime("%Y-%m-%d"),
         target_end=datetime.today().strftime("%Y-%m-%d"), status="In Progress",
         active='True',deduplication_on_engagement='False')
