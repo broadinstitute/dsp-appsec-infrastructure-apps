@@ -7,6 +7,7 @@ import ftplib
 import logging
 import os
 import re
+import telnetlib
 from datetime import datetime
 from enum import Enum
 from os import getenv
