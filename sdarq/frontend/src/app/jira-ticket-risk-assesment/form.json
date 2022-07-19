@@ -290,7 +290,7 @@
         "name": "risk_medium",
         "visible": false,
         "visibleIf": "{high_level} = 'change_infrastructure' and {infrastructure_gcp} = 'Other'",
-        "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>"
+        "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\n</div>"
        },
        {
         "type": "html",
@@ -317,7 +317,7 @@
         "name": "risk_medium_product_only",
         "visible": false,
         "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} anyof ['change_ui_change_dom', 'change_ui_load_active_content', 'change_ui_url_inputs']",
-        "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>"
+        "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\n</div>"
        },
        {
         "type": "html",
@@ -337,7 +337,7 @@
         "name": "risk_medium_product_only",
         "visible": false,
         "visibleIf": "{high_level} = 'update_dependecies'",
-        "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\n The AppSec team always recommend to update dependencies and clients to safer versions. \n Please reach out to the AppSec team or tag someone from the Appsec team if you have any questions.\n</div>"
+        "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\n The AppSec team always recommend to update dependencies and clients to safer versions.\n</div>"
        }
       ],
       "title": "Jira Security Risk Assessment Guide"
