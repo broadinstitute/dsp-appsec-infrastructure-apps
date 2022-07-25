@@ -3,6 +3,7 @@
 Runs ZAP scan, uploads results to Code Dx and GCS, and alerts Slack.
 """
 
+import ftplib
 import logging
 import os
 import re
