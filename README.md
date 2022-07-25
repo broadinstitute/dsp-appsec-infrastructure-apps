@@ -1,6 +1,8 @@
 # DSP AppSec Infrastructure Apps
-This repository hosts DSP AppSec internal infrastructure. These apps are deployed in GCP Kubernetes.
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=broadinstitute_dsp-appsec-infrastructure-apps&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=broadinstitute_dsp-appsec-infrastructure-apps)
+
+This repository hosts DSP AppSec internal infrastructure. These apps are deployed in GCP Kubernetes.
 
 ### Apps
 
