@@ -41,10 +41,12 @@ export class FormComponent implements OnInit {
       'product': result['Product']
     };
     this.createNewSctService.createNewSCT(this.arrRequired).subscribe((createNewSCTResponse) => {
+      console.log("Security Controls template created for this service")
     });
 
     if (result.project_id) {
       this.scanGCPproject.sendCisProject(result).subscribe((scanGCPProjectResponse) => {
+        console.log("CIS scanner running against GCP project")
       });
     }
   }

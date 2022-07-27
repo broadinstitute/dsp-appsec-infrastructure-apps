@@ -136,8 +136,9 @@ def trigger_scans(
                     publisher, endpoint, topic, codedx_project, scan_type, slack_channel, product_id
                 )
                 futures.append(future)
-        except BaseException as error:
+        except BaseException as base_error: # pylint: disable=bare-except
             logging.error(f"Error triggering scan for: { endpoint }\n{ traceback.print_exc() }")
+            raise base_error
 
     concurrent.futures.wait(futures)
 

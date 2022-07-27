@@ -103,9 +103,12 @@ def listen_pubsub(
         log.info("Listening to subscription %s", subscription)
         try:
             streaming_pull.result()
-        except (BaseException, TimeoutError) as err:
+        except BaseException as base_err:
             streaming_pull.cancel()
-            raise err
+            raise base_err
+        except TimeoutError as timeout_err:
+            streaming_pull.cancel()
+            raise timeout_err
 
 
 def load_job(subscription: str, spec_path: str):
@@ -184,8 +187,9 @@ def cleanup(batch_api: BatchV1Api, subscription: str, namespace: str):
                     propagation_policy="Background",
                 )
                 log.info("Deleted job %s", meta.name)
-    except:  # pylint: disable=bare-except
-        raise_from_thread("Error in Job cleanup")
+    except BaseException as base_err:  # pylint: disable=bare-except
+        error_message = f"Error in Job cleanup: {base_err}"
+        raise_from_thread(error_message)
 
 
 def schedule_cleanup(batch_api: BatchV1Api, subscription: str, namespace: str):

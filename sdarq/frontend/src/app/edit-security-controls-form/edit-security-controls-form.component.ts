@@ -105,6 +105,7 @@ export class EditSecurityControlsFormComponent implements OnInit {
     };
     attempt();
   }
+  
   copySecChamp() {
     const pending =
       this.clipboard.beginCopy(this.security_champion);
