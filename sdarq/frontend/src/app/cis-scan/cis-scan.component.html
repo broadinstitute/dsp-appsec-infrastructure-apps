@@ -25,7 +25,9 @@
     </div>
     <br>
     <br>
+    <div class="row">
     <app-survey *ngIf="showForm" [json]="json" (submitSurvey)="sendData($event)"></app-survey>
+    </div>
     <br>
     <br>
   </div>

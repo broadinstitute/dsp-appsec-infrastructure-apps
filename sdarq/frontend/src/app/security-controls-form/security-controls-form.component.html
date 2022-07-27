@@ -4,6 +4,8 @@
         <h4 class="alert-heading">Oops!</h4>
         <p> {{showModalError}} </p>
     </div>
+    <div class="row">
       <app-survey *ngIf="showForm" [json]="json" (submitSurvey)="sendSCTData($event)"></app-survey>
+      </div>
     </div>
   </div>
