@@ -89,7 +89,7 @@ spec:
             name: ${SERVICE}
             port:
               name: ${BACKEND_PORT}
-      - path: /submitJTRA/
+      - path: /submit_jtra/
         pathType: ImplementationSpecific
         backend:
           service:

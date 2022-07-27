@@ -732,9 +732,9 @@ def request_manual_pentest():
         return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
 
 
-@app.route('/submitJTRA/', methods=['POST'])
+@app.route('/submit_jtra/', methods=['POST'])
 @cross_origin(origins=sdarq_host)
-def submitJTRA():
+def submit_jtra():
     """
     Calculates the risk based on the user data and notifies AppSec team for the review
     Args:

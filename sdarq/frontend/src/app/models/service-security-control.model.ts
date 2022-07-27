@@ -1,4 +1,3 @@
-import { BooleanLiteral } from 'typescript';
 import {Deserializable} from './deserializable.model';
 
 export class ServiceSecurityControl implements Deserializable {
