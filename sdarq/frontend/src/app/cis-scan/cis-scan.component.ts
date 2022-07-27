@@ -25,6 +25,7 @@ export class CisScanComponent implements OnInit {
     this.showModal = false;
     this.showForm = true;
     this.showModalErr = false;
+    this.showSpinner =false;
   }
 
   sendData(result) {

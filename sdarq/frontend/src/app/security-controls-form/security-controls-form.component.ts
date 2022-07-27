@@ -26,12 +26,13 @@ export class SecurityControlsFormComponent implements OnInit {
 
   sendSCTData(result) {
     this.createSCT.createNewSCT(result).subscribe((data) => {
+      this.showModalErr = false;
+      this.showForm = true;
     },
       (data) => {
         this.showModalErr = true;
         this.showModalError = data;
         this.showForm = false;
-        tick()
       });
   }
 }
