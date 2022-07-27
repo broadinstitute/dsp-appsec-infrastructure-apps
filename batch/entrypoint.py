@@ -103,7 +103,7 @@ def listen_pubsub(
         log.info("Listening to subscription %s", subscription)
         try:
             streaming_pull.result()
-        except BaseException as base_err:
+        except BaseException as base_err: # pylint: disable=bare-except
             streaming_pull.cancel()
             raise base_err
         except TimeoutError as timeout_err:
