@@ -103,12 +103,9 @@ def listen_pubsub(
         log.info("Listening to subscription %s", subscription)
         try:
             streaming_pull.result()
-        except BaseException as base_err: # pylint: disable=bare-except
+        except BaseException as base_err: # pylint: disable=bare-broad-except
             streaming_pull.cancel()
             raise base_err
-        except TimeoutError as timeout_err:
-            streaming_pull.cancel()
-            raise timeout_err
 
 
 def load_job(subscription: str, spec_path: str):
