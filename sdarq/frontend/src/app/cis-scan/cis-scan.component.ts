@@ -30,7 +30,7 @@ export class CisScanComponent implements OnInit {
   sendData(result) {
     this.showSpinner = true;
     if (result.slack_channel) {
-      this.sendProject.sendCisProject(result).subscribe(() => {
+      this.sendProject.sendCisProject(result).subscribe((data) => {
         this.showModal = true;
         this.showForm = false;
         this.showSpinner = false;
@@ -43,7 +43,7 @@ export class CisScanComponent implements OnInit {
         this.showSpinner = false;
       });
     } else {
-      this.sendProject.sendCisProject(result).subscribe(() => {
+      this.sendProject.sendCisProject(result).subscribe((data) => {
         location.href = location.origin + '/gcp-project-security-posture/results?project_id=' + result.project_id;
       },
       (data) => {
