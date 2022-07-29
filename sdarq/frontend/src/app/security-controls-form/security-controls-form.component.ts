@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import formJson from './form.json';
 import { CreateNewSctService } from '../services/create-new-security-controls/create-new-sct.service';
 
@@ -16,7 +16,7 @@ export class SecurityControlsFormComponent implements OnInit {
 
   json = formJson;
 
-  constructor(private createSCT: CreateNewSctService) { }
+  constructor(private createSCT: CreateNewSctService, private cdRef: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.showForm = true;
@@ -28,9 +28,10 @@ export class SecurityControlsFormComponent implements OnInit {
       this.showForm = true;
     },
       (data) => {
+        this.cdRef.detectChanges();
+        this.showForm = false;
         this.showModalErr = true;
         this.showModalError = data;
-        this.showForm = false;
       });
   }
 }
