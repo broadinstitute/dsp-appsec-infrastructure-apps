@@ -18,8 +18,7 @@ export class SecurityControlsFormComponent implements OnInit {
 
   constructor(private createSCT: CreateNewSctService) { }
 
-  ngOnInit(): void {
-    this.showModalErr = false;
+  ngOnInit() {
     this.showForm = true;
   }
 

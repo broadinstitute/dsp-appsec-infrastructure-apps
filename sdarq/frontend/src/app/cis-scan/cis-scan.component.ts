@@ -21,11 +21,8 @@ export class CisScanComponent implements OnInit {
 
   constructor(private sendProject: CisProjectService) { }
 
-  ngOnInit(): void {
-    this.showModal = false;
+  ngOnInit() {
     this.showForm = true;
-    this.showModalErr = false;
-    this.showSpinner =false;
   }
 
   sendData(result) {
