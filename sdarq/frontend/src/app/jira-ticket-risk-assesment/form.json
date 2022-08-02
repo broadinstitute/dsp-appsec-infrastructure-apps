@@ -51,6 +51,7 @@
        "type": "dropdown",
        "name": "AppSec_due_date",
        "title": "Due date for AppSec review",
+       "isRequired": true,
        "choices": [
         "Less than 1 week",
         "1 week",
