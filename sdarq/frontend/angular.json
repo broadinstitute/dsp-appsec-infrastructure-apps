@@ -115,18 +115,12 @@
               "node_modules/bootstrap-slider/dist/css/bootstrap-slider.css",
               "node_modules/jquery-bar-rating/dist/themes/bars-pill.css",
               "node_modules/jquery-bar-rating/dist/themes/css-stars.css",
-              "node_modules/jquery-bar-rating/dist/themes/fontawesome-stars.css",
               "node_modules/jquery-bar-rating/dist/themes/bars-1to10.css",
               "node_modules/jquery-bar-rating/dist/themes/bars-horizontal.css",
               "node_modules/jquery-bar-rating/dist/themes/bars-movie.css",
               "node_modules/jquery-bar-rating/dist/themes/bars-reversed.css",
               "node_modules/jquery-bar-rating/dist/themes/bars-square.css",
               "node_modules/jquery-bar-rating/dist/themes/bootstrap-stars.css",
-              "node_modules/jquery-bar-rating/dist/themes/fontawesome-stars-o.css",
-              "node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss",
-              "node_modules/@fortawesome/fontawesome-free/scss/solid.scss",
-              "node_modules/@fortawesome/fontawesome-free/scss/regular.scss",
-              "node_modules/@fortawesome/fontawesome-free/scss/brands.scss",
               "node_modules/angular-bootstrap-md/assets/scss/bootstrap/bootstrap.scss",
               "node_modules/angular-bootstrap-md/assets/scss/mdb.scss",
               "node_modules/animate.css/animate.css"
@@ -212,14 +206,12 @@
               "node_modules/bootstrap-slider/dist/css/bootstrap-slider.css",
               "node_modules/jquery-bar-rating/dist/themes/bars-pill.css",
               "node_modules/jquery-bar-rating/dist/themes/css-stars.css",
-              "node_modules/jquery-bar-rating/dist/themes/fontawesome-stars.css",
               "node_modules/jquery-bar-rating/dist/themes/bars-1to10.css",
               "node_modules/jquery-bar-rating/dist/themes/bars-horizontal.css",
               "node_modules/jquery-bar-rating/dist/themes/bars-movie.css",
               "node_modules/jquery-bar-rating/dist/themes/bars-reversed.css",
               "node_modules/jquery-bar-rating/dist/themes/bars-square.css",
-              "node_modules/jquery-bar-rating/dist/themes/bootstrap-stars.css",
-              "node_modules/jquery-bar-rating/dist/themes/fontawesome-stars-o.css"
+              "node_modules/jquery-bar-rating/dist/themes/bootstrap-stars.css"
             ],
             "assets": [
               "src/assets",
@@ -239,7 +231,6 @@
       }
     }
   },
-  "defaultProject": "sdarq_survey",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",
@@ -250,6 +241,9 @@
     }
   },
   "cli": {
-    "defaultCollection": "@angular-eslint/schematics"
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ],
+    "analytics": false
   }
 }
