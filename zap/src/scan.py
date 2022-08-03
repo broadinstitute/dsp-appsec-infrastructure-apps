@@ -244,7 +244,7 @@ def slack_alert_with_report(  # pylint: disable=too-many-arguments
     else:
         logging.warning("No findings for alert to Slack")
         return
-    logging.info("Alert sent to Slack channel: %s")
+    logging.info("Alert sent to Slack channel")
 
 
 def slack_alert_without_report(  # pylint: disable=too-many-arguments
@@ -277,15 +277,15 @@ def slack_alert_without_report(  # pylint: disable=too-many-arguments
         slack.chat_postMessage(channel=channel, text=gcs_slack_text)
         logging.info("Alert sent to Slack channel for DefectDojo upload report")
 
-def clean_uri_path(xmlReport):
-    tree = ET.parse(xmlReport)
+def clean_uri_path(xml_report):
+    tree = ET.parse(xml_report)
     root = tree.getroot()
     #There's a hash in bundled files that is causing flaws to not match, this should remove the hash.
     for uri in root.iter('uri'):
         r=urlparse(uri.text)
         r=r._replace(path=re.sub('\.([a-zA-Z0-9]+){8,9}', '', r.path))
         uri.text = urlunparse(r)
-    tree.write(xmlReport)
+    tree.write(xml_report)
 
 
 def main(): # pylint: disable=too-many-locals

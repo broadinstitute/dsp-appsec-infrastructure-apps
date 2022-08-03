@@ -125,8 +125,9 @@ def zap_save_session(zap: ZAPv2, project: str, scan_type: ScanType):
     #scan controller uses same shared volume to zip session and return the filename
     try:
         shutil.make_archive(session_filename, 'zip' , share_path_sess)
-    except:
+    except BaseException as base_error: # pylint: disable=bare-except
         print("Unable to zip session file.")
+        raise base_error
     return session_filename + ".zip"
 
 
@@ -158,6 +159,6 @@ def zap_compliance_scan(
         zap_active_scan(zap, target_url, None)
 
     filename = zap_report(zap, project, scan_type)
-    sessionFile = zap_save_session(zap, project, scan_type)
+    session_file = zap_save_session(zap, project, scan_type)
 
-    return (filename, sessionFile)
+    return (filename, session_file)

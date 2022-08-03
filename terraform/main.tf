@@ -116,7 +116,7 @@ locals {
 
 resource "google_compute_ssl_policy" "ssl_policy" {
   name            = var.cluster_name
-  profile         = "MODERN"
+  profile         = "RESTRICTED"
   min_tls_version = "TLS_1_2"
 }
 

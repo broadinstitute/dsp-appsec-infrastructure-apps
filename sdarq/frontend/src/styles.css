@@ -162,13 +162,6 @@
 
 }
 
-label {
-  display: inline-block;
-  max-width: 100%;
-  margin-bottom: 5px;
-  font-weight: normal !important;
-}
-
 .sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) {
   margin: 1em 0;
   padding: 0em !important;
@@ -202,7 +195,6 @@ label {
   margin-bottom: 0px !important;
   font-weight: 400 !important;
 }
-
 
 .tip {
   background: #0983e6 !important;
@@ -368,8 +360,8 @@ ul.stepper li.completed a .circle {
   border-radius: 0.25rem;
 }
 .navbar .dropdown-menu a {
-  padding: 7px 0 2px 14px !important;;
-  font-size: 0.74rem !important;;
+  padding: 7px 0 2px 14px !important;
+  font-size: 0.74rem !important;
   font-weight: 300;
   color: #000;
 }
