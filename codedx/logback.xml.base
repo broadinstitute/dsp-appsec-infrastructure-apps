@@ -1,12 +1,21 @@
-
+<!-- 
+  Note that this file does not automatically overwrite /opt/codedx/logback.xml 
+  -->
 <configuration>
+	<appender name="logFile" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder>
-      <pattern>%-5level [%thread] %logger{36} - %msg%n</pattern>
-    </encoder>
-  </appender>
+		<encoder>
+			<pattern>%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	<logger name="net.liftweb" level="WARN" />
 
-  <root level="INFO">
-    <appender-ref ref="stdout" />
-  </root>
+	<root level="INFO">
+		<appender-ref ref="logFile" />
+		<appender-ref ref="stdout" />
+	</root>
 </configuration>
