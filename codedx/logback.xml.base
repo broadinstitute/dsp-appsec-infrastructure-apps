@@ -12,6 +12,7 @@
   </appender>
 
   <root level="INFO">
+    <appender-ref ref="logFile" />
     <appender-ref ref="stdout" />
   </root>
 </configuration>
