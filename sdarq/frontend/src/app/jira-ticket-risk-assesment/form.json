@@ -15,8 +15,8 @@
        },
        {
          "type": "html",
-         "name": "risk_assessment_guide",
-         "html": "<h4 style='color:#a72525'>Please make sure you <strong>submit</strong> this form (after it shows the result) to notify AppSec Team.</h4>"
+         "name": "submit_form",
+         "html": "<div style='color:#a72525'>Please make sure you <strong>submit</strong> this form (after it shows the result) to notify AppSec Team.</div>"
         },
        {
         "type": "radiogroup",
