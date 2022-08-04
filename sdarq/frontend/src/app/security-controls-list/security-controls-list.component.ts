@@ -27,7 +27,9 @@ export class SecurityControlsListComponent implements OnInit {
   showTable: boolean;
 
 
-  constructor(private getSecurityControls: GetSecurityControlsService,  private ngZone: NgZone) { }
+  constructor(private getSecurityControls: GetSecurityControlsService,  private ngZone: NgZone) {
+    // This is intentional
+   }
 
   ngOnInit() {
     this.showModalError = false;

@@ -18,9 +18,13 @@ export class SecurityControlsFormComponent implements OnInit {
 
   constructor(private createSCT: CreateNewSctService,
               private ngZone: NgZone,
-              private ref: ChangeDetectorRef) { }
+              private ref: ChangeDetectorRef) {
+                // This is intentional
+               }
 
-  ngOnInit(): void {}
+  ngOnInit() {
+    // This is intentional
+  }
 
   sendSCTData(result) {
     this.createSCT.createNewSCT(result).subscribe(() => {

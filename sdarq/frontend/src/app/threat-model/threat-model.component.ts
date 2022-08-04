@@ -17,7 +17,9 @@ export class ThreatModelComponent implements OnInit {
   constructor(private sendForm: RequestTmService,
               private http: HttpClient,
               private ngZone: NgZone,
-              private ref: ChangeDetectorRef) { }
+              private ref: ChangeDetectorRef) {
+                // This is intentional
+               }
 
   ngOnInit(): void {
     this.showForm = true;

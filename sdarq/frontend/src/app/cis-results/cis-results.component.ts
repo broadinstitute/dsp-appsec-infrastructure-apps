@@ -29,7 +29,9 @@ export class CisResultsComponent implements OnInit {
               private router: ActivatedRoute,
               private csvService: CsvDataService,
               private ngZone: NgZone,
-              private ref: ChangeDetectorRef) { }
+              private ref: ChangeDetectorRef) {
+                // This is intentional
+               }
 
   ngOnInit() {
     this.showSpinner = true;

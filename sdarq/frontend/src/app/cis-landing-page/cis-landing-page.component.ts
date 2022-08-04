@@ -7,9 +7,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CisLandingPageComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+    // This is intentional
+   }
 
   ngOnInit(): void {
+    // This is intentional
   }
 
 }

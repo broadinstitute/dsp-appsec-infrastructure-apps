@@ -19,7 +19,9 @@ export class CisScanComponent implements OnInit {
   showModalErr: boolean;
   showModalError: string;
 
-  constructor(private sendProject: CisProjectService, private ngZone: NgZone) { }
+  constructor(private sendProject: CisProjectService, private ngZone: NgZone) {
+    // This is intentional
+   }
 
   ngOnInit(): void {
     this.showModal = false;

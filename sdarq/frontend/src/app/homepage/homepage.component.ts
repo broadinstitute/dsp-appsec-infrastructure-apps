@@ -7,8 +7,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomepageComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+    // This is intentional
+   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    // This is intentional
+   }
 
 }
