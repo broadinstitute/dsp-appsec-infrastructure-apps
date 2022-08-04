@@ -234,14 +234,13 @@ label {
 }
 
 .saveResponses {
-  background-color: #2752b7 !important;
-  font-weight: lighter !important;
-  line-height: 3em !important;
-  min-width: 100px;
-  margin: 0 0 0 44.5%;
-  color: white;
+  background-color: #2752b7!important;
+  line-height: 3em!important;
+  min-width: 14%;
+  margin: 0 0 0 43%;
+  color: #fff;
   border: 0px;
-  border-radius: 7px !important;
+  border-radius: 7px!important;
 }
 
 input,
