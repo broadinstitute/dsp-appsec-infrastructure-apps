@@ -85,6 +85,7 @@
 .sv_main .sv_progress_bar {
   background-color: #5885d0 !important;
   -webkit-transition: width 1s;
+  transition: width 1s;
 }
 
 .sv_p_root,
