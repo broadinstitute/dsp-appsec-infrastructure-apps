@@ -13,9 +13,13 @@ export class CisComponent implements OnInit {
   table_show: boolean;
   json = formJson
 
-  constructor() { }
+  constructor() { 
+    // This is intentional
+  }
 
-  ngOnInit() { }
+  ngOnInit() { 
+    // This is intentional
+  }
 
   sendData(result) {
     location.href = location.origin + '/gcp-project-security-posture/results?project_id=' + result.project_id;

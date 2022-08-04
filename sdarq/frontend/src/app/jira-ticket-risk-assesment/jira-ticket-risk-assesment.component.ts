@@ -16,7 +16,9 @@ export class JiraTicketRiskAssesmentComponent implements OnInit {
 
   constructor(private sendJTRAForm: JiraTicketRiskAssessmentService,
               private ngZone: NgZone,
-              private ref: ChangeDetectorRef) { }
+              private ref: ChangeDetectorRef) {
+                // This is intentional
+               }
 
   ngOnInit(): void {
     this.showModalErr = false;

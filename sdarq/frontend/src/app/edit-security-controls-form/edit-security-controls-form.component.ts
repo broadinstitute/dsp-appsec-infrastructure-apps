@@ -45,7 +45,9 @@ export class EditSecurityControlsFormComponent implements OnInit {
               private editSecurityControls: EditSecurityControlsService,
               private clipboard: Clipboard,
               private ngZone: NgZone,
-              private ref: ChangeDetectorRef) {}
+              private ref: ChangeDetectorRef) {
+                // This is intentional
+              }
 
   ngOnInit(): void {
     this.chooseServiceToEditForm = true;

@@ -16,7 +16,9 @@ export class ServiceScanComponent implements OnInit {
 
   constructor(private sendServiceScanrRequest: ScanServiceService,
               private ngZone: NgZone,
-              private ref: ChangeDetectorRef) { }
+              private ref: ChangeDetectorRef) {
+                // This is intentional
+               }
 
   ngOnInit(): void {
     this.showModalErr = false;

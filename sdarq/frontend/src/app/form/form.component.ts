@@ -21,7 +21,9 @@ export class FormComponent implements OnInit {
               private scanGCPproject: CisProjectService,
               private createNewSctService: CreateNewSctService,
               private ngZone: NgZone,
-              private ref: ChangeDetectorRef) { }
+              private ref: ChangeDetectorRef) { 
+                // This is intentional
+              }
 
   ngOnInit() {
     this.showForm = true;
