@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { GetCisScanService } from '../services/get-project-cis-results/get-cis-scan.service';
 import { ActivatedRoute } from '@angular/router';
 import { CsvDataService } from '../services/convert-json-to-csv/csv-data.service';
@@ -25,7 +25,11 @@ export class CisResultsComponent implements OnInit {
   headElements = ['Benchmark', 'Id', 'Level', 'CVSS', 'Title', 'Failures', 'Description', 'Rationale', 'Refs'];
 
 
-  constructor(private getProjectScan: GetCisScanService, private router: ActivatedRoute, private csvService: CsvDataService) { }
+  constructor(private getProjectScan: GetCisScanService,
+              private router: ActivatedRoute,
+              private csvService: CsvDataService,
+              private ngZone: NgZone,
+              private ref: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.showSpinner = true;
@@ -43,6 +47,7 @@ export class CisResultsComponent implements OnInit {
 
   private getResults(value) {
     this.getProjectScan.getCisScan(this.value).subscribe((data) => {
+      this.ref.detectChanges();
       this.projectFindings = data.findings;
       this.projectId = data.meta.projectId;
       this.updateDate = new Date(data.meta.lastModifiedDatetime);
@@ -50,9 +55,11 @@ export class CisResultsComponent implements OnInit {
       this.showTable = true;
     },
       (data) => {
+        this.ngZone.run(() => {
         this.showModal = true;
         this.errors = data;
         this.showSpinner = false;
       });
+    });
   }
 }

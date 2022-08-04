@@ -299,6 +299,7 @@ ul.stepper li.completed a .circle {
   border-radius: 0.125rem;
   box-shadow: none !important;
   overflow: auto;
+  background-color: #ffffff !important;
   margin-bottom: 0px;
 }
 

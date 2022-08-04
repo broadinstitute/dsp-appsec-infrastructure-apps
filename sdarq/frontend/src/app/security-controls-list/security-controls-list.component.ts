@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { GetSecurityControlsService } from '../services/get-all-security-controls/get-security-controls.service'
 import { ServiceSecurityControl } from '../models/service-security-control.model';
 
@@ -27,7 +27,7 @@ export class SecurityControlsListComponent implements OnInit {
   showTable: boolean;
 
 
-  constructor(private getSecurityControls: GetSecurityControlsService) { }
+  constructor(private getSecurityControls: GetSecurityControlsService,  private ngZone: NgZone) { }
 
   ngOnInit() {
     this.showModalError = false;
@@ -111,10 +111,12 @@ export class SecurityControlsListComponent implements OnInit {
       this.serviceSecurityControl = serviceSecurityControl;
     },
       (serviceSecurityControl) => {
+        this.ngZone.run(() => {
         this.errorMessage = serviceSecurityControl;
         this.showModalError = true;
         this.showSearch = false;
         this.showTable = false;
+      }); 
       });
   }
 }
