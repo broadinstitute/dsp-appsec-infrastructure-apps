@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { SendFormDataService } from '../services/create-new-service/send-form-data.service';
 import { CisProjectService } from '../services/scan-gcp-project/cis-project.service';
 import { CreateNewSctService } from '../services/create-new-security-controls/create-new-sct.service';
@@ -19,20 +19,25 @@ export class FormComponent implements OnInit {
 
   constructor(private sendForm: SendFormDataService,
               private scanGCPproject: CisProjectService,
-              private createNewSctService: CreateNewSctService) { }
+              private createNewSctService: CreateNewSctService,
+              private ngZone: NgZone,
+              private ref: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.showForm = true;
   }
 
   sendData(result) {
-    this.sendForm.sendFormData(result).subscribe((submitNewServiceQuestionnaireResponse) => {
+    this.sendForm.sendFormData(result).subscribe(() => {
+      this.ref.detectChanges();
     },
       (submitNewServiceQuestionnaireResponse) => {
+        this.ngZone.run(() => {
         this.showAlert = true;
         this.showForm = false;
         this.errors = submitNewServiceQuestionnaireResponse;
       });
+    });
 
     this.arrRequired = {
       'service': result['Service'],

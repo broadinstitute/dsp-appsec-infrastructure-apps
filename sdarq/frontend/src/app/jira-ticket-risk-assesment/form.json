@@ -14,6 +14,11 @@
         "html": "<h4>Definitions</h4>\n\n-  <u>Threat</u>: Flaw that results in compromise of Confidentiality, Integrity or Availability<br>\n- <u>Risk</u>: Potential for loss due to some vulnerability being exploited <br>\n- <u>Mitigation</u>: The measures in place to help prevent a vulnerability. <br>\n- <u>Confidentiality:</u>: Confidentiality is the protection of data against unauthorized disclosure, or otherwise put, it is about ensuring that only those with the correct authorization can access the data. Confidentiality applies to data at rest, but also to data in motion <br>\n- <u>Integrity:</u>: Integrity is about protecting data against unauthorized modification, or assuring data trustworthiness  <br>\n- <u>Availability:</u>: Availability is about ensuring the presence of information or resources. <br>\n"
        },
        {
+         "type": "html",
+         "name": "submit_form",
+         "html": "<div style='color:#a72525'>Please make sure you <strong>submit</strong> this form (after it shows the result) to notify AppSec Team.</div>"
+        },
+       {
         "type": "radiogroup",
         "name": "Do you have a Jira ticket?",
         "title": "Do you have a Jira ticket?",

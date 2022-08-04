@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import formJson from './form.json';
 import { CisProjectService } from '../services/scan-gcp-project/cis-project.service';
 
@@ -19,7 +19,7 @@ export class CisScanComponent implements OnInit {
   showModalErr: boolean;
   showModalError: string;
 
-  constructor(private sendProject: CisProjectService) { }
+  constructor(private sendProject: CisProjectService, private ngZone: NgZone) { }
 
   ngOnInit(): void {
     this.showModal = false;
@@ -36,23 +36,27 @@ export class CisScanComponent implements OnInit {
         this.showSpinner = false;
       },
       (data) => {
+        this.ngZone.run(() => {
         this.showModal = false;
         this.showModalErr = true;
         this.showModalError = data;
         this.showForm = false;
         this.showSpinner = false;
       });
+    });
     } else {
       this.sendProject.sendCisProject(result).subscribe((data) => {
         location.href = location.origin + '/gcp-project-security-posture/results?project_id=' + result.project_id;
       },
       (data) => {
+        this.ngZone.run(() => {
         this.showModal = false;
         this.showModalError = data;
         this.showModalErr = true;
         this.showForm = false;
         this.showSpinner = false;
       });
+    });
     }
   }
 }

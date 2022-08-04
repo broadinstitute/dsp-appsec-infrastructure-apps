@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import formJson from './form.json';
 import { JiraTicketRiskAssessmentService } from '../services/jira-ticket-risk-assessment/jira-ticket-risk-assessment.service';
 
@@ -14,7 +14,9 @@ export class JiraTicketRiskAssesmentComponent implements OnInit {
   showForm: boolean;
   showModalError: any;
 
-  constructor(private sendJTRAForm: JiraTicketRiskAssessmentService) { }
+  constructor(private sendJTRAForm: JiraTicketRiskAssessmentService,
+              private ngZone: NgZone,
+              private ref: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.showModalErr = false;
@@ -24,12 +26,15 @@ export class JiraTicketRiskAssesmentComponent implements OnInit {
   json = formJson
 
   sendData(result) {
-    this.sendJTRAForm.sendJTRAFormData(result).subscribe((res) => {
+    this.sendJTRAForm.sendJTRAFormData(result).subscribe(() => {
+      this.ref.detectChanges();
     },
       (res) => {
+        this.ngZone.run(() => {
         this.showModalErr = true;
         this.showModalError = res;
         this.showForm = false;
       });
+    });
   }
 }

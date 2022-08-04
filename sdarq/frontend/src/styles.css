@@ -85,6 +85,7 @@
 .sv_main .sv_progress_bar {
   background-color: #5885d0 !important;
   -webkit-transition: width 1s;
+  transition: width 1s;
 }
 
 .sv_p_root,
@@ -234,12 +235,11 @@ label {
 }
 
 .saveResponses {
-  background-color: #2752b7 !important;
-  font-weight: lighter !important;
-  line-height: 3em !important;
-  min-width: 100px;
-  margin: 0 0 0 44.5%;
-  color: white;
+  background-color: #2752b7!important;
+  line-height: 3em!important;
+  min-width: 14%;
+  margin: 0 0 0 43%;
+  color: #fff;
   border: 0px;
   border-radius: 7px !important;
 }
@@ -299,6 +299,7 @@ ul.stepper li.completed a .circle {
   border-radius: 0.125rem;
   box-shadow: none !important;
   overflow: auto;
+  background-color: #ffffff !important;
   margin-bottom: 0px;
 }
 
@@ -411,3 +412,7 @@ color: #17af17 !important
 .fa-3x {
   font-size: 2.1em !important;
 } 
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-weight: 200 !important;
+}

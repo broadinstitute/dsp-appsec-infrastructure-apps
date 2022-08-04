@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { EditSecurityControlsService } from '../services/edit-service-security-controls/edit-security-controls.service';
 import { GetServiceSecurityControlsService } from '../services/get-service-security-controls/get-service-security-controls.service';
@@ -41,7 +41,11 @@ export class EditSecurityControlsFormComponent implements OnInit {
   showModalError: boolean;
   errorMessage: string;
 
-  constructor(private getSecurityControls: GetServiceSecurityControlsService, private editSecurityControls: EditSecurityControlsService, private clipboard: Clipboard) {}
+  constructor(private getSecurityControls: GetServiceSecurityControlsService,
+              private editSecurityControls: EditSecurityControlsService,
+              private clipboard: Clipboard,
+              private ngZone: NgZone,
+              private ref: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.chooseServiceToEditForm = true;
@@ -84,11 +88,13 @@ export class EditSecurityControlsFormComponent implements OnInit {
         this.sast_link = serviceSecurityControl.sast_link;
       },
       (serviceSecurityControl) => {
+        this.ngZone.run(() => {
         this.errorMessage = serviceSecurityControl;
         this.showModalError = true;
         this.serviceToEditForm = false;
         this.showServiceData = false;
       });
+    });
   }
 
   copyProductName() {
@@ -244,12 +250,16 @@ export class EditSecurityControlsFormComponent implements OnInit {
   onSubmit(result) {
     result['service'] = this.service
     this.showServiceData = false;
-    this.editSecurityControls.editSCT(result).subscribe((data) => {},
+    this.editSecurityControls.editSCT(result).subscribe(() => {
+      this.ref.detectChanges();
+    },
       (data) => {
+        this.ngZone.run(() => {
         this.errorMessage = data;
         this.showModalError = true;
         this.serviceToEditForm = false;
         this.showServiceData = false;
       });
+    });
   }
 }
