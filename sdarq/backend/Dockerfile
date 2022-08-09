@@ -15,9 +15,14 @@ RUN apt-get update -q && \
     rm -rf /var/lib/apt/lists/*
 
 
+RUN pip3 install -U pytest
+
 COPY --from=owasp/zap2docker-weekly /zap/zap_common.py ./
 COPY sdarq/backend/src/schemas/*py ./schemas/
 COPY sdarq/backend/src/*.py zap/src/*.py ./
+COPY sdarq/backend/src/tests/test_app.py ./
+
+RUN pytest test_app.py
 
 ENV PORT 8080
 ENTRYPOINT [ \
