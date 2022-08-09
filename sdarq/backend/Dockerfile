@@ -9,12 +9,13 @@ RUN apt-get update -q && \
       libffi-dev && \
     pip3 install -U pip && \
     pip3 install -r requirements.txt && \
-    pip3 install -U pytest
     apt-get remove -y \
       build-essential \
       libffi-dev && \
     rm -rf /var/lib/apt/lists/*
 
+
+RUN pip3 install -U pylint pytest
 
 COPY --from=owasp/zap2docker-weekly /zap/zap_common.py ./
 COPY sdarq/backend/src/schemas/*py ./schemas/
