@@ -20,6 +20,7 @@ RUN pip3 install -U pylint pytest
 COPY --from=owasp/zap2docker-weekly /zap/zap_common.py ./
 COPY sdarq/backend/src/schemas/*py ./schemas/
 COPY sdarq/backend/src/*.py zap/src/*.py ./
+COPY sdarq/backend/tests/test_app.py ./
 
 RUN pytest /test_app.py
 
