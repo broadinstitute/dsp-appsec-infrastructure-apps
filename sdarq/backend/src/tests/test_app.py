@@ -1,10 +1,9 @@
 """
-Tests entrypoint.py
+Tests app.py
 """
 
-
-def test_dummy():
-    """ Dummy test """
+def test_app():
+    """ App test """
     assert True
 
 
