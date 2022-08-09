@@ -9,6 +9,7 @@ RUN apt-get update -q && \
       libffi-dev && \
     pip3 install -U pip && \
     pip3 install -r requirements.txt && \
+    pip3 install -U pytest
     apt-get remove -y \
       build-essential \
       libffi-dev && \
@@ -18,6 +19,8 @@ RUN apt-get update -q && \
 COPY --from=owasp/zap2docker-weekly /zap/zap_common.py ./
 COPY sdarq/backend/src/schemas/*py ./schemas/
 COPY sdarq/backend/src/*.py zap/src/*.py ./
+
+RUN pytest /test_app.py
 
 ENV PORT 8080
 ENTRYPOINT [ \
