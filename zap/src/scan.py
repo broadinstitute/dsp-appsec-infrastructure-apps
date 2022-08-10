@@ -23,18 +23,20 @@ import defectdojo_apiv2 as defectdojo
 from zap import ScanType, zap_compliance_scan, zap_connect
 
 
-def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str):
+def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str, subfoldername=None):
     """
     Upload scans to a GCS bucket and return the path to the file in Cloud Console.
     """
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     date = datetime.today().strftime("%Y%m%d")
-    path = f"{scan_type}-scans/{date}/{filename}"
+    if subfoldername==None:
+        path = f"{scan_type}-scans/{date}/{filename}"
+    else:
+        path = f"{scan_type}-scans/{date}/{subfoldername}/{filename}"
     blob = bucket.blob(path)
     blob.upload_from_filename(filename)
-    return f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}"
-
+    return f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}"        
 
 def error_slack_alert(error: str, token: str, channel: str):
     """
@@ -343,6 +345,7 @@ def main(): # pylint: disable=too-many-locals
                     bucket_name,
                     scan_type,
                     zap_filename,
+                    subfoldername='raw'
                 )
                 upload_gcs(
                     session_bucket,
@@ -353,6 +356,15 @@ def main(): # pylint: disable=too-many-locals
             #removes hash from certain static files to improve flaw matching.
             #done after upload of raw report to GCS to preserve raw report xml.
             clean_uri_path(zap_filename)
+
+            #upload scrubbed results in case we need to do a manual upload
+            if scan_type == ScanType.UI:
+                xml_report_url = upload_gcs(
+                    bucket_name,
+                    scan_type,
+                    zap_filename,
+                    subfoldername='clean'
+                )
 
             # upload its results in defectDojo
             defectdojo_upload(engagement_id, zap_filename,
