@@ -30,7 +30,7 @@ def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str, subfolderna
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     date = datetime.today().strftime("%Y%m%d")
-    if subfoldername==None:
+    if subfoldername is None:
         path = f"{scan_type}-scans/{date}/{filename}"
     else:
         path = f"{scan_type}-scans/{date}/{subfoldername}/{filename}"
