@@ -473,7 +473,7 @@ def zap_scan():
                                   SCAN_TYPE=service_scan_type.name,
                                   SEVERITIES=severities,
                                   SLACK_CHANNEL=dev_slack_channel,
-                                  ENGAGEMENT_ID=product_id)
+                                  PRODUCT_ID=product_id)
                 logging.info("User %s requested to scan via ZAP %s service",
                              user_email, service_full_endpoint)
                 return ''
