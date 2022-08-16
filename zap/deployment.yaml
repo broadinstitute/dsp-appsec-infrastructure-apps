@@ -96,10 +96,10 @@ data:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.annotations['SLACK_CHANNEL']
-          - name: ENGAGEMENT_ID
+          - name: PRODUCT_ID
             valueFrom:
               fieldRef:
-                fieldPath: metadata.annotations['ENGAGEMENT_ID']
+                fieldPath: metadata.annotations['PRODUCT_ID']
           - name: SEVERITIES
             valueFrom:
               fieldRef:
