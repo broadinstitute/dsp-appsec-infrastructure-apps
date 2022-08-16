@@ -60,7 +60,7 @@ Zap scans uses the GKE job-dispatcher pattern to run weekly and monthly scans. A
 <p>Each endpoint to be scanned must include a tag with the format</p>
 <ul>
 <li>“codedx:[CODEDX-PROJECT]” to identify which project the results of the scan should be uploaded to on codedx, if you are not using CodeDx, add this tag with a test name</li>
-<li>&quot;engagement_id:[ENGAGEMENT_ID]” Defectdojo engagement id where zap scan will upload the results.</li>
+<li>&quot;product_id:[PRODUCT_ID]” Defectdojo product id where zap scan will upload the results.</li>
 <li>“scan:[SCAN-TYPE]” the endpoint must also include a tag for each scan to be run on the endpoint in the form of <code>baseline</code>, <code>api</code>, <code>auth</code>, <code>ui</code>.</li>
 <li>“slack:[#SLACK-CHANNEL]” a tag specifying a slack channel for notifications is also included with each endpoint in the form .</li>
 </ul>
