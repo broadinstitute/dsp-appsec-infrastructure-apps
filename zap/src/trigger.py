@@ -95,7 +95,7 @@ def parse_tags(endpoint: Endpoint):
     codedx_project = ""
     slack_channel = ""
     scan_type: Optional[ScanType] = None
-    engagement_id = ""
+    product_id = ""
     for tag in endpoint["tags"]:
         tag_match = TAG_MATCHER.match(tag)
         if not tag_match:
@@ -109,8 +109,8 @@ def parse_tags(endpoint: Endpoint):
         if tag_key == "slack":
             slack_channel = tag_val
         if tag_key == "product_id":
-            engagement_id = tag_val
-    return codedx_project, slack_channel, scan_type, engagement_id
+            product_id = tag_val
+    return codedx_project, slack_channel, scan_type, product_id
 
 
 def trigger_scans(

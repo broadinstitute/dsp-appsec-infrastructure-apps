@@ -62,7 +62,7 @@ def codedx_upload(cdx: CodeDx, project: str, filename: str):
 
 def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, defect_dojo_user: str, defect_dojo: str):  # pylint: disable=line-too-long
     """
-    Upload Zap results in DefectDojo engagement
+    Upload Zap results in DefectDojo product
     """
     dojo = defectdojo.DefectDojoAPIv2(
         defect_dojo, defect_dojo_key, defect_dojo_user, debug=False)
@@ -253,7 +253,7 @@ def slack_alert_without_report(  # pylint: disable=too-many-arguments
         token: str,
         channel: str,
         xml_report_url: str,
-        engagement_id: str,
+        product_id: str,
         dd: str
 ):
     """
@@ -268,13 +268,13 @@ def slack_alert_without_report(  # pylint: disable=too-many-arguments
 
     if xml_report_url:
         gcs_slack_text = (
-            f"New vulnerability report uploaded to GCS bucket: {xml_report_url}\n and DefectDojo engagement: {dd}{engagement_id}"
+            f"New vulnerability report uploaded to GCS bucket: {xml_report_url}\n and DefectDojo product: {dd}product/{product_id}"
         )
         slack.chat_postMessage(channel=channel, text=gcs_slack_text)
         logging.info("Alert sent to Slack channel for GCS bucket and DefectDojo upload report")
     else:
         gcs_slack_text = (
-            f"New vulnerability report uploaded to DefectDojo engagement: {dd}engagement/{engagement_id}"
+            f"New vulnerability report uploaded to DefectDojo product: {dd}product/{product_id}"
         )
         slack.chat_postMessage(channel=channel, text=gcs_slack_text)
         logging.info("Alert sent to Slack channel for DefectDojo upload report")
@@ -322,7 +322,7 @@ def main(): # pylint: disable=too-many-locals
 
             # variables needed for DefectDojo
             defect_dojo_key = getenv("DEFECT_DOJO_KEY")
-            engagement_id = int(getenv("ENGAGEMENT_ID"))
+            product_id = int(getenv("PRODUCT_ID"))
             defect_dojo_user = getenv("DEFECT_DOJO_USER")
             defect_dojo = getenv("DEFECT_DOJO_URL")
             dd = getenv("DEFECT_DOJO")
@@ -367,7 +367,7 @@ def main(): # pylint: disable=too-many-locals
                 )
 
             # upload its results in defectDojo
-            defectdojo_upload(engagement_id, zap_filename,
+            defectdojo_upload(product_id, zap_filename,
                               defect_dojo_key, defect_dojo_user, defect_dojo)
 
 
@@ -376,7 +376,7 @@ def main(): # pylint: disable=too-many-locals
                     slack_token,
                     slack_channel,
                     xml_report_url,
-                    engagement_id,
+                    product_id,
                     dd,
                 )
             else:
