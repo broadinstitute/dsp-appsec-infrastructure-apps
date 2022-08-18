@@ -370,8 +370,8 @@ def main(): # pylint: disable=too-many-locals
             defectdojo_upload(product_id, zap_filename,
                               defect_dojo_key, defect_dojo_user, defect_dojo)
 
-
-            if codedx_api_key == '""':
+            
+            if codedx_api_key == '""' or codedx_project == '':
                 slack_alert_without_report(
                     slack_token,
                     slack_channel,
