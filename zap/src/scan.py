@@ -371,7 +371,7 @@ def main(): # pylint: disable=too-many-locals
                               defect_dojo_key, defect_dojo_user, defect_dojo)
 
 
-            if codedx_api_key == '""':
+            if codedx_api_key == '':
                 slack_alert_without_report(
                     slack_token,
                     slack_channel,
