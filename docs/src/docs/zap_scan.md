@@ -10,7 +10,7 @@ Zap scans uses the GKE job-dispatcher pattern to run weekly and monthly scans. A
 Defect Dojo is the single source of truth for zap scans. List of endpoints found here: https://defectdojo-host.com/endpoint
 
 Each endpoint to be scanned must include a tag with the format 
-- “codedx:[CODEDX-PROJECT]” to identify which project the results of the scan should be uploaded to on codedx, if you are not using CodeDx, add this tag with a test name 
+- (OPTIONAL) “codedx:[CODEDX-PROJECT]” to identify which project the results of the scan should be uploaded to on codedx, if you are not using CodeDx, add this tag with a test name 
 - "product_id:[PRODUCT_ID]” Defectdojo product id where zap scan will upload the results.  
 - “scan:[SCAN-TYPE]” the endpoint must also include a tag for each scan to be run on the endpoint in the form of `baseline`, `api`, `auth`, `ui`.
 - “slack:[#SLACK-CHANNEL]” a tag specifying a slack channel for notifications is also included with each endpoint in the form .
