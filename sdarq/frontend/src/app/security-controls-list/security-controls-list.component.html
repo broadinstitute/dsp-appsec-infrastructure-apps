@@ -29,14 +29,14 @@
                 <tbody #row>
                     <!-- tslint:disable-next-line -->
                     <tr *ngFor="let controls of serviceSecurityControl | filtersct: searchString ">
-                        <td><strong>{{ controls.service }}</strong></td>
+                        <td>{{ controls.service }}</td>
                         <td>{{ controls.product }}</td>
                         <td>{{ controls.security_champion }}</td>
                         <td>
                             <div [innerHTML]="devURLShowValue(controls.dev_url)"></div>
                                 <div *ngIf="dev_link">
                                     <a href="{{ controls.dev_url }}" target="_blank" rel="noreferrer noopener">
-                                    <strong>{{ controls.service | lowercase}}-dev-url</strong>
+                                    {{ controls.service | lowercase}}
                                     </a>
                             </div>
                         </td>
