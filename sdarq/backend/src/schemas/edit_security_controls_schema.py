@@ -59,5 +59,5 @@ edit_security_controls_schema = {
             "pattern": "(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?"
         }
     },
-    "required": ["product", "security_champion", "github", "dev_url"]
+    "required": ["product", "github", "dev_url"]
 }
