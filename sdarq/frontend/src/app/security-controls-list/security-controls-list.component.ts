@@ -12,7 +12,7 @@ export class SecurityControlsListComponent implements OnInit {
 
   serviceSecurityControl: ServiceSecurityControl[];
   // tslint:disable-next-line
-  headElements = ['Service', 'Product', 'Contact', 'Dev URL', 'Sourcecode', 'DefectDojo', 'Threat Model', 'Docker Scan', 'Manual Pentest', 'DAST', 'SAST', 'CIS scan', 'Dependecies scan'];
+  headElements = ['Service', 'Product', 'Dev URL', 'Sourcecode', 'DefectDojo', 'Threat Model', 'Docker Scan', 'Manual Pentest', 'DAST', 'SAST', 'CIS scan', 'Dependecies scan'];
 
   sourceclear_results: boolean;
   zap_results: boolean;

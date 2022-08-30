@@ -44,7 +44,6 @@ export class FormComponent implements OnInit {
     this.arrRequired = {
       'service': result['Service'],
       'github': result['Github URL'],
-      'security_champion': result['Security champion'],
       'product': result['Product']
     };
     this.createNewSctService.createNewSCT(this.arrRequired).subscribe((createNewSCTResponse) => {
