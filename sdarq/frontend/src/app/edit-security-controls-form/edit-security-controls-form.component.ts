@@ -15,7 +15,6 @@ export class EditSecurityControlsFormComponent implements OnInit {
   product: string;
   service: string;
   github: string;
-  security_champion: string;
   dev_url: string;
   vulnerability_management: string;
   defect_dojo: string;
@@ -72,7 +71,6 @@ export class EditSecurityControlsFormComponent implements OnInit {
     this.getSecurityControls.getServiceSecurityControls(datas).subscribe((serviceSecurityControl) => {
         this.product = serviceSecurityControl.product;
         this.service = serviceSecurityControl.service;
-        this.security_champion = serviceSecurityControl.security_champion
         this.github = serviceSecurityControl.github;
         this.dev_url = serviceSecurityControl.dev_url;
         this.vulnerability_management = serviceSecurityControl.vulnerability_management;
@@ -102,21 +100,6 @@ export class EditSecurityControlsFormComponent implements OnInit {
   copyProductName() {
     const pending =
       this.clipboard.beginCopy(this.product);
-    let remainingAttempts = 3;
-    const attempt = () => {
-      const result = pending.copy();
-      if (!result && --remainingAttempts) {
-        setTimeout(attempt);
-      } else {
-        pending.destroy();
-      }
-    };
-    attempt();
-  }
-  
-  copySecChamp() {
-    const pending =
-      this.clipboard.beginCopy(this.security_champion);
     let remainingAttempts = 3;
     const attempt = () => {
       const result = pending.copy();

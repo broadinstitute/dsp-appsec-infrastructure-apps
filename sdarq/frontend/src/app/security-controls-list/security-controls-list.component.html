@@ -31,7 +31,6 @@
                     <tr *ngFor="let controls of serviceSecurityControl | filtersct: searchString ">
                         <td>{{ controls.service }}</td>
                         <td>{{ controls.product }}</td>
-                        <td>{{ controls.security_champion }}</td>
                         <td>
                             <div [innerHTML]="devURLShowValue(controls.dev_url)"></div>
                                 <div *ngIf="dev_link">

@@ -18,18 +18,6 @@
        },
        {
         "type": "text",
-        "name": "security_champion",
-        "title": "Security Champion",
-        "hideNumber": true,
-        "isRequired": true,
-        "validators": [
-         {
-             "type": "regex",
-             "text": "Please include a valid value.",
-             "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{1,20}[a-zA-Z0-9]$"}]
-       },
-       {
-        "type": "text",
         "name": "github",
         "title": "Github link",
         "hideNumber": true,

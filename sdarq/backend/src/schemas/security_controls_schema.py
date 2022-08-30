@@ -9,10 +9,6 @@ security_controls_schema = {
             "type": "string",
             "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
         },
-        "security_champion": {
-            "type": "string",
-            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{1,20}[a-zA-Z0-9]$"
-        },
         "github": {
             "type": "string",
             "pattern": "(http|https|www)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?"
@@ -67,5 +63,5 @@ security_controls_schema = {
             "pattern": "(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?"
         }
     },
-    "required": ["product", "service", "security_champion", "github"]
+    "required": ["product", "service", "github"]
 }
