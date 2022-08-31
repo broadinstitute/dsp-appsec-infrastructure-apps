@@ -155,7 +155,7 @@
         "name": "sast_link",
         "hideNumber": true,
         "visibleIf": "{sast} = true",
-        "title": "Enter security pentest results link",
+        "title": "Enter SAST results link",
         "enableIf": "{sast} = true",
         "isRequired": true,
         "validators": [

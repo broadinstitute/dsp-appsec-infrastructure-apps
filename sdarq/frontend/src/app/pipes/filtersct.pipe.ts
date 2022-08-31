@@ -12,8 +12,8 @@ export class FiltersctPipe implements PipeTransform {
         if (searchString) {
             return value.filter((it) => {
                 const service = it.service.toLowerCase().includes(searchString.toLowerCase());
-                const github = it.github.toLowerCase().includes(searchString.toLowerCase());
-                return service + github;
+                const product = it.product.toLowerCase().includes(searchString.toLowerCase());
+                return service + product;
             });
         }
     }
