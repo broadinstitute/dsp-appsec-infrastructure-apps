@@ -65,7 +65,7 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
     Upload Zap results in DefectDojo product
     """
     dojo = defectdojo.DefectDojoAPIv2(
-        defect_dojo, defect_dojo_key, defect_dojo_user, debug=False, timeout=120)
+        defect_dojo, defect_dojo_key, defect_dojo_user, debug=False)
 
     absolute_path = os.path.abspath(zap_filename)
     date = datetime.today().strftime("%Y%m%d%H:%M")
