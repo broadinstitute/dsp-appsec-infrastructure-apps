@@ -105,7 +105,10 @@ def parse_tags(endpoint: Endpoint):
         if tag_key == "codedx":
             codedx_project = tag_val
         if tag_key == "scan":
-            scan_type = ScanType[tag_val.upper()]
+            try:
+                scan_type = ScanType[tag_val.upper()]
+            except Exception:
+                scan_type = ""
         if tag_key == "slack":
             slack_channel = tag_val
         if tag_key == "product_id":
