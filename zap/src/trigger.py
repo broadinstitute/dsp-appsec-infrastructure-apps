@@ -34,7 +34,7 @@ def get_defect_dojo_endpoints(base_url: str, api_key: str) -> List[Endpoint]:
     """
     Fetch endpoints from DefectDojo.
     """
-    endpoint = base_url + "/api/v2/endpoints?limit=1000&not_tag=script"
+    endpoint = base_url + "/api/v2/endpoints?limit=1000"
     headers = {
         "content-type": "application/json",
         "Authorization": f"Token {api_key}",
@@ -105,7 +105,10 @@ def parse_tags(endpoint: Endpoint):
         if tag_key == "codedx":
             codedx_project = tag_val
         if tag_key == "scan":
-            scan_type = ScanType[tag_val.upper()]
+            try:
+                scan_type = ScanType[tag_val.upper()]
+            except Exception:
+                scan_type = ""
         if tag_key == "slack":
             slack_channel = tag_val
         if tag_key == "product_id":
