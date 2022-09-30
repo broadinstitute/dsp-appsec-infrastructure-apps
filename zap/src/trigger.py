@@ -34,7 +34,7 @@ def get_defect_dojo_endpoints(base_url: str, api_key: str) -> List[Endpoint]:
     """
     Fetch endpoints from DefectDojo.
     """
-    endpoint = base_url + "/api/v2/endpoints?limit=1000"
+    endpoint = base_url + "/api/v2/endpoints?limit=1000&not_tag=script"
     headers = {
         "content-type": "application/json",
         "Authorization": f"Token {api_key}",
