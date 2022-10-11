@@ -1,91 +1,110 @@
 <div class="jumbotron min-vh-100">
-    <div class="container">
+    <div class="container">  
         <div class="row">
             <div class="col-sm text-center">
                 <div class="alert alert-danger animated fadeInRight" role="alert" *ngIf="showModalError">
                     <h4 class="alert-heading">Oops!</h4>
                     <p> {{errorMessage}} </p>
                     <p class="mb-0">Please contact AppSec team for more information!</p>
-                  </div>
-        </div>
-    </div>
-    </div>
-        <div class="row" *ngIf="showSearch">
-            <div class="col animated fadeIn">
-            </div>
-            <div class="col">
-            </div>
-            <div class="col">
-                <!-- tslint:disable-next-line -->
-                <input type="text" class="form-control" name="searchString" placeholder="Search service or product"
-                    [(ngModel)]="searchString" />
+                </div>
             </div>
         </div>
-        <br>
-            <table class="table table-hover" *ngIf="showTable">
-                <th *ngFor="let head of headElements">
-                    <strong>{{ head }}</strong>
-                </th>
-                <tbody #row>
-                    <!-- tslint:disable-next-line -->
-                    <tr *ngFor="let controls of serviceSecurityControl | filtersct: searchString ">
-                        <td>{{ controls.service }}</td>
-                        <td>{{ controls.product }}</td>
-                        <td>
-                            <div [innerHTML]="devURLShowValue(controls.dev_url)"></div>
-                                <div *ngIf="dev_link">
-                                    <a href="{{ controls.dev_url }}" target="_blank" rel="noreferrer noopener">
-                                    {{ controls.service | lowercase}}
-                                    </a>
-                            </div>
-                        </td>
-                        <td><a href="{{ controls.github  }}" target="_blank" rel="noreferrer noopener">
-                                <mdb-icon fab icon="github" size="2x"></mdb-icon>
-                            </a></td>
-                        <td><a href="{{ controls.defect_dojo }}" target="_blank">
-                                <img src="../assets/defectdojo.png" width="23px"></a></td>
-                        <td>
-                            <div [innerHTML]="threatmodelShowValue(controls.threat_model)"></div>
-                            <div *ngIf="threat_model_results">
-                                <a href="{{ controls.threat_model_link }}" target="_blank" rel="noreferrer noopener">
-                                    <i class="fas fa-check-circle green-color fa-2x"></i></a>
-                            </div>
-                        </td>
-                        <td>
-                            <div [innerHTML]="trivyShowValue(controls.docker_scan)"></div>
-                        </td>
-                        <td>
-                            <div [innerHTML]="burpShowValue(controls.burp)"></div>
-                            <div *ngIf="security_pentest">
-                                <a href="{{ controls.security_pentest_link }}" target="_blank" rel="noreferrer noopener">
-                                    <i class="fas fa-check-circle green-color fa-2x"></i></a>
-                            </div>
-                        </td>
-                        <td>
-                            <div [innerHTML]="zapShowValue(controls.zap)"></div>
-                            <div *ngIf="zap_results">
-                           <a href="{{ controls.vulnerability_management }}" target="_blank" rel="noreferrer noopener">
-                            <i class="fas fa-check-circle green-color fa-2x"></i></a>
-                                </div>
-                        </td>
-                        <td>
-                            <div [innerHTML]="sastShowValue(controls.sast)"></div>
-                            <div *ngIf="sast_results">
-                                <a href="{{ controls.sast_link }}" target="_blank" rel="noreferrer noopener">
-                                 <i class="fas fa-check-circle green-color fa-2x"></i></a>
-                                     </div>
-                        </td>
-                        <td>
-                            <div [innerHTML]="cisscannerShowValue(controls.cis_scanner)"></div>
-                        </td>
-                        <td>
-                            <div [innerHTML]="sourceclearShowValue(controls.sourceclear)"></div>
-                            <div *ngIf="sourceclear_results">
-                                <a href="{{ controls.sourceclear_link }}" target="_blank" rel="noreferrer noopener">
-                                    <i class="fas fa-check-circle green-color fa-2x"></i></a>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+    </div>
+    <div class="row" *ngIf="showSearch">
+        <div class="col animated fadeIn">
+        </div>
+        <div class="col">
+        </div>
+        <div class="col">
+            <!-- tslint:disable-next-line -->
+            <input type="text" class="form-control" name="searchString" placeholder="Search service or product"
+                [(ngModel)]="searchString" />
+        </div>
+    </div>
+    <br>
+    <table class="table table-hover" *ngIf="showTable">
+        <th *ngFor="let head of headElements">
+            <strong>{{ head }}</strong>
+        </th>
+        <tbody #row>
+            <!-- tslint:disable-next-line -->
+            <tr *ngFor="let controls of serviceSecurityControl | filtersct: searchString ">
+                <td>{{ controls.service }}</td>
+                <td>{{ controls.product }}</td>
+                <td>
+                    <div [innerHTML]="devURLShowValue(controls.dev_url)"></div>
+                    <div *ngIf="dev_link">
+                        <a href="{{ controls.dev_url }}" target="_blank" rel="noreferrer noopener">
+                            {{ controls.service | lowercase}}
+                        </a>
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center"><a href="{{ controls.github  }}" target="_blank" rel="noreferrer noopener">
+                            <mdb-icon fab icon="github" size="2x"></mdb-icon>
+                        </a></div>
+                </td>
+                <td>
+                    <div class="text-center"><a href="{{ controls.defect_dojo }}" target="_blank"
+                            rel="noreferrer noopener">
+                            <img src="../assets/defectdojo.png" width="23px"></a> </div>
+                </td>
+                <td>
+                    <div class="text-center">
+                        <div [innerHTML]="threatmodelShowValue(controls.threat_model)"></div>
+                        <div *ngIf="threat_model_results">
+                            <a href="{{ controls.threat_model_link }}" target="_blank" rel="noreferrer noopener">
+                                <i class="fas fa-check-circle green-color fa-2x"></i></a>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center">
+                        <div [innerHTML]="trivyShowValue(controls.docker_scan)"></div>
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center">
+                        <div [innerHTML]="burpShowValue(controls.burp)"></div>
+                        <div *ngIf="security_pentest">
+                            <a href="{{ controls.security_pentest_link }}" target="_blank" rel="noreferrer noopener">
+                                <i class="fas fa-check-circle green-color fa-2x"></i></a>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center">
+                        <div [innerHTML]="zapShowValue(controls.zap)"></div>
+                        <div *ngIf="zap_results">
+                            <a href="{{ controls.vulnerability_management }}" target="_blank" rel="noreferrer noopener">
+                                <i class="fas fa-check-circle green-color fa-2x"></i></a>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center">
+                        <div [innerHTML]="sastShowValue(controls.sast)"></div>
+                        <div *ngIf="sast_results">
+                            <a href="{{ controls.sast_link }}" target="_blank" rel="noreferrer noopener">
+                                <i class="fas fa-check-circle green-color fa-2x"></i></a>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center">
+                        <div [innerHTML]="cisscannerShowValue(controls.cis_scanner)"></div>
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center">
+                        <div [innerHTML]="sourceclearShowValue(controls.sourceclear)"></div>
+                        <div *ngIf="sourceclear_results">
+                            <a href="{{ controls.sourceclear_link }}" target="_blank" rel="noreferrer noopener">
+                                <i class="fas fa-check-circle green-color fa-2x"></i></a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>
