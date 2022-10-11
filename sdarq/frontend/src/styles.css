@@ -436,3 +436,11 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   width: 100% !important;
   border-radius: 0px !important;
 }
+
+.sv_main .sv_p_root .sv_q .sv_q_dropdown_control {
+  padding-left: 0em !important;
+}
+
+.sv_main.sv_default_css .sv_container .sv_body .sv_p_root .sv_q .sv_select_wrapper .sv_q_dropdown_control:focus-within {
+  border: 1px solid #007bff !important;
+}

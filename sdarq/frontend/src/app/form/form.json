@@ -972,6 +972,5 @@
     "showQuestionNumbers": "off",
     "questionErrorLocation": "bottom",
     "showProgressBar": "top",
-    "goNextPageAutomatic": true,
     "description": "Welcome to New Service Questionnaire"
 }
