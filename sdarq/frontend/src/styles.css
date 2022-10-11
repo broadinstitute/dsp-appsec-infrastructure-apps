@@ -87,6 +87,9 @@
   -webkit-transition: width 1s;
   transition: width 1s;
 }
+.sv_main.sv_default_css .sv_custom_header {
+  background-color: rgb(255 255 255) !important;;
+}
 
 .sv_p_root,
 .sv_row {
@@ -128,7 +131,7 @@
   border: none;
   min-width: 100px;
   cursor: pointer;
-  padding: 0 2em;
+  padding: 0 2em !important;
   border-radius: 5px !important;
 }
 
@@ -360,6 +363,7 @@ ul.stepper li.completed a .circle {
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 0.25rem;
 }
+
 .navbar .dropdown-menu a {
   padding: 7px 8px 2px 8px !important;
   font-size: 0.74rem !important;
@@ -415,4 +419,20 @@ color: #17af17 !important
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-weight: 200 !important;
+}
+
+.sv_main .sv-action-bar {
+  display: flex;
+  position: relative;
+  align-items: center;
+  margin-left: auto;
+  float: right !important;
+  padding: 0px 0px 0px 16px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.sv_main.sv_default_css .sv_container .sv_body .sv_p_root .sv_q .sv_q_dropdown_control .sv_q_dropdown__value .sv_q_dropdown__filter-string-input[type="text"] {
+  width: 100% !important;
+  border-radius: 0px !important;
 }
