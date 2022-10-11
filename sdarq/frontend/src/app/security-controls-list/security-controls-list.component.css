@@ -2,3 +2,8 @@
     padding: 0.25rem 0.5rem;
     font-size: 0.6rem !important;
 }
+
+.header-sticky {
+    position: sticky;
+    top:0;
+}
