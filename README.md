@@ -2,7 +2,8 @@
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=broadinstitute_dsp-appsec-infrastructure-apps&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=broadinstitute_dsp-appsec-infrastructure-apps)
 
-This repository hosts DSP AppSec internal infrastructure. These apps are deployed in GCP Kubernetes.
+This repository hosts DSP AppSec internal infrastructure deployed in GCP Kubernetes.
+Check the documentation in this [link](https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/). 
 
 ### Apps
 
@@ -12,8 +13,6 @@ This repository hosts DSP AppSec internal infrastructure. These apps are deploye
 - [CIS Scanner](cis)
 - [Automated ZAP Scanner](zap)
 - [Job Batch Dispatcher](batch)
-
-Check the documentation in this [link](https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/). 
 
 
 ### Questions
