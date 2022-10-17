@@ -16,8 +16,9 @@ import { SecurityControlsFormComponent} from './security-controls-form/security-
 import { SecurityControlsListComponent } from './security-controls-list/security-controls-list.component';
 import { EditSecurityControlsFormComponent } from './edit-security-controls-form/edit-security-controls-form.component';
 import { SecurityPentestComponent } from './security-pentest/security-pentest.component';
-import {SecurityRequestsComponent} from './security-requests/security-requests.component';
+import { SecurityRequestsComponent } from './security-requests/security-requests.component';
 import { SecurityControlsComponent } from './security-controls/security-controls.component';
+import { AppFormComponent } from './app-form/app-form.component';
 
 
 
@@ -27,6 +28,7 @@ const routes: Routes = [
   { path: 'about', component: AboutPageComponent },
   { path: 'newservice', component: MainpageComponent },
   { path: 'questionnaire', component: FormComponent },
+  { path: '3rd-party-apps-questionnaire', component: AppFormComponent },
   { path: 'gcp-project-security-posture/latest', component: CisComponent },
   { path: 'gcp-project-security-posture/results', component: CisResultsComponent },
   { path: 'gcp-project-security-posture/scan', component: CisScanComponent },
