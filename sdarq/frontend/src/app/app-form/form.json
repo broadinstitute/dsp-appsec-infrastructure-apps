@@ -84,56 +84,38 @@
       "elements": [
        {
         "type": "radiogroup",
+        "name": "question1",
+        "title": "Which Cloud Plaform are you using to deploy your app?",
+        "choices": [
+         {
+          "value": "azure",
+          "text": "Microsoft Azure"
+         },
+         {
+          "value": "gcp",
+          "text": "Google Cloud Platform"
+         },
+         {
+          "value": "azure_gcp",
+          "text": "Both"
+         }
+        ]
+       },
+       {
+        "type": "radiogroup",
         "name": "Architecture",
         "title": "Your service must be based on one of the following",
         "choices": [
          {
-          "value": "GAE",
-          "text": "GAE (Google App Engine) "
+          "value": "Managed_kubernetes",
+          "text": "Managed Kubernetes"
          },
          {
-          "value": "GCF",
-          "text": "GCF (Google Cloud Functions)"
-         },
-         {
-          "value": "GKE",
-          "text": "GKE (Google Kubernetes Engine) "
-         },
-         {
-          "value": "AKS",
-          "text": "Azure Kubernetes Service"
-         },
-         {
-          "value": "AVM",
-          "text": "Azure VM"
+          "value": "Managed_vm",
+          "text": "Managed VM"
          }
         ],
-        "showOtherItem": true,
         "otherText": "Other"
-       },
-       {
-        "type": "text",
-        "name": "Cluster",
-        "visibleIf": "{Architecture} = 'GKE'",
-        "title": "Cluster name"
-       },
-       {
-        "type": "text",
-        "name": "Function Name",
-        "visibleIf": "{Architecture} = 'GCF'",
-        "title": "Function name"
-       },
-       {
-        "type": "text",
-        "name": "GAE Service",
-        "visibleIf": "{Architecture} = 'GAE'",
-        "title": "Service name"
-       },
-       {
-        "type": "text",
-        "name": "project_id",
-        "visibleIf": "(({Architecture} = 'GKE') or ({Architecture} = 'GCF')) or ({Architecture} = 'GAE')",
-        "title": "Google project name"
        }
       ],
       "title": "Architecture"
@@ -172,11 +154,7 @@
          },
          {
           "value": "DAST",
-          "text": "Our service is currently scanned weekly/monthly via ZAP or similar tools"
-         },
-         {
-          "value": "RASP",
-          "text": "We are using a tool to enable RASP (Runtime application self-protection) mode"
+          "text": "Our service is currently scanned weekly/monthly via ZAP or similar tools (if there is a static IP)"
          }
         ]
        },
@@ -186,16 +164,12 @@
         "title": "Check what's applicable",
         "choices": [
          {
-          "value": "GCPCloudSQL",
-          "text": "I am using GCP CLoudSQL that runs outside the cluster "
+          "value": "managed-sql",
+          "text": "I am using managed SQL database"
          },
          {
-          "value": "GCPCloudSQLCluster",
-          "text": "I am using GCP CLoudSQL that runs inside the cluster "
-         },
-         {
-          "value": "AzureSQL",
-          "text": "I am using Microsoft Azure SQL"
+          "value": "in-cluster-sql",
+          "text": "I am using in-cluster SQL database"
          }
         ]
        },
@@ -223,7 +197,7 @@
        {
         "type": "radiogroup",
         "name": "Logging",
-        "title": "Are you currently logging or planning to log in to either Azure Monitor/Stackdriver or similar tools?",
+        "title": "Are you currently logging or planning to log to either Azure Monitor/Stackdriver or similar tools?",
         "choices": [
          "Yes",
          "No"
@@ -450,7 +424,7 @@
        {
         "type": "html",
         "name": "Alert-encryptionBackupOptions",
-        "visibleIf": "{Applicable} contains 'GCPCloudSQLCluster'",
+        "visibleIf": "{Applicable} contains 'managed-sql'",
         "html": "<div class=\"highs\">Reach out to DevOps team about persistence about Encryption and Backup options for your persistence storage.</div>"
        },
        {
