@@ -9,7 +9,7 @@
        {
         "type": "text",
         "name": "Service",
-        "title": "App name",
+        "title": "Service name",
         "isRequired": true,
         "requiredErrorText": "Required field",
         "validators": [
@@ -80,6 +80,65 @@
       "title": "Metadata"
      },
      {
+      "name": "Architecture",
+      "elements": [
+       {
+        "type": "radiogroup",
+        "name": "Architecture",
+        "title": "Your service must be based on one of the following",
+        "choices": [
+         {
+          "value": "GAE",
+          "text": "GAE (Google App Engine) "
+         },
+         {
+          "value": "GCF",
+          "text": "GCF (Google Cloud Functions)"
+         },
+         {
+          "value": "GKE",
+          "text": "GKE (Google Kubernetes Engine) "
+         },
+         {
+          "value": "AKS",
+          "text": "Azure Kubernetes Service"
+         },
+         {
+          "value": "AVM",
+          "text": "Azure VM"
+         }
+        ],
+        "showOtherItem": true,
+        "otherText": "Other"
+       },
+       {
+        "type": "text",
+        "name": "Cluster",
+        "visibleIf": "{Architecture} = 'GKE'",
+        "title": "Cluster name"
+       },
+       {
+        "type": "text",
+        "name": "Function Name",
+        "visibleIf": "{Architecture} = 'GCF'",
+        "title": "Function name"
+       },
+       {
+        "type": "text",
+        "name": "GAE Service",
+        "visibleIf": "{Architecture} = 'GAE'",
+        "title": "Service name"
+       },
+       {
+        "type": "text",
+        "name": "project_id",
+        "visibleIf": "(({Architecture} = 'GKE') or ({Architecture} = 'GCF')) or ({Architecture} = 'GAE')",
+        "title": "Google project name"
+       }
+      ],
+      "title": "Architecture"
+     },
+     {
       "name": "Security",
       "elements": [
        {
@@ -97,7 +156,7 @@
          },
          {
           "value": "Secret_management",
-          "text": "We are currently using Vault/Secret Manager to store our secrets"
+          "text": "We are currently using tools to store our secrets"
          },
          {
           "value": "Monitoring_tool",
@@ -113,13 +172,47 @@
          },
          {
           "value": "DAST",
-          "text": "Our service is currently scanned weekly/monthly via ZAP or similar tools (if there is a static IP)"
+          "text": "Our service is currently scanned weekly/monthly via ZAP or similar tools"
          },
          {
           "value": "RASP",
-          "text": "We are using Tcell Rapid or a similar tool to enable RASP (Runtime application self-protection) mode"
+          "text": "We are using a tool to enable RASP (Runtime application self-protection) mode"
          }
         ]
+       },
+       {
+        "type": "checkbox",
+        "name": "Applicable",
+        "title": "Check what's applicable",
+        "choices": [
+         {
+          "value": "GCPCloudSQL",
+          "text": "I am using GCP CLoudSQL that runs outside the cluster "
+         },
+         {
+          "value": "GCPCloudSQLCluster",
+          "text": "I am using GCP CLoudSQL that runs inside the cluster "
+         },
+         {
+          "value": "AzureSQL",
+          "text": "I am using Microsoft Azure SQL"
+         }
+        ]
+       },
+       {
+        "type": "radiogroup",
+        "name": "docker_images_update",
+        "title": "Is there a plan to update Docker base images?",
+        "choices": [
+         "Yes",
+         "No"
+        ]
+       },
+       {
+        "type": "comment",
+        "name": "docker_images_update_plan",
+        "visibleIf": "{docker_images_update} = 'Yes'",
+        "title": "Please describe the plan"
        }
       ],
       "title": "Security"
@@ -130,7 +223,7 @@
        {
         "type": "radiogroup",
         "name": "Logging",
-        "title": "Are you currently logging or plan to log to either Logit.io/Stackdriver or similar tools?",
+        "title": "Are you currently logging or planning to log in to either Azure Monitor/Stackdriver or similar tools?",
         "choices": [
          "Yes",
          "No"
@@ -257,6 +350,27 @@
       "description": "Simple unit tests: Unit tests are typically used to confirm that the basic building blocks of the application work as expected. Unit tests are easy to repeat — they can run whenever new code is checked into the repository, to confirm that the code still behaves as expected. Unit tests can also check for security features. For example, they can be used to confirm that authentication is required to access user data; or that unexpected HTML tags can't get through input filters or escaping routines. \n\nIntegration testing: Testing performed to expose defects in the interfaces and in the interactions between integrated components or systems.\n\nPerformance/Monitoring testing: Once the application is deployed, the focus usually shifts from testing to monitoring. Watch out for unexpected spikes in error rates, sandbox violations, and other flaky or inexplicable behavior (including intermittent test failures) — and before you dismiss an anomaly, check with your security team. Crashes and flakiness can indicate a race condition or a memory corruption bug (if applicable)."
      },
      {
+      "name": "Deployment",
+      "elements": [
+       {
+        "type": "checkbox",
+        "name": "Deployment",
+        "title": "Please select what's applicable",
+        "choices": [
+         {
+          "value": "Config files do NOT contain any secrets ",
+          "text": "Our Deployment config files do NOT contain any secrets "
+         },
+         {
+          "value": "Config files are templatized ",
+          "text": "Our Deployment config files are templatized "
+         }
+        ]
+       }
+      ],
+      "title": "Deployment"
+     },
+     {
       "name": "Reliability",
       "elements": [
        {
@@ -271,18 +385,6 @@
          {
           "value": "Tools to monitor status",
           "text": "We have Stackdriver or similar tools to monitor status "
-         },
-         {
-          "value": "Incident response tool",
-          "text": "We have configured PagerDuty or similar tools for incident response "
-         },
-         {
-          "value": "Service is able to scale in response to load",
-          "text": "Our service is able to scale in response to load, either manually or automatically "
-         },
-         {
-          "value": "An on-call playbook for the service, linked it into the main on-call documentation",
-          "text": "We have created an on-call playbook for your service, linked it into the main on-call documentation"
          }
         ]
        }
@@ -347,9 +449,15 @@
        },
        {
         "type": "html",
+        "name": "Alert-encryptionBackupOptions",
+        "visibleIf": "{Applicable} contains 'GCPCloudSQLCluster'",
+        "html": "<div class=\"highs\">Reach out to DevOps team about persistence about Encryption and Backup options for your persistence storage.</div>"
+       },
+       {
+        "type": "html",
         "name": "Alert-logs",
         "visibleIf": "{Logging} = \"No\"",
-        "html": "<div class=\"highs\">Please make sure to start planning using Logit.io/Stackdriver or similar tools for logging.</div>"
+        "html": "<div class=\"highs\">Please make sure to start planning using Azure Monitor/Stackdriver or similar tools for logging.</div>"
        },
        {
         "type": "html",
@@ -362,12 +470,6 @@
         "name": "Alert-LoggingMonitoring",
         "visibleIf": "{Are logs reviewed} = \"No\"",
         "html": "<div class=\"highs\">For logging you should be able to know WHO did WHAT to WHAT OBJECT and WHEN. You must have some human review of logs on a regular basis for key events, and have alerts setup for these events. Ask dsp-devops if you need clarification.</div>"
-       },
-       {
-        "type": "html",
-        "name": "Alert-logAuthAttemps",
-        "visibleIf": "{Authent/Authorz attemps logged} = \"No\"",
-        "html": "<div class=\"highs\">You must log authorization and authentication attempts. The application has the most information about the user (e.g. identity, roles, permissions) and the context of the event (target, action, outcomes), and often this data is not available to either infrastructure devices, or even closely-related applications.</div>"
        },
        {
         "type": "html",
@@ -401,6 +503,18 @@
        },
        {
         "type": "html",
+        "name": "Alert-filesWithoutSecrets",
+        "visibleIf": "{Deployment} notcontains \"Config files do NOT contain any secrets \"",
+        "html": "<div class=\"medium\">You need to ensure that your config files contain no secrets. Additionally please review <a href=\"https://dsp-security.broadinstitute.org/platform-security-categories/managing-secrets\">DSP Security</a> on how to avoid leaking secrets to build logs.</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert-ciConfigTemplatized",
+        "visibleIf": "{Deployment} notcontains \"Config files are templatized \"",
+        "html": "<div class=\"medium\">We recommmend that your CI config files are templatized\n</div>"
+       },
+       {
+        "type": "html",
         "name": "Alert-statusEndpoint",
         "visibleIf": "{Reliability} notcontains \"Status endpoint to indicate service health\"",
         "html": "<div class=\"medium\">Have a status endpoint to indicate service health (it should monitor real things like database connections and downstream dependencies)</div>"
@@ -410,18 +524,6 @@
         "name": "Alert-relicSynthetic",
         "visibleIf": "{Reliability} notcontains 'Tools to monitor status'",
         "html": "<div class=\"medium\">Have Stackdriver or similar tools configured to monitor/status.</div>"
-       },
-       {
-        "type": "html",
-        "name": "Alert-pagerDuty",
-        "visibleIf": "{Reliability} contains \"Incident response tool\"",
-        "html": "<div class=\"medium\">Configure PagerDuty or similar tools for incident response for your new service. Reach out to DevOps if you have questions.</div>"
-       },
-       {
-        "type": "html",
-        "name": "Alert-oncallPlaybook",
-        "visibleIf": "{Reliability} notcontains \"An on-call playbook for the service, linked it into the main on-call documentation\"",
-        "html": "<div class=\"medium\">You should create an on-call playbook for your service, and link it into the main on-call documentation</div>"
        }
       ],
       "title": "Alerts"
@@ -473,6 +575,7 @@
          },
          {
           "value": "Please make sure your service is using Tcell Rapid functionalities or is behind the orchestration layer to add some runtime protection in your stack. RASP in the app is preferred over WAF/Apache proxy. Ask appsec team if you need more clarification on this.",
+          "text": "Please make sure your service is using RASP in the app. Ask appsec team if you need more clarification on this.",
           "visibleIf": "{Security tools} notcontains \"RASP\""
          },
          {
@@ -480,7 +583,7 @@
            "visibleIf": "{Logging} = \"No\"",
            "text": "Please make sure to start planning using Logit.io/Stackdriver or similar tools for logging"
           },
-          "text": "Please make sure to start planning using Logit.io/Stackdriver or similar tools for logging",
+          "text": "Please make sure to start planning using Azure Monitor/Stackdriver or similar tools for logging",
           "visibleIf": "{Logging} = \"No\""
          },
          {
@@ -512,24 +615,12 @@
           "visibleIf": "{Post-launch monitoring} = \"Weak\" or {Post-launch monitoring} = \"Nonexistent\""
          },
          {
-          "value": "Have a status endpoint to indicate service health (it should monitor real things like database connections and downstream dependencies)",
-          "visibleIf": "{Reliability} notcontains \"Status endpoint to indicate service health\""
+          "value": "You need to ensure that your config files contain no secrets. Additionally please review DSP Security (https://dsp-security.broadinstitute.org/platform-security-categories/managing-secrets ) on how to avoid leaking secrets to build logs.",
+          "visibleIf": "{Deployment} notcontains \"Config files do NOT contain any secrets \""
          },
          {
-          "value": "Have Stackdriver or similar tools configured to monitor/status.",
-          "visibleIf": "{Reliability} notcontains 'Tools to monitor status'"
-         },
-         {
-          "value": "Configure PagerDuty or similar tools for incident response for your new service. Reach out to DevOps if you have questions.",
-          "visibleIf": "{Reliability} contains \"Incident response tool\""
-         },
-         {
-          "value": "Your service must be able to scale in response to load, either manually or automatically. Ask DevOps if you need more clarification on this.",
-          "visibleIf": "{Reliability} notcontains \"Service is able to scale in response to load\""
-         },
-         {
-          "value": "You should create an on-call playbook for your service, and link it into the main on-call documentation.",
-          "visibleIf": "{Reliability} notcontains \"An on-call playbook for the service, linked it into the main on-call documentation\""
+          "value": "We recommmend that your CI config files are templatized.",
+          "visibleIf": "{Deployment} notcontains \"Config files are templatized \""
          }
         ],
         "showSelectAllItem": true
