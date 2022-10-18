@@ -18,8 +18,7 @@ import { EditSecurityControlsFormComponent } from './edit-security-controls-form
 import { SecurityPentestComponent } from './security-pentest/security-pentest.component';
 import { SecurityRequestsComponent } from './security-requests/security-requests.component';
 import { SecurityControlsComponent } from './security-controls/security-controls.component';
-import { AppFormComponent } from './app-questionnaire/app-questionnaire.component'
-
+import { AppFormComponent } from './app-form/app-form.component';
 
 
 const routes: Routes = [

@@ -42,7 +42,7 @@ import { JiraTicketRiskAssessmentService } from './services/jira-ticket-risk-ass
 import { FilterPipe } from './pipes/filter.pipe';
 import { FiltersctPipe } from './pipes/filtersct.pipe';
 import { AppRoutingModule } from './app-routing.module';
-import { AppQuestionnaireComponent } from './app-questionnaire/app-questionnaire.component';
+import { AppFormComponent } from './app-form/app-form.component';
 
 
 @NgModule({
@@ -72,7 +72,7 @@ import { AppQuestionnaireComponent } from './app-questionnaire/app-questionnaire
     SecurityPentestComponent,
     SecurityRequestsComponent,
     SecurityControlsComponent,
-    AppQuestionnaireComponent
+    AppFormComponent
     ],
   imports: [
     BrowserModule,
