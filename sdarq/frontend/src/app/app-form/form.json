@@ -8,7 +8,6 @@
                     "type": "text",
                     "name": "Service",
                     "title": "Service name",
-                    "isRequired": true,
                     "requiredErrorText": "Required field",
                     "validators": [{
                         "type": "regex",
@@ -20,7 +19,6 @@
                     "type": "comment",
                     "name": "Description",
                     "title": "A brief description of the application/service (provide link to external doc if easier)",
-                    "isRequired": true,
                     "requiredErrorText": "Required field",
                     "validators": [{
                         "type": "regex",
@@ -32,7 +30,6 @@
                     "type": "text",
                     "name": "Security champion",
                     "title": "Security champion (main point of contact from a security perspective):",
-                    "isRequired": true,
                     "requiredErrorText": "Required field",
                     "validators": [{
                         "type": "regex",
@@ -44,7 +41,6 @@
                     "type": "text",
                     "name": "Github URL",
                     "title": "Github URL (N/A if you have not written a line of code yet)",
-                    "isRequired": true,
                     "requiredErrorText": "Required field",
                     "validators": [{
                         "type": "regex",
@@ -56,7 +52,6 @@
                     "type": "text",
                     "name": "Architecture Diagram",
                     "title": "Link to Architecture Diagram, ideally a Lucidchart diagram.",
-                    "isRequired": true,
                     "requiredErrorText": "Required field",
                     "validators": [{
                         "type": "regex",
@@ -422,12 +417,6 @@
                 },
                 {
                     "type": "html",
-                    "name": "Alert-serviceScalability",
-                    "visibleIf": "{Reliability1} notcontains \"Service is able to scale in response to load\"",
-                    "html": "<div class=\"highs\">Your service must be able to scale in response to load, either manually or automatically. Ask DevOps if you need more clarification on this.</div>"
-                },
-                {
-                    "type": "html",
                     "name": "Alert-unitTesting",
                     "visibleIf": "{Unit testing} = \"Weak\"  or {Unit testing} = \"Nonexistent\"",
                     "html": "<div class=\"medium\">Unit tests have become quasi-standard for testing the functionality of software at a low level. Although this questionnaire focuses on security, the functional correctness of the application is also important. Particularly for web applications, where it is difficult (often impossible) to fall back to a previous version, functional bugs can cause problems with both integrity and availability. Consider implementing unit tests. For services within the Terra system boundary, unit tests are required. Please contact QA for guidance.</div>"
@@ -498,7 +487,7 @@
                             "visibleIf": "{Security tools} notcontains \"dependency_scan\""
                         },
                         {
-                            "value": "You must use git-secrets to prevent accidental commit of secrets to source code repository.</div>",
+                            "value": "You must use git-secrets to prevent accidental commit of secrets to source code repository.",
                             "visibleIf": "{Security tools} notcontains \"Git-secrets\""
                         },
                         {
