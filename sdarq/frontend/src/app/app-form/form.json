@@ -124,7 +124,7 @@
                         },
                         {
                             "value": "SAST",
-                            "text": "We are currently using Codacy, SonacCloud or similar tools for security static code analysis"
+                            "text": "We are currently using Codacy, SonarCloud or similar tools for security static code analysis"
                         },
                         {
                             "value": "Image_scan",
