@@ -389,7 +389,7 @@
                     "type": "html",
                     "name": "Alert-Docker-images-update",
                     "visibleIf": "{docker_images_update} = \"No\"",
-                    "html": "<div class=\"highs\">Reach out to AppSec team to discuss about the DOcker images update plan.</div>"
+                    "html": "<div class=\"highs\">Reach out to AppSec team to discuss about the Docker image update plan.</div>"
                 },
                 {
                     "type": "html",
