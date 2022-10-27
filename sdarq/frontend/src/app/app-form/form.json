@@ -146,7 +146,7 @@
                         },
                         {
                             "value": "in-cluster-sql",
-                            "text": "I am using in-cluster SQL database"
+                            "text": "I am using an in-cluster SQL database"
                         }
                     ]
                 },
