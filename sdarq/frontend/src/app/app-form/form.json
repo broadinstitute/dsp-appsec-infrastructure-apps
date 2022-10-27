@@ -377,7 +377,7 @@
                     "type": "html",
                     "name": "Alert-codacy",
                     "visibleIf": "{Security tools} notcontains \"SAST\"",
-                    "html": "<div class=\"highs\">You should use\n  Codacy, SonacCloud or similar tools for security static code analysis.\n  Reach out to Appsec team to set it up for your repository.\n</div>"
+                    "html": "<div class=\"highs\">You should use\n  Codacy, SonarCloud or similar tools for security static code analysis.\n  Reach out to Appsec team to set it up for your repository.\n</div>"
                 },
                 {
                     "type": "html",
