@@ -7,7 +7,7 @@
             "elements": [{
                     "type": "text",
                     "name": "Service",
-                    "title": "Service name",
+                    "title": "App name",
                     "requiredErrorText": "Required field",
                     "validators": [{
                         "type": "regex",
