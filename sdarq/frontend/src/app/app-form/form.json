@@ -142,7 +142,7 @@
                     "title": "Check what's applicable",
                     "choices": [{
                             "value": "managed-sql",
-                            "text": "I am using managed SQL database"
+                            "text": "I am using a managed SQL database"
                         },
                         {
                             "value": "in-cluster-sql",
