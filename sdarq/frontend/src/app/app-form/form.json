@@ -85,7 +85,7 @@
                 {
                     "type": "radiogroup",
                     "name": "Architecture",
-                    "title": "Your service must be based on one of the following",
+                    "title": "On which service is your app based (must be one of the following)?",
                     "choices": [{
                             "value": "Managed_kubernetes",
                             "text": "Managed Kubernetes"
