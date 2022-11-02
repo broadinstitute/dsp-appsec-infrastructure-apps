@@ -4,6 +4,8 @@ import os
 jira_username = os.getenv('jira_username')
 jira_api_token = os.getenv('jira_api_token')
 jira_instance = os.getenv('jira_instance')
+appsec_jira_project_key = os.getenv('appsec_jira_project_key')
+
 
 global jira
 jira = JIRA(basic_auth=(jira_username, jira_api_token),
