@@ -188,17 +188,14 @@ def submit():
                 dojo_host_url)
 
         jiranotify.create_board_ticket(
-            appsec_jira_project_key,
             appsec_jira_ticket_summury_tm,
             appsec_jira_ticket_description)
 
         jiranotify.create_board_ticket(
-            appsec_jira_project_key,
             appsec_jira_ticket_summury,
             appsec_jira_ticket_description)
 
         jiranotify.create_board_ticket(
-            appsec_jira_project_key,
             appsec_jira_ticket_summury_sast,
             appsec_jira_ticket_description)
 
@@ -420,7 +417,7 @@ def request_tm():
             '\n' + user_data['Github']
 
         jira_ticket_appsec = jira_ticket_appsec = jiranotify.create_board_ticket(
-            appsec_jira_project_key, appsec_jira_ticket_summury, appsec_jira_ticket_description)
+            appsec_jira_ticket_summury, appsec_jira_ticket_description)
 
         logging.info(
             "Jira ticket created in appsec board for %s threat model",
@@ -772,7 +769,6 @@ def request_manual_pentest():
             '\n' + 'Security champion: ' + user_data['security_champion']
 
         jira_ticket_appsec = jiranotify.create_board_ticket(
-            appsec_jira_project_key,
             appsec_jira_ticket_summury,
             appsec_jira_ticket_description)
 
