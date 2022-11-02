@@ -34,8 +34,8 @@ export class JiraTicketRiskAssesmentComponent implements OnInit {
       (res) => {
         this.ngZone.run(() => {
         this.showModalErr = true;
-        this.showModalError = res;
         this.showForm = false;
+        this.showModalError = res;
       });
     });
   }
