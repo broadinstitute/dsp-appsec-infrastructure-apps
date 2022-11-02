@@ -1,4 +1,5 @@
 from jira import JIRA
+import os
 
 jira_username = os.getenv('jira_username')
 jira_api_token = os.getenv('jira_api_token')
