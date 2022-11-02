@@ -170,12 +170,33 @@
             "elements": [
                 {
                     "type": "radiogroup",
+                    "name": "Cloud",
+                    "title": "Which Cloud Plaform are you using to deploy your service?",
+                    "choices": [
+                        {
+                            "value": "Azure",
+                            "text": "Microsoft Azure"
+                        },
+                        {
+                            "value": "GCP",
+                            "text": "Google Cloud Platform"
+                        },
+                        {
+                            "value": "GCP_Azure",
+                            "text": "Both Google Cloud Platform and Microsoft Azure"
+                        }
+                    ],
+                    "hasOther": true,
+                    "otherText": "Other"
+                },            
+                {
+                    "type": "radiogroup",
                     "name": "Architecture",
                     "title": "Your service must be based on one of the following",
                     "choices": [
                         {
                             "value": "GAE",
-                            "text": "Based in GAE (Google App Engine) "
+                            "text": "Based in GAE (Google App Engine)"
                         },
                         {
                             "value": "GCF",
@@ -183,7 +204,11 @@
                         },
                         {
                             "value": "GKE",
-                            "text": " Based in GKE (Google Kubernetes Engine) "
+                            "text": "Based in GKE (Google Kubernetes Engine)"
+                        },
+                        {
+                            "value": "AKS",
+                            "text": "Based in AKS (Azure Kubernetes Service)"
                         }
                     ],
                     "hasOther": true,
@@ -226,7 +251,7 @@
                     "choices": [
                         {
                             "value": "dependency_scan",
-                            "text": "We are currently using SourceClear/Snyk or similar tools for downstream dependency/3rd party component management "
+                            "text": "We are currently using SourceClear or similar tools for downstream dependency/3rd party component management "
                         },
                         {
                             "value": "Git-secrets",
@@ -242,7 +267,7 @@
                         },
                         {
                             "value": "SAST",
-                            "text": "We are currently using Codacy, SonacCloud or similar tools for security static code analysis"
+                            "text": "We are currently using Codacy, SonarCloud or similar tools for security static code analysis"
                         },
                         {
                             "value": "Image_scan",
@@ -624,7 +649,7 @@
                     "type": "html",
                     "name": "Alert-Sourceclear",
                     "visibleIf": "{Security tools} notcontains \"dependency_scan\"",
-                    "html": "<div class=\"highs\">You must use SourceClear, Snyk or similar tools for downstream dependency/3rd\n            party component management. Ask AppSec team to add your repo.</div>"
+                    "html": "<div class=\"highs\">You must use SourceClear or similar tools for downstream dependency/3rd\n            party component management. Ask AppSec team to add your repo.</div>"
                 },
                 {
                     "type": "html",
@@ -660,7 +685,7 @@
                     "type": "html",
                     "name": "Alert-codacy",
                     "visibleIf": "{Security tools} notcontains \"SAST\"",
-                    "html": "<div class=\"highs\">You should use\n  Codacy, SonacCloud or similar tools for security static code analysis.\n  Reach out to Appsec team to set it up for your repository.\n</div>"
+                    "html": "<div class=\"highs\">You should use\n  Codacy, SonarCloud or similar tools for security static code analysis.\n  Reach out to Appsec team to set it up for your repository.\n</div>"
                 },
                 {
                     "type": "html",
@@ -838,7 +863,7 @@
                             "value": "Get Started with the SIA doc, build a concept of operations/Security Impact Assessment document. Update/build the Design Specification document. Update/build the Network Diagram and Architecture. Make a user flow of your component, make sure to show how it connects to rest of product. Make a data flow diagram of your component, make sure to show how it connects to rest of product."
                         },
                         {
-                            "value": "You must use SourceClear, Snyk or similar tools for downstream dependency/3rd  party component management. Ask AppSec team to add your repo.",
+                            "value": "You must use SourceClear or similar tools for downstream dependency/3rd  party component management. Ask AppSec team to add your repo.",
                             "visibleIf": "{Security tools} notcontains \"dependency_scan\""
                         },
                         {
