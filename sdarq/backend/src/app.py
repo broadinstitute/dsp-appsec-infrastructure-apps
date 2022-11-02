@@ -30,7 +30,6 @@ from flask import Response, request
 from flask_api import FlaskAPI
 from flask_cors import cross_origin
 from google.cloud import bigquery, firestore, pubsub_v1
-from jira import JIRA
 from jsonschema import validate
 from trigger import parse_tags
 
