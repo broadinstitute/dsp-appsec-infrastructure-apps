@@ -7,7 +7,7 @@
             "elements": [{
                     "type": "text",
                     "name": "Service",
-                    "title": "Service name",
+                    "title": "App name",
                     "requiredErrorText": "Required field",
                     "validators": [{
                         "type": "regex",
@@ -85,7 +85,7 @@
                 {
                     "type": "radiogroup",
                     "name": "Architecture",
-                    "title": "Your service must be based on one of the following",
+                    "title": "On which service is your app based (must be one of the following)?",
                     "choices": [{
                             "value": "Managed_kubernetes",
                             "text": "Managed Kubernetes"
@@ -124,7 +124,7 @@
                         },
                         {
                             "value": "SAST",
-                            "text": "We are currently using Codacy, SonacCloud or similar tools for security static code analysis"
+                            "text": "We are currently using Codacy, SonarCloud or similar tools for security static code analysis"
                         },
                         {
                             "value": "Image_scan",
@@ -142,11 +142,11 @@
                     "title": "Check what's applicable",
                     "choices": [{
                             "value": "managed-sql",
-                            "text": "I am using managed SQL database"
+                            "text": "I am using a managed SQL database"
                         },
                         {
                             "value": "in-cluster-sql",
-                            "text": "I am using in-cluster SQL database"
+                            "text": "I am using an in-cluster SQL database"
                         }
                     ]
                 },
@@ -377,7 +377,7 @@
                     "type": "html",
                     "name": "Alert-codacy",
                     "visibleIf": "{Security tools} notcontains \"SAST\"",
-                    "html": "<div class=\"highs\">You should use\n  Codacy, SonacCloud or similar tools for security static code analysis.\n  Reach out to Appsec team to set it up for your repository.\n</div>"
+                    "html": "<div class=\"highs\">You should use\n  Codacy, SonarCloud or similar tools for security static code analysis.\n  Reach out to Appsec team to set it up for your repository.\n</div>"
                 },
                 {
                     "type": "html",
@@ -389,7 +389,7 @@
                     "type": "html",
                     "name": "Alert-Docker-images-update",
                     "visibleIf": "{docker_images_update} = \"No\"",
-                    "html": "<div class=\"highs\">Reach out to AppSec team to discuss about the DOcker images update plan.</div>"
+                    "html": "<div class=\"highs\">Reach out to AppSec team to discuss about the Docker image update plan.</div>"
                 },
                 {
                     "type": "html",
