@@ -195,7 +195,7 @@ def submit():
 
         jiranotify.create_board_ticket(
             appsec_jira_project_key,
-            appsec_jira_ticket_summury,
+            appsec_jira_ticket_summury_srcl,
             appsec_jira_ticket_description)
 
         jiranotify.create_board_ticket(
