@@ -1,4 +1,4 @@
-new_service_schema = {
+new_app_schema = {
     "type": "object",
     "properties": {
         "Service": {
