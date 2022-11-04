@@ -19,6 +19,7 @@ import { SecurityPentestComponent } from './security-pentest/security-pentest.co
 import { SecurityRequestsComponent } from './security-requests/security-requests.component';
 import { SecurityControlsComponent } from './security-controls/security-controls.component';
 import { AppFormComponent } from './app-form/app-form.component';
+import { AppsMainpageComponent } from './apps-mainpage/apps-mainpage.component';
 
 
 const routes: Routes = [
@@ -27,6 +28,7 @@ const routes: Routes = [
   { path: 'newservice', component: MainpageComponent },
   { path: 'questionnaire', component: FormComponent },
   { path: '3rd-party-app-questionnaire', component: AppFormComponent },
+  { path: 'new-3rd-party-app', component: AppsMainpageComponent },
   { path: 'gcp-project-security-posture/latest', component: CisComponent },
   { path: 'gcp-project-security-posture/results', component: CisResultsComponent },
   { path: 'gcp-project-security-posture/scan', component: CisScanComponent },
