@@ -102,7 +102,7 @@ export class SecurityControlsListComponent implements OnInit {
   devURLShowValue(dev_url) {
     if (dev_url === '') {
       this.dev_link = false;
-      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
+      return '<a href="#" data-mdb-toggle="tooltip" title="Not aplicable for this service"><i class="fas fa-info-circle blue-color fa-2x"></i><a>'
     } else {
       this.dev_link = true;
     }
