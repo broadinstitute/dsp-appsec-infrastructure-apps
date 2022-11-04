@@ -238,24 +238,6 @@
                 },
                 {
                     "type": "radiogroup",
-                    "name": "Integration testing",
-                    "title": "How would you describe the code coverage of your integration tests?",
-                    "choices": [{
-                            "value": "Robust",
-                            "text": "Robust: The vast majority of our code is tested or will be tested through integration tests. "
-                        },
-                        {
-                            "value": "Weak",
-                            "text": "Weak: We have some integration testing, but much of the code is not tested and have no plan of changing it in the future. "
-                        },
-                        {
-                            "value": "Nonexistent",
-                            "text": " Nonexistent: We currently have no (or almost no) integration tests."
-                        }
-                    ]
-                },
-                {
-                    "type": "radiogroup",
                     "name": "Performance testing",
                     "title": "How would you describe the code coverage of your performance tests?",
                     "choices": [{
@@ -292,7 +274,7 @@
                 }
             ],
             "title": "Testing",
-            "description": "Simple unit tests: Unit tests are typically used to confirm that the basic building blocks of the application work as expected. Unit tests are easy to repeat — they can run whenever new code is checked into the repository, to confirm that the code still behaves as expected. Unit tests can also check for security features. For example, they can be used to confirm that authentication is required to access user data; or that unexpected HTML tags can't get through input filters or escaping routines. \n\nIntegration testing: Testing performed to expose defects in the interfaces and in the interactions between integrated components or systems.\n\nPerformance/Monitoring testing: Once the application is deployed, the focus usually shifts from testing to monitoring. Watch out for unexpected spikes in error rates, sandbox violations, and other flaky or inexplicable behavior (including intermittent test failures) — and before you dismiss an anomaly, check with your security team. Crashes and flakiness can indicate a race condition or a memory corruption bug (if applicable)."
+            "description": "Simple unit tests: Unit tests are typically used to confirm that the basic building blocks of the application work as expected. Unit tests are easy to repeat — they can run whenever new code is checked into the repository, to confirm that the code still behaves as expected. Unit tests can also check for security features. For example, they can be used to confirm that authentication is required to access user data; or that unexpected HTML tags can't get through input filters or escaping routines. \n\nPerformance/Monitoring testing: Once the application is deployed, the focus usually shifts from testing to monitoring. Watch out for unexpected spikes in error rates, sandbox violations, and other flaky or inexplicable behavior (including intermittent test failures) — and before you dismiss an anomaly, check with your security team. Crashes and flakiness can indicate a race condition or a memory corruption bug (if applicable)."
         },
         {
             "name": "Deployment",
@@ -325,6 +307,10 @@
                     {
                         "value": "Tools to monitor status",
                         "text": "We have Stackdriver or similar tools to monitor status "
+                    },
+                    {
+                        "value": "An on-call playbook for the service, linked it into the main on-call documentation",
+                        "text": "We have created an on-call playbook for your service, linked it into the main on-call documentation"
                     }
                 ]
             }],
@@ -423,12 +409,6 @@
                 },
                 {
                     "type": "html",
-                    "name": "Alert-integrationTesting",
-                    "visibleIf": "{Integration testing} = \"Weak\" or {Integration testing} = \"Nonexistent\"",
-                    "html": "<div class=\"medium\">Integration testing will show you how well your modules get along for at least 90 days in a searchable form. Please consider implementing. For services within the Terra system boundary, integration tests are required. Please contact QA for guidance.</div>"
-                },
-                {
-                    "type": "html",
                     "name": "Alert-performanceTesting",
                     "visibleIf": "{Performance testing} = \"Weak\"  or {Performance testing} = \"Nonexistent\"",
                     "html": "<div class=\"medium\">Performance testing will determine whether your service meets scalability and stability requirements under expected workloads. Please consider implementing. Please contact QA for guidance regarding services within the Terra system boundary.</div>"
@@ -462,6 +442,12 @@
                     "name": "Alert-relicSynthetic",
                     "visibleIf": "{Reliability} notcontains 'Tools to monitor status'",
                     "html": "<div class=\"medium\">Have Stackdriver or similar tools configured to monitor/status.</div>"
+                },
+                {
+                    "type": "html",
+                    "name": "Alert-oncallPlaybook",
+                    "visibleIf": "{Reliability} notcontains \"An on-call playbook for the service, linked it into the main on-call documentation\"",
+                    "html": "<div class=\"medium\">You should create an on-call playbook for your service, and link it into the main on-call documentation</div>"
                 }
             ],
             "title": "Alerts"
@@ -539,10 +525,6 @@
                             "visibleIf": "{Unit testing} = \"Weak\"  or {Unit testing} = \"Nonexistent\""
                         },
                         {
-                            "value": "Integration testing will show you how well your modules get along for at least 90 days in a searchable form. Please consider implementing. For services within the Terra system boundary, integration tests are required. Please contact QA for guidance.",
-                            "visibleIf": "{Integration testing} = \"Weak\" or {Integration testing} = \"Nonexistent\""
-                        },
-                        {
                             "value": "Performance testing will determine whether your service meets scalability and stability requirements under expected workloads. Please consider implementing. Please contact QA for guidance regarding services within the Terra system boundary.",
                             "visibleIf": "{Performance testing} = \"Weak\"  or {Performance testing} = \"Nonexistent\""
                         },
@@ -565,6 +547,10 @@
                         {
                             "visibleIf": "{Reliability} notcontains \"Status endpoint to indicate service health\"",
                             "value": "Have a status endpoint to indicate service health (it should monitor real things like database connections and downstream dependencies)"
+                        },
+                        {
+                            "value": "You should create an on-call playbook for your service, and link it into the main on-call documentation.",
+                            "visibleIf": "{Reliability} notcontains \"An on-call playbook for the service, linked it into the main on-call documentation\""
                         }
                     ],
                     "showSelectAllItem": true
