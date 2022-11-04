@@ -43,6 +43,7 @@ from schemas.new_service_schema import new_service_schema
 from schemas.security_controls_schema import security_controls_schema
 from schemas.threat_model_request_schema import tm_schema
 from schemas.zap_scan_schema import zap_scan_schema
+from schemas.new_app_schema import new_app_schema
 
 dojo_host = os.getenv('dojo_host')
 dojo_api_key = os.getenv('dojo_api_key')
@@ -215,6 +216,7 @@ def submit():
         """
         return Response(json.dumps({'statusText': message}),
                         status=status_code, mimetype='application/json')
+
 
 @app.route('/submit_new_app/', methods=['POST'])
 @cross_origin(origins=sdarq_host)
