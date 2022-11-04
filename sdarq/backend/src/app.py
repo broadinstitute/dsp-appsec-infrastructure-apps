@@ -220,7 +220,7 @@ def submit():
 
 @app.route('/submit_new_app/', methods=['POST'])
 @cross_origin(origins=sdarq_host)
-def submit():
+def submit_app():
     """
     Create new product to DefectDojo,
     create Jira ticket in teams board (optional),
