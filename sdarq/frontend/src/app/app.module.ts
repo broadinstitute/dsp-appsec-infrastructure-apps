@@ -44,6 +44,7 @@ import { FilterPipe } from './pipes/filter.pipe';
 import { FiltersctPipe } from './pipes/filtersct.pipe';
 import { AppRoutingModule } from './app-routing.module';
 import { AppFormComponent } from './app-form/app-form.component';
+import { AppsMainpageComponent } from './apps-mainpage/apps-mainpage.component';
 
 
 @NgModule({
@@ -73,7 +74,8 @@ import { AppFormComponent } from './app-form/app-form.component';
     SecurityPentestComponent,
     SecurityRequestsComponent,
     SecurityControlsComponent,
-    AppFormComponent
+    AppFormComponent,
+    AppsMainpageComponent
     ],
   imports: [
     BrowserModule,
