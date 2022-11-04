@@ -1,6 +1,6 @@
 """
 This module
-- sends a new service requirements request
+- sends a new service & app requirements request
         - creates a new product in Defect Dojo
         - optionally creates a Jira Ticket
         - notifies several Slack channels about service requirements request
@@ -43,6 +43,7 @@ from schemas.new_service_schema import new_service_schema
 from schemas.security_controls_schema import security_controls_schema
 from schemas.threat_model_request_schema import tm_schema
 from schemas.zap_scan_schema import zap_scan_schema
+from schemas.new_app_schema import new_app_schema
 
 dojo_host = os.getenv('dojo_host')
 dojo_api_key = os.getenv('dojo_api_key')
@@ -102,7 +103,7 @@ def submit():
     """
     Create new product to DefectDojo,
     create Jira ticket in teams board (optional),
-    create Jira ticket in appsec team board for TM
+    create Jira ticket in appsec team board for TM, 3rd party dependecies scan and SAST
     Args:
         Json data
     Returns:
@@ -182,6 +183,127 @@ def submit():
                          dojo_name, user_email)
 
             slacknotify.slacknotify(
+                appsec_slack_channel,
+                dojo_name,
+                security_champion,
+                product_id,
+                dojo_host_url)
+
+        jiranotify.create_board_ticket(
+            appsec_jira_project_key,
+            appsec_jira_ticket_summury_tm,
+            appsec_jira_ticket_description)
+
+        jiranotify.create_board_ticket(
+            appsec_jira_project_key,
+            appsec_jira_ticket_summury_srcl,
+            appsec_jira_ticket_description)
+
+        jiranotify.create_board_ticket(
+            appsec_jira_project_key,
+            appsec_jira_ticket_summury_sast,
+            appsec_jira_ticket_description)
+
+        logging.info("Jira tickets in AppSec board created")
+
+        return ''
+    except Exception as error:
+        error_message = f"Exception /submit enspoint: {error}"
+        logging.warning(error_message)
+        status_code = 404
+        message = """
+        There is something wrong with the input! Server did not respond correctly to your request!
+        """
+        return Response(json.dumps({'statusText': message}),
+                        status=status_code, mimetype='application/json')
+
+
+@app.route('/submit_new_app/', methods=['POST'])
+@cross_origin(origins=sdarq_host)
+def submit_app():
+    """
+    Create new product to DefectDojo,
+    create Jira ticket in teams board (optional),
+    create Jira ticket in appsec team board for TM, 3rd party dependecies scan and SAST
+    Args:
+        Json data
+    Returns:
+        200 status
+        400 status
+    """
+    json_data = request.get_json()
+    dojo_name = json_data['Service']
+    security_champion = json_data['Security champion']
+    product_type = 1
+    products_endpoint = f"{dojo_host}api/v2/products/"
+    user_email = request.headers.get('X-Goog-Authenticated-User-Email')
+
+    architecture_diagram = json_data['Architecture Diagram']
+    github_url = json_data['Github URL']
+    appsec_jira_ticket_description = github_url + '\n' + architecture_diagram
+    appsec_jira_ticket_summury_tm = 'Threat Model request ' + dojo_name
+    appsec_jira_ticket_summury_srcl = 'Add ' + \
+        dojo_name + ' to 3rd party dependencies scan tool'
+    appsec_jira_ticket_summury_sast = 'Add ' + dojo_name + ' to a SAST tool'
+
+    if request.headers.get('Content-Type') != 'application/json':
+        return Response(json.dumps(
+            {'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+
+    try:
+        validate(instance=json_data, schema=new_app_schema)
+        if 'JiraProject' in json_data:
+            project_key_id = json_data['JiraProject']
+            dev_jira_ticket_summury = dojo_name + ' security requirements'
+            jira_description = json.dumps(
+                json_data['Ticket_Description']).strip('[]')
+
+            formatted_jira_description = jira_description.strip(
+                '", "').replace('", "', '\n-')
+
+            jira_ticket = jiranotify.create_board_ticket(
+                project_key_id, dev_jira_ticket_summury, formatted_jira_description)
+
+            logging.info("Jira ticket in %s board created by %s",
+                         project_key_id, user_email)
+
+            del json_data['Ticket_Description']
+
+            data = {
+                'name': dojo_name,
+                'description': parse_json_data.prepare_dojo_input(json_data),
+                'prod_type': product_type}
+            res = requests.post(products_endpoint,
+                                headers=headers, data=json.dumps(data))
+            res.raise_for_status()
+            product_id = res.json()['id']
+
+            logging.info("Product created: %s by %s request",
+                         dojo_name, user_email)
+
+            slacknotify.slacknotify_app_jira(
+                appsec_slack_channel,
+                dojo_name,
+                security_champion,
+                product_id,
+                dojo_host_url,
+                jira_instance,
+                project_key_id,
+                jira_ticket)
+        else:
+            data = {
+                'name': dojo_name,
+                'description': parse_json_data.prepare_dojo_input(json_data),
+                'prod_type': product_type}
+            res = requests.post(products_endpoint,
+                                headers=headers, data=json.dumps(data))
+            res.raise_for_status()
+            product_id = res.json()['id']
+
+            logging.info("Product created: %s by %s request",
+                         dojo_name, user_email)
+
+            slacknotify.slacknotify_app(
                 appsec_slack_channel,
                 dojo_name,
                 security_champion,

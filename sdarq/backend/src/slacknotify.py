@@ -15,9 +15,9 @@ client = WebClient(token=slack_token,
 
 def slacknotify(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url):
     """
-    Sends slack notification where: 
-        1. No Jira ticket is selected 
-        2. No QA person must be notified 
+    Sends slack notification when there is: 
+        1. New service
+        2. No Jira ticket is selected 
 
     Args:
         appsec_slack_channel: Slack channel name
@@ -43,7 +43,7 @@ def slacknotify(appsec_slack_channel, dojo_name, security_champion, product_id, 
                 "type": "section",
                         "text": {
                             "type": "mrkdwn",
-                            "text": "*Product name:* {0} " .format(str(dojo_name))
+                            "text": "*Service name:* {0} " .format(str(dojo_name))
                         }
             },
             {
@@ -68,11 +68,135 @@ def slacknotify(appsec_slack_channel, dojo_name, security_champion, product_id, 
             }], "color": "#0731b0",}]
     )
 
+
+def slacknotify_app(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url):
+    """
+    Sends slack notification when there is: 
+        1. New App
+        2. No Jira ticket is selected 
+
+    Args:
+        appsec_slack_channel: Slack channel name
+        dojo_name: Engagement name in defect dojo
+        security_champion: Security champion name
+        product_id: Product in defectdojo
+        dojo_host: DefectDojo host
+
+    Returns:
+        Sends slack notification
+    """
+    client.chat_postMessage(
+        channel=appsec_slack_channel,
+        attachments=[{"blocks": [
+            {
+                "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "*New APP created*"
+                        }
+            },
+            {
+                "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "*App name:* {0} " .format(str(dojo_name))
+                        }
+            },
+            {
+                "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "*Security champion:* {0} " .format(str(security_champion))
+                        }
+            },
+            {
+                "type": "actions",
+                        "elements": [
+                            {
+                                "type": "button",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "Defect Dojo"
+                                },
+                                "url": "{0}/product/{1}" .format(dojo_host_url, str(product_id))
+                            }
+                        ]
+            }], "color": "#0731b0",}]
+    )
+
+def slacknotify_app_jira(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket):
+    """
+    Sends slack notification when there is:
+        1. New app 
+        2. Jira ticket is selected 
+
+    Args:
+        appsec_slack_channel: Slack channel name
+        dojo_name: Engagement name in defect dojo
+        security_champion: Security champion name
+        product_id: Product in defectdojo
+        dojo_host: DefectDojo host
+        jira_instance:  Jira Cloud instance
+        project_key_id: Jira project id
+        jira_ticket: Jira ticket path 
+
+    Returns:
+        Sends slack notification
+    """
+    client.chat_postMessage(
+        channel=appsec_slack_channel,
+        attachments=[{"blocks": [
+            {
+                "type": "section",
+                "text": {
+                      "type": "mrkdwn",
+                      "text": "*New APP created*"
+                      }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*App name:* {0} " .format(str(dojo_name))
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Security champion:* {0} " .format(str(security_champion))
+                }
+            },
+            {
+                "type": "actions",
+                "elements": [
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Defect Dojo"
+                        },
+                        "url": "{0}/product/{1}" .format(dojo_host_url, str(product_id))
+                    },
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Jira Ticket"
+                        },
+                        "url": "{0}/projects/{1}/issues/{2}" .format(jira_instance, str(project_key_id), str(jira_ticket))
+                    }
+                ]
+            }
+        ], "color": "#0731b0"}]
+    )
+
+
 def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket):
     """
-    Sends slack notification where: 
-        1. Jira ticket is selected 
-        2. QA person will not be notified 
+    Sends slack notification when there is: 
+        1. New service
+        2. Jira ticket is selected 
 
     Args:
         appsec_slack_channel: Slack channel name
@@ -101,7 +225,7 @@ def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Product name:* {0} " .format(str(dojo_name))
+                    "text": "*Service name:* {0} " .format(str(dojo_name))
                 }
             },
             {

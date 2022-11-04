@@ -1,0 +1,12 @@
+<div class="jumbotron min-vh-100">
+  <div class="container">
+    <div class="row">
+      <div class="alert alert-danger animated fadeInRight" role="alert" *ngIf="showAlert">
+        <h4 class="alert-heading">Oops!</h4>
+        <p>{{errors}}</p>
+        <p class="mb-0">Please contact AppSec team for more information!</p>
+      </div>
+    </div>
+    <app-survey [json]="json" (submitSurvey)="sendData($event)" *ngIf="showForm"></app-survey>
+  </div>
+</div>
