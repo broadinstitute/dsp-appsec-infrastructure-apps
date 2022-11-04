@@ -39,6 +39,7 @@ import { SendFormDataService } from './services/create-new-service/send-form-dat
 import { EditSecurityControlsService } from './services/edit-service-security-controls/edit-security-controls.service';
 import { RequestSecurityPentestService } from './services/security-pentest-request/request-security-pentest.service';
 import { JiraTicketRiskAssessmentService } from './services/jira-ticket-risk-assessment/jira-ticket-risk-assessment.service';
+import { SendAppFormDataService } from './services/create-new-app/send-app-form-data.service';
 import { FilterPipe } from './pipes/filter.pipe';
 import { FiltersctPipe } from './pipes/filtersct.pipe';
 import { AppRoutingModule } from './app-routing.module';
@@ -95,7 +96,8 @@ import { AppFormComponent } from './app-form/app-form.component';
     EditSecurityControlsService,
     GetServiceSecurityControlsService,
     RequestSecurityPentestService,
-    JiraTicketRiskAssessmentService
+    JiraTicketRiskAssessmentService,
+    SendAppFormDataService
     ],
   bootstrap: [
     AppComponent

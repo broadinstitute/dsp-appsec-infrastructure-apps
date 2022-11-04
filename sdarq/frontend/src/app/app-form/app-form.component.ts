@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { SendFormDataService } from '../services/create-new-service/send-form-data.service';
+import { SendAppFormDataService } from 'app/services/create-new-app/send-app-form-data.service';
 import formJson from './form.json';
 
 @Component({
@@ -14,7 +15,7 @@ export class AppFormComponent implements OnInit {
   showAlert: boolean;
   showForm: boolean;
 
-  constructor(private sendForm: SendFormDataService,
+  constructor(private sendAppForm: SendAppFormDataService,
               private ngZone: NgZone,
               private ref: ChangeDetectorRef) { }
 
@@ -23,7 +24,7 @@ export class AppFormComponent implements OnInit {
   }
 
   sendData(result) {
-    this.sendForm.sendFormData(result).subscribe(() => {
+    this.sendAppForm.sendAppFormData(result).subscribe(() => {
       this.ref.detectChanges();
     },
       (submitNewServiceQuestionnaireResponse) => {

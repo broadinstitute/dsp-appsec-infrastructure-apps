@@ -8,6 +8,7 @@
                     "type": "text",
                     "name": "Service",
                     "title": "App name",
+                    "isRequired": true,
                     "requiredErrorText": "Required field",
                     "validators": [{
                         "type": "regex",
@@ -19,6 +20,7 @@
                     "type": "comment",
                     "name": "Description",
                     "title": "A brief description of the application/service (provide link to external doc if easier)",
+                    "isRequired": true,
                     "requiredErrorText": "Required field",
                     "validators": [{
                         "type": "regex",
@@ -30,6 +32,7 @@
                     "type": "text",
                     "name": "Security champion",
                     "title": "Security champion (main point of contact from a security perspective):",
+                    "isRequired": true,
                     "requiredErrorText": "Required field",
                     "validators": [{
                         "type": "regex",
@@ -41,6 +44,7 @@
                     "type": "text",
                     "name": "Github URL",
                     "title": "Github URL (N/A if you have not written a line of code yet)",
+                    "isRequired": true,
                     "requiredErrorText": "Required field",
                     "validators": [{
                         "type": "regex",
@@ -52,6 +56,7 @@
                     "type": "text",
                     "name": "Architecture Diagram",
                     "title": "Link to Architecture Diagram, ideally a Lucidchart diagram.",
+                    "isRequired": true,
                     "requiredErrorText": "Required field",
                     "validators": [{
                         "type": "regex",
