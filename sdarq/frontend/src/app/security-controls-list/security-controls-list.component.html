@@ -11,14 +11,19 @@
         </div>
     </div>
     <div class="row" *ngIf="showSearch">
-        <div class="col animated fadeIn">
+        <div class="col">
+            <i class="fas fa-times-circle red-color fa-1x"></i> - Security control not integrated <br>
+            <i class="fas fa-check-circle light-green-color fa-1x" ></i> - Security control integrated<br>
+            <i class="fas fa-check-circle green-color fa-1x"></i> - Security control integrated associated with results page link<br>
+            <i class="fas fa-info-circle blue-color fa-1x"></i> - Hover for the info
+        </div>
+        <div class="col">
+            <br>
         </div>
         <div class="col">
             <!-- tslint:disable-next-line -->
             <input type="text" class="form-control" name="searchString" placeholder="Search service or product"
             [(ngModel)]="searchString" />
-        </div>
-        <div class="col">
         </div>
     </div>
     <br>
