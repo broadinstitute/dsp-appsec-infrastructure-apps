@@ -1,5 +1,4 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
-import { SendFormDataService } from '../services/create-new-service/send-form-data.service';
 import { SendAppFormDataService } from 'app/services/create-new-app/send-app-form-data.service';
 import formJson from './form.json';
 
