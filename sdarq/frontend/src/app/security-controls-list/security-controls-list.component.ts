@@ -19,7 +19,9 @@ export class SecurityControlsListComponent implements OnInit {
   sast_results: boolean;
   dev_link: boolean;
   security_pentest: boolean;
+  threat_model_results_link: boolean;
   threat_model_results: boolean;
+  threat_model_link: string;
   searchString: any;
   errorMessage: string;
   showModalError: boolean;
@@ -55,11 +57,18 @@ export class SecurityControlsListComponent implements OnInit {
     }
   }
 
-  threatmodelShowValue(threat_model) {
+  threatmodelShowValue(threat_model, threat_model_link) {
     if (threat_model === true) {
-      this.threat_model_results = true;
+      if (!threat_model_link){
+        this.threat_model_results = true;
+        this.threat_model_results_link = false;
+      } else {
+        this.threat_model_results_link = true;
+        this.threat_model_results = false;
+      }
     } else {
       this.threat_model_results = false;
+      this.threat_model_results_link = false;
       return '<i class="fas fa-times-circle red-color fa-2x"></i>'
     }
   }

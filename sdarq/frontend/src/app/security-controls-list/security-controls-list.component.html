@@ -56,8 +56,11 @@
                 </td>
                 <td>
                     <div class="text-center">
-                        <div [innerHTML]="threatmodelShowValue(controls.threat_model)"></div>
+                        <div [innerHTML]="threatmodelShowValue(controls.threat_model, controls.threat_model_link)"></div>
                         <div *ngIf="threat_model_results">
+                            <i class="fas fa-check-circle light-green-color fa-2x"></i>
+                        </div>
+                        <div *ngIf="threat_model_results_link">
                             <a href="{{ controls.threat_model_link }}" target="_blank" rel="noreferrer noopener">
                                 <i class="fas fa-check-circle green-color fa-2x"></i></a>
                         </div>
