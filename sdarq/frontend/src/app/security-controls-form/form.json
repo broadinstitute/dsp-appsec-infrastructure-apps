@@ -78,7 +78,6 @@
         "visibleIf": "{threat_model} = true",
         "title": "Enter threat model documentation link",
         "enableIf": "{threat_model} = true",
-        "isRequired": true,
         "validators": [
          {
              "type": "regex",
