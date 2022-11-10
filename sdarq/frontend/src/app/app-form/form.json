@@ -463,7 +463,8 @@
                     "type": "text",
                     "name": "JiraProject",
                     "title": "Track all security actions by creating a Jira ticket in your board.",
-                    "description": "Please add the KEY of your Jira project. For example: ATP"
+                    "description": "Please add the KEY of your Jira project. For example: ATP",
+                    "isRequired": true
                 },
                 {
                     "type": "checkbox",

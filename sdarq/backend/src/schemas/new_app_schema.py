@@ -20,7 +20,11 @@ new_app_schema = {
         "Architecture Diagram": {
             "type": "string",
             "pattern": "(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?"
+        },
+        "JiraProject": {
+            "type": "string",
+            "pattern": "[a-zA-Z0-9-_]{1,7}"
         }
     },
-    "required": ["Service", "Description", "Security champion", "Github URL", "Architecture Diagram"]
+    "required": ["Service", "Description", "Security champion", "Github URL", "Architecture Diagram", "JiraProject"]
 }
