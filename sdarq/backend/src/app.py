@@ -252,7 +252,7 @@ def submit_app():
             '", "').replace('", "', '\n-')
 
         jira_ticket = jiranotify.create_board_ticket(
-            project_key_id, dev_jira_ticket_summury, formatted_jira_description)
+            project_key_id, dev_jira_ticket_summury_alerts, formatted_jira_description)
 
         logging.info("Jira ticket in %s board created by %s",
                         project_key_id, user_email)

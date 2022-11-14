@@ -867,7 +867,7 @@
           "visibleIf": "{Security tools} notcontains \"dependency_scan\""
          },
          {
-          "value": "You must use git-secrets to prevent accidental commit of secrets to source code repository.</div>",
+          "value": "You must use git-secrets to prevent accidental commit of secrets to source code repository.",
           "visibleIf": "{Security tools} notcontains \"Git-secrets\""
          },
          {
