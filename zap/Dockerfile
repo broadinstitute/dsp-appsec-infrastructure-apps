@@ -1,6 +1,6 @@
 FROM owasp/zap2docker-weekly AS zap
 
-FROM us.gcr.io/broad-dsp-gcr-public/base/python:alpine AS base
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:distroless AS base
 
 # Set up a Python virtualenv in a "build" stage
 FROM base AS build
