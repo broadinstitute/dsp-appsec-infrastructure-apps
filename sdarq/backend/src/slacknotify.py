@@ -306,7 +306,7 @@ def slacknotify_jira_ticket_risk_assessment_error(jtra_slack_channel, user_email
     """
     client.chat_postMessage(
         channel=jtra_slack_channel,
-        text="An error happened to Jira Ticket Risk Assessment questionnaire"
+        text="An error happened to Jira Ticket Risk Assessment questionnaire",
         attachments=[{"blocks":[
             {
                 "type": "section",
