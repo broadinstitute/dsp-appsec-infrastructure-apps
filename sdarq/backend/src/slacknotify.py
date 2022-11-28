@@ -258,7 +258,7 @@ def slacknotify_jira_ticket_risk_assessment(jtra_slack_channel, ticket_context, 
     """
     client.chat_postMessage(
         channel=jtra_slack_channel,
-        text="Jira Ticket Risk Assessment: HIGH"
+        text="HIGH Risk Jira Ticket",
         attachments=[{"blocks":[
             {
                 "type": "section",
