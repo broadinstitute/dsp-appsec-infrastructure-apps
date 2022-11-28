@@ -194,9 +194,9 @@ def submit():
         logging.info("Jira tickets in AppSec board are created")
 
 
-        doc_ref = db.collection(security_controls_firestore_collection).document(
+        setSecConDDlink = db.collection(security_controls_firestore_collection).document(
         dojo_name.lower())
-        doc = doc_ref.get()
+        doc = setSecConDDlink.get()
         if bool(doc.to_dict()) is True:
             logging.info("Don't wait 5 sec")
             setSecConDDlink.set({
