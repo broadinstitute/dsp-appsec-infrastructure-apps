@@ -44,7 +44,8 @@ export class FormComponent implements OnInit {
     this.arrRequired = {
       'service': result['Service'],
       'github': result['Github URL'],
-      'product': result['Product']
+      'product': result['Product'],
+      'dev_url': ''
     };
     this.createNewSctService.createNewSCT(this.arrRequired).subscribe((createNewSCTResponse) => {
       console.log("Security Controls template created for this service")
