@@ -191,7 +191,23 @@ def submit():
             appsec_jira_ticket_summury_sast,
             appsec_jira_ticket_description)
 
-        logging.info("Jira tickets in AppSec board created")
+        logging.info("Jira tickets in AppSec board are created")
+
+
+        doc_ref = db.collection(security_controls_firestore_collection).document(
+        dojo_name.lower())
+        doc = doc_ref.get()
+        if bool(doc.to_dict()) is True:
+            logging.info("Don't wait 5 sec")
+            setSecConDDlink.set({
+                u'defect_dojo': '{0}/product/{1}'.format(dojo_host_url, str(product_id)
+            }, merge=True)
+        else:
+            time.sleep(5)
+            logging.info("Wait 5 sec")
+            setSecConDDlink.set({
+            u'defect_dojo': '{0}/product/{1}'.format(dojo_host_url, str(product_id)
+            }, merge=True)
 
         return ''
     except Exception as error:
@@ -470,7 +486,7 @@ def cis_scan():
                 doc_ref.delete()
             return ''
         except Exception as error:
-            error_message = f"Exception /cis_scan enspoint: {error}"
+            error_message = f"Exception /cis_scan endpoint: {error}"
             logging.warning(error_message)
             message = """
             There is something wrong with the input! Server did not respond correctly to your request!
