@@ -200,13 +200,13 @@ def submit():
         if bool(doc.to_dict()) is True:
             logging.info("Don't wait 5 sec")
             setSecConDDlink.set({
-                u'defect_dojo': '{0}/product/{1}'.format(dojo_host_url, str(product_id)
+                u'defect_dojo': '{0}/product/{1}'.format(dojo_host_url, str(product_id))
             }, merge=True)
         else:
             time.sleep(5)
             logging.info("Wait 5 sec")
             setSecConDDlink.set({
-            u'defect_dojo': '{0}/product/{1}'.format(dojo_host_url, str(product_id)
+            u'defect_dojo': '{0}/product/{1}'.format(dojo_host_url, str(product_id))
             }, merge=True)
 
         return ''
