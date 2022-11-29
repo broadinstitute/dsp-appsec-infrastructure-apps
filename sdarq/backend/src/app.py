@@ -312,6 +312,14 @@ def submit_app():
 
         logging.info("Jira tickets in AppSec board created")
 
+        setSecConDDlink = db.collection(
+            security_controls_firestore_collection).document(dojo_name.lower())
+        doc = setSecConDDlink.get()
+        if bool(doc.to_dict()) is True:
+            setSecConDDlink.set({
+                u'defect_dojo': '{0}/product/{1}'.format(dojo_host_url, str(product_id))
+            }, merge=True)
+
         return ''
     except Exception as error:
         error_message = f"Exception /submit enspoint: {error}"

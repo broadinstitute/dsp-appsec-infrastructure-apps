@@ -121,7 +121,7 @@ export class SecurityControlsListComponent implements OnInit {
   productShowValue(product){
     if (product === '') {
       this.product_value = false;
-      return '<a href="#" data-mdb-toggle="tooltip" title="The URL does not exist!"><i class="fas fa-info-circle blue-color fa-2x"></i><a>'
+      return '<a href="#" data-mdb-toggle="tooltip" title="The product name is not available!"><i class="fas fa-info-circle blue-color fa-2x"></i><a>'
     } else {
       this.product_value = true;
     }
