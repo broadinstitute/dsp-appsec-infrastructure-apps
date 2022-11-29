@@ -132,9 +132,10 @@ def submit():
         appsec_jira_ticket_summury_sast = 'Add ' + dojo_name + ' to a SAST tool'
         project_key_id = json_data['JiraProject']
         dev_jira_ticket_summury_alerts = dojo_name + ' security related requirements'
-        app_jira_ticket_summury_alerts = 'Track ' + dojo_name + ' security related requirements'
+        app_jira_ticket_summury_alerts = 'Track ' + \
+            dojo_name + ' security related requirements'
         jira_description = json.dumps(
-                json_data['Ticket_Description']).strip('[]')
+            json_data['Ticket_Description']).strip('[]')
 
         validate(instance=json_data, schema=new_service_schema)
 
@@ -145,7 +146,7 @@ def submit():
             project_key_id, dev_jira_ticket_summury_alerts, formatted_jira_description)
 
         logging.info("Jira ticket in %s board created by %s",
-                        project_key_id, user_email)
+                     project_key_id, user_email)
 
         del json_data['Ticket_Description']
 
@@ -159,7 +160,7 @@ def submit():
         product_id = res.json()['id']
 
         logging.info("Product created: %s by %s request",
-                        dojo_name, user_email)
+                     dojo_name, user_email)
 
         slacknotify.slacknotify_jira(
             appsec_slack_channel,
@@ -191,7 +192,15 @@ def submit():
             appsec_jira_ticket_summury_sast,
             appsec_jira_ticket_description)
 
-        logging.info("Jira tickets in AppSec board created")
+        logging.info("Jira tickets in AppSec board are created")
+
+        setSecConDDlink = db.collection(security_controls_firestore_collection).document(
+            dojo_name.lower())
+        doc = setSecConDDlink.get()
+        if bool(doc.to_dict()) is True:
+            setSecConDDlink.set({
+                u'defect_dojo': '{0}/product/{1}'.format(dojo_host_url, str(product_id))
+            }, merge=True)
 
         return ''
     except Exception as error:
@@ -219,7 +228,6 @@ def submit_app():
         400 status
     """
 
-
     if request.headers.get('Content-Type') != 'application/json':
         return Response(json.dumps(
             {'statusText': 'Bad Request'}), status=400, mimetype='application/json')
@@ -241,7 +249,8 @@ def submit_app():
         appsec_jira_ticket_summury_sast = 'Add ' + dojo_name + ' to a SAST tool'
         project_key_id = json_data['JiraProject']
         dev_jira_ticket_summury_alerts = dojo_name + ' security requirements'
-        appsec_jira_ticket_summury_alerts = 'Track ' + dojo_name + ' security requirements'
+        appsec_jira_ticket_summury_alerts = 'Track ' + \
+            dojo_name + ' security requirements'
 
         jira_description = json.dumps(
             json_data['Ticket_Description']).strip('[]')
@@ -255,7 +264,7 @@ def submit_app():
             project_key_id, dev_jira_ticket_summury_alerts, formatted_jira_description)
 
         logging.info("Jira ticket in %s board created by %s",
-                        project_key_id, user_email)
+                     project_key_id, user_email)
 
         del json_data['Ticket_Description']
 
@@ -269,7 +278,7 @@ def submit_app():
         product_id = res.json()['id']
 
         logging.info("Product created: %s by %s request",
-                        dojo_name, user_email)
+                     dojo_name, user_email)
 
         slacknotify.slacknotify_app_jira(
             appsec_slack_channel,
@@ -280,7 +289,7 @@ def submit_app():
             jira_instance,
             project_key_id,
             jira_ticket)
-            
+
         jiranotify.create_board_ticket(
             appsec_jira_project_key,
             appsec_jira_ticket_summury_alerts,
@@ -302,6 +311,14 @@ def submit_app():
             appsec_jira_ticket_description)
 
         logging.info("Jira tickets in AppSec board created")
+
+        setSecConDDlink = db.collection(
+            security_controls_firestore_collection).document(dojo_name.lower())
+        doc = setSecConDDlink.get()
+        if bool(doc.to_dict()) is True:
+            setSecConDDlink.set({
+                u'defect_dojo': '{0}/product/{1}'.format(dojo_host_url, str(product_id))
+            }, merge=True)
 
         return ''
     except Exception as error:
@@ -470,7 +487,7 @@ def cis_scan():
                 doc_ref.delete()
             return ''
         except Exception as error:
-            error_message = f"Exception /cis_scan enspoint: {error}"
+            error_message = f"Exception /cis_scan endpoint: {error}"
             logging.warning(error_message)
             message = """
             There is something wrong with the input! Server did not respond correctly to your request!

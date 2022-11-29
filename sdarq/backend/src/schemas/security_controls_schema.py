@@ -3,7 +3,7 @@ security_controls_schema = {
     "properties": {
         "product": {
             "type": "string",
-            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
+            "pattern": "^$|^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
         },
         "service": {
             "type": "string",
@@ -15,7 +15,7 @@ security_controls_schema = {
         },
         "dev_url": {
             "type": "string",
-            "pattern": "(http|https|www)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?"
+            "pattern": "^$|(http|https|www)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?"
         },
         "defect_dojo": {
             "type": "string",

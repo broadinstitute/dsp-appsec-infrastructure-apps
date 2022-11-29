@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { SendAppFormDataService } from '../services/create-new-app/send-app-form-data.service';
 import formJson from './form.json';
+import { CreateNewSctService } from '../services/create-new-security-controls/create-new-sct.service';
 
 @Component({
   selector: 'app-app-form',
@@ -13,8 +14,10 @@ export class AppFormComponent implements OnInit {
   json = formJson
   showAlert: boolean;
   showForm: boolean;
+  arrRequired = {};
 
   constructor(private sendAppForm: SendAppFormDataService,
+              private createNewSctService: CreateNewSctService,
               private ngZone: NgZone,
               private ref: ChangeDetectorRef) { }
 
@@ -33,5 +36,17 @@ export class AppFormComponent implements OnInit {
         this.errors = submitNewServiceQuestionnaireResponse;
       });
     });
-}
+
+
+  this.arrRequired = {
+    'service': result['Service'],
+    'github': result['Github URL'],
+    'product': '',
+    'dev_url': ''
+  };
+  this.createNewSctService.createNewSCT(this.arrRequired).subscribe((createNewSCTResponse) => {
+    console.log("Security Controls template created for this app")
+  });
+
+ }
 }

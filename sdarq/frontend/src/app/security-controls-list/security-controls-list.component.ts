@@ -18,6 +18,7 @@ export class SecurityControlsListComponent implements OnInit {
   zap_results: boolean;
   sast_results: boolean;
   dev_link: boolean;
+  product_value: boolean;
   security_pentest: boolean;
   threat_model_results_link: boolean;
   threat_model_results: boolean;
@@ -114,6 +115,15 @@ export class SecurityControlsListComponent implements OnInit {
       return '<a href="#" data-mdb-toggle="tooltip" title="The URL does not exist!"><i class="fas fa-info-circle blue-color fa-2x"></i><a>'
     } else {
       this.dev_link = true;
+    }
+  }
+
+  productShowValue(product){
+    if (product === '') {
+      this.product_value = false;
+      return '<a href="#" data-mdb-toggle="tooltip" title="The product name is not available!"><i class="fas fa-info-circle blue-color fa-2x"></i><a>'
+    } else {
+      this.product_value = true;
     }
   }
 

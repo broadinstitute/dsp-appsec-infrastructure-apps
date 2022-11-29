@@ -35,14 +35,8 @@ def slacknotify_app_jira(appsec_slack_channel, dojo_name, security_champion, pro
     """
     client.chat_postMessage(
         channel=appsec_slack_channel,
+        text="New APP created",
         attachments=[{"blocks": [
-            {
-                "type": "section",
-                "text": {
-                      "type": "mrkdwn",
-                      "text": "*New APP created*"
-                      }
-            },
             {
                 "type": "section",
                 "text": {
@@ -103,14 +97,8 @@ def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product
     """
     client.chat_postMessage(
         channel=appsec_slack_channel,
+        text="New service created",
         attachments=[{"blocks": [
-            {
-                "type": "section",
-                "text": {
-                      "type": "mrkdwn",
-                      "text": "*New service created*"
-                      }
-            },
             {
                 "type": "section",
                 "text": {
@@ -223,14 +211,8 @@ def slacknotify_security_pentest(appsec_slack_channel, security_champion, projec
     """
     client.chat_postMessage(
         channel=appsec_slack_channel,
+        text="There is a security pentest request",
         attachments=[{"blocks":[
-            {
-                "type": "section",
-                "text": {
-                      "type": "mrkdwn",
-                      "text": "*There is a security pentest request*"
-                      }
-            },
             {
                 "type": "section",
                 "text": {
@@ -276,14 +258,8 @@ def slacknotify_jira_ticket_risk_assessment(jtra_slack_channel, ticket_context, 
     """
     client.chat_postMessage(
         channel=jtra_slack_channel,
+        text="HIGH Risk Jira Ticket",
         attachments=[{"blocks":[
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "*Jira Ticket Risk Assessment: HIGH*"
-                }
-            },
             {
                 "type": "section",
                 "text": {
@@ -330,14 +306,8 @@ def slacknotify_jira_ticket_risk_assessment_error(jtra_slack_channel, user_email
     """
     client.chat_postMessage(
         channel=jtra_slack_channel,
+        text="An error happened to Jira Ticket Risk Assessment questionnaire",
         attachments=[{"blocks":[
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "*An error happened to Jira Ticket Risk Assessment questionnaire*"
-                }
-            },
             {
                 "type": "section",
                 "text": {
