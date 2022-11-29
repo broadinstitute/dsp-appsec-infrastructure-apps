@@ -15,7 +15,7 @@ security_controls_schema = {
         },
         "dev_url": {
             "type": "string",
-            "pattern": "(http|https|www)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?"
+            "pattern": "^$|(http|https|www)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?"
         },
         "defect_dojo": {
             "type": "string",
