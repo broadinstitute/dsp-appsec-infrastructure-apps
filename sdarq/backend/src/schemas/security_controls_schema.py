@@ -26,7 +26,7 @@ security_controls_schema = {
         },
         "threat_model_link": {
             "type": "string",
-            "pattern": "^$|(http|https|www)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?"
+            "pattern": "(http|https|www)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?"
         },
         "zap": {
             "type": "boolean",
