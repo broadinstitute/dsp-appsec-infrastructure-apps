@@ -7,10 +7,10 @@ Check the documentation in this [link](https://broadinstitute.github.io/dsp-apps
 
 ### Apps
 
-- [Sdarq](sdarq) - A tool built by the AppSec Team at the DSP, Broad Institute 
+- [Sdarq](sdarq) - Security tool. Learn more [here](https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/docs/sdarq) 
+- [CIS Scanner](cis) - Security Scanner that assess security posture of GCP projects
 - [DefectDojo](defectdojo)
 - [CodeDx](codedx)
-- [CIS Scanner](cis)
 - [Automated ZAP Scanner](zap)
 - [Job Batch Dispatcher](batch)
 
