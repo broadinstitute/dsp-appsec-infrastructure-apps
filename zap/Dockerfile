@@ -1,6 +1,6 @@
 FROM owasp/zap2docker-weekly AS zap
 
-FROM us.gcr.io/broad-dsp-gcr-public/base/python:debian AS base
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:3.10-debian AS base
 
 FROM base AS build
 
