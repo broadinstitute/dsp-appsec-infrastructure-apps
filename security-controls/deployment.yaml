@@ -1,0 +1,51 @@
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: ${CRON_SERVICE_ACCOUNT}-sa-firestore-policy
+  namespace: ${NAMESPACE}
+spec:
+  member: serviceAccount:${CRON_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
+  role: roles/datastore.user
+  resourceRef:
+    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+    kind: Project
+    external: projects/${PROJECT_ID}
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: sdarq-security-controls
+  namespace: ${NAMESPACE}
+spec:
+  schedule: "0 7 * * 6"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: ${CRON_SERVICE_ACCOUNT}
+          runtimeClassName: gvisor
+          nodeSelector:
+            cloud.google.com/gke-nodepool: batch
+          restartPolicy: OnFailure
+
+          containers:
+          - name: sdarq-security-controls
+            image: ${SDARQ_SECURITY_CONTROLS}
+            command: ['python3', '/entrypoint.py']
+            env:
+              - name: DEFECT_DOJO_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: ${JOB_SECRET}
+                    key: DEFECT_DOJO_KEY
+              - name: DEFECT_DOJO_URL
+                valueFrom:
+                  secretKeyRef:
+                    name: ${JOB_SECRET}
+                    key: DEFECT_DOJO_URL
+              - name: SC_FIRESTORE_COLLECTION
+                valueFrom:
+                  secretKeyRef:
+                    name: ${JOB_SECRET}
+                    key: SC_FIRESTORE_COLLECTION

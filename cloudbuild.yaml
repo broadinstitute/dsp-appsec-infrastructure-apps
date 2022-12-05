@@ -18,6 +18,7 @@ options:
   - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx
   - SDARQ_FRONTEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-frontend:${SHORT_SHA}
   - SDARQ_BACKEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-backend:${SHORT_SHA}
+  - SDARQ_SECURITY_CONTROLS=us.gcr.io/${PROJECT_ID}/sdarq-security-controls
   - DNS_DOMAIN=${_DNS_DOMAIN}
   - DNS_ZONE=${_DNS_ZONE}
   - TERRAFORM_BUCKET=${PROJECT_ID}-terraform
@@ -77,6 +78,18 @@ steps:
   - executor
       --context=dir:///workspace/cis
       --destination=$${CIS_IMAGE}
+      --cache
+
+# build SDARQ-security-controls Docker image
+- id: sdarq-security-controls
+  name: *kaniko
+  waitFor: ['kaniko']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/sdarq-security-controls
+      --destination=$${SDARQ_SECURITY_CONTROLS}
       --cache
 
 # build patched CodeDx image
