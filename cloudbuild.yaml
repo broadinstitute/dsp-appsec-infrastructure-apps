@@ -81,7 +81,7 @@ steps:
       --cache
 
 # build SDARQ-security-controls Docker image
-- id: sdarq-security-controls
+- id: sdarq-security-controls-image
   name: *kaniko
   waitFor: ['kaniko']
   entrypoint: sh
@@ -231,5 +231,12 @@ steps:
   waitFor: ['shared', 'batch-dispatcher-image']
   entrypoint: ./deploy.sh
   dir: zap
+
+# deploy SDARQ security controls to GKE cluster
+- id: sdarq-security-controls
+  name: *kubectl
+  waitFor: ['shared', 'sdarq-security-controls-image']
+  entrypoint: ./deploy.sh
+  dir: security-controls
 
 timeout: 7200s
