@@ -19,5 +19,3 @@ export SERVICE_ACCOUNT="${CRON_SERVICE_ACCOUNT}"
 ./kube-apply.py "service-account.yaml"
 
 ./kube-apply.py "${CWD}/deployment.yaml"
-
-./batch.sh
