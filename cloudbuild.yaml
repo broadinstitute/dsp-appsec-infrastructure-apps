@@ -237,6 +237,6 @@ steps:
   name: *kubectl
   waitFor: ['shared', 'sdarq-security-controls-image']
   entrypoint: ./deploy.sh
-  dir: sdarq-security-controls
+  dir: security-controls
 
 timeout: 7200s
