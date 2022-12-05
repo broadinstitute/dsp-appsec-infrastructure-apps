@@ -88,7 +88,7 @@ steps:
   args:
   - -c
   - executor
-      --context=dir:///workspace/sdarq-security-controls
+      --context=dir:///workspace/security-controls
       --destination=$${SDARQ_SECURITY_CONTROLS}
       --cache
 
