@@ -235,7 +235,7 @@ steps:
 # deploy SDARQ security controls to GKE cluster
 - id: sdarq-security-controls
   name: *kubectl
-  waitFor: ['shared', 'sdarq-security-controls-image']
+  waitFor: ['shared']
   entrypoint: ./deploy.sh
   dir: security-controls
 
