@@ -15,7 +15,7 @@ spec:
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name:  sdarq-security-controls-trigger-weekly
+  name:  security-controls-trigger-weekly
   namespace: ${NAMESPACE}
 spec:
   schedule: "0 7 * * 6"
@@ -30,7 +30,7 @@ spec:
           restartPolicy: OnFailure
 
           containers:
-          - name: sdarq-security-controls
+          - name: security-controls
             image: ${SDARQ_SECURITY_CONTROLS}
             command: ['python3', '/entrypoint.py']
             env:

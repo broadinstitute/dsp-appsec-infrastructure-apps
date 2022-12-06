@@ -6,7 +6,7 @@ CWD="${PWD}"
 cd ../shared
 export $(xargs < .env)
 
-export NAMESPACE="sdarq-security-controls"
+export NAMESPACE="security-controls"
 export CRON_JOB="${NAMESPACE}-trigger-weekly"
 export CRON_SERVICE_ACCOUNT="${CRON_JOB}"
 

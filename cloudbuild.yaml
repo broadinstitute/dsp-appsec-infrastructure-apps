@@ -194,7 +194,6 @@ steps:
   entrypoint: ./global.sh
   dir: shared
 
-
 # deploy CIS scanner resources
 - id: cis
   name: *kubectl
