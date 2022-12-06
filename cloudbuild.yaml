@@ -232,7 +232,7 @@ steps:
   dir: zap
 
 # deploy SDARQ security controls to GKE cluster
-- id: sdarq-security-controls
+- id: security-controls
   name: *kubectl
   waitFor: ['shared', 'sdarq-security-controls-image']
   entrypoint: ./deploy.sh
