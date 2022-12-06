@@ -18,7 +18,7 @@ options:
   - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx
   - SDARQ_FRONTEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-frontend:${SHORT_SHA}
   - SDARQ_BACKEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-backend:${SHORT_SHA}
-  - SDARQ_SECURITY_CONTROLS=us.gcr.io/${PROJECT_ID}/sdarq-security-controls
+  - SDARQ_SECURITY_CONTROLS=us.gcr.io/${PROJECT_ID}/sdarq-security-controls:${SHORT_SHA}
   - DNS_DOMAIN=${_DNS_DOMAIN}
   - DNS_ZONE=${_DNS_ZONE}
   - TERRAFORM_BUCKET=${PROJECT_ID}-terraform
@@ -194,6 +194,13 @@ steps:
   entrypoint: ./global.sh
   dir: shared
 
+# deploy SDARQ security controls to GKE cluster
+- id: security-controls
+  name: *kubectl
+  waitFor: ['shared', 'sdarq-security-controls-image']
+  entrypoint: ./deploy.sh
+  dir: security-controls
+
 # deploy CIS scanner resources
 - id: cis
   name: *kubectl
@@ -230,12 +237,5 @@ steps:
   waitFor: ['shared', 'batch-dispatcher-image']
   entrypoint: ./deploy.sh
   dir: zap
-
-# deploy SDARQ security controls to GKE cluster
-- id: security-controls
-  name: *kubectl
-  waitFor: ['shared', 'sdarq-security-controls-image']
-  entrypoint: ./deploy.sh
-  dir: security-controls
 
 timeout: 7200s

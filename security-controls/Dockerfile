@@ -14,5 +14,3 @@ RUN apt-get update -q && \
     rm -rf /var/lib/apt/lists/*
 
 COPY *.py ./
-
-ENTRYPOINT ["python3", "-m", "entrypoint"]
