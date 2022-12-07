@@ -2,10 +2,10 @@
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember
 metadata:
-  name: ${CRON_SERVICE_ACCOUNT}-sa-firestore-policy
+  name: ${SERVICE_ACCOUNT}-sa-firestore-policy
   namespace: ${NAMESPACE}
 spec:
-  member: serviceAccount:${CRON_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
+  member: serviceAccount:${SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
   role: roles/datastore.user
   resourceRef:
     apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
@@ -23,7 +23,7 @@ spec:
     spec:
       template:
         spec:
-          serviceAccountName: ${CRON_SERVICE_ACCOUNT}
+          serviceAccountName: ${SERVICE_ACCOUNT}
           runtimeClassName: gvisor
           nodeSelector:
             cloud.google.com/gke-nodepool: batch

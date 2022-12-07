@@ -13,7 +13,7 @@ export NAMESPACE="security-controls"
   "configconnectorcontext.yaml"
 
 export CRON_JOB="${NAMESPACE}-trigger-weekly"
-export CRON_SERVICE_ACCOUNT="${CRON_JOB}"
+export SERVICE_ACCOUNT="${CRON_JOB}"
 ./kube-apply.py "service-account.yaml"
 
 ./kube-apply.py "${CWD}/deployment.yaml"
