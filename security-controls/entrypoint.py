@@ -3,12 +3,10 @@
 This module
 - will get all products that have srlc tag and update security controls column for all services/apps
 """
-
-import json
-import logging
 import os
-import re
 import requests
+from google.cloud import firestore
+
 
 
 def getDDprojects(defect_dojo_key: str, defect_dojo: str, security_controls_firestore_collection: str):
@@ -17,7 +15,7 @@ def getDDprojects(defect_dojo_key: str, defect_dojo: str, security_controls_fire
     Update all services 3rd party dependencies scan in security controls with the result link to DD
     '''
     db = firestore.Client()
-    products_endpoint = "https://defectdojo.dsp-appsec-dev.broadinstitute.org/api/v2/products/?tag=srcclr"
+    products_endpoint = f"{0}/api/v2/products/?tag=srcclr".format(defect_dojo)
 
     headers = {
         "content-type": "application/json",
