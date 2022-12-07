@@ -15,7 +15,7 @@ spec:
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name:  security-controls-trigger-weekly
+  name:  ${CRON_JOB}
   namespace: ${NAMESPACE}
 spec:
   schedule: "0 7 * * 6"
