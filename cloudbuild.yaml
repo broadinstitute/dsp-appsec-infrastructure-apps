@@ -198,7 +198,8 @@ steps:
 - id: security-controls
   name: *kubectl
   waitFor: ['shared', 'sdarq-security-controls-image']
-  entrypoint: ./deploy.sh
+  entrypoint: 
+  ./deploy.sh
   dir: security-controls
 
 # deploy CIS scanner resources
