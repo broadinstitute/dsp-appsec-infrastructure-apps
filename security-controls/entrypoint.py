@@ -60,7 +60,7 @@ def update_dast_values(defect_dojo_key: str, defect_dojo: str, security_controls
             logging.info("DAST value and link updated for %s ", product['name'])
             doc_ref.set({
                 u'zap': True,
-                u'vulnerability_management': '{0}/product/{1}/finding/{2}'.format(defect_dojo, str(product['id']))
+                u'vulnerability_management': '{0}/product/{1}/finding/{2}'.format(defect_dojo, str(product['id'], dast_link))
             }, merge=True)
 
 
