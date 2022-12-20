@@ -12,6 +12,7 @@ export NAMESPACE="security-controls"
   "namespace.yaml" \
   "configconnectorcontext.yaml"
 
+export DEFECT_DOJO_URL="http://${DOJO_SERVICE}.${DOJO_NAMESPACE}.svc.cluster.local"
 export SERVICE="${NAMESPACE}"
 export SERVICE_SECRET="${NAMESPACE}"
 export CRON_JOB="${NAMESPACE}-trigger-daily"

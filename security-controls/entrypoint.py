@@ -73,7 +73,7 @@ def main():
     defect_dojo = os.getenv("DEFECT_DOJO_URL")
     security_controls_firestore_collection = os.environ['SC_FIRESTORE_COLLECTION']
     dep_scan_link = os.getenv("DEP_SCAN_LINK")
-    dast_link = os.getenv("dast_link")
+    dast_link = os.getenv("DAST_LINK")
 
     # configure logging
     logging.basicConfig(level=logging.INFO)

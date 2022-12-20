@@ -36,3 +36,6 @@ spec:
             envFrom:
             - secretRef:
                 name: ${SERVICE_SECRET}
+            env:
+              - name: DEFECT_DOJO_URL
+                value: ${DEFECT_DOJO_URL}
