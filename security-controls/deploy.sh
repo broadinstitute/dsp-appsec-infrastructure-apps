@@ -17,6 +17,8 @@ export SERVICE="${NAMESPACE}"
 export SERVICE_SECRET="${NAMESPACE}"
 export CRON_JOB="${NAMESPACE}-trigger-daily"
 export CRON_SERVICE_ACCOUNT="${CRON_JOB}"
+
+export SERVICE_ACCOUNT="${CRON_SERVICE_ACCOUNT}"
 ./kube-apply.py "service-account.yaml"
 
 ./kube-apply.py "${CWD}/deployment.yaml"
