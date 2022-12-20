@@ -16,7 +16,7 @@ export DEFECT_DOJO_URL="http://${DOJO_SERVICE}.${DOJO_NAMESPACE}.svc.cluster.loc
 export SERVICE="${NAMESPACE}"
 export SERVICE_SECRET="${NAMESPACE}"
 export CRON_JOB="${NAMESPACE}-trigger-daily"
-export SERVICE_ACCOUNT="${CRON_JOB}"
+export CRON_SERVICE_ACCOUNT="${CRON_JOB}"
 ./kube-apply.py "service-account.yaml"
 
 ./kube-apply.py "${CWD}/deployment.yaml"
