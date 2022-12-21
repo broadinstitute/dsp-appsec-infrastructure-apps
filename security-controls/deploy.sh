@@ -10,12 +10,10 @@ export NAMESPACE="security-controls"
 export DEFECT_DOJO_URL="http://${DOJO_SERVICE}.${DOJO_NAMESPACE}.svc.cluster.local"
 export SERVICE_SECRET="${NAMESPACE}"
 export SERVICE="${NAMESPACE}-trigger-daily"
+export SERVICE_ACCOUNT="${NAMESPACE}"
 
 ./kube-apply.py \
   "namespace.yaml" \
-  "configconnectorcontext.yaml"
-
-export SERVICE_ACCOUNT="${SERVICE}"
-./kube-apply.py "service-account.yaml"
-
-./kube-apply.py "${CWD}/deployment.yaml"
+  "configconnectorcontext.yaml" \
+  "service-account.yaml" \
+  "${CWD}/deployment.yaml"
