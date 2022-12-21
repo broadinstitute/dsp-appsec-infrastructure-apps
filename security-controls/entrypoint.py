@@ -9,7 +9,7 @@ from google.cloud import firestore
 
 
 
-def update_dependecies_scan_values(defect_dojo_key: str, defect_dojo: str, security_controls_firestore_collection: str, dep_scan_link: str):
+def update_dependecies_scan_values(defect_dojo_key: str, defect_dojo: str, security_controls_firestore_collection: str, dep_scan_link: str, defect_dojo_host: str):
     '''
     Get all DefectDojo projects with srcclr tag
     Update all services 3rd party dependencies scan in security controls with the result link to DD
@@ -33,11 +33,11 @@ def update_dependecies_scan_values(defect_dojo_key: str, defect_dojo: str, secur
             logging.info("Third party dependecies scan value and link updated for %s ", product['name'])
             doc_ref.set({
                 u'sourceclear': True,
-                u'sourceclear_link': '{0}/product/{1}/finding/{2}'.format(defect_dojo, str(product['id']), dep_scan_link)
+                u'sourceclear_link': '{0}/product/{1}/finding/{2}'.format(defect_dojo_host, str(product['id']), dep_scan_link)
             }, merge=True)
 
 
-def update_dast_values(defect_dojo_key: str, defect_dojo: str, security_controls_firestore_collection: str, dast_link: str):
+def update_dast_values(defect_dojo_key: str, defect_dojo: str, security_controls_firestore_collection: str, dast_link: str, defect_dojo_host: str):
     '''
     Get all DefectDojo projects with zap tag
     Update all services DAST value in security controls with the result link to DD
@@ -60,7 +60,7 @@ def update_dast_values(defect_dojo_key: str, defect_dojo: str, security_controls
             logging.info("DAST value and link updated for %s ", product['name'])
             doc_ref.set({
                 u'zap': True,
-                u'vulnerability_management': '{0}/product/{1}/finding/{2}'.format(defect_dojo, str(product['id']), dast_link)
+                u'vulnerability_management': '{0}/product/{1}/finding/{2}'.format(defect_dojo_host, str(product['id']), dast_link)
             }, merge=True)
 
 
@@ -71,6 +71,7 @@ def main():
     """
     defect_dojo_key = os.getenv("DEFECT_DOJO_KEY")
     defect_dojo = os.getenv("DEFECT_DOJO_URL")
+    defect_dojo_host = os.getenv("DEFECT_DOJO")
     security_controls_firestore_collection = os.environ['SC_FIRESTORE_COLLECTION']
     dep_scan_link = os.getenv("DEP_SCAN_LINK")
     dast_link = os.getenv("DAST_LINK")
@@ -78,9 +79,9 @@ def main():
     # configure logging
     logging.basicConfig(level=logging.INFO)
 
-    update_dependecies_scan_values(defect_dojo_key, defect_dojo, security_controls_firestore_collection, dep_scan_link)
+    update_dependecies_scan_values(defect_dojo_key, defect_dojo, security_controls_firestore_collection, dep_scan_link, defect_dojo_host)
 
-    update_dast_values(defect_dojo_key, defect_dojo, security_controls_firestore_collection, dast_link)
+    update_dast_values(defect_dojo_key, defect_dojo, security_controls_firestore_collection, dast_link, defect_dojo_host)
 
 
 if __name__ == "__main__":
