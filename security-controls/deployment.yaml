@@ -2,7 +2,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name:  ${CRON_JOB}
+  name:  ${SERVICE}
   namespace: ${NAMESPACE}
 spec:
   schedule: "0 1 * * *"
@@ -10,7 +10,7 @@ spec:
     spec:
       template:
         spec:
-          serviceAccountName: ${CRON_SERVICE_ACCOUNT}
+          serviceAccountName: ${SERVICE_ACCOUNT}
           runtimeClassName: gvisor
           nodeSelector:
             cloud.google.com/gke-nodepool: batch

@@ -8,10 +8,8 @@ export $(xargs < .env)
 
 export NAMESPACE="security-controls"
 export DEFECT_DOJO_URL="http://${DOJO_SERVICE}.${DOJO_NAMESPACE}.svc.cluster.local"
-export SERVICE="${NAMESPACE}"
 export SERVICE_SECRET="${NAMESPACE}"
-export CRON_JOB="${NAMESPACE}-trigger-daily"
-export CRON_SERVICE_ACCOUNT="${CRON_JOB}"
+export SERVICE="${NAMESPACE}-trigger-daily"
 
 ./kube-apply.py \
   "namespace.yaml" \
