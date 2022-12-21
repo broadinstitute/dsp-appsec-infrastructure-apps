@@ -14,7 +14,7 @@ def update_dependecies_scan_values(defect_dojo_key: str, defect_dojo: str, secur
     Get all DefectDojo projects with srcclr tag
     Update all services 3rd party dependencies scan in security controls with the result link to DD
     '''
-    db = firestore.client()
+    db = firestore.Client()
     products_endpoint = "{0}/api/v2/products/?tag=srcclr".format(defect_dojo)
 
     headers = {
@@ -42,7 +42,7 @@ def update_dast_values(defect_dojo_key: str, defect_dojo: str, security_controls
     Get all DefectDojo projects with zap tag
     Update all services DAST value in security controls with the result link to DD
     '''
-    db = firestore.client()
+    db = firestore.Client()
     products_endpoint = "{0}/api/v2/products/?tag=zap".format(defect_dojo)
 
     headers = {
