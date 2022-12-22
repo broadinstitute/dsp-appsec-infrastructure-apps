@@ -7,11 +7,11 @@ Check the documentation in this [link](https://broadinstitute.github.io/dsp-apps
 
 ### Apps
 
-- [Sdarq](sdarq) - Security tool. Learn more [here](https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/docs/sdarq) 
-- [CIS Scanner](cis) - Security Scanner that assess security posture of GCP projects
+- [Sdarq](sdarq) - Security tool. Learn more in this [link](https://broadinstitute.github.io/dsp-appsec-infrastructure-apps/docs/sdarq).
+- [CIS Scanner](cis) - Security scanner that assess security posture of GCP projects. 
+- [Automated ZAP Scanner](zap) - Scripts running in GKE as Cronjobs to scan a specific list of endpoints.
 - [DefectDojo](defectdojo)
 - [CodeDx](codedx)
-- [Automated ZAP Scanner](zap)
 - [Job Batch Dispatcher](batch)
 
 
