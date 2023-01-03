@@ -3,7 +3,8 @@ substitutions:
   _ORG_VIEWER_SA_EMAIL: '' # email of an existing Service Account with Org Viewer role
   _DNS_DOMAIN: '' # fully-resolved DNS domain name (e.g. appsec.example.org)
   _DNS_ZONE: '' # DNS zone name to be created/updated (e.g. appsec)
-  _CIS_CONTROLS_IGNORE: '' # CIS controls rule to ignore 
+  _CIS_CONTROLS_IGNORE: '' # CIS controls rule to ignore
+  _SECURITY_CONTROLS_IGNORE: '' # Security controls set to false ignore for some services
 
 options:
   machineType: N1_HIGHCPU_8
@@ -200,6 +201,8 @@ steps:
   waitFor: ['shared', 'sdarq-security-controls-image']
   entrypoint: ./deploy.sh
   dir: security-controls
+  env:
+  - SECURITY_CONTROLS_IGNORE=${_SECURITY_CONTROLS_IGNORE}
 
 # deploy CIS scanner resources
 - id: cis

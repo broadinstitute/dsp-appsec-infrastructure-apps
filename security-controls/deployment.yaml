@@ -39,3 +39,28 @@ spec:
             env:
               - name: DEFECT_DOJO_URL
                 value: ${DEFECT_DOJO_URL}
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name:  ${SERVICE}
+  namespace: ${NAMESPACE}
+spec:
+  schedule: "0 1 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: ${SERVICE_ACCOUNT}
+          runtimeClassName: gvisor
+          nodeSelector:
+            cloud.google.com/gke-nodepool: batch
+          restartPolicy: OnFailure
+
+          containers:
+          - name: security-controls-notifier
+            image: ${SDARQ_SECURITY_CONTROLS}
+            command: ['python3', '/notify.py']
+            envFrom:
+            - secretRef:
+                name: ${SERVICE_SECRET}
