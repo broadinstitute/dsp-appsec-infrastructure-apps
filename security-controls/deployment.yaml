@@ -43,7 +43,7 @@ spec:
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name:  ${SERVICE}
+  name:  ${SERVICE}-notifier
   namespace: ${NAMESPACE}
 spec:
   schedule: "0 1 * * *"
@@ -58,9 +58,9 @@ spec:
           restartPolicy: OnFailure
 
           containers:
-          - name: security-controls-notifier
+          - name: security-controls
             image: ${SDARQ_SECURITY_CONTROLS}
-            command: ['python3', '/notify.py']
+            command: ['python3', '/notifier.py']
             envFrom:
             - secretRef:
                 name: ${SERVICE_SECRET}
