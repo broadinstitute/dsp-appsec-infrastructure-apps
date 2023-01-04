@@ -21,24 +21,23 @@ def notify_appsec(security_controls_firestore_collection, slack_token, slack_cha
                 service_seccon =  f"{doc.to_dict()['service']}_{key}"
                 if service_seccon in security_controls_ignore_list:
                     continue
-                else
-                    client = WebClient(token=slack_token)
-                    client.chat_postMessage(
-                        channel=slack_channel,
-                        attachments=[{"blocks": [
-                            {
-                                "type": "section",
-                                "text": {
-                                    "type": "mrkdwn",
-                                    "text":
-                                        f"Security control {key} is not integrated for this service/app {doc.to_dict()['service']}!",
-                                }
-                            },
-                            {
-                                "type": "divider"
-                            },
-                        ], "color": "#C31818"}]
-                    )
+                client = WebClient(token=slack_token)
+                client.chat_postMessage(
+                    channel=slack_channel,
+                    attachments=[{"blocks": [
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text":
+                                    f"Security control {key} is not integrated for this service/app {doc.to_dict()['service']}!",
+                            }
+                        },
+                        {
+                            "type": "divider"
+                        },
+                    ], "color": "#C31818"}]
+                )
 
 
 
