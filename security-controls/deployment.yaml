@@ -60,7 +60,7 @@ spec:
           containers:
           - name: security-controls
             image: ${SDARQ_SECURITY_CONTROLS}
-            command: ['python3', '/notifier.py']
+            command: ['python3', '/notify.py']
             envFrom:
             - secretRef:
                 name: ${SERVICE_SECRET}
