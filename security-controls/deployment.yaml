@@ -43,10 +43,10 @@ spec:
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name:  ${SERVICE}-notifier
+  name:  security-controls-trigger-weekly
   namespace: ${NAMESPACE}
 spec:
-  schedule: "0 1 * * *"
+  schedule: "0 7 * * 6"
   jobTemplate:
     spec:
       template:
@@ -65,5 +65,5 @@ spec:
             - secretRef:
                 name: ${SERVICE_SECRET}
             env:
-            - name: CIS_CONTROLS_IGNORE
-              value: ${CIS_CONTROLS_IGNORE}
+            - name: SECURITY_CONTROLS_IGNORE
+              value: ${SECURITY_CONTROLS_IGNORE}
