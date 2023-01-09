@@ -4,20 +4,18 @@ This module
 - will notify AppSec team in slack for all security controls that are not implemented for specific services
 """
 
-import os, logging
-import requests
+import os
 from google.cloud import firestore
 from slack_sdk import WebClient
 
 
 def notify_appsec(security_controls_firestore_collection, slack_token, slack_channel, security_controls_ignore_final_list):
     db = firestore.Client()
-    data = []
 
     docs = db.collection(security_controls_firestore_collection).stream()
     for doc in docs:
         for key in doc.to_dict():
-            if doc.to_dict()[key] == False:
+            if doc.to_dict()[key] is False:
                 service_seccon =  f"{doc.to_dict()['service']}_{key}"
                 if service_seccon in security_controls_ignore_list:
                     continue
@@ -55,3 +53,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
