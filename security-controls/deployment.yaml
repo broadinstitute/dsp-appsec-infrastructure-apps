@@ -64,3 +64,6 @@ spec:
             envFrom:
             - secretRef:
                 name: ${SERVICE_SECRET}
+            env:
+            - name: CIS_CONTROLS_IGNORE
+              value: ${CIS_CONTROLS_IGNORE}

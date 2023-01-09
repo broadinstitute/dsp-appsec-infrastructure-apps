@@ -11,20 +11,19 @@ from slack_sdk import WebClient
 
 def notify_appsec(security_controls_firestore_collection, slack_token, slack_channel, security_controls_ignore_final_list):
     db = firestore.Client()
-
     docs = db.collection(security_controls_firestore_collection).stream()
+
     for doc in docs:
         for key in doc.to_dict():
             if doc.to_dict()[key] is False:
                 service_seccon =  f"{doc.to_dict()['service']}_{key}"
-                print(service_seccon)
                 if service_seccon in security_controls_ignore_final_list:
                     print(security_controls_ignore_final_list)
                     continue
                 client = WebClient(token=slack_token)
                 client.chat_postMessage(
                     channel=slack_channel,
-                    text="Security Control not integrated",
+                    text="SDARQ Security Controls",
                     attachments=[{"blocks": [
                         {
                             "type": "section",
