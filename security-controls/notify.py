@@ -17,7 +17,7 @@ def notify_appsec(security_controls_firestore_collection, slack_token, slack_cha
         for key in doc.to_dict():
             if doc.to_dict()[key] is False:
                 service_seccon =  f"{doc.to_dict()['service']}_{key}"
-                if service_seccon in security_controls_ignore_list:
+                if service_seccon in security_controls_ignore_final_list:
                     continue
                 client = WebClient(token=slack_token)
                 client.chat_postMessage(
@@ -50,7 +50,7 @@ def main():
     security_controls_ignore_final_list = security_controls_ignore_list.split(",")
 
     notify_appsec(security_controls_firestore_collection, slack_token, slack_channel, security_controls_ignore_final_list)
+    
 
 if __name__ == "__main__":
     main()
-
