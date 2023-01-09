@@ -17,18 +17,21 @@ def notify_appsec(security_controls_firestore_collection, slack_token, slack_cha
         for key in doc.to_dict():
             if doc.to_dict()[key] is False:
                 service_seccon =  f"{doc.to_dict()['service']}_{key}"
+                print(service_seccon)
                 if service_seccon in security_controls_ignore_final_list:
+                    print(security_controls_ignore_final_list)
                     continue
                 client = WebClient(token=slack_token)
                 client.chat_postMessage(
                     channel=slack_channel,
+                    text="Security Control not integrated",
                     attachments=[{"blocks": [
                         {
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
                                 "text":
-                                    f"Security control {key} is not integrated for this service/app {doc.to_dict()['service']}!",
+                                    f"Security control `{key}` is not integrated for {doc.to_dict()['service']}!",
                             }
                         },
                         {
@@ -50,7 +53,7 @@ def main():
     security_controls_ignore_final_list = security_controls_ignore_list.split(",")
 
     notify_appsec(security_controls_firestore_collection, slack_token, slack_channel, security_controls_ignore_final_list)
-    
+
 
 if __name__ == "__main__":
     main()
