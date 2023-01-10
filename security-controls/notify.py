@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 This module
-- will notify AppSec team in slack for all security controls that are not implemented for all services
+- will notify AppSec team in Slack for all security controls,
+  that are not implemented for all services
 """
 
 import os
@@ -16,8 +17,8 @@ def notify_appsec(security_controls_firestore_collection, slack_token, slack_cha
     Report to a Slack channel
     """
 
-    db = firestore.Client()
-    docs = db.collection(security_controls_firestore_collection).stream()
+    firestore_docs = firestore.Client()
+    docs = firestore_docs.collection(security_controls_firestore_collection).stream()
     keyword_maps = {
         "burp": "security manual pentest",
         "zap": "DAST",
@@ -31,10 +32,10 @@ def notify_appsec(security_controls_firestore_collection, slack_token, slack_cha
     for doc in docs:
         for key in doc.to_dict():
             if doc.to_dict()[key] is False:
-                service_seccon =  f"{doc.to_dict()['service']}_{key}"
+                service_seccon = f"{doc.to_dict()['service']}_{key}"
                 if service_seccon in security_controls_ignore_final_list:
                     continue
-                
+
                 client = WebClient(token=slack_token)
                 client.chat_postMessage(
                     channel=slack_channel,
@@ -52,7 +53,6 @@ def notify_appsec(security_controls_firestore_collection, slack_token, slack_cha
                 )
 
 
-
 def main():
     """
     Implements the entrypoint.
@@ -63,7 +63,8 @@ def main():
     security_controls_ignore_list = os.getenv('SECURITY_CONTROLS_IGNORE', '')
     security_controls_ignore_final_list = security_controls_ignore_list.split(",")
 
-    notify_appsec(security_controls_firestore_collection, slack_token, slack_channel, security_controls_ignore_final_list)
+    notify_appsec(security_controls_firestore_collection, slack_token,
+                  slack_channel, security_controls_ignore_final_list)
 
 
 if __name__ == "__main__":
