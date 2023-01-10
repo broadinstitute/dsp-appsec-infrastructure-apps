@@ -42,7 +42,14 @@ export class AppFormComponent implements OnInit {
     'service': result['Service'],
     'github': result['Github URL'],
     'product': '',
-    'dev_url': ''
+    'dev_url': '',
+    'burp': false,
+    'zap': false,
+    'cis_scanner': false,
+    'sourceclear': false,
+    'docker_scan': false,
+    'threat_model': false,
+    'sast': false
   };
   this.createNewSctService.createNewSCT(this.arrRequired).subscribe((createNewSCTResponse) => {
     console.log("Security Controls template created for this app")

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 This module
-- will notify AppSec team in slack for all security controls that are not implemented for specific services
+- will notify AppSec team in slack for all security controls that are not implemented for all services
 """
 
 import os
@@ -10,9 +10,14 @@ from slack_sdk import WebClient
 
 
 def notify_appsec(security_controls_firestore_collection, slack_token, slack_channel, security_controls_ignore_final_list):
+    """
+    Get all security controls
+    Checks which security controls are set to false and not part of a FP list
+    Reports to Slack channel
+    """
+
     db = firestore.Client()
     docs = db.collection(security_controls_firestore_collection).stream()
-
     keyword_maps = {
         "burp": "security manual pentest",
         "zap": "DAST",
@@ -40,11 +45,8 @@ def notify_appsec(security_controls_firestore_collection, slack_token, slack_cha
                             "text": {
                                 "type": "mrkdwn",
                                 "text":
-                                    f"Security control `{keyword_maps[key]}` is not integrated for {doc.to_dict()['service']}!",
+                                    f"Security control `{keyword_maps[key]}` is not integrated/impplemented for `{doc.to_dict()['service']}`!",
                             }
-                        },
-                        {
-                            "type": "divider"
                         },
                     ], "color": "#C31818"}]
                 )
