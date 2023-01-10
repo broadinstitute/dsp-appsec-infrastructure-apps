@@ -42,7 +42,7 @@ def notify_appsec(security_controls_firestore_collection, slack_token, slack_cha
                 client = WebClient(token=slack_token)
                 client.chat_postMessage(
                     channel=slack_channel,
-                    text="AppSec Action Required",
+                    text="*AppSec Action Required*",
                     attachments=[{"blocks": [
                         {
                             "type": "section",
