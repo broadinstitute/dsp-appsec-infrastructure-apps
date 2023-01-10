@@ -12,8 +12,8 @@ from slack_sdk import WebClient
 def notify_appsec(security_controls_firestore_collection, slack_token, slack_channel, security_controls_ignore_final_list):
     """
     Get all security controls
-    Checks which security controls are set to false and not part of a FP list
-    Reports to Slack channel
+    Check security controls that are set to false and not part of a FP list
+    Report to a Slack channel
     """
 
     db = firestore.Client()
@@ -38,14 +38,14 @@ def notify_appsec(security_controls_firestore_collection, slack_token, slack_cha
                 client = WebClient(token=slack_token)
                 client.chat_postMessage(
                     channel=slack_channel,
-                    text="AppSec reminder",
+                    text="AppSec weekly reminder",
                     attachments=[{"blocks": [
                         {
                             "type": "section",
                             "text": {
                                 "type": "mrkdwn",
                                 "text":
-                                    f"Security control `{keyword_maps[key]}` is not integrated/impplemented for `{doc.to_dict()['service']}`!",
+                                    f"Security control `{keyword_maps[key]}` is not integrated/implemented for `{doc.to_dict()['service'].capitalize()}`.",
                             }
                         },
                     ], "color": "#C31818"}]
