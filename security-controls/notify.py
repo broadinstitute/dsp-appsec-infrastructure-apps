@@ -34,8 +34,6 @@ def notify_appsec(security_controls_firestore_collection, slack_token, slack_cha
             if doc.to_dict()[key] is False:
                 service_name = doc.to_dict()['service'].strip(' ').replace(' ','_')
                 service_seccon = f"{service_name}_{key}"
-                print(service_seccon)
-                print(security_controls_ignore_final_list)
                 if service_seccon in security_controls_ignore_final_list:
                     continue
 
