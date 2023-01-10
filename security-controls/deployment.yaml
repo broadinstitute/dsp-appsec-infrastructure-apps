@@ -39,3 +39,31 @@ spec:
             env:
               - name: DEFECT_DOJO_URL
                 value: ${DEFECT_DOJO_URL}
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name:  security-controls-trigger-weekly
+  namespace: ${NAMESPACE}
+spec:
+  schedule: "0 7 * * 6"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: ${SERVICE_ACCOUNT}
+          runtimeClassName: gvisor
+          nodeSelector:
+            cloud.google.com/gke-nodepool: batch
+          restartPolicy: OnFailure
+
+          containers:
+          - name: security-controls
+            image: ${SDARQ_SECURITY_CONTROLS}
+            command: ['python3', '/notify.py']
+            envFrom:
+            - secretRef:
+                name: ${SERVICE_SECRET}
+            env:
+            - name: SECURITY_CONTROLS_IGNORE
+              value: ${SECURITY_CONTROLS_IGNORE}
