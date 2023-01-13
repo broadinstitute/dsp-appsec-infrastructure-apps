@@ -15,7 +15,7 @@ def update_dependecies_scan_values(defect_dojo_key: str, defect_dojo: str, secur
     Update all services 3rd party dependencies scan in security controls with the result link to DD
     '''
     firestore_docs = firestore.Client()
-    products_endpoint = f"{defect_dojo}/api/v2/products/?tag=srcclr"
+    products_endpoint = f"{defect_dojo}/api/v2/products/?tag=srcclr&limit=1000"
 
     headers = {
         "content-type": "application/json",
@@ -44,7 +44,7 @@ def update_dast_values(defect_dojo_key: str, defect_dojo: str, security_controls
     Update all services DAST value in security controls with the result link to DD
     '''
     firestore_docs = firestore.Client()
-    products_endpoint = f"{defect_dojo}/api/v2/products/?tag=zap"
+    products_endpoint = f"{defect_dojo}/api/v2/products/?tag=zap&limit=1000"
 
     headers = {
         "content-type": "application/json",
