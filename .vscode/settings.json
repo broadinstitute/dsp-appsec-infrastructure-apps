@@ -6,5 +6,9 @@
     "editor.codeActionsOnSave": {
       "source.organizeImports": true
     }
+  },
+  "sonarlint.connectedMode.project": {
+    "connectionId": "dsp-appsec",
+    "projectKey": "broadinstitute_dsp-appsec-infrastructure-apps"
   }
 }

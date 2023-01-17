@@ -86,6 +86,8 @@ def main():
     update_dast_values(defect_dojo_key, defect_dojo,
                        security_controls_firestore_collection, dast_link, defect_dojo_host)
 
+    update_sast_values()
+
 
 if __name__ == "__main__":
     main()
