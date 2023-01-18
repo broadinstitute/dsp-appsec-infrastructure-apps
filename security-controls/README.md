@@ -1,6 +1,6 @@
 ## SDARQ Security Controls
 
-<img src="https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/blob/sdarq-jtra-improvement/sdarq/frontend/src/assets/sdarq_security_controls.png">
+<img src="https://github.com/broadinstitute/dsp-appsec-infrastructure-apps/blob/update-documentation/sdarq/frontend/src/assets/sdarq_security_controls.png">
 
 This folder contains scripts that run as `cronjobs` in cluster. These cronjobs: 
 - auto update security controls in SDARQ (DAST and 3rd party dependencies scan)
