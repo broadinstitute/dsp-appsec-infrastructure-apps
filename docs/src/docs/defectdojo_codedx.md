@@ -5,7 +5,7 @@ title: How we use DefectDojo & CodeDx
 
 ### CodeDx
 
-CodeDX is a vulnerability management tool used by AppSec team. Currently in this infrastructure it is used
+CodeDX is a vulnerability management tool used by the AppSec team. Currently in this infrastructure it is used
 to send ZAP scan results. 
 
 CodeDx is Optional, since ZAP scan results can be uploaded to DefectDojo too. 
