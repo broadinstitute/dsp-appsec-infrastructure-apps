@@ -5,7 +5,7 @@ title: Secret deployment for each app
 
 Secrets deployed for each namespace in the cluster. Values must be encoded. 
 
-### Sdarq secrets
+### SDARQ secrets
  
 ```
 apiVersion: v1
@@ -23,6 +23,23 @@ kind: Secret
 metadata:
   name: sdarq
   namespace: sdarq
+type: Opaque
+```
+
+### SDARQ Security-Controls secrets
+ 
+```
+  DAST_LINK: DefectDojo part of the link after the product number that redirects to the list of DAST scan findings
+  DEFECT_DOJO: DefectDojo host link
+  DEFECT_DOJO_KEY: DefectDojo API key
+  DEP_SCAN_LINK: DefectDojo part of the link after the product number that redirects to the list of 3rd party dependencies scan findings
+  SC_FIRESTORE_COLLECTION: Firestore collection that stores security controls
+  SLACK_CHANNEL: slack channel that reports to AppSec team all the security controls missing for services
+  SLACK_TOKEN: slack token
+kind: Secret
+metadata:
+  name: security-controls
+  namespace: security-controls
 type: Opaque
 ```
 
