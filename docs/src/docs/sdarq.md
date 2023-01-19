@@ -45,6 +45,8 @@ SDARQ orchestrates different security tools and scanners owned by the DSP Appsec
 
 - List all security controls implemented for a service/product
 - Add/edit security controls for a service
+- Weekly auto updates that check if services security controls have been updated for DAST & 3rd party dependecies scans
+- Weekly reminders for AppSec team to take actions if security controls are missing for services
 
 ### Security Requests
 
