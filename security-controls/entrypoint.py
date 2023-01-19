@@ -3,8 +3,9 @@
 This module
 - will get all products that have srlc & zap tag and update security controls column for all services/apps
 """
-import os
 import logging
+import os
+
 import requests
 from google.cloud import firestore
 
@@ -65,6 +66,11 @@ def update_dast_values(defect_dojo_key: str, defect_dojo: str, security_controls
                 'vulnerability_management': f'{defect_dojo_host}/product/{str(product["id"])}/finding/{dast_link}'
             }, merge=True)
 
+def update_sast_values():
+    fs = firestore.Client()
+    collections = fs.collections()
+    for c in collections:
+        print(c.id)    
 
 def main():
     """
@@ -90,4 +96,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    #main()
+    update_sast_values()
