@@ -24,6 +24,7 @@ export SDARQ_SECRET="sdarq"
 export CIS_JOB_TOPIC="cis-scans"
 export ZAP_JOB_TOPIC="zap-scans"
 export SC_FIRESTORE_COLLECTION="security-controls"
+export SAST_FIRESTORE_COLLECTION="sast-details"
 export CIS_FIRESTORE_COLLECTION="cis-scans"
 
 export FRONTEND_PORT="frontend"

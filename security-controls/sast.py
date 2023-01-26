@@ -13,16 +13,8 @@ import requests
 from google.cloud import firestore
 from requests.auth import HTTPBasicAuth
 
-script_file_path = Path(__file__).absolute().resolve()
-script_directory = script_file_path.parent
-work_directory = (script_directory / "work")
-work_directory.mkdir(exist_ok=True)
-user_home_path = Path.home()
-cache_path = user_home_path / ".dsp-appsec-controls-cache"
-cache_path.mkdir(exist_ok=True)
-
 SECURITY_CONTROLS = os.environ['SC_FIRESTORE_COLLECTION']
-SAST_DETAILS = os.environ['SAST_DETAILS_FIRESTORE_COLLECTION']
+SAST_DETAILS = os.environ['SAST_FIRESTORE_COLLECTION']
 GITHUB_GQL_ENDPOINT = "https://api.github.com/graphql"
 fs = firestore.Client()
 
@@ -32,7 +24,6 @@ GITHUB_TOKEN=os.getenv("GITHUB_TOKEN")
 
 repo_re = re.compile(r'https://github.com/([a-zA-Z0-9\-_]+)/([a-zA-Z0-9\-_]+)')
 
-# data keyed by (org, repo_name), values are just sets of properties
 
 DAYS = 180
 SINCE_TIME = time() - DAYS * 24 * 60 * 60
@@ -55,7 +46,7 @@ GITHUB = "GitHub"
 
 RepoKey = tuple[str, str] # organization, repository
 Repo = dict[str, object] # key is source e.g. CODACY, GITHUB; value is data returned from one source about one repo
-Repos = dict[RepoKey, Repo]
+Repos = dict[RepoKey, Repo] 
 CodacyOrgData = dict[str, list] # {"org": [ user_suggestion, ... ]}
 
 
