@@ -13,10 +13,8 @@ RUN apt-get update -q && \
       libffi-dev && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install pylint 
+RUN pip3 install pylint
 
 COPY *.py ./
-
-RUN pylint --disable=C0301 /*.py
 
 ENTRYPOINT ["python3", "-m", "entrypoint"]
