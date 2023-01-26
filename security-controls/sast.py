@@ -1,9 +1,7 @@
 #!/usr/bin/env python
+import logging
 import os
 import re
-from datetime import datetime
-from subprocess import run
-from time import time
 
 import requests
 from google.cloud import firestore
@@ -19,11 +17,6 @@ SONARCLOUD_API_KEY=os.getenv("SONARCLOUD_API_KEY")
 GITHUB_TOKEN=os.getenv("GITHUB_TOKEN")
 
 repo_re = re.compile(r'https://github.com/([a-zA-Z0-9\-_]+)/([a-zA-Z0-9\-_]+)')
-
-
-DAYS = 180
-SINCE_TIME = time() - DAYS * 24 * 60 * 60
-SINCE_TIME_DT = datetime.fromtimestamp(SINCE_TIME)
 
 SONAR_ORGS = {
     "broadinstitute": "dsp-appsec",
@@ -51,7 +44,7 @@ def repo_list_from_security_controls(repos: Repos):
     # sc_docs = sc_collection.stream()
     # for doc in sc_docs:
     #     project = doc.to_dict()
-    #     print(f"github {g(project,'github')} sast {g(project,'sast')} link {g(project,'sast_link')}")
+    #     logging.debug(f"github {g(project,'github')} sast {g(project,'sast')} link {g(project,'sast_link')}")
 
     get_repo(repos, ('broadinstitute', 'dsp-appsec-infrastructure-apps'))
     get_repo(repos, ('DataBiosphere', 'terra-ui'))
@@ -78,7 +71,7 @@ def list_repo_info(repos: Repos, org, repo_name):
     pull GitHub metadata on this repo
     '''
     
-    print(f"GitHub {repo_name} {org}")
+    logging.info(f"GitHub {repo_name} {org}")
     headers = { 
         "Authorization": f"bearer {GITHUB_TOKEN}" 
     }
@@ -108,29 +101,6 @@ def list_repo_info(repos: Repos, org, repo_name):
 
     repo = get_repo(repos, (org, repo_name))
     repo[GITHUB] = record
-
-
-def pull_repo(org, repo, org_path, repo_path):
-    if repo_path.exists():
-         run(["git", "pull"], cwd=repo_path, check=True)
-    else:
-        run(["gh", "repo", "clone", f"{org}/{repo}"], cwd=org_path, check=True)
-
-
-def get_repo_users(repo_path):
-    git_log = run(["git", "log", '--pretty=%an <%ae>#%at'], cwd=repo_path, check=True, capture_output=True)
-    output = git_log.stdout.decode("utf-8")
-    repo_users = dict()
-    for entry in output.split("\n"):
-        if '#' not in entry:
-            continue
-        e_user, e_date = entry.split('#')
-        e_date = int(e_date)
-        if e_date < SINCE_TIME:
-            continue
-        if e_user not in repo_users:
-            repo_users[e_user] = e_date
-    return repo_users
 
 
 def get_repo(repos: Repos, key: RepoKey) -> Repo:
@@ -171,9 +141,11 @@ def list_codacy(repos: Repos, codacy_org_data: CodacyOrgData, organization: str)
     json = r.json()
     data = json['data']
     for record in data:
-        assert organization == record['owner']
         repo_name = record['name']
-        print(f"Codacy {repo_name}")
+        if organization != record['owner']:
+            logger.error(f"org not owner {organization} {repo_name}")
+            continue
+        logging.info(f"Codacy {repo_name}")
         tools_r = requests.get(
             f'{CODACY_BASE}/analysis/organizations/gh/{organization}/repositories/{repo_name}/tools', 
             params={}, headers = headers)
@@ -206,7 +178,7 @@ def list_codacy(repos: Repos, codacy_org_data: CodacyOrgData, organization: str)
 
 
 def list_sonar(repos: Repos, org_key: str):
-    print(f"SonarCloud organization {org_key}")
+    logging.info(f"SonarCloud organization {org_key}")
 
     # TODO fix bug - terra-data-catalog is missing
 
@@ -221,7 +193,7 @@ def list_sonar(repos: Repos, org_key: str):
     r = requests.get(url, auth=auth)
     json = r.json()
     if 'components' not in json:
-        print(f"SonarCloud - error {org_key}")
+        logging.info(f"SonarCloud - error {org_key}")
         return
     components = json['components']
     for record in components:
@@ -231,15 +203,14 @@ def list_sonar(repos: Repos, org_key: str):
         rp = requests.get(project_url, auth=auth)
         project_json = rp.json()
         if 'alm' not in project_json:
-            print(f"SonarCloud - error no alm in {project_key}")
+            logging.error(f"SonarCloud - error no alm in {project_key}")
             continue
         alm = project_json['alm']
         gh_url = alm['url']
-        #        print(gh_url)
         url_parts = gh_url.split('/')
         gh_org = url_parts[-2]
         gh_project = url_parts[-1]
-        print(f"SonarCloud - {gh_project}")
+        logging.info(f"SonarCloud - {gh_project}")
         repo = get_repo(repos, (gh_org, gh_project))
         repo[SONAR] = project_json #record
 
