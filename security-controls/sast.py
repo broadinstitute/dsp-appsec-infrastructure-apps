@@ -40,15 +40,24 @@ Repo = dict[str, object] # key is source e.g. CODACY, GITHUB; value is repo info
 Repos = dict[RepoKey, Repo]
 CodacyOrgData = dict[str, list] # {"org": [ user_suggestion, ... ]}
 
+def get_if(obj: dict, key: str) -> str:
+    '''return obj[value] or empty string if missing'''
+    value = obj.get(key)
+    if value is None:
+        value = ""
+    return value
+
+GET_SC = False
 
 def repo_list_from_security_controls(repos: Repos):
     """Iniitalize repos from Firestore."""
-    # sc_collection = fs.collection(security_controls_firestore_collection)
-    # sc_docs = sc_collection.stream()
-    # for doc in sc_docs:
-    #     project = doc.to_dict()
-    #     logging.debug(f"github {g(project,'github')}
-    # sast {g(project,'sast')} link {g(project,'sast_link')}")
+    if GET_SC:
+        sc_collection = fs.collection(SECURITY_CONTROLS)
+        sc_docs = sc_collection.stream()
+        for doc in sc_docs:
+            project = doc.to_dict()
+            logging.debug("github %s sast %s link %s",
+                get_if(project,'github'), get_if(project,'sast'), get_if(project,'sast_link'))
 
     get_repo(repos, ('broadinstitute', 'dsp-appsec-infrastructure-apps'))
     get_repo(repos, ('DataBiosphere', 'terra-ui'))
@@ -76,7 +85,7 @@ def body(gql: str, params: dict) -> str:
 def list_repo_info(repos: Repos, org, repo_name):
     '''Pull GitHub metadata on this repo.'''
 
-    logging.info(f"GitHub {repo_name} {org}")
+    logging.info("GitHub %s %s", repo_name, org)
     headers = {
         "Authorization": f"bearer {GITHUB_TOKEN}"
     }
@@ -111,11 +120,11 @@ def list_repo_info(repos: Repos, org, repo_name):
 def get_repo(repos: Repos, key: RepoKey) -> Repo:
     '''Lookup the key in repos, adding if not present, and return the Repo.'''
     if key in repos:
-        return repos[key]
+        repo = repos[key]
     else:
         repo = Repo()
         repos[key] = repo
-        return repo
+    return repo
 
 
 def list_codacy(repos: Repos, codacy_org_data: CodacyOrgData, organization: str):
@@ -127,16 +136,14 @@ def list_codacy(repos: Repos, codacy_org_data: CodacyOrgData, organization: str)
 
     codacy_org = f'{CODACY_BASE}/organizations/gh/{organization}'
 
-    logging.info("call codacy join") #TODO REMOVE
+    logging.debug("call codacy join")
 
     # list people requests for this org in Codacy
-    #r = requests.get(f'{CODACY_BASE}/organizations/gh/{organization}/people/suggestions', params={
     res = requests.get(f'{codacy_org}/join', params={
     }, headers = headers, timeout=5)
-    logging.info("join response %s", res.text) #TODO REMOVE
+    logging.debug("join response %s", res.text)
     json = res.json()
     join_data = json['data']
-    #CodacyOrgData[organization] = {"people_suggestions": data}
 
     res = requests.get(f'{codacy_org}/people', params={
     }, headers = headers, timeout=5)
@@ -153,9 +160,9 @@ def list_codacy(repos: Repos, codacy_org_data: CodacyOrgData, organization: str)
     for record in data:
         repo_name = record['name']
         if organization != record['owner']:
-            logging.error(f"org not owner {organization} {repo_name}")
+            logging.error("org not owner %s %s", organization, repo_name)
             continue
-        logging.info(f"Codacy {repo_name}")
+        logging.info("Codacy %s", repo_name)
         codacy_org_repos = f'{CODACY_BASE}/analysis/organizations/gh/{organization}/repositories'
         tools_res = requests.get(
             f'{codacy_org_repos}/{repo_name}/tools',
@@ -190,9 +197,7 @@ def list_codacy(repos: Repos, codacy_org_data: CodacyOrgData, organization: str)
 
 def list_sonar(repos: Repos, org_key: str):
     '''Pull SonarCloud data for an organization and put it in repos.'''
-    logging.info(f"SonarCloud organization {org_key}")
-
-    # TODO fix bug - terra-data-catalog is missing
+    logging.info("SonarCloud organization %s", org_key)
 
     url = f"https://sonarcloud.io"\
         "/api/components/search_projects?boostNewProjects=true&ps=50"\
@@ -205,7 +210,7 @@ def list_sonar(repos: Repos, org_key: str):
     res = requests.get(url, auth=auth, timeout=5)
     json = res.json()
     if 'components' not in json:
-        logging.info(f"SonarCloud - error {org_key}")
+        logging.info("SonarCloud - error %s", org_key)
         return
     components = json['components']
     for record in components:
@@ -215,14 +220,14 @@ def list_sonar(repos: Repos, org_key: str):
         res = requests.get(project_url, auth=auth, timeout=5)
         project_json = res.json()
         if 'alm' not in project_json:
-            logging.error(f"SonarCloud - error no alm in {project_key}")
+            logging.error("SonarCloud - error no alm in %s", project_key)
             continue
         alm = project_json['alm']
         gh_url = alm['url']
         url_parts = gh_url.split('/')
         gh_org = url_parts[-2]
         gh_project = url_parts[-1]
-        logging.info(f"SonarCloud - {gh_project}")
+        logging.info("SonarCloud - repo %s", gh_project)
         repo = get_repo(repos, (gh_org, gh_project))
         repo[SONAR] = project_json #record
 
@@ -250,6 +255,9 @@ def get_data() -> Repos:
 
 def update_sast_values():
     '''Update security-controls and sast-details in Firestore.'''
+
+    logging.info("update_sast_values")
+
     sast_collection = fs.collection(SAST_DETAILS)
 
     repos, codacy_org_data = get_data()

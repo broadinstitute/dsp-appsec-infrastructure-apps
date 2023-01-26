@@ -91,7 +91,7 @@ steps:
   - executor
       --context=dir:///workspace/security-controls
       --destination=$${SDARQ_SECURITY_CONTROLS}
-      --cache=false
+      --cache
 
 # build patched CodeDx image
 - id: codedx-image
