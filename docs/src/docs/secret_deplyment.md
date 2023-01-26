@@ -29,6 +29,8 @@ type: Opaque
 ### SDARQ Security-Controls secrets
  
 ```
+apiVersion: v1
+data:
   DAST_LINK: DefectDojo part of the link after the product number that redirects to the list of DAST scan findings
   DEFECT_DOJO: DefectDojo host link
   DEFECT_DOJO_KEY: DefectDojo API key
