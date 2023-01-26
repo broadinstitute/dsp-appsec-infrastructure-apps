@@ -209,15 +209,6 @@ def list_codacy(repos: Repos, codacy_org_data: CodacyOrgData, organization: str)
         repo[CODACY] = record
 
 
-def list_dojo(repos: Repos):
-    url = 'https://defectdojo.dsp-appsec.broadinstitute.org/api/v2/users/'
-    headers = {'content-type': 'application/json',
-            'Authorization': f'Token {apikey("defectdojo")}'}
-    r = requests.get(url, headers=headers)
-    json = r.json()
-    print(json)
-
-
 def list_sonar(repos: Repos, org_key: str):
     print(f"SonarCloud organization {org_key}")
 
@@ -278,8 +269,6 @@ def get_data() -> Repos:
 
 
 def update_sast_values():
-    repo_list_from_security_controls(repos)
-
     sast_collection = fs.collection(SAST_DETAILS)
 
     repos, codacy_org_data = get_data()
