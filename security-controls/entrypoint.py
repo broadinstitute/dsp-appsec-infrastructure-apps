@@ -8,6 +8,7 @@ import os
 
 import requests
 from google.cloud import firestore
+from sast import update_sast_values
 
 
 def update_dependecies_scan_values(defect_dojo_key: str, defect_dojo: str, security_controls_firestore_collection: str, dep_scan_link: str, defect_dojo_host: str):
@@ -66,11 +67,6 @@ def update_dast_values(defect_dojo_key: str, defect_dojo: str, security_controls
                 'vulnerability_management': f'{defect_dojo_host}/product/{str(product["id"])}/finding/{dast_link}'
             }, merge=True)
 
-def update_sast_values():
-    fs = firestore.Client()
-    collections = fs.collections()
-    for c in collections:
-        print(c.id)    
 
 def main():
     """
@@ -97,4 +93,5 @@ def main():
 
 if __name__ == "__main__":
     #main()
+
     update_sast_values()
