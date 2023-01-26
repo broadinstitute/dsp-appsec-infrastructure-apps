@@ -94,4 +94,5 @@ def main():
 if __name__ == "__main__":
     #main()
 
+    # Temporary - just sast while developing this branch. Restore main() before merge
     update_sast_values()
