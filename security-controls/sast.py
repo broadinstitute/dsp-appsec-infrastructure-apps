@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import os
 import re
-from dataclasses import dataclass
 from datetime import datetime
 from subprocess import run
 from time import time
