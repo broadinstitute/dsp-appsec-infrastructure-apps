@@ -35,13 +35,13 @@ spec:
             command: ['python3', '/entrypoint.py']
             envFrom:
             - secretRef:
-              name: ${SERVICE_SECRET}
+                name: ${SERVICE_SECRET}
             - secretRef:
-              name: codacy
+                name: codacy
             - secretRef:
-              name: sonarcloud
+                name: sonarcloud
             - secretRef:
-              name: github
+                name: github
             env:
               - name: DEFECT_DOJO_URL
                 value: ${DEFECT_DOJO_URL}
