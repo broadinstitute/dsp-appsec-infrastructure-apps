@@ -127,11 +127,13 @@ def list_codacy(repos: Repos, codacy_org_data: CodacyOrgData, organization: str)
 
     codacy_org = f'{CODACY_BASE}/organizations/gh/{organization}'
 
+    logging.info("call codacy join") #TODO REMOVE
 
     # list people requests for this org in Codacy
     #r = requests.get(f'{CODACY_BASE}/organizations/gh/{organization}/people/suggestions', params={
     res = requests.get(f'{codacy_org}/join', params={
     }, headers = headers, timeout=5)
+    logging.info("join response %s", res.text) #TODO REMOVE
     json = res.json()
     join_data = json['data']
     #CodacyOrgData[organization] = {"people_suggestions": data}
