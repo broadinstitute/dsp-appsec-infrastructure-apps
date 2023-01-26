@@ -45,6 +45,8 @@ spec:
             env:
               - name: DEFECT_DOJO_URL
                 value: ${DEFECT_DOJO_URL}
+              - name: SC_FIRESTORE_COLLECTION
+                value: ${SC_FIRESTORE_COLLECTION}
 ---
 apiVersion: batch/v1beta1
 kind: CronJob

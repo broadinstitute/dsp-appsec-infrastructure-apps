@@ -33,7 +33,6 @@ type: Opaque
   DEFECT_DOJO: DefectDojo host link
   DEFECT_DOJO_KEY: DefectDojo API key
   DEP_SCAN_LINK: DefectDojo part of the link after the product number that redirects to the list of 3rd party dependencies scan findings
-  SC_FIRESTORE_COLLECTION: Firestore collection that stores security controls
   SLACK_CHANNEL: slack channel that reports to AppSec team all the security controls missing for services
   SLACK_TOKEN: slack token
 kind: Secret
