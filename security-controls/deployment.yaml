@@ -19,6 +19,7 @@ metadata:
   namespace: ${NAMESPACE}
 spec:
   schedule: "0 1 * * *"
+  concurrencyPolicy: Replace
   jobTemplate:
     spec:
       template:
