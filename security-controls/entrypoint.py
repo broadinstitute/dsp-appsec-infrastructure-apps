@@ -97,7 +97,6 @@ if __name__ == "__main__":
     # Temporary - just sast while developing this branch. Restore main() before merge
     # configure logging
     client = google.cloud.logging.Client()
-    handler = StructuredLogHandler()
-    client.setup_logging(handler=handler)
+    client.setup_logging()
 
     update_sast_values()
