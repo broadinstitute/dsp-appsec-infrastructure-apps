@@ -84,7 +84,7 @@ def main():
     # configure logging
     client = google.cloud.logging.Client()
     handler = StructuredLogHandler()
-    client.setup_logging(handler=handler, log_level=logging.DEBUG)
+    client.setup_logging(handler=handler)
 
     update_dependecies_scan_values(
         defect_dojo_key, defect_dojo, security_controls_firestore_collection, dep_scan_link, defect_dojo_host)
