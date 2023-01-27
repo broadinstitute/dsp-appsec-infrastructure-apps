@@ -81,10 +81,6 @@ def main():
     dep_scan_link = os.getenv("DEP_SCAN_LINK")
     dast_link = os.getenv("DAST_LINK")
 
-    # configure logging
-    client = google.cloud.logging.Client()
-    handler = StructuredLogHandler()
-    client.setup_logging(handler=handler)
 
     update_dependecies_scan_values(
         defect_dojo_key, defect_dojo, security_controls_firestore_collection, dep_scan_link, defect_dojo_host)
@@ -99,4 +95,9 @@ if __name__ == "__main__":
     #main()
 
     # Temporary - just sast while developing this branch. Restore main() before merge
+    # configure logging
+    client = google.cloud.logging.Client()
+    handler = StructuredLogHandler()
+    client.setup_logging(handler=handler)
+
     update_sast_values()
