@@ -70,14 +70,13 @@ def repo_list_from_security_controls(repos: Repos):
         if match is None:
             logging.warning('SAST controls ignoring %s github="%s"', doc.id, repo_url)
             continue
-        else:
-            org = match.group(1)
-            repo_name = match.group(2)
-            if org.lower() == 'databiosphere':
-                org = 'DataBiosphere'
-            if org.lower() == 'broadinstitute':
-                org = 'broadinstitute'
-            get_repo(repos, (org, repo_name))
+        org = match.group(1)
+        repo_name = match.group(2)
+        if org.lower() == 'databiosphere':
+            org = 'DataBiosphere'
+        if org.lower() == 'broadinstitute':
+            org = 'broadinstitute'
+        get_repo(repos, (org, repo_name))
 
 def list_github(repos: Repos):
     '''Get GitHub metadata for all repos.'''
