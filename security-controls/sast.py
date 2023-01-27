@@ -10,12 +10,23 @@ from requests.auth import HTTPBasicAuth
 
 SECURITY_CONTROLS = os.environ['SC_FIRESTORE_COLLECTION']
 SAST_DETAILS = os.environ['SAST_FIRESTORE_COLLECTION']
-GITHUB_GQL_ENDPOINT = "https://api.github.com/graphql"
+
+SC_PREVIOUS = "security-controls-previous"
+ID = "id"
+SAST = "sast"
+SAST_LINK = "sast-link"
+
 fs = firestore.Client()
 
 CODACY_BASE = "https://app.codacy.com/api/v3"
 CODACY_API_KEY=os.getenv("CODACY_API_KEY").strip()
+CODACY_URL = "https://app.codacy.com/gh/{org}/{repo}/dashboard"
+
+SONARCLOUD_BASE = "https://sonarcloud.io/api"
 SONARCLOUD_API_KEY=os.getenv("SONARCLOUD_API_KEY").strip()
+SONARCLOUD_URL = "https://sonarcloud.io/project/overview?id={project_key}"
+
+GITHUB_GQL_ENDPOINT = "https://api.github.com/graphql"
 GITHUB_TOKEN=os.getenv("GITHUB_TOKEN").strip()
 
 CODACY_HEADERS = {
@@ -75,7 +86,8 @@ def repo_list_from_security_controls(repos: Repos):
         if org.lower() == 'broadinstitute':
             org = 'broadinstitute'
         repo = get_repo(repos, (org, repo_name))
-        repo['security-controls-previous'] = sc_record
+        sc_record[ID] = doc.id
+        repo[SC_PREVIOUS] = sc_record
         logging.info('SAST controls to be updated for %s github="%s"', doc.id, repo_url)
 
 
@@ -184,6 +196,7 @@ def list_codacy_repos(repos: Repos, organization: str):
         record["tools_client"] = tools_client
         record["tools_server"] = tools_server
         repo = get_repo(repos, (organization, repo_name))
+        record[SAST_LINK] = CODACY_URL.format(org=organization,repo=repo_name)
         repo[CODACY] = record
 
 def list_codacy(repos: Repos, codacy_org_data: CodacyOrgData, organization: str):
@@ -197,8 +210,7 @@ def list_sonar(repos: Repos, org_key: str):
     '''Pull SonarCloud data for an organization and put it in repos.'''
     logging.info("SonarCloud organization %s", org_key)
 
-    url = f"https://sonarcloud.io"\
-        "/api/components/search_projects?boostNewProjects=true&ps=50"\
+    url = f"{SONARCLOUD_BASE}/components/search_projects?boostNewProjects=true&ps=50"\
         "&facets=reliability_rating%2Csecurity_rating%2Csqale_rating%2C"\
         "coverage%2Cduplicated_lines_density%2Cncloc%2Calert_status%2C"\
         "languages%2Ctags&f=analysisDate%2CleakPeriodDate&"\
@@ -213,7 +225,7 @@ def list_sonar(repos: Repos, org_key: str):
     components = json['components']
     for record in components:
         project_key = record['key']
-        res = requests.get("https://sonarcloud.io/api/navigation/component?"\
+        res = requests.get("{SONARCLOUD_BASE}/navigation/component?"\
             f"component={project_key}", auth=auth, timeout=5)
         project_json = res.json()
         if 'alm' not in project_json:
@@ -225,6 +237,7 @@ def list_sonar(repos: Repos, org_key: str):
         gh_project = url_parts[-1]
         logging.info("SonarCloud - repo %s", gh_project)
         repo = get_repo(repos, (gh_org, gh_project))
+        project_json[SAST_LINK] = SONARCLOUD_URL.format(project_key=project_key)
         repo[SONAR] = project_json #record
 
 
@@ -272,6 +285,22 @@ def update_sast_values():
     codacy_doc.set(codacy_org_data, merge=False)
 
     # store repos data
+    sc_collection = fs.collection(SECURITY_CONTROLS)
     for org_name, repo_name in repos:
+        repo = repos[(org_name, repo_name)]
+
+        # write unconditionally to sast-details
         repos_doc = sast_collection.document(f"gh-{org_name}-{repo_name}")
-        repos_doc.set(repos[(org_name, repo_name)], merge=False)
+        repos_doc.set(repo, merge=False)
+
+        # update sast properties in security-controls only if already there
+        sc_previous = repo.get(SC_PREVIOUS)
+        if sc_previous:
+            sc_doc = sc_collection.document(sc_previous[ID])
+            sast_link = repo.get(SAST_LINK)
+            if sast_link:
+                logging.info("Setting SAST true on %s", sc_previous[ID])
+                sc_doc.set({SAST:True, SAST_LINK:sast_link}, merge=True)
+            else:
+                logging.info("Setting SAST false on %s", sc_previous[ID])
+                sc_doc.set({SAST:False, SAST_LINK:None}, merge=True)
