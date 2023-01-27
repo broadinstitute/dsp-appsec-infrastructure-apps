@@ -6,6 +6,7 @@ This module
 import logging
 import os
 
+import google.cloud.logging
 import requests
 from google.cloud import firestore
 from sast import update_sast_values
@@ -80,7 +81,8 @@ def main():
     dast_link = os.getenv("DAST_LINK")
 
     # configure logging
-    logging.basicConfig(level=logging.INFO)
+    client = google.cloud.logging.Client()
+    client.setup_logging(log_level=logging.DEBUG)
 
     update_dependecies_scan_values(
         defect_dojo_key, defect_dojo, security_controls_firestore_collection, dep_scan_link, defect_dojo_host)

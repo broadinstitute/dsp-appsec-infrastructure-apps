@@ -18,6 +18,16 @@ CODACY_API_KEY=os.getenv("CODACY_API_KEY")
 SONARCLOUD_API_KEY=os.getenv("SONARCLOUD_API_KEY")
 GITHUB_TOKEN=os.getenv("GITHUB_TOKEN")
 
+CODACY_HEADERS = {
+    'Accept': 'application/json',
+    'api-token': CODACY_API_KEY
+}
+
+def codacy_org(organization: str) -> str:
+    '''path for codacy org'''
+    return f'{CODACY_BASE}/organizations/gh/{organization}'
+
+
 repo_re = re.compile(r'https://github.com/([a-zA-Z0-9\-_]+)/([a-zA-Z0-9\-_]+)')
 
 SONAR_ORGS = {
@@ -125,62 +135,37 @@ def get_repo(repos: Repos, key: RepoKey) -> Repo:
         repo = Repo()
         repos[key] = repo
     return repo
+def codacy_get(path):
+    '''call Codacy REST GET and return json response data'''
+    logging.debug("codacy get %s", path)
+    res = requests.get(path, params={}, headers=CODACY_HEADERS, timeout=5)
+    logging.debug("response %s", res.text)
+    if res.status_code != 200:
+        logging.error("codacy error %s %s %s", path, res.status_code, res.text)
+        return None
+    json = res.json()
+    return json['data']
 
-
-def list_codacy(repos: Repos, codacy_org_data: CodacyOrgData, organization: str):
-    '''Pull the organization's Codacy info and add it to repos and codacy_org_data.'''
-    headers = {
-        'Accept': 'application/json',
-        'api-token': CODACY_API_KEY
-    }
-
-    codacy_org = f'{CODACY_BASE}/organizations/gh/{organization}'
-
-    logging.debug("call codacy join")
+def list_codacy_org_data(codacy_org_data: CodacyOrgData, organization: str):
+    '''get codacy metadata on organization'''
 
     # list people requests for this org in Codacy
-    res = requests.get(f'{codacy_org}/join', params={
-    }, headers = headers, timeout=5)
-    logging.debug("join response %s", res.text)
-    json = res.json()
-    join_data = json['data']
-
-    res = requests.get(f'{codacy_org}/people', params={
-    }, headers = headers, timeout=5)
-    json = res.json()
-    people_data = json['data']
+    join_data = codacy_get(f'{codacy_org(organization)}/join')
+    people_data = codacy_get(f'{codacy_org(organization)}/people')
     codacy_org_data[organization] = {"people": people_data, "join": join_data}
 
+def list_codacy_repos(repos: Repos, organization: str):
+    '''get codacy metadata on github repos'''
     # walk repos in Codacy
-    res = requests.get(f'{codacy_org}/repositories', params={
-    }, headers = headers, timeout=5)
-
-    json = res.json()
-    data = json['data']
-    for record in data:
+    codacy_repos = codacy_get(f'{codacy_org(organization)}/repositories')
+    for record in codacy_repos:
         repo_name = record['name']
         if organization != record['owner']:
             logging.error("org not owner %s %s", organization, repo_name)
             continue
         logging.info("Codacy %s", repo_name)
         codacy_org_repos = f'{CODACY_BASE}/analysis/organizations/gh/{organization}/repositories'
-        tools_res = requests.get(
-            f'{codacy_org_repos}/{repo_name}/tools',
-            params={}, headers = headers, timeout=5)
-        tools = tools_res.json()
-
-        # "tools": {
-        #     "data": [
-        #         {
-        #             "isClientSide": false,
-        #             "name": "remark-lint",
-        #             "settings": {
-        #                 "isEnabled": false,
-        #                 "usesConfigurationFile": false
-        #             }
-        #         },
-
-        tools_data = tools["data"]
+        tools_data = codacy_get(codacy_org_repos)
         tools_client = []
         tools_server = []
         for tool in tools_data:
@@ -188,11 +173,17 @@ def list_codacy(repos: Repos, codacy_org_data: CodacyOrgData, organization: str)
             if tool_name in ["Bandit", "Checkov", "PMD", "SpotBugs", "Codacy ScalaMeta Pro"]:
                 tools_list = tools_client if tool["isClientSide"] else tools_server
                 tools_list.append(tool_name)
-        record["tools_full"] = tools
+        record["tools_full"] = tools_data
         record["tools_client"] = tools_client
         record["tools_server"] = tools_server
         repo = get_repo(repos, (organization, repo_name))
         repo[CODACY] = record
+
+def list_codacy(repos: Repos, codacy_org_data: CodacyOrgData, organization: str):
+    '''Pull the organization's Codacy info and add it to repos and codacy_org_data.'''
+
+    list_codacy_org_data(codacy_org_data, organization)
+    list_codacy_repos(repos, organization)
 
 
 def list_sonar(repos: Repos, org_key: str):
@@ -215,15 +206,13 @@ def list_sonar(repos: Repos, org_key: str):
     components = json['components']
     for record in components:
         project_key = record['key']
-        project_url = "https://sonarcloud.io/api/navigation/component?"\
-            f"component={project_key}"
-        res = requests.get(project_url, auth=auth, timeout=5)
+        res = requests.get("https://sonarcloud.io/api/navigation/component?"\
+            f"component={project_key}", auth=auth, timeout=5)
         project_json = res.json()
         if 'alm' not in project_json:
             logging.error("SonarCloud - error no alm in %s", project_key)
             continue
-        alm = project_json['alm']
-        gh_url = alm['url']
+        gh_url = project_json['alm']['url']
         url_parts = gh_url.split('/')
         gh_org = url_parts[-2]
         gh_project = url_parts[-1]
@@ -262,7 +251,7 @@ def update_sast_values():
 
     repos, codacy_org_data = get_data()
 
-    repos_for_json = dict()
+    repos_for_json = {}
     for org,rep in repos:
         repos_for_json[f"{org}/{rep}"] = repos[(org, rep)]
 
