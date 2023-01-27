@@ -225,7 +225,7 @@ def list_sonar(repos: Repos, org_key: str):
     components = json['components']
     for record in components:
         project_key = record['key']
-        res = requests.get("{SONARCLOUD_BASE}/navigation/component?"\
+        res = requests.get(f"{SONARCLOUD_BASE}/navigation/component?"\
             f"component={project_key}", auth=auth, timeout=5)
         project_json = res.json()
         if 'alm' not in project_json:
