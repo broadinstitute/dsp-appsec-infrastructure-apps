@@ -28,7 +28,6 @@ spec:
           nodeSelector:
             cloud.google.com/gke-nodepool: batch
           restartPolicy: Never
-          concurrencyPolicy: Replace
 
           containers:
           - name: security-controls
