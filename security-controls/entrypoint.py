@@ -9,7 +9,6 @@ import os
 import google.cloud.logging
 import requests
 from google.cloud import firestore
-from google.cloud.logging.handlers import StructuredLogHandler
 from sast import update_sast_values
 
 
