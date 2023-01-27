@@ -165,7 +165,7 @@ def list_codacy_repos(repos: Repos, organization: str):
             continue
         logging.info("Codacy %s", repo_name)
         codacy_org_repos = f'{CODACY_BASE}/analysis/organizations/gh/{organization}/repositories'
-        tools_data = codacy_get(codacy_org_repos)
+        tools_data = codacy_get(f'{codacy_org_repos}/{repo_name}/tools')
         tools_client = []
         tools_server = []
         for tool in tools_data:
