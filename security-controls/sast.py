@@ -66,7 +66,7 @@ def repo_list_from_security_controls(repos: Repos):
         sc_docs = sc_collection.stream()
         for doc in sc_docs:
             project = doc.to_dict()
-            logging.debug("github %s sast %s link %s",
+            logging.info("github %s sast %s link %s",
                 get_if(project,'github'), get_if(project,'sast'), get_if(project,'sast_link'))
 
     get_repo(repos, ('broadinstitute', 'dsp-appsec-infrastructure-apps'))
@@ -137,9 +137,9 @@ def get_repo(repos: Repos, key: RepoKey) -> Repo:
     return repo
 def codacy_get(path):
     '''call Codacy REST GET and return json response data'''
-    logging.debug("codacy get %s", path)
+    logging.info("codacy get %s", path)
     res = requests.get(path, params={}, headers=CODACY_HEADERS, timeout=5)
-    logging.debug("response %s", res.text)
+    logging.info("response %s", res.text)
     if res.status_code != 200:
         logging.error("codacy error %s %s %s", path, res.status_code, res.text)
         return None
@@ -246,6 +246,11 @@ def update_sast_values():
     '''Update security-controls and sast-details in Firestore.'''
 
     logging.info("update_sast_values")
+
+    logging.info("lengths %s %s %s",
+        len(CODACY_API_KEY),
+        len(SONARCLOUD_API_KEY),
+        len(GITHUB_TOKEN))
 
     sast_collection = fs.collection(SAST_DETAILS)
 

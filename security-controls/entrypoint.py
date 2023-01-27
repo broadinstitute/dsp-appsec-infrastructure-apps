@@ -9,6 +9,7 @@ import os
 import google.cloud.logging
 import requests
 from google.cloud import firestore
+from google.cloud.logging.handlers import StructuredLogHandler
 from sast import update_sast_values
 
 
@@ -82,7 +83,8 @@ def main():
 
     # configure logging
     client = google.cloud.logging.Client()
-    client.setup_logging(log_level=logging.DEBUG)
+    handler = StructuredLogHandler()
+    client.setup_logging(handler=handler, log_level=logging.DEBUG)
 
     update_dependecies_scan_values(
         defect_dojo_key, defect_dojo, security_controls_firestore_collection, dep_scan_link, defect_dojo_host)
