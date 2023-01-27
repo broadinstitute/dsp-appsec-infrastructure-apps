@@ -57,20 +57,27 @@ def get_if(obj: dict, key: str) -> str:
         value = ""
     return value
 
-GET_SC = False
-
 def repo_list_from_security_controls(repos: Repos):
-    """Iniitalize repos from Firestore."""
-    if GET_SC:
-        sc_collection = fs.collection(SECURITY_CONTROLS)
-        sc_docs = sc_collection.stream()
-        for doc in sc_docs:
-            project = doc.to_dict()
-            logging.info("github %s sast %s link %s",
-                get_if(project,'github'), get_if(project,'sast'), get_if(project,'sast_link'))
-
-    get_repo(repos, ('broadinstitute', 'dsp-appsec-infrastructure-apps'))
-    get_repo(repos, ('DataBiosphere', 'terra-ui'))
+    """Initalize repos from Firestore."""
+    sc_collection = fs.collection(SECURITY_CONTROLS)
+    sc_docs = sc_collection.stream()
+    for doc in sc_docs:
+        project = doc.to_dict()
+        repo_url = get_if(project,'github')
+        logging.info("github %s sast %s link %s",
+            repo_url, get_if(project,'sast'), get_if(project,'sast_link'))
+        match = repo_re.match(repo_url)
+        if match is None:
+            logging.warning('SAST controls ignoring %s github="%s"', doc.id, repo_url)
+            continue
+        else:
+            org = match.group(1)
+            repo_name = match.group(2)
+            if org.lower() == 'databiosphere':
+                org = 'DataBiosphere'
+            if org.lower() == 'broadinstitute':
+                org = 'broadinstitute'
+            get_repo(repos, (org, repo_name))
 
 def list_github(repos: Repos):
     '''Get GitHub metadata for all repos.'''
@@ -123,9 +130,9 @@ def list_repo_info(repos: Repos, org, repo_name):
     if 'primaryLanguage' in github_repo and github_repo['primaryLanguage'] is not None:
         record['language'] = github_repo['primaryLanguage']['name']
 
+    logging.info('SAST will update %s/%s', org, repo_name)
     repo = get_repo(repos, (org, repo_name))
     repo[GITHUB] = record
-
 
 def get_repo(repos: Repos, key: RepoKey) -> Repo:
     '''Lookup the key in repos, adding if not present, and return the Repo.'''
@@ -135,6 +142,7 @@ def get_repo(repos: Repos, key: RepoKey) -> Repo:
         repo = Repo()
         repos[key] = repo
     return repo
+
 def codacy_get(path):
     '''call Codacy REST GET and return json response data'''
     logging.info("codacy get %s", path)
