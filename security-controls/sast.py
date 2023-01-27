@@ -62,10 +62,8 @@ def repo_list_from_security_controls(repos: Repos):
     sc_collection = fs.collection(SECURITY_CONTROLS)
     sc_docs = sc_collection.stream()
     for doc in sc_docs:
-        project = doc.to_dict()
-        repo_url = get_if(project,'github')
-        logging.info("github %s sast %s link %s",
-            repo_url, get_if(project,'sast'), get_if(project,'sast_link'))
+        sc_record = doc.to_dict()
+        repo_url = get_if(sc_record,'github')
         match = repo_re.match(repo_url)
         if match is None:
             logging.warning('SAST controls ignoring %s github="%s"', doc.id, repo_url)
@@ -76,7 +74,10 @@ def repo_list_from_security_controls(repos: Repos):
             org = 'DataBiosphere'
         if org.lower() == 'broadinstitute':
             org = 'broadinstitute'
-        get_repo(repos, (org, repo_name))
+        repo = get_repo(repos, (org, repo_name))
+        repo['security-controls-previous'] = sc_record
+        logging.info('SAST controls to be updated for %s github="%s"', doc.id, repo_url)
+
 
 def list_github(repos: Repos):
     '''Get GitHub metadata for all repos.'''
@@ -144,14 +145,13 @@ def get_repo(repos: Repos, key: RepoKey) -> Repo:
 
 def codacy_get(path):
     '''call Codacy REST GET and return json response data'''
-    logging.info("codacy get %s", path)
     res = requests.get(path, params={}, headers=CODACY_HEADERS, timeout=5)
-    logging.info("response %s", res.text)
     if res.status_code != 200:
         logging.error("codacy error %s %s %s", path, res.status_code, res.text)
         return None
     json = res.json()
-    return json['data']
+    data = json['data']
+    return data
 
 def list_codacy_org_data(codacy_org_data: CodacyOrgData, organization: str):
     '''get codacy metadata on organization'''
@@ -170,7 +170,7 @@ def list_codacy_repos(repos: Repos, organization: str):
         if organization != record['owner']:
             logging.error("org not owner %s %s", organization, repo_name)
             continue
-        logging.info("Codacy %s", repo_name)
+        logging.info("Codacy %s %s", organization, repo_name)
         codacy_org_repos = f'{CODACY_BASE}/analysis/organizations/gh/{organization}/repositories'
         tools_data = codacy_get(f'{codacy_org_repos}/{repo_name}/tools')
         tools_client = []
@@ -267,7 +267,11 @@ def update_sast_values():
     for org,rep in repos:
         repos_for_json[f"{org}/{rep}"] = repos[(org, rep)]
 
-    codacy_doc = sast_collection.document('Codacy')
+    # store codacy data
+    codacy_doc = sast_collection.document('codacy')
     codacy_doc.set(codacy_org_data, merge=False)
-    repos_doc = sast_collection.document('Repos')
-    repos_doc.set(repos_for_json, merge=False)
+
+    # store repos data
+    for org_name, repo_name in repos:
+        repos_doc = sast_collection.document(f"gh-{org_name}-{repo_name}")
+        repos_doc.set(repos[(org_name, repo_name)], merge=False)
