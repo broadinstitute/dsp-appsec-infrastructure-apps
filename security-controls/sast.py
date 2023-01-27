@@ -169,7 +169,7 @@ def list_codacy_repos(repos: Repos, organization: str):
         tools_client = []
         tools_server = []
         for tool in tools_data:
-            tool_name = tool["name"]
+            tool_name = tool.get("name")
             if tool_name in ["Bandit", "Checkov", "PMD", "SpotBugs", "Codacy ScalaMeta Pro"]:
                 tools_list = tools_client if tool["isClientSide"] else tools_server
                 tools_list.append(tool_name)
