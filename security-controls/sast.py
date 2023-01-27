@@ -14,9 +14,9 @@ GITHUB_GQL_ENDPOINT = "https://api.github.com/graphql"
 fs = firestore.Client()
 
 CODACY_BASE = "https://app.codacy.com/api/v3"
-CODACY_API_KEY=os.getenv("CODACY_API_KEY")
-SONARCLOUD_API_KEY=os.getenv("SONARCLOUD_API_KEY")
-GITHUB_TOKEN=os.getenv("GITHUB_TOKEN")
+CODACY_API_KEY=os.getenv("CODACY_API_KEY").strip()
+SONARCLOUD_API_KEY=os.getenv("SONARCLOUD_API_KEY").strip()
+GITHUB_TOKEN=os.getenv("GITHUB_TOKEN").strip()
 
 CODACY_HEADERS = {
     'Accept': 'application/json',
