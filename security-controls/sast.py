@@ -14,7 +14,7 @@ SAST_DETAILS = os.environ['SAST_FIRESTORE_COLLECTION']
 SC_PREVIOUS = "security-controls-previous"
 ID = "id"
 SAST = "sast"
-SAST_LINK = "sast-link"
+SAST_LINK = "sast_link"
 
 fs = firestore.Client()
 
