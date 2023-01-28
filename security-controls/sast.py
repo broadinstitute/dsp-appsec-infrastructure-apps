@@ -142,7 +142,6 @@ def list_repo_info(repos: Repos, org, repo_name):
     if 'primaryLanguage' in github_repo and github_repo['primaryLanguage'] is not None:
         record['language'] = github_repo['primaryLanguage']['name']
 
-    logging.info('SAST will update %s/%s', org, repo_name)
     repo = get_repo(repos, (org, repo_name))
     repo[GITHUB] = record
 
@@ -196,7 +195,7 @@ def list_codacy_repos(repos: Repos, organization: str):
         record["tools_client"] = tools_client
         record["tools_server"] = tools_server
         repo = get_repo(repos, (organization, repo_name))
-        record[SAST_LINK] = CODACY_URL.format(org=organization,repo=repo_name)
+        repo[SAST_LINK] = CODACY_URL.format(org=organization,repo=repo_name)
         repo[CODACY] = record
 
 def list_codacy(repos: Repos, codacy_org_data: CodacyOrgData, organization: str):
@@ -237,7 +236,7 @@ def list_sonar(repos: Repos, org_key: str):
         gh_project = url_parts[-1]
         logging.info("SonarCloud - repo %s", gh_project)
         repo = get_repo(repos, (gh_org, gh_project))
-        project_json[SAST_LINK] = SONARCLOUD_URL.format(project_key=project_key)
+        repo[SAST_LINK] = SONARCLOUD_URL.format(project_key=project_key)
         repo[SONAR] = project_json #record
 
 
@@ -249,11 +248,11 @@ def get_data() -> Repos:
     # initialize repos list from existing security controls
     repo_list_from_security_controls(repos)
 
-    # add and merge from codacy
+    # add codacy
     for org in CODACY_ORGS:
         list_codacy(repos, codacy_org_data, org)
 
-    # add and merge from sonarcloud
+    # add sonarcloud
     for org_key in SONAR_ORGS.values():
         list_sonar(repos, org_key)
 
@@ -300,7 +299,7 @@ def update_sast_values():
             sast_link = repo.get(SAST_LINK)
             if sast_link:
                 logging.info("Setting SAST true on %s", sc_previous[ID])
-                sc_doc.set({SAST:True, SAST_LINK:sast_link}, merge=True)
+                sc_doc.update({SAST:True, SAST_LINK:sast_link})
             else:
                 logging.info("Setting SAST false on %s", sc_previous[ID])
-                sc_doc.set({SAST:False, SAST_LINK:None}, merge=True)
+                sc_doc.update({SAST:False, SAST_LINK:firestore.DELETE_FIELD})
