@@ -266,7 +266,6 @@ def get_data() -> Repos:
     list_github(repos)
     return repos, codacy_org_data
 
-
 def update_sast_values():
     '''Update security-controls and sast-details in Firestore.'''
 
@@ -279,19 +278,15 @@ def update_sast_values():
             len(GITHUB_TOKEN))
 
         sast_collection = fs.collection(SAST_DETAILS)
+        sc_collection = fs.collection(SECURITY_CONTROLS)
 
         repos, codacy_org_data = get_data()
-
-        repos_for_json = {}
-        for org,rep in repos:
-            repos_for_json[f"{org}/{rep}"] = repos[(org, rep)]
 
         # store codacy data
         codacy_doc = sast_collection.document('codacy')
         codacy_doc.set(codacy_org_data, merge=False)
 
         # store repos data
-        sc_collection = fs.collection(SECURITY_CONTROLS)
         for org_name, repo_name in repos:
             repo = repos[(org_name, repo_name)]
 
@@ -310,6 +305,7 @@ def update_sast_values():
                 else:
                     logging.info("Setting SAST false on %s", sc_previous[ID])
                     sc_doc.update({SAST:False, SAST_LINK:firestore.DELETE_FIELD})
+
     # pylint: disable=W0703
     except Exception as ex:
         # log but don't terminate with error status
