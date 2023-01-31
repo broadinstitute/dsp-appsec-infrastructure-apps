@@ -39,7 +39,9 @@ def codacy_org(organization: str) -> str:
     return f'{CODACY_BASE}/organizations/gh/{organization}'
 
 
-repo_re = re.compile(r'https://github.com/([a-zA-Z0-9\-_]+)/([a-zA-Z0-9\-_]+)')
+repo_re = re.compile(r'https://(www.)?github.com/([a-zA-Z0-9\-_]+)/([a-zA-Z0-9\-_]+)')
+RE_GROUP_ORG = 2
+RE_GROUP_REPO = 3
 
 SONAR_ORGS = {
     "broadinstitute": "dsp-appsec",
@@ -79,8 +81,8 @@ def repo_list_from_security_controls(repos: Repos):
         if match is None:
             logging.warning('SAST controls ignoring %s github="%s"', doc.id, repo_url)
             continue
-        org = match.group(1)
-        repo_name = match.group(2)
+        org = match.group(RE_GROUP_ORG)
+        repo_name = match.group(RE_GROUP_REPO)
         if org.lower() == 'databiosphere':
             org = 'DataBiosphere'
         if org.lower() == 'broadinstitute':
@@ -133,7 +135,11 @@ def list_repo_info(repos: Repos, org, repo_name):
     github_r = requests.post(GITHUB_GQL_ENDPOINT,
         body(gql, {'repo_name':repo_name, 'org':org}),
         headers=headers, timeout=5)
+
     github = github_r.json()
+    if 'data' not in github or 'repository' not in github['data']:
+        logging.error("Cannot access GitHub repo %s %s", org, repo_name)
+        return
 
     github_repo = github['data']['repository']
     record = {}
