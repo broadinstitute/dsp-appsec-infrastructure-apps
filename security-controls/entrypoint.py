@@ -73,6 +73,11 @@ def main():
     """
     Implements the entrypoint.
     """
+
+    # configure logging
+    client = google.cloud.logging.Client()
+    client.setup_logging()
+
     defect_dojo_key = os.getenv("DEFECT_DOJO_KEY")
     defect_dojo = os.getenv("DEFECT_DOJO_URL")
     defect_dojo_host = os.getenv("DEFECT_DOJO")
@@ -91,11 +96,4 @@ def main():
 
 
 if __name__ == "__main__":
-    #main()
-
-    # Temporary - just sast while developing this branch. Restore main() before merge
-    # configure logging
-    client = google.cloud.logging.Client()
-    client.setup_logging()
-
-    update_sast_values()
+    main()
