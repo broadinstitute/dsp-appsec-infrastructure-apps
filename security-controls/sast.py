@@ -90,7 +90,7 @@ def repo_list_from_security_controls(repos: Repos):
         repo = get_repo(repos, (org, repo_name))
         sc_record[ID] = doc.id
         repo[SC_PREVIOUS] = sc_record
-        logging.info('SAST controls to be updated for %s github="%s"', doc.id, repo_url)
+        logging.debug('SAST controls to be updated for %s github="%s"', doc.id, repo_url)
 
 
 def list_github(repos: Repos):
@@ -116,7 +116,7 @@ def body(gql: str, params: dict) -> str:
 def list_repo_info(repos: Repos, org, repo_name):
     '''Pull GitHub metadata on this repo.'''
 
-    logging.info("GitHub %s %s", repo_name, org)
+    logging.debug("GitHub %s %s", repo_name, org)
     headers = {
         "Authorization": f"bearer {GITHUB_TOKEN}"
     }
@@ -190,7 +190,7 @@ def list_codacy_repos(repos: Repos, organization: str):
         if organization != record['owner']:
             logging.error("org not owner %s %s", organization, repo_name)
             continue
-        logging.info("Codacy %s %s", organization, repo_name)
+        logging.debug("Codacy %s %s", organization, repo_name)
         codacy_org_repos = f'{CODACY_BASE}/analysis/organizations/gh/{organization}/repositories'
         tools_data = codacy_get(f'{codacy_org_repos}/{repo_name}/tools')
         tools_client = []
@@ -216,7 +216,7 @@ def list_codacy(repos: Repos, codacy_org_data: CodacyOrgData, organization: str)
 
 def list_sonar(repos: Repos, org_key: str):
     '''Pull SonarCloud data for an organization and put it in repos.'''
-    logging.info("SonarCloud organization %s", org_key)
+    logging.debug("SonarCloud organization %s", org_key)
 
     url = f"{SONARCLOUD_BASE}/components/search_projects?boostNewProjects=true&ps=50"\
         "&facets=reliability_rating%2Csecurity_rating%2Csqale_rating%2C"\
@@ -228,7 +228,7 @@ def list_sonar(repos: Repos, org_key: str):
     res = requests.get(url, auth=auth, timeout=5)
     json = res.json()
     if 'components' not in json:
-        logging.info("SonarCloud - error %s", org_key)
+        logging.error("SonarCloud - error %s", org_key)
         return
     components = json['components']
     for record in components:
@@ -243,7 +243,7 @@ def list_sonar(repos: Repos, org_key: str):
         url_parts = gh_url.split('/')
         gh_org = url_parts[-2]
         gh_project = url_parts[-1]
-        logging.info("SonarCloud - repo %s", gh_project)
+        logging.debug("SonarCloud - repo %s", gh_project)
         repo = get_repo(repos, (gh_org, gh_project))
         repo[SAST_LINK] = SONARCLOUD_URL.format(project_key=project_key)
         repo[SONAR] = project_json #record
@@ -275,7 +275,7 @@ def update_sast_values():
     try:
         logging.info("update_sast_values")
 
-        logging.info("lengths %s %s %s",
+        logging.debug("lengths %s %s %s",
             len(CODACY_API_KEY),
             len(SONARCLOUD_API_KEY),
             len(GITHUB_TOKEN))
