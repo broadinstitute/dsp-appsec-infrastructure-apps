@@ -267,7 +267,7 @@ def get_data() -> Repos:
 
     # query github for metadata on all above repos
     list_github(repos)
-    return repos, codacy_org_data
+    return repos
 
 def update_sast_values():
     '''Update security-controls and sast-details in Firestore.'''
@@ -283,11 +283,7 @@ def update_sast_values():
         sast_collection = fs.collection(SAST_DETAILS)
         sc_collection = fs.collection(SECURITY_CONTROLS)
 
-        repos, codacy_org_data = get_data()
-
-        # store codacy data
-        codacy_doc = sast_collection.document('codacy')
-        codacy_doc.set(codacy_org_data, merge=False)
+        repos = get_data()
 
         # store repos data
         for org_name, repo_name in repos:
