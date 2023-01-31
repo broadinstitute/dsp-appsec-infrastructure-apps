@@ -45,33 +45,36 @@ type: Opaque
 ```
 
 ```
-Name:         sonarcloud
-Namespace:    security-controls
-Type:  Opaque
-
-Data
-====
-SONARCLOUD_API_KEY:  SonarCloud API key
+apiVersion: v1
+data:
+  SONARCLOUD_API_KEY:  SonarCloud API key
+kind: Secret
+metadata:
+  name: sonarcloud
+  namespace: security-controls
+type: Opaque
 ```
 
 ```
-Name:         github
-Namespace:    security-controls
-Type:  Opaque
-
-Data
-====
-GITHUB_TOKEN:  GitHub personal access token
+apiVersion: v1
+data:
+  GITHUB_TOKEN:  GitHub personal access token
+kind: Secret
+metadata:
+  name: github
+  namespace: security-controls
+type: Opaque
 ```
 
 ```
-Name:         codacy
-Namespace:    security-controls
-Type:  Opaque
-
-Data
-====
-CODACY_API_KEY:  Codacy API key
+apiVersion: v1
+data:
+  CODACY_API_KEY:  Codacy API key
+kind: Secret
+metadata:
+  name: codacy
+  namespace: security-controls
+type: Opaque
 ```
 
 ### CodeDx secrets
