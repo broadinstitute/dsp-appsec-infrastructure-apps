@@ -142,6 +142,9 @@ def list_repo_info(repos: Repos, org, repo_name):
         return
 
     github_repo = github['data']['repository']
+    if github_repo is None:
+        logging.error("Cannot read GitHub repo %s %s", org, repo_name)
+        return
     record = {}
     record['private'] = (github_repo['visibility'] != "PUBLIC")
 
@@ -308,5 +311,5 @@ def update_sast_values():
 
     # pylint: disable=W0703
     except Exception as ex:
-        # log but don't terminate with error status
+        # log but don't terminate process with error status
         logging.exception(ex)
