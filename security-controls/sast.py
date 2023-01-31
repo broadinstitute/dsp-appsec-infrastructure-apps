@@ -270,42 +270,47 @@ def get_data() -> Repos:
 def update_sast_values():
     '''Update security-controls and sast-details in Firestore.'''
 
-    logging.info("update_sast_values")
+    try:
+        logging.info("update_sast_values")
 
-    logging.info("lengths %s %s %s",
-        len(CODACY_API_KEY),
-        len(SONARCLOUD_API_KEY),
-        len(GITHUB_TOKEN))
+        logging.info("lengths %s %s %s",
+            len(CODACY_API_KEY),
+            len(SONARCLOUD_API_KEY),
+            len(GITHUB_TOKEN))
 
-    sast_collection = fs.collection(SAST_DETAILS)
+        sast_collection = fs.collection(SAST_DETAILS)
 
-    repos, codacy_org_data = get_data()
+        repos, codacy_org_data = get_data()
 
-    repos_for_json = {}
-    for org,rep in repos:
-        repos_for_json[f"{org}/{rep}"] = repos[(org, rep)]
+        repos_for_json = {}
+        for org,rep in repos:
+            repos_for_json[f"{org}/{rep}"] = repos[(org, rep)]
 
-    # store codacy data
-    codacy_doc = sast_collection.document('codacy')
-    codacy_doc.set(codacy_org_data, merge=False)
+        # store codacy data
+        codacy_doc = sast_collection.document('codacy')
+        codacy_doc.set(codacy_org_data, merge=False)
 
-    # store repos data
-    sc_collection = fs.collection(SECURITY_CONTROLS)
-    for org_name, repo_name in repos:
-        repo = repos[(org_name, repo_name)]
+        # store repos data
+        sc_collection = fs.collection(SECURITY_CONTROLS)
+        for org_name, repo_name in repos:
+            repo = repos[(org_name, repo_name)]
 
-        # write unconditionally to sast-details
-        repos_doc = sast_collection.document(f"gh-{org_name}-{repo_name}")
-        repos_doc.set(repo, merge=False)
+            # write unconditionally to sast-details
+            repos_doc = sast_collection.document(f"gh-{org_name}-{repo_name}")
+            repos_doc.set(repo, merge=False)
 
-        # update sast properties in security-controls only if already there
-        sc_previous = repo.get(SC_PREVIOUS)
-        if sc_previous:
-            sc_doc = sc_collection.document(sc_previous[ID])
-            sast_link = repo.get(SAST_LINK)
-            if sast_link:
-                logging.info("Setting SAST true on %s", sc_previous[ID])
-                sc_doc.update({SAST:True, SAST_LINK:sast_link})
-            else:
-                logging.info("Setting SAST false on %s", sc_previous[ID])
-                sc_doc.update({SAST:False, SAST_LINK:firestore.DELETE_FIELD})
+            # update sast properties in security-controls only if already there
+            sc_previous = repo.get(SC_PREVIOUS)
+            if sc_previous:
+                sc_doc = sc_collection.document(sc_previous[ID])
+                sast_link = repo.get(SAST_LINK)
+                if sast_link:
+                    logging.info("Setting SAST true on %s", sc_previous[ID])
+                    sc_doc.update({SAST:True, SAST_LINK:sast_link})
+                else:
+                    logging.info("Setting SAST false on %s", sc_previous[ID])
+                    sc_doc.update({SAST:False, SAST_LINK:firestore.DELETE_FIELD})
+    # pylint: disable=W0703
+    except Exception as ex:
+        # log but don't terminate with error status
+        logging.exception(ex)
