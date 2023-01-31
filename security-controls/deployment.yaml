@@ -28,7 +28,7 @@ spec:
           runtimeClassName: gvisor
           nodeSelector:
             cloud.google.com/gke-nodepool: batch
-          restartPolicy: Never
+          restartPolicy: OnFailure
 
           containers:
           - name: security-controls
