@@ -43,16 +43,8 @@ repo_re = re.compile(r'https://(www.)?github.com/([a-zA-Z0-9\-_]+)/([a-zA-Z0-9\-
 RE_GROUP_ORG = 2
 RE_GROUP_REPO = 3
 
-SONAR_ORGS = {
-    "broadinstitute": "dsp-appsec",
-    "DataBiosphere": "broad-databiosphere",
-    "CancerDataAggregator": "cancerdataaggregator"
-}
-
-CODACY_ORGS = [
-    "DataBiosphere",
-    "broadinstitute"
-]
+SONAR_ORGS = os.getenv("SONAR_ORGS")
+CODACY_ORGS = os.getenv("CODACY_ORGS")
 
 CODACY = "Codacy"
 SONAR = "SonarCloud"
@@ -258,12 +250,15 @@ def get_data() -> Repos:
     repo_list_from_security_controls(repos)
 
     # add codacy
-    for org in CODACY_ORGS:
+    for org in CODACY_ORGS.split(","):
+        logging.debug("Codacy org %s", org)
         list_codacy(repos, codacy_org_data, org)
 
     # add sonarcloud
-    for org_key in SONAR_ORGS.values():
-        list_sonar(repos, org_key)
+    for mapping in SONAR_ORGS.split(","):
+        github_org, sonar_org = mapping.split("=")
+        logging.debug("Sonar org %s (for GitHub org %s)", sonar_org, github_org)
+        list_sonar(repos, sonar_org)
 
     # query github for metadata on all above repos
     list_github(repos)
@@ -274,11 +269,6 @@ def update_sast_values():
 
     try:
         logging.info("update_sast_values")
-
-        logging.debug("lengths %s %s %s",
-            len(CODACY_API_KEY),
-            len(SONARCLOUD_API_KEY),
-            len(GITHUB_TOKEN))
 
         sast_collection = fs.collection(SAST_DETAILS)
         sc_collection = fs.collection(SECURITY_CONTROLS)
