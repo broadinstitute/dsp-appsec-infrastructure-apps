@@ -47,6 +47,10 @@ spec:
                 value: ${DEFECT_DOJO_URL}
               - name: SC_FIRESTORE_COLLECTION
                 value: ${SC_FIRESTORE_COLLECTION}
+              - name: CODACY_ORGS
+                value: ${CODACY_ORGS}
+              - name: SONAR_ORGS
+                value: ${SONAR_ORGS}
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
@@ -75,7 +79,3 @@ spec:
             env:
             - name: SECURITY_CONTROLS_IGNORE
               value: ${SECURITY_CONTROLS_IGNORE}
-            - name: CODACY_ORGS
-              value: ${CODACY_ORGS}
-            - name: SONAR_ORGS
-              value: ${SONAR_ORGS}
