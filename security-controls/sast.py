@@ -9,7 +9,6 @@ from google.cloud import firestore
 from requests.auth import HTTPBasicAuth
 
 SECURITY_CONTROLS = os.environ['SC_FIRESTORE_COLLECTION']
-SAST_DETAILS = os.environ['SAST_FIRESTORE_COLLECTION']
 
 SC_PREVIOUS = "security-controls-previous"
 ID = "id"
@@ -265,12 +264,11 @@ def get_data() -> Repos:
     return repos
 
 def update_sast_values():
-    '''Update security-controls and sast-details in Firestore.'''
+    '''Update security-controls in Firestore.'''
 
     try:
         logging.info("update_sast_values")
 
-        sast_collection = fs.collection(SAST_DETAILS)
         sc_collection = fs.collection(SECURITY_CONTROLS)
 
         repos = get_data()
@@ -278,10 +276,6 @@ def update_sast_values():
         # store repos data
         for org_name, repo_name in repos:
             repo = repos[(org_name, repo_name)]
-
-            # write unconditionally to sast-details
-            repos_doc = sast_collection.document(f"gh-{org_name}-{repo_name}")
-            repos_doc.set(repo, merge=False)
 
             # update sast properties in security-controls only if already there
             sc_previous = repo.get(SC_PREVIOUS)

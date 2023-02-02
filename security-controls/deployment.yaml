@@ -47,8 +47,6 @@ spec:
                 value: ${DEFECT_DOJO_URL}
               - name: SC_FIRESTORE_COLLECTION
                 value: ${SC_FIRESTORE_COLLECTION}
-              - name: SAST_FIRESTORE_COLLECTION
-                value: ${SAST_FIRESTORE_COLLECTION}
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
