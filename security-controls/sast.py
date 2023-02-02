@@ -20,6 +20,10 @@ fs = firestore.Client()
 CODACY_BASE = "https://app.codacy.com/api/v3"
 CODACY_API_KEY=os.getenv("CODACY_API_KEY").strip()
 CODACY_URL = "https://app.codacy.com/gh/{org}/{repo}/dashboard"
+CODACY_HEADERS = {
+    'Accept': 'application/json',
+    'api-token': CODACY_API_KEY
+}
 
 SONARCLOUD_BASE = "https://sonarcloud.io/api"
 SONARCLOUD_API_KEY=os.getenv("SONARCLOUD_API_KEY").strip()
@@ -27,11 +31,6 @@ SONARCLOUD_URL = "https://sonarcloud.io/project/overview?id={project_key}"
 
 GITHUB_GQL_ENDPOINT = "https://api.github.com/graphql"
 GITHUB_TOKEN=os.getenv("GITHUB_TOKEN").strip()
-
-CODACY_HEADERS = {
-    'Accept': 'application/json',
-    'api-token': CODACY_API_KEY
-}
 
 def codacy_org(organization: str) -> str:
     '''path for codacy org'''
@@ -164,6 +163,16 @@ def codacy_get(path):
     data = json['data']
     return data
 
+def sonarcloud_get(path):
+    '''call SonarCloud REST GET and return json response data'''
+    auth = HTTPBasicAuth(SONARCLOUD_API_KEY, '')
+    res = requests.get(path, auth=auth, timeout=5)
+    if res.status_code != 200:
+        logging.error("sonarcloud error %s %s %s", path, res.status_code, res.text)
+        return None
+    json = res.json()
+    return json
+
 def list_codacy_org_data(codacy_org_data: CodacyOrgData, organization: str):
     '''get codacy metadata on organization'''
 
@@ -215,18 +224,16 @@ def list_sonar(repos: Repos, org_key: str, github_org: str):
         "languages%2Ctags&f=analysisDate%2CleakPeriodDate&"\
         f"organization={org_key}"
 
-    auth = HTTPBasicAuth(SONARCLOUD_API_KEY, '')
-    res = requests.get(url, auth=auth, timeout=5)
-    json = res.json()
+    json = sonarcloud_get(url)
     if 'components' not in json:
         logging.error("SonarCloud - error %s", org_key)
         return
     components = json['components']
     for record in components:
         project_key = record['key']
-        res = requests.get(f"{SONARCLOUD_BASE}/navigation/component?"\
-            f"component={project_key}", auth=auth, timeout=5)
-        project_json = res.json()
+        project_json = sonarcloud_get(
+            f"{SONARCLOUD_BASE}/navigation/component?component={project_key}"
+        )
         if 'alm' in project_json:
             gh_url = project_json['alm']['url']
             url_parts = gh_url.split('/')
