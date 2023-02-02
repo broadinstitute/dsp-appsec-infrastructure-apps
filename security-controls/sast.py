@@ -38,7 +38,7 @@ def codacy_org(organization: str) -> str:
     return f'{CODACY_BASE}/organizations/gh/{organization}'
 
 
-repo_re = re.compile(r'https://(www.)?github.com/([a-zA-Z0-9\-_]+)/([a-zA-Z0-9\-_]+)')
+GITHUB_RE = re.compile(r'https://(www.)?github.com/([a-zA-Z0-9\-_]+)/([a-zA-Z0-9\-_]+)')
 RE_GROUP_ORG = 2
 RE_GROUP_REPO = 3
 
@@ -68,7 +68,7 @@ def repo_list_from_security_controls(repos: Repos):
     for doc in sc_docs:
         sc_record = doc.to_dict()
         repo_url = get_if(sc_record,'github')
-        match = repo_re.match(repo_url)
+        match = GITHUB_RE.match(repo_url)
         if match is None:
             logging.warning('SAST controls ignoring %s github="%s"', doc.id, repo_url)
             continue
@@ -205,7 +205,7 @@ def list_codacy(repos: Repos, codacy_org_data: CodacyOrgData, organization: str)
     list_codacy_repos(repos, organization)
 
 
-def list_sonar(repos: Repos, org_key: str):
+def list_sonar(repos: Repos, org_key: str, github_org: str):
     '''Pull SonarCloud data for an organization and put it in repos.'''
     logging.debug("SonarCloud organization %s", org_key)
 
@@ -227,13 +227,16 @@ def list_sonar(repos: Repos, org_key: str):
         res = requests.get(f"{SONARCLOUD_BASE}/navigation/component?"\
             f"component={project_key}", auth=auth, timeout=5)
         project_json = res.json()
-        if 'alm' not in project_json:
-            logging.error("SonarCloud - error no alm in %s", project_key)
-            continue
-        gh_url = project_json['alm']['url']
-        url_parts = gh_url.split('/')
-        gh_org = url_parts[-2]
-        gh_project = url_parts[-1]
+        if 'alm' in project_json:
+            gh_url = project_json['alm']['url']
+            url_parts = gh_url.split('/')
+            gh_org = url_parts[-2]
+            assert gh_org == github_org
+            gh_project = url_parts[-1]
+        else:
+            logging.warning("SonarCloud - unbound project %s", project_key)
+            gh_project = record['name'] # name must match GitHub name
+            gh_org = github_org # get gh org from mapping in configuration
         logging.debug("SonarCloud - repo %s", gh_project)
         repo = get_repo(repos, (gh_org, gh_project))
         repo[SAST_LINK] = SONARCLOUD_URL.format(project_key=project_key)
@@ -257,7 +260,7 @@ def get_data() -> Repos:
     for mapping in SONAR_ORGS.split(","):
         github_org, sonar_org = mapping.split("=")
         logging.debug("Sonar org %s (for GitHub org %s)", sonar_org, github_org)
-        list_sonar(repos, sonar_org)
+        list_sonar(repos, sonar_org, github_org)
 
     # query github for metadata on all above repos
     list_github(repos)
