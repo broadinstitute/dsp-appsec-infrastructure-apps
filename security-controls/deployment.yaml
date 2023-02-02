@@ -75,3 +75,7 @@ spec:
             env:
             - name: SECURITY_CONTROLS_IGNORE
               value: ${SECURITY_CONTROLS_IGNORE}
+            - name: CODACY_ORGS
+              value: ${CODACY_ORGS}
+            - name: SONAR_ORGS
+              value: ${SONAR_ORGS}
