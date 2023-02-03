@@ -5,6 +5,8 @@ substitutions:
   _DNS_ZONE: '' # DNS zone name to be created/updated (e.g. appsec)
   _CIS_CONTROLS_IGNORE: '' # CIS controls rule to ignore
   _SECURITY_CONTROLS_IGNORE: '' # Security controls set to false ignore for some services
+  _SONAR_ORGS: '' # in-scope SonarCloud organizations
+  _CODACY_ORGS: '' # in-scope Codacy organizations
 
 options:
   machineType: N1_HIGHCPU_8
@@ -203,6 +205,8 @@ steps:
   dir: security-controls
   env:
   - SECURITY_CONTROLS_IGNORE=${_SECURITY_CONTROLS_IGNORE}
+  - CODACY_ORGS=${_CODACY_ORGS}
+  - SONAR_ORGS=${_SONAR_ORGS}
 
 # deploy CIS scanner resources
 - id: cis

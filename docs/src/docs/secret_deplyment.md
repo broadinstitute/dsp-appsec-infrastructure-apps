@@ -3,10 +3,10 @@ id: secret_deployment
 title: Secret deployment for each app
 ---
 
-Secrets deployed for each namespace in the cluster. Values must be encoded. 
+Secrets deployed for each namespace in the cluster. Values must be encoded.
 
 ### SDARQ secrets
- 
+
 ```
 apiVersion: v1
 data:
@@ -27,7 +27,7 @@ type: Opaque
 ```
 
 ### SDARQ Security-Controls secrets
- 
+
 ```
 apiVersion: v1
 data:
@@ -40,6 +40,39 @@ data:
 kind: Secret
 metadata:
   name: security-controls
+  namespace: security-controls
+type: Opaque
+```
+
+```
+apiVersion: v1
+data:
+  SONARCLOUD_API_KEY:  SonarCloud API key
+kind: Secret
+metadata:
+  name: sonarcloud
+  namespace: security-controls
+type: Opaque
+```
+
+```
+apiVersion: v1
+data:
+  GITHUB_TOKEN:  GitHub personal access token
+kind: Secret
+metadata:
+  name: github
+  namespace: security-controls
+type: Opaque
+```
+
+```
+apiVersion: v1
+data:
+  CODACY_API_KEY:  Codacy API key
+kind: Secret
+metadata:
+  name: codacy
   namespace: security-controls
 type: Opaque
 ```
@@ -101,8 +134,8 @@ type: Opaque
 ```
 apiVersion: v1
 data:
-  oauth2_key: 
-  oauth2_secret: 
+  oauth2_key:
+  oauth2_secret:
 kind: Secret
 metadata:
   name: googleoauth2

@@ -3,10 +3,13 @@
 This module
 - will get all products that have srlc & zap tag and update security controls column for all services/apps
 """
-import os
 import logging
+import os
+
+import google.cloud.logging
 import requests
 from google.cloud import firestore
+from sast import update_sast_values
 
 
 def update_dependecies_scan_values(defect_dojo_key: str, defect_dojo: str, security_controls_firestore_collection: str, dep_scan_link: str, defect_dojo_host: str):
@@ -70,6 +73,11 @@ def main():
     """
     Implements the entrypoint.
     """
+
+    # configure logging
+    client = google.cloud.logging.Client()
+    client.setup_logging()
+
     defect_dojo_key = os.getenv("DEFECT_DOJO_KEY")
     defect_dojo = os.getenv("DEFECT_DOJO_URL")
     defect_dojo_host = os.getenv("DEFECT_DOJO")
@@ -77,14 +85,14 @@ def main():
     dep_scan_link = os.getenv("DEP_SCAN_LINK")
     dast_link = os.getenv("DAST_LINK")
 
-    # configure logging
-    logging.basicConfig(level=logging.INFO)
 
     update_dependecies_scan_values(
         defect_dojo_key, defect_dojo, security_controls_firestore_collection, dep_scan_link, defect_dojo_host)
 
     update_dast_values(defect_dojo_key, defect_dojo,
                        security_controls_firestore_collection, dast_link, defect_dojo_host)
+
+    update_sast_values()
 
 
 if __name__ == "__main__":

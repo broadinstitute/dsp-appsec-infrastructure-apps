@@ -1,5 +1,6 @@
 requests
-google-api-core[grpc] < 2.0.0dev
+google-api-core[grpc]
+google-cloud-logging 
 google-cloud-firestore
 google-cloud-resource-manager
 slack_sdk
