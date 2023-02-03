@@ -136,7 +136,8 @@ def list_repo_info(repos: Repos, org, repo_name):
         logging.error("Cannot read GitHub repo %s %s", org, repo_name)
         return
     record = {}
-    record['private'] = (github_repo['visibility'] != "PUBLIC")
+    record['private'] = (github_repo['visibility'] != "PUBLIC") # pylint: disable=C0325
+
 
     if 'primaryLanguage' in github_repo and github_repo['primaryLanguage'] is not None:
         record['language'] = github_repo['primaryLanguage']['name']
