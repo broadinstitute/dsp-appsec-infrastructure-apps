@@ -525,7 +525,6 @@ def request_tm():
 
     try:
         validate(instance=user_data, schema=tm_schema)
-        security_champion = user_data['Eng']
         request_type = user_data['Type']
         project_name = user_data['Name']
         logging.info("Threat model request for %s by %s",
@@ -543,7 +542,7 @@ def request_tm():
             project_name)
 
         slacknotify.slacknotify_threat_model(appsec_slack_channel,
-                                             security_champion,
+                                             user_email,
                                              request_type, project_name,
                                              jira_instance,
                                              jira_ticket_appsec,
@@ -876,7 +875,6 @@ def request_manual_pentest():
 
     try:
         validate(instance=user_data, schema=mp_schema)
-        security_champion = user_data['security_champion']
         project_name = user_data['service']
 
         appsec_jira_ticket_summury = 'Security pentest request for ' + \
@@ -885,7 +883,7 @@ def request_manual_pentest():
             '\n' + 'Environment: ' + user_data['env'] + \
             '\n' + 'Permission levels:' + user_data['permission_level'] + \
             '\n' + 'Documentation: ' + user_data['document'] + \
-            '\n' + 'Security champion: ' + user_data['security_champion']
+            '\n' + 'Security champion: ' + user_email
 
         jira_ticket_appsec = jiranotify.create_board_ticket(
             appsec_jira_project_key,
@@ -898,7 +896,7 @@ def request_manual_pentest():
             user_email)
 
         slacknotify.slacknotify_security_pentest(appsec_slack_channel,
-                                                 security_champion,
+                                                 user_email,
                                                  project_name,
                                                  jira_instance,
                                                  jira_ticket_appsec,

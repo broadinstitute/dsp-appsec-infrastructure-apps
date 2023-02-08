@@ -20,11 +20,7 @@ tm_schema = {
         "Document": {
             "type": "string",
             "pattern": "(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?"
-        },
-        "Eng": {
-            "type": "string",
-            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{1,20}[a-zA-Z0-9]$"
         }
     },
-    "required": ["Type", "Name", "Github", "Diagram", "Document", "Eng"]
+    "required": ["Type", "Name", "Github", "Diagram", "Document"]
 }

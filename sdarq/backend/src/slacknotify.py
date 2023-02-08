@@ -137,7 +137,7 @@ def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product
         ], "color": "#0731b0"}]
     )
 
-def slacknotify_threat_model(appsec_slack_channel, security_champion, request_type, project_name,  jira_instance, jira_ticket_appsec, appsec_jira_board):
+def slacknotify_threat_model(appsec_slack_channel, user_email, request_type, project_name,  jira_instance, jira_ticket_appsec, appsec_jira_board):
     """
     Sends slack notification when there is a request for threat model
 
@@ -175,7 +175,7 @@ def slacknotify_threat_model(appsec_slack_channel, security_champion, request_ty
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Security champion:* {0} " .format(str(security_champion))
+                    "text": "*Security champion:* {0} " .format(str(user_email))
                 }
             },
             {
@@ -194,7 +194,7 @@ def slacknotify_threat_model(appsec_slack_channel, security_champion, request_ty
         ], "color": "#0731b0"}]
     )
 
-def slacknotify_security_pentest(appsec_slack_channel, security_champion, project_name, jira_instance, jira_ticket_appsec, appsec_jira_board):
+def slacknotify_security_pentest(appsec_slack_channel, user_email, project_name, jira_instance, jira_ticket_appsec, appsec_jira_board):
     """
     Sends slack notification when there is a request for a security request
 
@@ -224,7 +224,7 @@ def slacknotify_security_pentest(appsec_slack_channel, security_champion, projec
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Security champion:* {0} " .format(str(security_champion))
+                    "text": "*Security champion:* {0} " .format(str(user_email))
                 }
             },
             {

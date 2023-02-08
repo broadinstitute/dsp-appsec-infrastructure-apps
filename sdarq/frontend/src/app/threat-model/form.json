@@ -67,17 +67,6 @@
                             "text": "Please enter a valid input.",
                             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}],
                     "isRequired": true
-                },
-                {
-                    "type": "text",
-                    "name": "Eng",
-                    "title": "Security Champion",
-                    "validators": [
-                        {
-                            "type": "regex",
-                            "text": "Please enter a valid input.",
-                            "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{1,20}[a-zA-Z0-9]$"}],
-                    "isRequired": true
                 }
             ]
         }
