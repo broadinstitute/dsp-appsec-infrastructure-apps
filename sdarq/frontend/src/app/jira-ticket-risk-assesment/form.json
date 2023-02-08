@@ -90,7 +90,7 @@
          },
          {
             "value": "update_dependecies",
-            "text": "Dependecies - Update dependecies, clients of an existing service"
+            "text": "Dependencies - Update dependencies, clients of an existing service"
          }
         ],
         "otherText": "Not sure - I need further help with this. "
