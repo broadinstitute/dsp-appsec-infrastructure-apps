@@ -1,3 +1,5 @@
+url_pattern = "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$"
+
 new_service_schema = {
     "type": "object",
     "properties": {
@@ -19,11 +21,11 @@ new_service_schema = {
         },
         "Github URL": {
             "type": "string",
-            "pattern": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$"
+            "pattern": url_pattern
         },
         "Architecture Diagram": {
             "type": "string",
-            "pattern": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$"
+            "pattern": url_pattern
         },
         "Compliance": {
             "type": "string",
