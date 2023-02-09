@@ -68,7 +68,6 @@ logging.basicConfig(level=logging.INFO)
 
 app = FlaskAPI(__name__)
 
-
 client = bigquery.Client()
 
 db = firestore.Client()

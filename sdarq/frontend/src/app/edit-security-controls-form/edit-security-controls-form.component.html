@@ -18,7 +18,7 @@
             </div>
         </div>
         <div class="row" *ngIf="serviceToEditForm">
-            <div class="col-sm" *ngIf="showServiceData">
+            <div class="col-sm-5 col-md-6" *ngIf="showServiceData">
                 <div class="service-security-controls-block">
                     <p class="service-cecurity-controls-title"> {{ service | uppercase }} security controls:</p>
                     <br><br>
@@ -45,7 +45,7 @@
                     </p>
                 </div>
             </div>
-            <div class="col-sm" *ngIf="serviceToEditForm">
+            <div class="col-sm-5 col-md-6" *ngIf="serviceToEditForm">
                 <app-survey [json]="json" (submitSurvey)="onSubmit($event)"></app-survey>
             </div>
         </div>
