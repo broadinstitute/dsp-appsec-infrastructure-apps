@@ -730,7 +730,7 @@ def edit_sec_controls():
             doc = doc_ref.get()
             if bool(doc.to_dict()) is True:
                 for key in doc.to_dict():
-                    doc_ref.sef({
+                    doc_ref.set({
                         f'{key}': f'{doc.to_dict()[key]}'
                     }, merge=True)
                 logging.info(
