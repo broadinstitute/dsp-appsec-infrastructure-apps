@@ -18,6 +18,7 @@ tm_schema = {
         "Diagram": {
             "type": "string",
             "pattern": url_pattern
+        },
         "Document": {
             "type": "string",
             "pattern": url_pattern
