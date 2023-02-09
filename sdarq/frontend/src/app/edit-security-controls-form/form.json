@@ -9,7 +9,6 @@
         "name": "dev_url",
         "title": "Dev URL",
         "hideNumber": true,
-        "isRequired": true,
         "validators": [
          {
              "type": "regex",
@@ -20,8 +19,7 @@
         "type": "boolean",
         "name": "threat_model",
         "title": "Does this servise have a threat model?",
-        "hideNumber": true,
-        "isRequired": true
+        "hideNumber": true
        },
        {
         "type": "text",
@@ -40,22 +38,19 @@
         "type": "boolean",
         "name": "docker_scan",
         "title": "Docker image scan (via Trivy or similar tool)",
-        "hideNumber": true,
-        "isRequired": true
+        "hideNumber": true
        },
        {
         "type": "boolean",
         "name": "cis_scanner",
         "title": "GCP project scan (via CIS scanner or similar tool)",
-        "hideNumber": true,
-        "isRequired": true
+        "hideNumber": true
        },
        {
         "type": "boolean",
         "name": "burp",
         "title": "Have you performed any manual security pentest (via Burp or similar tool)?",
-        "hideNumber": true,
-        "isRequired": true
+        "hideNumber": true
        },
        {
         "type": "text",
@@ -64,7 +59,6 @@
         "visibleIf": "{burp} = true",
         "title": "Enter security pentest results link",
         "enableIf": "{burp} = true",
-        "isRequired": true,
         "validators": [
          {
              "type": "regex",
