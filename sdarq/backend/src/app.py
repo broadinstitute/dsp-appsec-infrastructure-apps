@@ -731,7 +731,7 @@ def edit_sec_controls():
             if bool(doc.to_dict()) is True:
                 for key in json_data:
                     doc_ref.set({
-                        f'{key}': {doc.to_dict()[key]}
+                        f'{key}': json_data[key]
                     }, merge=True)
                     logging.info(
                         "Security control %s for the choosen service have changed by %s !",
