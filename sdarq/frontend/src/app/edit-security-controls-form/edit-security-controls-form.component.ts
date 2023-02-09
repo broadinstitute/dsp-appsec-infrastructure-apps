@@ -97,35 +97,6 @@ export class EditSecurityControlsFormComponent implements OnInit {
     });
   }
 
-  copyProductName() {
-    const pending =
-      this.clipboard.beginCopy(this.product);
-    let remainingAttempts = 3;
-    const attempt = () => {
-      const result = pending.copy();
-      if (!result && --remainingAttempts) {
-        setTimeout(attempt);
-      } else {
-        pending.destroy();
-      }
-    };
-    attempt();
-  }
-
-  copyGithubUrl() {
-    const pending =
-      this.clipboard.beginCopy(this.github);
-    let remainingAttempts = 3;
-    const attempt = () => {
-      const result = pending.copy();
-      if (!result && --remainingAttempts) {
-        setTimeout(attempt);
-      } else {
-        pending.destroy();
-      }
-    };
-    attempt();
-  }
 
   copyDevUrl() {
     const pending =
@@ -142,20 +113,6 @@ export class EditSecurityControlsFormComponent implements OnInit {
     attempt();
   }
 
-  copyDefectDojoUrl() {
-    const pending =
-      this.clipboard.beginCopy(this.defect_dojo);
-    let remainingAttempts = 3;
-    const attempt = () => {
-      const result = pending.copy();
-      if (!result && --remainingAttempts) {
-        setTimeout(attempt);
-      } else {
-        pending.destroy();
-      }
-    };
-    attempt();
-  }
 
   copyTMLink() {
     const pending =
@@ -170,51 +127,6 @@ export class EditSecurityControlsFormComponent implements OnInit {
       }
     };
     attempt();
-  }
-
-  copyVMLink() {
-    const pending =
-      this.clipboard.beginCopy(this.vulnerability_management);
-    let remainingAttempts = 3;
-    const attempt = () => {
-      const result = pending.copy();
-      if (!result && --remainingAttempts) {
-        setTimeout(attempt);
-      } else {
-        pending.destroy();
-      }
-    };
-    attempt();
-  }
-
-  copySourcelearLink() {
-    const pending =
-      this.clipboard.beginCopy(this.sourceclear_link);
-    let remainingAttempts = 3;
-    const attempt = () => {
-      const result = pending.copy();
-      if (!result && --remainingAttempts) {
-        setTimeout(attempt);
-      } else {
-        pending.destroy();
-      }
-    };
-    attempt();
-  }
-
-  copySASTLink() {
-    const pending =
-    this.clipboard.beginCopy(this.sast_link);
-  let remainingAttempts = 3;
-  const attempt = () => {
-    const result = pending.copy();
-    if (!result && --remainingAttempts) {
-      setTimeout(attempt);
-    } else {
-      pending.destroy();
-    }
-  };
-  attempt();
   }
 
   copyManualPentestLink() {
