@@ -729,11 +729,13 @@ def edit_sec_controls():
                 service_name.lower())
             doc = doc_ref.get()
             if bool(doc.to_dict()) is True:
-                db.collection(security_controls_firestore_collection).document(
-                    service_name.lower()).set(json_data)
+                for key in doc.to_dict():
+                    doc.ref({
+                        f'{key}': f'{doc.to_dict()[key]}'
+                    }, merge=True)
                 logging.info(
-                    "Security controls for the choosen service have changed by %s !",
-                    user_email)
+                    "Security control %s for the choosen service have changed by %s !",
+                    key, user_email)
                 return ''
             else:
                 message = """
