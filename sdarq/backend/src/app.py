@@ -729,13 +729,13 @@ def edit_sec_controls():
                 service_name.lower())
             doc = doc_ref.get()
             if bool(doc.to_dict()) is True:
-                for key in doc.to_dict():
+                for key in json_data:
                     doc_ref.set({
                         f'{key}': f'{doc.to_dict()[key]}'
                     }, merge=True)
-                logging.info(
-                    "Security control %s for the choosen service have changed by %s !",
-                    key, user_email)
+                    logging.info(
+                        "Security control %s for the choosen service have changed by %s !",
+                        key, user_email)
                 return ''
             else:
                 message = """
