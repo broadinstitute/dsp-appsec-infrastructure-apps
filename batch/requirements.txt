@@ -3,3 +3,4 @@ google-cloud-logging
 kubernetes
 pyyaml
 types-PyYAML
+google-api-core[grpc]
