@@ -209,7 +209,6 @@ def main():
     subscription = environ["SUBSCRIPTION"]
     namespace = environ["NAMESPACE"]
     spec_path = environ["SPEC_PATH"]
-    log_level = environ.get("LOG_LEVEL", "INFO")
 
     # configure logging
     client = google.cloud.logging.Client()
