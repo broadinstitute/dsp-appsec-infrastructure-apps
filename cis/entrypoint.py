@@ -15,7 +15,7 @@ import subprocess
 import sys
 from datetime import datetime
 from typing import Any, List, Set
-
+import google.cloud.logging
 from google.cloud import bigquery, firestore, resourcemanager
 from slack_sdk import WebClient
 
@@ -312,7 +312,8 @@ def main():
     Implements the entrypoint.
     """
     # configure logging
-    logging.basicConfig(level=logging.INFO)
+    client = google.cloud.logging.Client()
+    client.setup_logging()
 
     # parse inputs
     target_project_id = os.environ['TARGET_PROJECT_ID']  # required

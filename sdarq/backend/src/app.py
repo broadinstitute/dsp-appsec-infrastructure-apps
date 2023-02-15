@@ -29,6 +29,7 @@ import requests
 from flask import Response, request
 from flask_api import FlaskAPI
 from flask_cors import cross_origin
+import google.cloud.logging
 from google.cloud import bigquery, firestore, pubsub_v1
 from jsonschema import validate
 from trigger import parse_tags
@@ -64,7 +65,9 @@ headers = {
     "content-type": "application/json",
     "Authorization": f"Token {dojo_api_key}",
 }
-logging.basicConfig(level=logging.INFO)
+# configure logging
+client = google.cloud.logging.Client()
+client.setup_logging()
 
 app = FlaskAPI(__name__)
 
