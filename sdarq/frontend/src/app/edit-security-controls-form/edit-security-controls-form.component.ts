@@ -12,30 +12,21 @@ import formJson from './form.json';
   styleUrls: ['./edit-security-controls-form.component.css']
 })
 export class EditSecurityControlsFormComponent implements OnInit {
-  product: string;
+  json = formJson;
   service: string;
-  github: string;
   dev_url: string;
-  vulnerability_management: string;
-  defect_dojo: string;
-  zap: boolean;
-  sourceclear: boolean;
-  sourceclear_link: string;
   docker_scan: boolean;
   cis_scanner: boolean;
   burp: boolean;
   security_pentest_link: string;
   threat_model: boolean;
   threat_model_link: string;
-  sast: boolean;
-  sast_link: string;
   data: any;
   item: any;
   chooseServiceToEditForm: boolean;
   serviceToEditForm: boolean;
   showServiceData: boolean;
   choosenService: string;
-  json = formJson;
   datas: any;
   showModalError: boolean;
   errorMessage: string;
@@ -69,23 +60,14 @@ export class EditSecurityControlsFormComponent implements OnInit {
 
   loadSecurityControls(datas) {
     this.getSecurityControls.getServiceSecurityControls(datas).subscribe((serviceSecurityControl) => {
-        this.product = serviceSecurityControl.product;
         this.service = serviceSecurityControl.service;
-        this.github = serviceSecurityControl.github;
         this.dev_url = serviceSecurityControl.dev_url;
-        this.vulnerability_management = serviceSecurityControl.vulnerability_management;
-        this.defect_dojo = serviceSecurityControl.defect_dojo;
         this.threat_model = serviceSecurityControl.threat_model;
         this.threat_model_link = serviceSecurityControl.threat_model_link;
-        this.zap = serviceSecurityControl.zap;
-        this.sourceclear = serviceSecurityControl.sourceclear;
-        this.sourceclear_link = serviceSecurityControl.sourceclear_link;
         this.docker_scan = serviceSecurityControl.docker_scan;
         this.cis_scanner = serviceSecurityControl.cis_scanner;
         this.burp = serviceSecurityControl.burp;
         this.security_pentest_link = serviceSecurityControl.security_pentest_link;
-        this.sast = serviceSecurityControl.sast;
-        this.sast_link = serviceSecurityControl.sast_link;
       },
       (serviceSecurityControl) => {
         this.ngZone.run(() => {
