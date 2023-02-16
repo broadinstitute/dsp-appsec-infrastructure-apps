@@ -3,6 +3,7 @@
 import ssl
 import os
 from slack_sdk import WebClient
+import parse_data as parse_email
 
 ssl_context = ssl.create_default_context()
 ssl_context.check_hostname = True
@@ -174,7 +175,7 @@ def slacknotify_threat_model(appsec_slack_channel, user_email, request_type, pro
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Security champion:* {0} " .format(parse_user_email(user_email))
+                    "text": "*Security champion:* {0} " .format(parse_email.parse_user_email(user_email))
                 }
             },
             {
@@ -223,7 +224,7 @@ def slacknotify_security_pentest(appsec_slack_channel, user_email, project_name,
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Security champion:* {0} " .format(parse_user_email(user_email))
+                    "text": "*Security champion:* {0} " .format(parse_email.parse_user_email(user_email))
                 }
             },
             {
@@ -270,7 +271,7 @@ def slacknotify_jira_ticket_risk_assessment(jtra_slack_channel, ticket_context, 
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Dev:* `{0}` " .format(parse_user_email(user_email))
+                    "text": "*Dev:* `{0}` " .format(parse_email.parse_user_email(user_email))
                 }
             },
             {
@@ -310,7 +311,7 @@ def slacknotify_jira_ticket_risk_assessment_error(jtra_slack_channel, user_email
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Dev:* `{0}` " .format(parse_user_email(user_email))
+                    "text": "*Dev:* `{0}` " .format(parse_email.parse_user_email(user_email))
                 }
             },
                         {
