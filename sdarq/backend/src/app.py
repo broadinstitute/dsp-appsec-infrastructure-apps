@@ -2,8 +2,8 @@
 This module
 - sends a new service & app requirements request
         - creates a new product in Defect Dojo
-        - optionally creates a Jira Ticket
-        - notifies several Slack channels about service requirements request
+        - creates a Jira Ticket in AppSec board
+        - notifies AppSec Slack channel about service/app requirements request
         - creates a new security controls template for a new service/product
 - sends request to scan a GCP project against the CIS Benchmark
 - get results from BigQuery for a scanned GCP project
@@ -13,6 +13,7 @@ This module
 - add security controls for a service
 - edit security controls for a service
 - list all security controls for all services
+- list security controls for a services
 - calculates the risk of a Jira ticket and notifies AppSec team
 """
 #!/usr/bin/env python3
