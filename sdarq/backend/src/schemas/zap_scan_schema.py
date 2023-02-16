@@ -3,7 +3,7 @@ zap_scan_schema = {
     "properties": {
         "URL": {
             "type": "string",
-            "pattern": "(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?"
+            "pattern": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$"
         },
         "severities": {
             "type": "array",

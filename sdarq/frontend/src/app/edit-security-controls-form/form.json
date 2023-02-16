@@ -6,58 +6,20 @@
       "elements": [
        {
         "type": "text",
-        "name": "product",
-        "title": "Product name",
-        "hideNumber": true,
-        "isRequired": true,
-        "validators": [
-         {
-             "type": "regex",
-             "text": "Please include a valid value.",
-             "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"}]
-       },
-       {
-        "type": "text",
-        "name": "github",
-        "title": "Github link",
-        "hideNumber": true,
-        "isRequired": true,
-        "validators": [
-         {
-             "type": "regex",
-             "text": "Please include a valid link.",
-             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
-       },
-       {
-        "type": "text",
         "name": "dev_url",
         "title": "Dev URL",
         "hideNumber": true,
-        "isRequired": true,
         "validators": [
          {
              "type": "regex",
              "text": "Please include a valid link.",
-             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
-       },
-       {
-        "type": "text",
-        "name": "defect_dojo",
-        "title": "Defect Dojo URL",
-        "hideNumber": true,
-        "isRequired": true,
-        "validators": [
-         {
-             "type": "regex",
-             "text": "Please include a valid link.",
-             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
+             "regex": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$"}]
        },
        {
         "type": "boolean",
         "name": "threat_model",
         "title": "Does this servise have a threat model?",
-        "hideNumber": true,
-        "isRequired": true
+        "hideNumber": true
        },
        {
         "type": "text",
@@ -70,93 +32,25 @@
          {
              "type": "regex",
              "text": "Please include a valid link.",
-             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
-       },
-       {
-        "type": "boolean",
-        "name": "zap",
-        "title": "Do you run a dynamic application security scan (via Zap or similar tool)?",
-        "hideNumber": true,
-        "isRequired": true
-       },
-       {
-        "type": "text",
-        "name": "vulnerability_management",
-        "hideNumber": true,
-        "visibleIf": "{zap} = true",
-        "title": "Vulnerability management results link",
-        "enableIf": "{zap} = true",
-        "isRequired": true,
-        "requiredIf": "{zap} = true",
-        "validators": [
-         {
-             "type": "regex",
-             "text": "Please include a valid link.",
-             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
-       },
-       {
-        "type": "boolean",
-        "name": "sourceclear",
-        "title": "Do you scan downstream dependencies (via Sourceclear, Snyk or similar tool)?",
-        "hideNumber": true,
-        "isRequired": true
-       },
-       {
-        "type": "text",
-        "name": "sourceclear_link",
-        "visibleIf": "{sourceclear} = true",
-        "title": "Enter downstream dependency result link",
-        "hideNumber": true,
-        "enableIf": "{sourceclear} = true",
-        "isRequired": true,
-        "requiredIf": "{sourceclear} = true",
-        "validators": [
-         {
-             "type": "regex",
-             "text": "Please include a valid link.",
-             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
+             "regex": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$"}]
        },
        {
         "type": "boolean",
         "name": "docker_scan",
         "title": "Docker image scan (via Trivy or similar tool)",
-        "hideNumber": true,
-        "isRequired": true
+        "hideNumber": true
        },
        {
         "type": "boolean",
         "name": "cis_scanner",
         "title": "GCP project scan (via CIS scanner or similar tool)",
-        "hideNumber": true,
-        "isRequired": true
-       },
-       {
-        "type": "boolean",
-        "name": "sast",
-        "title": "Are you using a static application security testing?",
-        "hideNumber": true,
-        "isRequired": true
-       },
-       {
-        "type": "text",
-        "name": "sast_link",
-        "hideNumber": true,
-        "visibleIf": "{sast} = true",
-        "title": "Enter security pentest results link",
-        "enableIf": "{sast} = true",
-        "isRequired": true,
-        "validators": [
-         {
-             "type": "regex",
-             "text": "Please include a valid link.",
-             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
+        "hideNumber": true
        },
        {
         "type": "boolean",
         "name": "burp",
         "title": "Have you performed any manual security pentest (via Burp or similar tool)?",
-        "hideNumber": true,
-        "isRequired": true
+        "hideNumber": true
        },
        {
         "type": "text",
@@ -165,12 +59,11 @@
         "visibleIf": "{burp} = true",
         "title": "Enter security pentest results link",
         "enableIf": "{burp} = true",
-        "isRequired": true,
         "validators": [
          {
              "type": "regex",
              "text": "Please include a valid link.",
-             "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"}]
+             "regex": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$"}]
        }
       ],
       "questionTitleLocation": "top",

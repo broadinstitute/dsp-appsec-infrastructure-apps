@@ -2,7 +2,7 @@ FROM us.gcr.io/broad-dsp-gcr-public/base/python:alpine AS base
 
 COPY requirements.txt .
 
-RUN pip3 install -Ur requirements.txt
+RUN pip3 install -r requirements.txt
 
 FROM base AS test
 

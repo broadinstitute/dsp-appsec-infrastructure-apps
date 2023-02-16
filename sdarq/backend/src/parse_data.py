@@ -22,3 +22,9 @@ def prepare_dojo_input(json_data):
     data3 = data2.strip(']').replace(']', ' ')
     data4 = data3.strip('""').replace('"', ' ')
     return data4
+
+def parse_user_email(user_email:str):
+    parsed_user_email = user_email.lstrip('accounts.google.com:')
+    return parsed_user_email
+
+

@@ -2,8 +2,8 @@
 This module
 - sends a new service & app requirements request
         - creates a new product in Defect Dojo
-        - optionally creates a Jira Ticket
-        - notifies several Slack channels about service requirements request
+        - creates a Jira Ticket in AppSec board
+        - notifies AppSec Slack channel about service/app requirements request
         - creates a new security controls template for a new service/product
 - sends request to scan a GCP project against the CIS Benchmark
 - get results from BigQuery for a scanned GCP project
@@ -13,14 +13,15 @@ This module
 - add security controls for a service
 - edit security controls for a service
 - list all security controls for all services
+- list security controls for a services
 - calculates the risk of a Jira ticket and notifies AppSec team
 """
 #!/usr/bin/env python3
 
 import json
-import logging
 import os
 import re
+import logging
 import threading
 from typing import List
 from urllib.parse import urlparse
@@ -29,6 +30,7 @@ import requests
 from flask import Response, request
 from flask_api import FlaskAPI
 from flask_cors import cross_origin
+import google.cloud.logging
 from google.cloud import bigquery, firestore, pubsub_v1
 from jsonschema import validate
 from trigger import parse_tags
@@ -64,10 +66,11 @@ headers = {
     "content-type": "application/json",
     "Authorization": f"Token {dojo_api_key}",
 }
-logging.basicConfig(level=logging.INFO)
+# configure logging
+loggingclient = google.cloud.logging.Client()
+loggingclient.setup_logging()
 
 app = FlaskAPI(__name__)
-
 
 client = bigquery.Client()
 
@@ -525,7 +528,6 @@ def request_tm():
 
     try:
         validate(instance=user_data, schema=tm_schema)
-        security_champion = user_data['Eng']
         request_type = user_data['Type']
         project_name = user_data['Name']
         logging.info("Threat model request for %s by %s",
@@ -543,7 +545,7 @@ def request_tm():
             project_name)
 
         slacknotify.slacknotify_threat_model(appsec_slack_channel,
-                                             security_champion,
+                                             user_email,
                                              request_type, project_name,
                                              jira_instance,
                                              jira_ticket_appsec,
@@ -730,11 +732,13 @@ def edit_sec_controls():
                 service_name.lower())
             doc = doc_ref.get()
             if bool(doc.to_dict()) is True:
-                db.collection(security_controls_firestore_collection).document(
-                    service_name.lower()).set(json_data)
-                logging.info(
-                    "Security controls for the choosen service have changed by %s !",
-                    user_email)
+                for key in json_data:
+                    doc_ref.set({
+                        f'{key}': json_data[key]
+                    }, merge=True)
+                    logging.info(
+                        "Security control %s for the choosen service have changed by %s !",
+                        key, user_email)
                 return ''
             else:
                 message = """
@@ -876,7 +880,6 @@ def request_manual_pentest():
 
     try:
         validate(instance=user_data, schema=mp_schema)
-        security_champion = user_data['security_champion']
         project_name = user_data['service']
 
         appsec_jira_ticket_summury = 'Security pentest request for ' + \
@@ -885,7 +888,7 @@ def request_manual_pentest():
             '\n' + 'Environment: ' + user_data['env'] + \
             '\n' + 'Permission levels:' + user_data['permission_level'] + \
             '\n' + 'Documentation: ' + user_data['document'] + \
-            '\n' + 'Security champion: ' + user_data['security_champion']
+            '\n' + 'Security champion: ' + user_email
 
         jira_ticket_appsec = jiranotify.create_board_ticket(
             appsec_jira_project_key,
@@ -898,7 +901,7 @@ def request_manual_pentest():
             user_email)
 
         slacknotify.slacknotify_security_pentest(appsec_slack_channel,
-                                                 security_champion,
+                                                 user_email,
                                                  project_name,
                                                  jira_instance,
                                                  jira_ticket_appsec,

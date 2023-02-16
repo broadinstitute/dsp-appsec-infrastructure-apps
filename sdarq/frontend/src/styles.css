@@ -241,7 +241,7 @@ label {
   background-color: #2752b7!important;
   line-height: 3em !important;
   min-width: 14%;
-  margin: 8% 0 0 43%;
+  margin: 10% 0 0 43%;
   color: #fff;
   border: 0px;
   border-radius: 7px !important;
@@ -447,4 +447,19 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 .sv_main.sv_default_css .sv_container .sv_body .sv_p_root .sv_q .sv_select_wrapper .sv_q_dropdown_control:focus-within {
   border: 1px solid #007bff !important;
+}
+
+.sv-list__item-body {
+  font-size: calc(2 * var(--base-unit, 6px)) !important;
+  line-height: calc(2 * var(--base-unit, 6px)) !important;
+}
+.sv-list__item {
+  font-family: sans-serif !important;
+}
+
+.sv_main .sv_q_dropdown__value {
+  padding: 0% 0% 0% 1% !important;
+}
+.sv_main .sv_q_dropdown_clean-button {
+  margin: 0em 1.5em !important;
 }

@@ -1,3 +1,5 @@
+url_pattern = "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$"
+
 new_app_schema = {
     "type": "object",
     "properties": {
@@ -15,11 +17,11 @@ new_app_schema = {
         },
         "Github URL": {
             "type": "string",
-            "pattern": "(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?"
+            "pattern": url_pattern
         },
         "Architecture Diagram": {
             "type": "string",
-            "pattern": "(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?"
+            "pattern": url_pattern
         },
         "JiraProject": {
             "type": "string",

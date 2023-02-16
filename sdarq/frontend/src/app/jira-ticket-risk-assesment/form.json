@@ -39,7 +39,7 @@
          {
           "type": "regex",
           "text": "Please enter a valid link",
-          "regex": "(http|https)\\:\\/\\/[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,3}(\\/\\S*)?"
+          "regex": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$"
          }
         ]
     },
@@ -90,7 +90,7 @@
          },
          {
             "value": "update_dependecies",
-            "text": "Dependecies - Update dependecies, clients of an existing service"
+            "text": "Dependencies - Update dependencies, clients of an existing service"
          }
         ],
         "otherText": "Not sure - I need further help with this. "
