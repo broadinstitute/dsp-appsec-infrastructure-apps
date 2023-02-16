@@ -20,6 +20,7 @@ This module
 import json
 import os
 import re
+import logging
 import threading
 from typing import List
 from urllib.parse import urlparse
@@ -65,8 +66,8 @@ headers = {
     "Authorization": f"Token {dojo_api_key}",
 }
 # configure logging
-client = google.cloud.logging.Client()
-client.setup_logging()
+loggingclient = google.cloud.logging.Client()
+loggingclient.setup_logging()
 
 app = FlaskAPI(__name__)
 
