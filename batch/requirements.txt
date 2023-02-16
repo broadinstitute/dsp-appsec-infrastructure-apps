@@ -1,6 +1,5 @@
-google-api-core[grpc] < 2.0.0dev
 google-cloud-pubsub
-google-cloud-logging
 kubernetes
 pyyaml
 types-PyYAML
+google-cloud-logging

@@ -4,7 +4,6 @@ Listens to a PubSub subscription
 and submits a Kubernetes Job for each message.
 """
 
-import logging
 import os
 from copy import deepcopy
 from hashlib import sha256
@@ -14,7 +13,7 @@ from threading import Thread
 from typing import Callable, Dict
 
 import yaml
-import google.cloud.logging
+from google.cloud import logging
 from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.subscriber.message import Message
 from kubernetes.client import ApiException, BatchV1Api, V1Job, V1ObjectMeta
