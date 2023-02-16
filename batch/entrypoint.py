@@ -4,6 +4,7 @@ Listens to a PubSub subscription
 and submits a Kubernetes Job for each message.
 """
 
+import logging as log
 import os
 from copy import deepcopy
 from hashlib import sha256
@@ -13,7 +14,6 @@ from threading import Thread
 from typing import Callable, Dict
 
 import yaml
-from google.cloud import logging
 from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.subscriber.message import Message
 from kubernetes.client import ApiException, BatchV1Api, V1Job, V1ObjectMeta
@@ -29,7 +29,7 @@ def raise_from_thread(msg: str, *args):
     When running inside Kubernetes, this forces the Pod to auto-restart,
     which is desirable to handle any transient errors.
     """
-    logging.exception(msg, *args)
+    log.exception(msg, *args)
     os._exit(1)  # pylint: disable=protected-access
 
 
@@ -66,15 +66,15 @@ def get_pubsub_callback(
                 + sha256(msg.message_id.encode("utf-8")).hexdigest()[:16]
             )
             job_inputs: JobInputs = msg.attributes
-            logging.info("Submitting job %s with input(s) %s", job_name, job_inputs)
+            log.info("Submitting job %s with input(s) %s", job_name, job_inputs)
 
             new_job = get_job(job, job_name, job_inputs)
             batch_api.create_namespaced_job(namespace, new_job)
-            logging.info("Submitted job %s", job_name)
+            log.info("Submitted job %s", job_name)
 
         except (BaseException, ApiException) as err:  # pylint: disable=broad-except
             if isinstance(err, ApiException) and err.status == HTTPStatus.CONFLICT:
-                logging.error("Skipped duplicate job %s", job_name)
+                log.error("Skipped duplicate job %s", job_name)
             else:
                 raise_from_thread("Error in PubSub subscriber callback")
 
@@ -100,7 +100,7 @@ def listen_pubsub(
         subscription_path = f"projects/{project_id}/subscriptions/{subscription}"
         callback = get_pubsub_callback(batch_api, subscription, namespace, job)
         streaming_pull = subscriber.subscribe(subscription_path, callback)
-        logging.info("Listening to subscription %s", subscription)
+        log.info("Listening to subscription %s", subscription)
         try:
             streaming_pull.result()
         except (BaseException, TimeoutError) as err:
@@ -183,7 +183,7 @@ def cleanup(batch_api: BatchV1Api, subscription: str, namespace: str):
                     meta.namespace,
                     propagation_policy="Background",
                 )
-                logging.info("Deleted job %s", meta.name)
+                log.info("Deleted job %s", meta.name)
     except:  # pylint: disable=bare-except
         raise_from_thread("Error in Job cleanup")
 
@@ -208,10 +208,9 @@ def main():
     subscription = environ["SUBSCRIPTION"]
     namespace = environ["NAMESPACE"]
     spec_path = environ["SPEC_PATH"]
+    log_level = environ.get("LOG_LEVEL", "INFO")
 
-    # configure logging
-    client = google.cloud.logging.Client()
-    client.setup_logging()
+    log.basicConfig(level=log_level)
 
     batch_api = get_batch_api()
     schedule_cleanup(batch_api, subscription, namespace)
