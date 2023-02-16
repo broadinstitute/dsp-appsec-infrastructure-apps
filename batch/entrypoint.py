@@ -14,7 +14,6 @@ from threading import Thread
 from typing import Callable, Dict
 
 import yaml
-import google.cloud.logging
 from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.subscriber.message import Message
 from kubernetes.client import ApiException, BatchV1Api, V1Job, V1ObjectMeta
@@ -204,14 +203,14 @@ def main():
     Loads job spec from `SPEC_PATH`.
     Sets up listener for the PubSub subscription.
     """
-    # configure logging
-    loggingclient = google.cloud.logging.Client()
-    loggingclient.setup_logging()
 
     project_id = environ["PROJECT_ID"]
     subscription = environ["SUBSCRIPTION"]
     namespace = environ["NAMESPACE"]
     spec_path = environ["SPEC_PATH"]
+    log_level = environ.get("LOG_LEVEL", "INFO")
+
+    log.basicConfig(level=log_level)
 
     batch_api = get_batch_api()
     schedule_cleanup(batch_api, subscription, namespace)

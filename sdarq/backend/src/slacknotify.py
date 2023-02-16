@@ -75,7 +75,6 @@ def slacknotify_app_jira(appsec_slack_channel, dojo_name, security_champion, pro
         ], "color": "#0731b0"}]
     )
 
-
 def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket):
     """
     Sends slack notification when there is: 
@@ -175,7 +174,7 @@ def slacknotify_threat_model(appsec_slack_channel, user_email, request_type, pro
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Security champion:* {0} " .format(str(user_email))
+                    "text": "*Security champion:* {0} " .format(parse_user_email(user_email))
                 }
             },
             {
@@ -224,7 +223,7 @@ def slacknotify_security_pentest(appsec_slack_channel, user_email, project_name,
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Security champion:* {0} " .format(str(user_email))
+                    "text": "*Security champion:* {0} " .format(parse_user_email(user_email))
                 }
             },
             {
@@ -271,7 +270,7 @@ def slacknotify_jira_ticket_risk_assessment(jtra_slack_channel, ticket_context, 
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Dev:* `{0}` " .format(str(user_email))
+                    "text": "*Dev:* `{0}` " .format(parse_user_email(user_email))
                 }
             },
             {
@@ -290,7 +289,6 @@ def slacknotify_jira_ticket_risk_assessment(jtra_slack_channel, ticket_context, 
             }
         ], "color": "#bd3022"}]
     )
-
 
 def slacknotify_jira_ticket_risk_assessment_error(jtra_slack_channel, user_email, user_data):
     """
@@ -312,7 +310,7 @@ def slacknotify_jira_ticket_risk_assessment_error(jtra_slack_channel, user_email
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Dev:* `{0}` " .format(str(user_email))
+                    "text": "*Dev:* `{0}` " .format(parse_user_email(user_email))
                 }
             },
                         {

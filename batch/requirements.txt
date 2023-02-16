@@ -1,5 +1,4 @@
 google-cloud-pubsub
-google-cloud-logging
 kubernetes
 pyyaml
 types-PyYAML
