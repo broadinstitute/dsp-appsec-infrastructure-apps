@@ -30,9 +30,9 @@
                     "title": "Service name",
                     "validators": [
                         {
-                            "text": "Please include numbers, a-z characters, _,-.",
+                            "text": "Please include numbers, a-z characters, _,- and spaces",
                             "type": "regex",
-                            "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"}],
+                            "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,40}[a-zA-Z0-9]$"}],
                     "isRequired": true
                 },
                 {
