@@ -9,7 +9,7 @@ tm_schema = {
         },
         "Name": {
             "type": "string",
-            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,40}[a-zA-Z0-9]$"
         },
         "Github": {
             "type": "string",
