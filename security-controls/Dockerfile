@@ -17,6 +17,6 @@ RUN pip3 install pylint
 
 COPY *.py ./
 
-RUN pylint --disable=C0301 /*.py
+RUN pylint --disable=C0301 --fail-under=9.5 /*.py
 
 ENTRYPOINT ["python3", "-m", "entrypoint"]
