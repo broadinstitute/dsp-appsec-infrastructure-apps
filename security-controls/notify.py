@@ -32,19 +32,17 @@ def notify_appsec(security_controls_firestore_collection, slack_token, slack_cha
 
     for doc in docs:
         #Each doc represents a service and the list of security controls.
-        #Each control is set to true or false.
 
         doc_dict = doc.to_dict()
         service = doc_dict['service'].strip(' ').replace(' ','_')
         control_list = []
         for key in keyword_maps:
             if doc_dict[key] is False and f"{service}_{key}" not in security_controls_ignore_final_list:
-                control_list.append(f"`{key}`")
+                control_list.append(f"`{keyword_maps[key]}`")
 
-        if len(control_list) > 0:    
-            #build string of missing controls
-            control_string="\n".join(control_list)
-
+        if len(control_list) > 0:
+            control_string = "\n".join(control_list)
+            att_str = f"The following security controls are not integrated/implemented for `{service.capitalize()}`.\n\n{control_string}"
             client = WebClient(token=slack_token)
             client.chat_postMessage(
                 channel=slack_channel,
@@ -54,8 +52,7 @@ def notify_appsec(security_controls_firestore_collection, slack_token, slack_cha
                                 "type": "section",
                                 "text": {
                                     "type": "mrkdwn",
-                                    "text":
-                                        f"The following security controls are not integrated/implemented for `{service.capitalize()}`.\n\n{control_string}",
+                                    "text":att_str,
                                 }
                             },
                         ], "color": "#C31818"}]
