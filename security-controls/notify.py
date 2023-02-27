@@ -36,11 +36,11 @@ def notify_appsec(security_controls_firestore_collection, slack_token, slack_cha
 
         doc_dict = doc.to_dict()
         service = doc_dict['service'].strip(' ').replace(' ','_')
-        control_list = list()
+        control_list = []
         for key in keyword_maps:
             if doc_dict[key] is False and f"{service}_{key}" not in security_controls_ignore_final_list:
-                control_list.append(f"`{key}`") 
-       
+                control_list.append(f"`{key}`")
+
         #build string of missing controls
         control_string="\n".join(control_list)
 
@@ -58,7 +58,7 @@ def notify_appsec(security_controls_firestore_collection, slack_token, slack_cha
                             }
                         },
                     ], "color": "#C31818"}]
-        )        
+        )
 
 
 def main():
