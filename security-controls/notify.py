@@ -33,59 +33,31 @@ def notify_appsec(security_controls_firestore_collection, slack_token, slack_cha
     for doc in docs:
         #Each doc represents a service and the list of security controls.
         #Each control is set to true or false.
-        #This loops through every key in the dict to see if any are false.
-        #This includes the 'service' key, and any other non-boolean key/value pairs.
-        # for key in doc.to_dict():
 
-        #     if doc.to_dict()[key] is False:
-        #         service_name = doc.to_dict()['service'].strip(' ').replace(' ','_')
-        #         service_seccon = f"{service_name}_{key}"
-        #         if service_seccon in security_controls_ignore_final_list:
-        #             continue
-
-        #         client = WebClient(token=slack_token)
-        #         client.chat_postMessage(
-        #             channel=slack_channel,
-        #             text="*AppSec Action Required*",
-        #             attachments=[{"blocks": [
-        #                 {
-        #                     "type": "section",
-        #                     "text": {
-        #                         "type": "mrkdwn",
-        #                         "text":
-        #                             f"Security control `{keyword_maps[key]}` is not integrated/implemented for `{doc.to_dict()['service'].capitalize()}`.",
-        #                     }
-        #                 },
-        #             ], "color": "#C31818"}]
-        #         )
         doc_dict = doc.to_dict()
         service = doc_dict['service'].strip(' ').replace(' ','_')
         control_list = list()
         for key in keyword_maps:
             if doc_dict[key] is False and f"{service}_{key}" not in security_controls_ignore_final_list:
-                control_list.append(f"`{key}`")
-        
+                control_list.append(f"`{key}`") 
+       
         #build string of missing controls
         control_string="\n".join(control_list)
-
-        #build attachment. 
-        attachment = dict()
-        attachment['blocks'] = list()
-        attachment['blocks'].append({
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text":
-                        f"The following security controls are not integrated/implemented for `{service.capitalize()}`.\n\n{control_string}",
-                    }
-                })
-        attachment['color'] = "#C31818"
 
         client = WebClient(token=slack_token)
         client.chat_postMessage(
             channel=slack_channel,
             text="*AppSec Action Required*",
-            attachments=[attachment]
+            attachments=[{"blocks": [
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text":
+                                    f"The following security controls are not integrated/implemented for `{service.capitalize()}`.\n\n{control_string}",
+                            }
+                        },
+                    ], "color": "#C31818"}]
         )        
 
 
