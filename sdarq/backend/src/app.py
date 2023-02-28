@@ -348,7 +348,7 @@ def cis_results():
     """
     project_id_encoded = request.get_data()
     project_id = project_id_encoded.decode("utf-8")
-    pattern = "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
+    pattern = "^[a-z0-9][a-z0-9-_]{4,42}[a-z0-9]$"
     project_id_edited = project_id.strip('-').replace('-', '_')
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
@@ -426,7 +426,7 @@ def cis_scan():
     """
     json_data = request.get_json()
     user_project_id = json_data['project_id']
-    pattern = "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
+    pattern = "^[a-z0-9][a-z0-9-_]{4,42}[a-z0-9]$"
     message = ""
     results_url = f"{sdarq_host}/gcp-project-security-posture/results?project_id={user_project_id}"
     message = message.encode("utf-8")
