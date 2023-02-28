@@ -3,7 +3,7 @@ cis_scan_schema = {
     "properties": {
         "project_id": {
             "type": "string",
-            "pattern": "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
+            "pattern": "^[a-z0-9][a-z0-9-_]{4,42}[a-z0-9]$"
         },
         "results_in_slack": {
             "type": "array",
