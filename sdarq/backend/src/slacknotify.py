@@ -264,14 +264,14 @@ def slacknotify_jira_ticket_risk_assessment(jtra_slack_channel, ticket_context, 
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Ticket link/context:* `{0}` " .format(str(ticket_context))
+                    "text": "*Ticket link/context:* {0} " .format(str(ticket_context))
                 }
             },
             {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Dev:* `{0}` " .format(parse_email.parse_user_email(user_email))
+                    "text": "*Dev:* {0} " .format(parse_email.parse_user_email(user_email))
                 }
             },
             {
@@ -311,7 +311,7 @@ def slacknotify_jira_ticket_risk_assessment_error(jtra_slack_channel, user_email
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "*Dev:* `{0}` " .format(parse_email.parse_user_email(user_email))
+                    "text": "*Dev:* {0} " .format(parse_email.parse_user_email(user_email))
                 }
             },
                         {
