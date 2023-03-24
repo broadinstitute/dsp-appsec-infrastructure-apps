@@ -509,22 +509,20 @@ def cis_scan():
 
 @app.route('/request_tm/', methods=['POST'])
 @cross_origin(origins=sdarq_host)
-def request_tm():
+def request_tm(request: Request) -> Response:
     """
-    Creates a request for threat model for a specific service
-    Creates a Jira ticket and notifies team in Slack
+    Creates a request for a threat model for a specific service
+    Creates a Jira ticket and notifies the team in Slack
     Args:
-        JSON data supplied by user
-    Return:
-        200 status
-        400 status
+        request: Flask request object containing JSON data supplied by user
+    Returns:
+        Response object with 200 status if successful, or 400 status if there was an error
     """
     user_data = request.get_json()
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if request.headers.get('Content-Type') != 'application/json':
-        return Response(json.dumps(
-            {'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+        return Response(json.dumps({'statusText': 'Bad Request'}), status=400, mimetype='application/json')
 
     try:
         validate(instance=user_data, schema=tm_schema)
@@ -532,34 +530,30 @@ def request_tm():
         project_name = user_data['Name']
         logging.info("Threat model request for %s by %s",
                      project_name, user_email)
-        appsec_jira_ticket_summury = user_data['Type'] + user_data['Name']
-        appsec_jira_ticket_description = user_data['Diagram'] + \
-            '\n' + user_data['Document'] + \
-            '\n' + user_data['Github']
 
-        jira_ticket_appsec = jira_ticket_appsec = jiranotify.create_board_ticket(
-            appsec_jira_project_key, appsec_jira_ticket_summury, appsec_jira_ticket_description)
+        jira_ticket_summary = f"{request_type} {project_name}"
+        jira_ticket_description = '\n'.join(
+            [user_data['Diagram'], user_data['Document'], user_data['Github']])
 
+        jira_ticket_appsec = jiranotify.create_board_ticket(
+            appsec_jira_project_key, jira_ticket_summary, jira_ticket_description)
         logging.info(
-            "Jira ticket created in appsec board for %s threat model",
-            project_name)
+            "Jira ticket created in appsec board for %s threat model", project_name)
 
-        slacknotify.slacknotify_threat_model(appsec_slack_channel,
-                                             user_email,
-                                             request_type, project_name,
-                                             jira_instance,
-                                             jira_ticket_appsec,
-                                             appsec_jira_project_key)
-        return ''
-    except Exception as error:
-        error_message = f"Exception /request_tm enspoint: {error}"
+        slacknotify.slacknotify_threat_model(appsec_slack_channel, user_email, request_type,
+                                             project_name, jira_instance, jira_ticket_appsec, appsec_jira_project_key)
+
+        return Response(status=200)
+
+    except jsonschema.ValidationError as e:
+        error_message = f"Validation error in /request_tm endpoint: {e.message}"
         logging.warning(error_message)
-        status_code = 404
-        message = """
-        There is something wrong with the input! Server did not respond correctly to your request!
-        """
-        return Response(json.dumps({'statusText': message}),
-                        status=status_code, mimetype='application/json')
+        return Response(json.dumps({'statusText': e.message}), status=400, mimetype='application/json')
+
+    except Exception as e:
+        error_message = f"Exception in /request_tm endpoint: {e}"
+        logging.warning(error_message)
+        return Response(json.dumps({'statusText': str(e)}), status=400, mimetype='application/json')
 
 
 @app.route('/zap_scan/', methods=['POST'])
@@ -649,15 +643,15 @@ def zap_scan():
 
 @app.route('/create_sec_control_template/', methods=['POST'])
 @cross_origin(origins=sdarq_host)
-def create_sec_control_template():
+def create_sec_control_template((request: Request) -> Response:
     """
     Store data to Firestore
     Args: Provided json data from user
     Returns: 200 status if data stored to Firestore
              400 status if input is invalid/ service already exists
     """
-    json_data = request.get_json()
-    service_name = json_data['service']
+    user_input = request.get_json()
+    service_name = user_input['service']
     pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
@@ -665,38 +659,7 @@ def create_sec_control_template():
         return Response(json.dumps(
             {'statusText': 'Bad Request'}), status=400, mimetype='application/json')
 
-    if re.match(pattern, service_name):
-        try:
-            validate(instance=json_data, schema=security_controls_schema)
-            doc_ref = db.collection(security_controls_firestore_collection).document(
-                service_name.lower())
-            doc = doc_ref.get()
-            if bool(doc.to_dict()) is True:
-                message = """
-                This service already exists, if you want to edit it, go to the edit page.
-                """
-                logging.info(
-                    "User %s requested to create SCT for a service, but it already exists",
-                    user_email)
-                return Response(json.dumps(
-                    {'statusText': message}), status=404, mimetype='application/json')
-            else:
-                db.collection(security_controls_firestore_collection).document(
-                    service_name.lower()).set(json_data)
-                logging.info(
-                    "A new security controls template is created by %s",
-                    user_email)
-                return ''
-        except Exception as error:
-            error_message = f"Exception /create_sec_controls_template enspoint: {error}"
-            logging.warning(error_message)
-            status_code = 404
-            message = """
-            There is something wrong with the input! Server did not respond correctly to your request!
-            """
-            return Response(json.dumps(
-                {'statusText': message}), status=status_code, mimetype='application/json')
-    else:
+    if not re.match(pattern, service_name):
         message = """
         Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.
         """
@@ -704,7 +667,34 @@ def create_sec_control_template():
             "User %s requested to create SCT for a service, but INVALID input was provided",
             user_email)
         return Response(json.dumps({'statusText': message}),
-                        status=404, mimetype='application/json')
+                        status=400, mimetype='application/json')
+
+    try:
+        validate(instance=user_input, schema=security_controls_schema)
+        service_doc_ref = db.collection(security_controls_firestore_collection).document(
+            service_name.lower())
+        if service_doc_ref.create(user_input):
+            logging.info(
+                "A new security controls template is created by %s",
+                user_email)
+            return ''
+        else:
+            message = """
+            This service already exists, if you want to edit it, go to the edit page.
+            """
+            logging.info(
+                "User %s requested to create SCT for a service, but it already exists",
+                user_email)
+            return Response(json.dumps(
+                {'statusText': message}), status=400, mimetype='application/json')
+    except Exception as error:
+        error_message = f"Exception /create_sec_controls_template endpoint: {error}"
+        logging.warning(error_message)
+        message = """
+        There is something wrong with the input! Server did not respond correctly to your request!
+        """
+        return Response(json.dumps(
+            {'statusText': message}), status=400, mimetype='application/json')
 
 
 @app.route('/edit_sec_controls/', methods=['PUT'])
