@@ -643,7 +643,7 @@ def zap_scan():
 
 @app.route('/create_sec_control_template/', methods=['POST'])
 @cross_origin(origins=sdarq_host)
-def create_sec_control_template((request: Request) -> Response:
+def create_sec_control_template(request: Request) -> Response:
     """
     Store data to Firestore
     Args: Provided json data from user
