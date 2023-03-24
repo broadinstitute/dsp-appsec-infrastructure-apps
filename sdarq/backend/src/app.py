@@ -509,7 +509,7 @@ def cis_scan():
 
 @app.route('/request_tm/', methods=['POST'])
 @cross_origin(origins=sdarq_host)
-def request_tm(request: Request) -> Response:
+def request_tm():
     """
     Creates a request for a threat model for a specific service
     Creates a Jira ticket and notifies the team in Slack
@@ -643,7 +643,7 @@ def zap_scan():
 
 @app.route('/create_sec_control_template/', methods=['POST'])
 @cross_origin(origins=sdarq_host)
-def create_sec_control_template(request: Request) -> Response:
+def create_sec_control_template():
     """
     Store data to Firestore
     Args: Provided json data from user
