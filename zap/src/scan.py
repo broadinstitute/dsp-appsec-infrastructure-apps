@@ -14,12 +14,12 @@ from time import sleep
 from typing import List
 from urllib.parse import urlparse, urlunparse
 
+import defectdojo_apiv2 as defectdojo
 import defusedxml.ElementTree as ET
 from codedx_api.CodeDxAPI import CodeDx  # pylint: disable=import-error
 from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
 
-import defectdojo_apiv2 as defectdojo
 from zap import ScanType, zap_compliance_scan, zap_connect
 
 
@@ -254,7 +254,8 @@ def slack_alert_without_report(  # pylint: disable=too-many-arguments
         channel: str,
         xml_report_url: str,
         product_id: str,
-        dd: str
+        dd: str,
+        target_url: str
 ):
     """
     Alert Slack on requested findings, if any.
@@ -274,7 +275,7 @@ def slack_alert_without_report(  # pylint: disable=too-many-arguments
         logging.info("Alert sent to Slack channel for GCS bucket and DefectDojo upload report")
     else:
         gcs_slack_text = (
-            f"New vulnerability report uploaded to DefectDojo product: {dd}product/{product_id}"
+            f"New vulnerability report uploaded to DefectDojo for {target_url}: {dd}product/{product_id}"
         )
         slack.chat_postMessage(channel=channel, text=gcs_slack_text)
         logging.info("Alert sent to Slack channel for DefectDojo upload report")
@@ -378,6 +379,7 @@ def main(): # pylint: disable=too-many-locals
                     xml_report_url,
                     product_id,
                     dd,
+                    target_url
                 )
             else:
                 # upload its results to Code Dx
@@ -404,7 +406,7 @@ def main(): # pylint: disable=too-many-locals
             error_message = f"[RETRY-{ attempt }] Exception running Zap Scans: { error }"
             logging.warning(error_message)
             if attempt == max_retries - 1:
-                error_message = f"Error running Zap Scans for { codedx_project }. Last known error: { error }"
+                error_message = f"Error running Zap Scans for { target_url }. Last known error: { error }"
                 error_slack_alert(error_message, slack_token, slack_channel)
                 try:
                     zap = zap_connect(zap_port)
