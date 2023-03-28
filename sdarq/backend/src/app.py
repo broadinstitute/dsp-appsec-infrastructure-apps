@@ -546,7 +546,7 @@ def request_tm():
         return Response(status=200)
 
     except jsonschema.ValidationError as e:
-        error_message = f"Validation error in /request_tm endpoint!"
+        error_message = "Validation error in /request_tm endpoint!"
         logging.warning(error_message)
         return Response(json.dumps({'statusText': error_message}), status=400, mimetype='application/json')
 
@@ -897,7 +897,7 @@ def request_manual_pentest():
         return Response(status=200)
 
     except jsonschema.ValidationError as e:
-        error_message = f"Validation error in /request_manual_pentest endpoint!"
+        error_message = "Validation error in /request_manual_pentest endpoint!"
         logging.warning(error_message)
         return Response(json.dumps({'statusText': error_message}), status=400, mimetype='application/json')
     
