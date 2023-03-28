@@ -546,9 +546,9 @@ def request_tm():
         return Response(status=200)
 
     except jsonschema.ValidationError as e:
-        error_message = f"Validation error in /request_tm endpoint: {e.message}"
+        error_message = "Validation error in /request_tm endpoint!"
         logging.warning(error_message)
-        return Response(json.dumps({'statusText': e.message}), status=400, mimetype='application/json')
+        return Response(json.dumps({'statusText': error_message}), status=400, mimetype='application/json')
 
     except Exception as e:
         error_message = f"Exception in /request_tm endpoint: {e}"
@@ -856,10 +856,9 @@ def request_manual_pentest():
     Creates a request for security pentest for a specific service
     Creates a Jira ticket and notifies team in Slack
     Args:
-        JSON data supplied by user
+        request: Flask request object containing JSON data supplied by user
     Returns:
-        200 status
-        400 status
+        Response object with 200 status if successful, or 400 status if there was an error
     """
     user_data = request.get_json()
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
@@ -871,7 +870,6 @@ def request_manual_pentest():
     try:
         validate(instance=user_data, schema=mp_schema)
         project_name = user_data['service']
-
         appsec_jira_ticket_summury = 'Security pentest request for ' + \
             user_data['service']
         appsec_jira_ticket_description = 'URL to pentest: ' + user_data['URL'] + \
@@ -896,16 +894,18 @@ def request_manual_pentest():
                                                  jira_instance,
                                                  jira_ticket_appsec,
                                                  appsec_jira_project_key)
-        return ''
-    except Exception as error:
-        error_message = f"Exception /request_manual_pentest enspoint: {error}"
+        return Response(status=200)
+
+    except jsonschema.ValidationError as e:
+        error_message = "Validation error in /request_manual_pentest endpoint!"
         logging.warning(error_message)
-        status_code = 404
-        message = """
-        There is something wrong with the input! Server did not respond correctly to your request!
-        """
-        return Response(json.dumps({'statusText': message}),
-                        status=status_code, mimetype='application/json')
+        return Response(json.dumps({'statusText': error_message}), status=400, mimetype='application/json')
+    
+    except Exception as e:
+        error_message = f"Exception /request_manual_pentest enspoint: {e}"
+        logging.warning(error_message)
+        return Response(json.dumps({'statusText': str(e)}),
+                        status=400, mimetype='application/json')
 
 
 @app.route('/submit_jtra/', methods=['POST'])
