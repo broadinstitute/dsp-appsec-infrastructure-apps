@@ -25,6 +25,7 @@ import logging
 import threading
 from typing import List
 from urllib.parse import urlparse
+import jsonschema
 
 import requests
 from flask import Response, request
