@@ -798,6 +798,7 @@ def get_sec_controls_service():
     Args: Service name (Json format)
     Returns: 200 status (Json data)
              404 status if project not found
+             400 if error occurred
     """
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
@@ -828,14 +829,13 @@ def get_sec_controls_service():
     except firestore.exceptions.InvalidArgument:
         message = 'Invalid service name. Please enter a valid service name.'
         logging.warning('User %s provided an invalid service name: %s', user_email, service_name)
-        return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
+        return Response(json.dumps({'statusText': message}), status=400, mimetype='application/json')
 
     except Exception as error:
         error_message = f'Exception /get_sec_controls_service endpoint: {error}'
         logging.warning(error_message)
         message = 'Server can\'t get security controls! Contact AppSec team for more information.'
-        status_code = 404
-        return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
+        return Response(json.dumps({'statusText': message}), status=400, mimetype='application/json')
 
 
 
