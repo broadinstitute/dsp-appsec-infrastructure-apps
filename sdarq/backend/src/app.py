@@ -813,7 +813,7 @@ def get_sec_controls_service():
         message = 'Please enter a valid value for your service name! Contact team for more information.'
         logging.info('User %s did not provide a valid value for the service name to read security controls.', user_email)
         return Response(json.dumps({'statusText': message}),
-                        status=404, mimetype='application/json')
+                        status=400, mimetype='application/json')
 
     try:
         service_name_lowercase = service_name.lower()
