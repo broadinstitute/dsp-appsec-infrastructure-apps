@@ -97,7 +97,8 @@ def health():
     Returns:
         200 status
     """
-    return ''
+    status = {'statusText': 'Service is healthy'}
+    return Response(json.dumps(status), status=200, mimetype='application/json')
 
 
 @app.route('/submit/', methods=['POST'])
@@ -674,10 +675,12 @@ def create_sec_control_template():
         service_doc_ref = db.collection(security_controls_firestore_collection).document(
             service_name.lower())
         if service_doc_ref.create(user_input):
+            message = "A new security controls template is created!"
             logging.info(
                 "A new security controls template is created by %s",
                 user_email)
-            return ''
+            return Response(json.dumps(
+                {'statusText': message}), status=200, mimetype='application/json')
         else:
             message = """
             This service already exists, if you want to edit it, go to the edit page.
@@ -764,35 +767,27 @@ def edit_sec_controls():
 def get_sec_controls():
     """
     Get all data from Firestore
-    Args: None
     Returns:
-        200 status -> Json Data
+        200 status
         400 status
     """
-    user_email = request.headers.get('X-Goog-Authenticated-User-Email')
-    data = []
-
     if request.headers.get('Content-Type') != 'application/json':
-        return Response(json.dumps(
-            {'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+        return Response(json.dumps({'statusText': 'Bad Request'}),
+                        status=400, mimetype='application/json')
+
+    user_email = request.headers.get('X-Goog-Authenticated-User-Email')
+    security_controls = []
 
     try:
         docs = db.collection(security_controls_firestore_collection).stream()
-        logging.info(
-            "User %s read security controls for the list of services.",
-            user_email)
         for doc in docs:
-            data.append(doc.to_dict())
-        return data
+            security_controls.append(doc.to_dict())
+        logging.info('User %s read security controls for the list of services.', user_email)
+        return security_controls
     except Exception as error:
-        error_message = f"Exception /get_sec_controls enspoint: {error}"
-        logging.warning(error_message)
-        message = """
-        Server can't get security controls! Contact AppSec team for more information.
-        """
-        status_code = 404
-        return Response(json.dumps({'statusText': message}),
-                        status=status_code, mimetype='application/json')
+        message = "Server can't get security controls! Contact AppSec team for more information."
+        logging.warning(f"Exception /get_sec_controls endpoint: {error}")
+        return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
 
 
 @app.route('/get_sec_controls_service/', methods=['POST'])
@@ -804,49 +799,44 @@ def get_sec_controls_service():
     Returns: 200 status (Json data)
              404 status if project not found
     """
-    json_data = request.get_json()
-    service_name = json_data['service']
-    pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if request.headers.get('Content-Type') != 'application/json':
-        return Response(json.dumps(
-            {'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+        return Response(json.dumps({'statusText': 'Bad Request'}),
+                        status=400, mimetype='application/json')
 
-    if re.match(pattern, service_name, re.IGNORECASE):
-        try:
-            doc_ref = db.collection(security_controls_firestore_collection).document(
-                service_name.lower())
-            doc = doc_ref.get()
-            if doc.exists:
-                return doc.to_dict()
-            else:
-                message = """
-                This service does not exist!
-                """
-                logging.info(
-                    "User %s requested to read security controls of a service that does not exist.",
-                    user_email)
-                return Response(json.dumps(
-                    {'statusText': message}), status=404, mimetype='application/json')
-        except Exception as error:
-            error_message = f"Exception /get_sec_controls_service enspoint: {error}"
-            logging.warning(error_message)
-            message = """
-            There is something wrong with the input! Server did not respond correctly to your request!
-            """
-            status_code = 404
-            return Response(json.dumps(
-                {'statusText': message}), status=status_code, mimetype='application/json')
-    else:
-        message = """
-        Please enter a valid value for your service name! Contact AppSec team for more information.
-        """
-        logging.info(
-            "User %s did not provide a valid value for the service name to read security controls.",
-            user_email)
+    json_data = request.get_json()
+    service_name = json_data.get('service')
+
+    if not service_name or not re.match(r'^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$', service_name):
+        message = 'Please enter a valid value for your service name! Contact team for more information.'
+        logging.info('User %s did not provide a valid value for the service name to read security controls.', user_email)
         return Response(json.dumps({'statusText': message}),
                         status=404, mimetype='application/json')
+
+    try:
+        service_name_lowercase = service_name.lower()
+        doc_ref = db.collection(security_controls_firestore_collection).document(service_name_lowercase)
+        doc = doc_ref.get()
+        if doc.exists:
+            return doc.to_dict()
+        else:
+            message = 'This service does not exist!'
+            logging.info('User %s requested to read security controls of a service that does not exist.', user_email)
+            return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
+
+    except firestore.exceptions.InvalidArgument:
+        message = 'Invalid service name. Please enter a valid service name.'
+        logging.warning('User %s provided an invalid service name: %s', user_email, service_name)
+        return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
+
+    except Exception as error:
+        error_message = f'Exception /get_sec_controls_service endpoint: {error}'
+        logging.warning(error_message)
+        message = 'Server can\'t get security controls! Contact AppSec team for more information.'
+        status_code = 404
+        return Response(json.dumps({'statusText': message}), status=status_code, mimetype='application/json')
+
 
 
 @app.route('/request_manual_pentest/', methods=['POST'])
