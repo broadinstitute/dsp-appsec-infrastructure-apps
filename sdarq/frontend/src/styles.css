@@ -256,6 +256,10 @@ input,
   border-radius: 6px;
 }
 
+.sv_main.sv_default_css {
+  background-color: #aa3d3d00 !important;
+}
+
 .sv_main.sv_default_css .sv_select_wrapper::before {
   background-color: rgb(38 76 178) !important; 
 }
