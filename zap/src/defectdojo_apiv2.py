@@ -1,4 +1,5 @@
 import json
+
 import requests
 import requests.exceptions
 import requests.packages.urllib3
@@ -668,7 +669,7 @@ class DefectDojoAPIv2(object):
     ##### Upload API #####
 
     def upload_scan(self, engagement_id, scan_type, file, active, verified, close_old_findings, skip_duplicates,
-                    scan_date, tags=None, build=None, minimum_severity="Info"):
+                    scan_date, product_scope=True, tags=None, build=None, auto_group_by=None, minimum_severity="Info"):
         """Uploads and processes a scan file.
         :param application_id: Application identifier.
         :param file_path: Path to the scan file to be uploaded.
@@ -693,17 +694,20 @@ class DefectDojoAPIv2(object):
             'active': ('', active),
             'verified': ('', verified),
             'close_old_findings': ('', close_old_findings),
+            'close_old_findings_product_scope': ('', product_scope),
             'skip_duplicates': ('', skip_duplicates),
             'scan_date': ('', scan_date),
             'tags': ('', tags),
             'build_id': ('', build),
             'minimum_severity': ('', minimum_severity)
         }
+
+        if auto_group_by:
+            data['auto_group_by'] = (auto_group_by, '')
         """
         TODO: implement these parameters:
           lead
           test_type
-          scan_date
         """
 
         return self._request(

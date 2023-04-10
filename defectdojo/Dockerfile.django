@@ -1,6 +1,5 @@
 FROM defectdojo/defectdojo-django as dd
 
-
 FROM dd as patch
 
 USER root
