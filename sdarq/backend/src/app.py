@@ -47,6 +47,7 @@ from schemas.security_controls_schema import security_controls_schema
 from schemas.threat_model_request_schema import tm_schema
 from schemas.zap_scan_schema import zap_scan_schema
 from schemas.new_app_schema import new_app_schema
+from security_headers import security_headers
 
 dojo_host = os.getenv('dojo_host')
 dojo_api_key = os.getenv('dojo_api_key')
@@ -79,13 +80,13 @@ db = firestore.Client()
 
 
 @app.after_request
-def add_header(response):
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-    response.headers['X-Frame-Options'] = 'deny'
-    response.headers['X-XSS-Protection'] = '1; mode=block'
-    response.headers['Content-Security-Policy'] = 'default-src \'self\''
-    response.headers['Cache-Control'] = 'no-cache'
-    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+def add_security_headers(response):
+    """
+    Adds security headers listed in security_headers.py
+    """
+    for header, value in security_headers.items():
+        response.headers[header] = value
+
     return response
 
 
