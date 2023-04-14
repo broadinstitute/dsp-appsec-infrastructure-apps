@@ -45,6 +45,8 @@ import { FiltersctPipe } from './pipes/filtersct.pipe';
 import { AppRoutingModule } from './app-routing.module';
 import { AppFormComponent } from './app-form/app-form.component';
 import { AppsMainpageComponent } from './apps-mainpage/apps-mainpage.component';
+import { ServiceSecurityControlsComponent } from './service-security-controls/service-security-controls.component';
+import { SearchServiceSecurityControlsComponent } from './search-service-security-controls/search-service-security-controls.component';
 
 
 @NgModule({
@@ -75,7 +77,9 @@ import { AppsMainpageComponent } from './apps-mainpage/apps-mainpage.component';
     SecurityRequestsComponent,
     SecurityControlsComponent,
     AppFormComponent,
-    AppsMainpageComponent
+    AppsMainpageComponent,
+    ServiceSecurityControlsComponent,
+    SearchServiceSecurityControlsComponent
     ],
   imports: [
     BrowserModule,
