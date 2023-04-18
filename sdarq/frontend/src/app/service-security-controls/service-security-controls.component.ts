@@ -43,7 +43,7 @@ export class ServiceSecurityControlsComponent implements OnInit {
   ngOnInit(): void {
     this.showSpinner = true;
     this.router.queryParams.subscribe(params => {
-      this.value = params.project_id
+      this.value = params.servicename
       this.getResults(this.value)
     })
   }
