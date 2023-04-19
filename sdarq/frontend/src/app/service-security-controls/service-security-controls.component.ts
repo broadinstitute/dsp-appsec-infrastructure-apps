@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { GetServiceSecurityControlsService } from '../services/get-service-security-controls/get-service-security-controls.service';
 import { ActivatedRoute } from '@angular/router';
 
-
 @Component({
   selector: 'app-service-security-controls',
   templateUrl: './service-security-controls.component.html',
@@ -37,8 +36,8 @@ export class ServiceSecurityControlsComponent implements OnInit {
     private ngZone: NgZone,
     private router: ActivatedRoute,
     private ref: ChangeDetectorRef) {
-      // This is intentional }
-    }
+    // This is intentional 
+  }
 
   ngOnInit(): void {
     this.showSpinner = true;
@@ -50,7 +49,8 @@ export class ServiceSecurityControlsComponent implements OnInit {
 
   private getResults(value) {
     this.getSecurityControls.getServiceSecurityControls(this.value).subscribe((serviceSecurityControl) => {
-      this.ref.detectChanges();
+        this.ref.detectChanges();
+        this.showSpinner = false;
         this.service = serviceSecurityControl.service;
         this.dev_url = serviceSecurityControl.dev_url;
         this.threat_model = serviceSecurityControl.threat_model;
@@ -59,7 +59,6 @@ export class ServiceSecurityControlsComponent implements OnInit {
         this.cis_scanner = serviceSecurityControl.cis_scanner;
         this.burp = serviceSecurityControl.burp;
         this.security_pentest_link = serviceSecurityControl.security_pentest_link;
-        this.showSpinner = false;
         this.defect_dojo = serviceSecurityControl.defect_dojo;
         this.github = serviceSecurityControl.github;
         this.product = serviceSecurityControl.product;
@@ -69,13 +68,13 @@ export class ServiceSecurityControlsComponent implements OnInit {
         this.sourceclear_link = serviceSecurityControl.sourceclear_link;
         this.vulnerability_management = serviceSecurityControl.vulnerability_management;
         this.zap = serviceSecurityControl.zap;
-    },
+      },
       (serviceSecurityControl) => {
         this.ngZone.run(() => {
-        this.showModalError = true;
-        this.errors = serviceSecurityControl;
-        this.showSpinner = false;
+          this.showModalError = true;
+          this.errors = serviceSecurityControl;
+          this.showSpinner = false;
+        });
       });
-    });
   }
 }
