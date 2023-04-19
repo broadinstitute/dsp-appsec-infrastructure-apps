@@ -68,12 +68,14 @@ export class ServiceSecurityControlsComponent implements OnInit {
         this.sourceclear_link = serviceSecurityControl.sourceclear_link;
         this.vulnerability_management = serviceSecurityControl.vulnerability_management;
         this.zap = serviceSecurityControl.zap;
+        console.log(serviceSecurityControl)
       },
       (serviceSecurityControl) => {
         this.ngZone.run(() => {
           this.showModalError = true;
           this.errors = serviceSecurityControl;
           this.showSpinner = false;
+          console.log(serviceSecurityControl)
         });
       });
   }

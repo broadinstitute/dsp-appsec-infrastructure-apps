@@ -44,7 +44,7 @@ const routes: Routes = [
   { path: 'security-control/view', component: SecurityControlsListComponent },
   { path: 'security-control/edit', component: EditSecurityControlsFormComponent },
   { path: 'security-pentest/request', component: SecurityPentestComponent },
-  { path: 'service-security-controls', component: ServiceSecurityControlsComponent },
+  { path: 'service-security-controls/results', component: ServiceSecurityControlsComponent },
   { path: 'search-service-security-controls', component: SearchServiceSecurityControlsComponent },
   { path: '404', component: NotfoundComponent },
   { path: '**', redirectTo: '/404' }

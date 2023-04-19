@@ -30,6 +30,7 @@ export class SearchServiceSecurityControlsComponent implements OnInit {
       },
       (data) => {
         this.ngZone.run(() => {
+          console.log(data)
           this.showModalErr = data;
         });
       });
