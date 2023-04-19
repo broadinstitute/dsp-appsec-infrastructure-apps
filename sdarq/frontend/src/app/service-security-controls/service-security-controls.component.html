@@ -7,7 +7,7 @@
                     <th *ngFor="let head of headElements" class="mdb-color darken-3 white-text">
                         {{ head }}
                     </th>
-                    <tbody *ngFor="let control of serviceSecurityControl" #row>
+                    <tbody *ngFor="let control of data" #row>
                         <tr mdbTableCol>
                             <td>Service</td>
                             <td>{{control.service}}</td>

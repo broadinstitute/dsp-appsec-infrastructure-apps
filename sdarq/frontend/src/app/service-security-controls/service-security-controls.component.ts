@@ -50,7 +50,7 @@ export class ServiceSecurityControlsComponent implements OnInit {
       this.valuejson = {
         'service': this.value
       }
-      // this.getResults(this.valuejson)
+      this.getResults(this.valuejson)
     })
   }
 
