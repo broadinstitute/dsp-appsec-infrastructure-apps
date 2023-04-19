@@ -16,8 +16,7 @@ export class ServiceSecurityControlsComponent implements OnInit {
   errors: string;
   valuejson: {};
   headElements = ['Security Control', 'State']
-  data: { sast_link: string; dev_url: string; github: string; sourceclear: string; cis_scanner: string; burp: string; vulnerability_management: string; product: string; threat_model: boolean;  threat_model_link: string; sourceclear_link: string; sast: boolean; zap: string; security_pentest_link: string; service: string; docker_scan: string; defect_dojo: string; };
-
+  data: any;
 
   constructor(private getSecurityControls: GetServiceSecurityControlsService,
     private ngZone: NgZone,
