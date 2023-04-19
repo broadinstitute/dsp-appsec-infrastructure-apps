@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import formJson from './form.json';
 import { GetServiceSecurityControlsService } from '../services/get-service-security-controls/get-service-security-controls.service';
+import { FasDirective } from 'angular-bootstrap-md';
 
 
 @Component({
@@ -32,6 +33,7 @@ export class SearchServiceSecurityControlsComponent implements OnInit {
         this.ngZone.run(() => {
           console.log(data)
           this.showModalErr = data;
+          this.showForm = false;
         });
       });
   }

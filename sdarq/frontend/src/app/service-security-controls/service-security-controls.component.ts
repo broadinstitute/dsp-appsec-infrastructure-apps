@@ -31,6 +31,7 @@ export class ServiceSecurityControlsComponent implements OnInit {
   sast: boolean;
   sast_link: string;
   sourceclear: boolean;
+  valuejson: {};
 
   constructor(private getSecurityControls: GetServiceSecurityControlsService,
     private ngZone: NgZone,
@@ -43,12 +44,16 @@ export class ServiceSecurityControlsComponent implements OnInit {
     this.showSpinner = true;
     this.router.queryParams.subscribe(params => {
       this.value = params.servicename
-      this.getResults(this.value)
+      this.valuejson = {
+        'service': this.value
+      }
+      this.getResults(this.valuejson)
     })
   }
 
-  private getResults(value) {
-    this.getSecurityControls.getServiceSecurityControls(this.value).subscribe((serviceSecurityControl) => {
+
+  private getResults(valuejson) {
+    this.getSecurityControls.getServiceSecurityControls(this.valuejson).subscribe((serviceSecurityControl) => {
         this.ref.detectChanges();
         this.showSpinner = false;
         this.service = serviceSecurityControl.service;
