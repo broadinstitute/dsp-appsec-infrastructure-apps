@@ -41,7 +41,6 @@ export class ServiceSecurityControlsComponent implements OnInit {
 
   private getResults(valuejson) {
     this.getSecurityControls.getServiceSecurityControls(this.valuejson).subscribe((serviceSecurityControl: ServiceSecurityControl []) => {
-        this.ref.detectChanges();
         this.showSpinner = false;
         this.serviceSecurityControl = serviceSecurityControl;
       },
