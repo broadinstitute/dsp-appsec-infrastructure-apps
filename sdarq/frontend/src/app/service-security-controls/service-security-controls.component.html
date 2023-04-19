@@ -7,50 +7,50 @@
                     <th *ngFor="let head of headElements" class="mdb-color darken-3 white-text">
                         {{ head }}
                     </th>
-                    <tbody *ngFor="let control of data" #row>
+                    <tbody #row>
                         <tr mdbTableCol>
                             <td>Service</td>
-                            <td>{{control.service}}</td>
+                            <td>{{data.service}}</td>
                         </tr>
                         <tr mdbTableCol>
                             <td> Product </td>
-                            <td>{{control.product}}</td>
+                            <td>{{data.product}}</td>
                         </tr>
                         <tr mdbTableCol>
                             <td> Sourcecode </td>
-                            <td><a href="{{ control.github }}" target="_blank" rel="noreferrer noopener"><mdb-icon fab icon="github" size="3x"></mdb-icon></a></td>
+                            <td><a href="{{ data.github }}" target="_blank" rel="noreferrer noopener"><mdb-icon fab icon="github" size="3x"></mdb-icon></a></td>
                         </tr>
                         <tr mdbTableCol>
                             <td> DefectDojo </td>
-                            <td><a href="{{ control.defect_dojo }}" target="_blank" rel="noreferrer noopener"><img src="../assets/defectdojo.png" width="25px"></a></td>
+                            <td><a href="{{ data.defect_dojo }}" target="_blank" rel="noreferrer noopener"><img src="../assets/defectdojo.png" width="25px"></a></td>
                         </tr>
                         <tr mdbTableCol>
                             <td> Threat Model </td>
-                            <td><a href="{{ control.threat_model_link }}" target="_blank" rel="noreferrer noopener"><img src="../assets/tm.png" width="30px"></a></td>
+                            <td><a href="{{ data.threat_model_link }}" target="_blank" rel="noreferrer noopener"><img src="../assets/tm.png" width="30px"></a></td>
                         </tr>
                         <tr mdbTableCol>
                             <td> 3rd party dependecies scan </td>
-                            <td><a href="{{ control.sourceclear_link }}" target="_blank" rel="noreferrer noopener"><img src="../assets/sourceclear.png" width="30px"></a></td>
+                            <td><a href="{{ data.sourceclear_link }}" target="_blank" rel="noreferrer noopener"><img src="../assets/sourceclear.png" width="30px"></a></td>
                         </tr>
                         <tr mdbTableCol>
                             <td> Security Manual pentest </td>
-                            <td><a href="{{ control.security_pentest_link }}" target="_blank" rel="noreferrer noopener"><img src="../assets/burpsuite.png" width="30px"></a></td>
+                            <td><a href="{{ data.security_pentest_link }}" target="_blank" rel="noreferrer noopener"><img src="../assets/burpsuite.png" width="30px"></a></td>
                         </tr>
                         <tr mdbTableCol>
                             <td> Container Image Scan </td>
-                            <td><a href="{{ control.defect_dojo }}" target="_blank" rel="noreferrer noopener"><img src="../assets/trivy.png" width="35px"></a></td>
+                            <td><a href="{{ data.defect_dojo }}" target="_blank" rel="noreferrer noopener"><img src="../assets/trivy.png" width="35px"></a></td>
                         </tr>
                         <tr mdbTableCol>
                             <td> SAST </td>
-                            <td><a href="{{ control.sast_link }}" target="_blank" rel="noreferrer noopener"><img src="../assets/sast.png" width="35px"></a></td>
+                            <td><a href="{{ data.sast_link }}" target="_blank" rel="noreferrer noopener"><img src="../assets/sast.png" width="35px"></a></td>
                         </tr>
                         <tr mdbTableCol>
                             <td> DAST </td>
-                            <td><a href="{{ control.vulnerabilility_management }}" target="_blank" rel="noreferrer noopener"><img src="../assets/zap.png" width="30px"></a></td>
+                            <td><a href="{{ data.vulnerabilility_management }}" target="_blank" rel="noreferrer noopener"><img src="../assets/zap.png" width="30px"></a></td>
                         </tr>
                         <tr mdbTableCol>
                             <td> CIS scan </td>
-                            <td><a href="{{ control.defect_dojo }}" target="_blank" rel="noreferrer noopener"><img src="../assets/sdarq.png" width="45px"></a></td>
+                            <td><a href="{{ data.defect_dojo }}" target="_blank" rel="noreferrer noopener"><img src="../assets/sdarq.png" width="45px"></a></td>
                         </tr>
                     </tbody>
                 </table>
