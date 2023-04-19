@@ -33,7 +33,7 @@ export class ServiceSecurityControlsComponent implements OnInit {
   sourceclear: boolean;
   valuejson: {};
   headElements = ['Security Control', 'State']
-  data: any;
+  data: { sast_link: string; dev_url: string; github: string; sourceclear: string; cis_scanner: string; burp: string; vulnerability_management: string; product: string; threat_model: string; sourceclear_link: string; sast: boolean; zap: string; security_pentest_link: string; service: string; docker_scan: string; defect_dojo: string; };
 
 
   constructor(private getSecurityControls: GetServiceSecurityControlsService,
@@ -44,7 +44,6 @@ export class ServiceSecurityControlsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.showSpinner = true;
     this.router.queryParams.subscribe(params => {
       this.value = params.servicename
       this.valuejson = {
