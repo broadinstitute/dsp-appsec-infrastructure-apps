@@ -68,9 +68,9 @@ export class ServiceSecurityControlsComponent implements OnInit {
 
   trivyShowValue(docker_scan) {
     if (docker_scan === true) {
-      return '<i class="fas fa-check-circle light-green-color fa-2x" ></i>'
+      return '<img src="../assets/trivy.png" width="35px">'
     } else {
-      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
+      return '<p>Docker Image Scan tool is not integrated.</p>'
     }
   }
 
@@ -79,7 +79,7 @@ export class ServiceSecurityControlsComponent implements OnInit {
       this.security_pentest = true;
     } else {
       this.security_pentest = false;
-      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
+      return '<p>There is not a security pentest for this service.</p>'
     }
   }
 
@@ -95,7 +95,7 @@ export class ServiceSecurityControlsComponent implements OnInit {
     } else {
       this.threat_model_results = false;
       this.threat_model_results_link = false;
-      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
+      return '<p>There is not a threat model for this service.</p>'
     }
   }
 
@@ -104,15 +104,15 @@ export class ServiceSecurityControlsComponent implements OnInit {
       this.zap_results = true;
     } else {
       this.zap_results = false;
-      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
+      return '<p>There is not a DAST for this service.</p>'
     }
   }
 
   cisscannerShowValue(cis_scanner) {
     if (cis_scanner === true) {
-      return '<i class="fas fa-check-circle light-green-color fa-2x"></i>'
+      return '<img src="../assets/sdarq.png" width="45px"></a>'
     } else {
-      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
+      return '<p>The GCP project of this service is not scanned.</p>'
     }
   }
 
@@ -121,7 +121,7 @@ export class ServiceSecurityControlsComponent implements OnInit {
       this.sast_results = true;
     } else {
       this.sast_results = false;
-      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
+      return '<p>This service is not integrated with any SAST tool.</p>'
     }
   }
 
@@ -130,14 +130,14 @@ export class ServiceSecurityControlsComponent implements OnInit {
       this.sourceclear_results = true;
     } else {
       this.sourceclear_results = false;
-      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
+      return '<p>This service is not integrated with any tool to scan 3rd party dependencies.</p>'
     }
   }
 
   devURLShowValue(dev_url) {
     if (dev_url === '') {
       this.dev_link = false;
-      return '<a href="#" data-mdb-toggle="tooltip" title="The URL does not exist!"><i class="fas fa-info-circle blue-color fa-2x"></i><a>'
+      return '<p>This service does not have a static URL.</p>'
     } else {
       this.dev_link = true;
     }
@@ -146,7 +146,7 @@ export class ServiceSecurityControlsComponent implements OnInit {
   productShowValue(product){
     if (product === '') {
       this.product_value = false;
-      return '<a href="#" data-mdb-toggle="tooltip" title="The product name is not available!"><i class="fas fa-info-circle blue-color fa-2x"></i><a>'
+      return '<p>The product is not available.</p>'
     } else {
       this.product_value = true;
     }

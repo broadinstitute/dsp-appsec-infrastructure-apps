@@ -14,43 +14,110 @@
                         </tr>
                         <tr mdbTableCol>
                             <td> Product </td>
-                            <td>{{product}}</td>
+                            <td>
+                                <div [innerHTML]="productShowValue(controls.product)"></div>
+                                <div *ngIf="product_value">
+                                    {{ product }}
+                                </div>
+                            </td>
                         </tr>
                         <tr mdbTableCol>
                             <td> Sourcecode </td>
-                            <td><a href="{{ github }}" target="_blank" rel="noreferrer noopener"><mdb-icon fab icon="github" size="3x"></mdb-icon></a></td>
+                            <td>
+                                <div class="text-center"><a href="{{ github  }}" target="_blank"
+                                        rel="noreferrer noopener">
+                                        <mdb-icon fab icon="github" size="3x"></mdb-icon>
+                                    </a></div>
+                            </td>
+                        </tr>
+                        <tr mdbTableCol>
+                            <td> Dev URL </td>
+                            <td>
+                                <div [innerHTML]="devURLShowValue(dev_url)"></div>
+                                <div *ngIf="dev_link">
+                                    <a href="{{ dev_url }}" target="_blank" rel="noreferrer noopener">
+                                        {{ service | lowercase}}
+                                    </a>
+                                </div>
+                            </td>
                         </tr>
                         <tr mdbTableCol>
                             <td> DefectDojo </td>
-                            <td><a href="{{ defect_dojo }}" target="_blank" rel="noreferrer noopener"><img src="../assets/defectdojo.png" width="25px"></a></td>
+                            <td>
+                                <div class="text-center"><a href="{{ defect_dojo }}" target="_blank"
+                                        rel="noreferrer noopener">
+                                        <img src="../assets/defectdojo.png" width="23px"></a> </div>
+                            </td>
                         </tr>
                         <tr mdbTableCol>
                             <td> Threat Model </td>
-                            <td><a href="{{ threat_model_link }}" target="_blank" rel="noreferrer noopener"><img src="../assets/tm.png" width="30px"></a></td>
+                            <td>
+                                <div
+                                    [innerHTML]="threatmodelShowValue(controls.threat_model, controls.threat_model_link)">
+                                </div>
+                                <div *ngIf="threat_model_results">
+                                    <img src="../assets/tm.png" width="30px">
+                                </div>
+                                <div *ngIf="threat_model_results_link">
+                                    <a href="{{ controls.threat_model_link }}" target="_blank"
+                                        rel="noreferrer noopener">
+                                        <img src="../assets/tm.png" width="30px"></a>
+                                </div>
+                                </a>
+                            </td>
                         </tr>
                         <tr mdbTableCol>
                             <td> 3rd party dependecies scan </td>
-                            <td><a href="{{ sourceclear_link }}" target="_blank" rel="noreferrer noopener"><img src="../assets/sourceclear.png" width="30px"></a></td>
+                            <td>
+                                <div [innerHTML]="sourceclearShowValue(controls.sourceclear)"></div>
+                                <div *ngIf="sourceclear_results">
+                                    <a href="{{ controls.sourceclear_link }}" target="_blank" rel="noreferrer noopener">
+                                        <img src="../assets/sourceclear.png" width="30px"></a>
+                                </div>
                         </tr>
                         <tr mdbTableCol>
                             <td> Security Manual pentest </td>
-                            <td><a href="{{ security_pentest_link }}" target="_blank" rel="noreferrer noopener"><img src="../assets/burpsuite.png" width="30px"></a></td>
+                            <td>
+                                <div [innerHTML]="burpShowValue(controls.burp)"></div>
+                                <div *ngIf="security_pentest">
+                                    <a href="{{ controls.security_pentest_link }}" target="_blank"
+                                        rel="noreferrer noopener">
+                                        <img src="../assets/burpsuite.png" width="30px"></a>
+                                </div>
+                            </td>
                         </tr>
                         <tr mdbTableCol>
                             <td> Container Image Scan </td>
-                            <td><a href="{{ defect_dojo }}" target="_blank" rel="noreferrer noopener"><img src="../assets/trivy.png" width="35px"></a></td>
+                            <td>
+                                <div [innerHTML]="trivyShowValue(controls.docker_scan)"></div>
+                            </td>
                         </tr>
                         <tr mdbTableCol>
                             <td> SAST </td>
-                            <td><a href="{{ sast_link }}" target="_blank" rel="noreferrer noopener"><img src="../assets/sast.png" width="35px"></a></td>
+                            <td>
+                                <div [innerHTML]="sastShowValue(sast)"></div>
+                                <div *ngIf="sast_results">
+                                    <a href="{{ sast_link }}" target="_blank" rel="noreferrer noopener">
+                                        <img src="../assets/sast.png" width="35px"></a>
+                                </div>
+                            </td>
                         </tr>
                         <tr mdbTableCol>
                             <td> DAST </td>
-                            <td><a href="{{ vulnerability_management }}" target="_blank" rel="noreferrer noopener"><img src="../assets/zap.png" width="30px"></a></td>
+                            <td>
+                                <div [innerHTML]="zapShowValue(zap)"></div>
+                                <div *ngIf="zap_results">
+                                    <a href="{{ vulnerability_management }}" target="_blank" rel="noreferrer noopener">
+                                        <imgsrc="../assets/zap.png" width="30px">
+                                    </a>
+                                </div>
+                            </td>
                         </tr>
                         <tr mdbTableCol>
                             <td> CIS scan </td>
-                            <td><a href="{{ defect_dojo }}" target="_blank" rel="noreferrer noopener"><img src="../assets/sdarq.png" width="45px"></a></td>
+                            <td>
+                                <div [innerHTML]="cisscannerShowValue(controls.cis_scanner)"></div>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
