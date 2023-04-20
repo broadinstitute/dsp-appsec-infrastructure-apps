@@ -15,9 +15,7 @@ export class ServiceSecurityControlsComponent implements OnInit {
   errorMessage: any;
   showServiceData: boolean;
   showModalError: boolean;
-  showSpinner: boolean;
   value: string;
-  errors: string;
   valuejson: {};
   headElements = ['Security Control', 'State']
   data: any;
@@ -155,7 +153,6 @@ export class ServiceSecurityControlsComponent implements OnInit {
   private getResults(valuejson) {
     this.getSecurityControls.getServiceSecurityControls(this.valuejson).subscribe((serviceSecurityControl) => {
         this.ref.detectChanges();
-        this.showSpinner = false;
         this.sast_link = serviceSecurityControl.sast_link;
         this.github = serviceSecurityControl.github;
         this.sourceclear = serviceSecurityControl.sourceclear;
@@ -177,8 +174,7 @@ export class ServiceSecurityControlsComponent implements OnInit {
       (serviceSecurityControl) => {
         this.ngZone.run(() => {
           this.showModalError = true;
-          this.errors = serviceSecurityControl;
-          this.showSpinner = false;
+          this.errorMessage = serviceSecurityControl;
         });
       });
   }

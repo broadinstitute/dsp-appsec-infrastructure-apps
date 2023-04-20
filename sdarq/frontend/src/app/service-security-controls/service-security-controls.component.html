@@ -1,6 +1,15 @@
 <div class="jumbotron min-vh-100">
     <div class="container">
         <div class="row">
+            <div class="col-sm text-center">
+                <div class="alert alert-danger animated fadeInRight" role="alert" *ngIf="showModalError">
+                    <h4 class="alert-heading">Oops!</h4>
+                    <p> {{errorMessage}} </p>
+                    <p class="mb-0">Please contact AppSec team for more information!</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col text-center">
                 <table mdbTable #tableEl="mdbTable" hover="true" striped="true" class="z-depth-1"
                     class="animated fadeIn">
