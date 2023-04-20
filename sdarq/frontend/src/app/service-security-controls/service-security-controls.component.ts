@@ -38,6 +38,14 @@ export class ServiceSecurityControlsComponent implements OnInit {
   defect_dojo: string;
   sast: boolean;
   sast_link: string;
+  security_pentest: boolean;
+  threat_model_results: boolean;
+  threat_model_results_link: boolean;
+  zap_results: boolean;
+  sast_results: boolean;
+  sourceclear_results: boolean;
+  dev_link: boolean;
+  product_value: boolean;
 
   constructor(private getSecurityControls: GetServiceSecurityControlsService,
     private ngZone: NgZone,
@@ -54,6 +62,94 @@ export class ServiceSecurityControlsComponent implements OnInit {
       }
       this.getResults(this.valuejson)
     })
+  }
+
+
+
+  trivyShowValue(docker_scan) {
+    if (docker_scan === true) {
+      return '<i class="fas fa-check-circle light-green-color fa-2x" ></i>'
+    } else {
+      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
+    }
+  }
+
+  burpShowValue(burp) {
+    if (burp === true) {
+      this.security_pentest = true;
+    } else {
+      this.security_pentest = false;
+      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
+    }
+  }
+
+  threatmodelShowValue(threat_model, threat_model_link) {
+    if (threat_model === true) {
+      if (!threat_model_link){
+        this.threat_model_results = true;
+        this.threat_model_results_link = false;
+      } else {
+        this.threat_model_results_link = true;
+        this.threat_model_results = false;
+      }
+    } else {
+      this.threat_model_results = false;
+      this.threat_model_results_link = false;
+      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
+    }
+  }
+
+  zapShowValue(zap) {
+    if (zap === true) {
+      this.zap_results = true;
+    } else {
+      this.zap_results = false;
+      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
+    }
+  }
+
+  cisscannerShowValue(cis_scanner) {
+    if (cis_scanner === true) {
+      return '<i class="fas fa-check-circle light-green-color fa-2x"></i>'
+    } else {
+      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
+    }
+  }
+
+  sastShowValue(sast) {
+    if (sast === true) {
+      this.sast_results = true;
+    } else {
+      this.sast_results = false;
+      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
+    }
+  }
+
+  sourceclearShowValue(sourceclear) {
+    if (sourceclear === true) {
+      this.sourceclear_results = true;
+    } else {
+      this.sourceclear_results = false;
+      return '<i class="fas fa-times-circle red-color fa-2x"></i>'
+    }
+  }
+
+  devURLShowValue(dev_url) {
+    if (dev_url === '') {
+      this.dev_link = false;
+      return '<a href="#" data-mdb-toggle="tooltip" title="The URL does not exist!"><i class="fas fa-info-circle blue-color fa-2x"></i><a>'
+    } else {
+      this.dev_link = true;
+    }
+  }
+
+  productShowValue(product){
+    if (product === '') {
+      this.product_value = false;
+      return '<a href="#" data-mdb-toggle="tooltip" title="The product name is not available!"><i class="fas fa-info-circle blue-color fa-2x"></i><a>'
+    } else {
+      this.product_value = true;
+    }
   }
 
   private getResults(valuejson) {
@@ -83,7 +179,6 @@ export class ServiceSecurityControlsComponent implements OnInit {
           this.showModalError = true;
           this.errors = serviceSecurityControl;
           this.showSpinner = false;
-          console.log(serviceSecurityControl)
         });
       });
   }
