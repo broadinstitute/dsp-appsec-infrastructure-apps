@@ -15,7 +15,7 @@
                         <tr mdbTableCol>
                             <td> Product </td>
                             <td>
-                                <div [innerHTML]="productShowValue(controls.product)"></div>
+                                <div [innerHTML]="productShowValue(product)"></div>
                                 <div *ngIf="product_value">
                                     {{ product }}
                                 </div>
@@ -53,34 +53,33 @@
                             <td> Threat Model </td>
                             <td>
                                 <div
-                                    [innerHTML]="threatmodelShowValue(controls.threat_model, controls.threat_model_link)">
+                                    [innerHTML]="threatmodelShowValue(threat_model, threat_model_link)">
                                 </div>
                                 <div *ngIf="threat_model_results">
                                     <img src="../assets/tm.png" width="30px">
                                 </div>
                                 <div *ngIf="threat_model_results_link">
-                                    <a href="{{ controls.threat_model_link }}" target="_blank"
+                                    <a href="{{ threat_model_link }}" target="_blank"
                                         rel="noreferrer noopener">
                                         <img src="../assets/tm.png" width="30px"></a>
                                 </div>
-                                </a>
                             </td>
                         </tr>
                         <tr mdbTableCol>
                             <td> 3rd party dependecies scan </td>
                             <td>
-                                <div [innerHTML]="sourceclearShowValue(controls.sourceclear)"></div>
+                                <div [innerHTML]="sourceclearShowValue(sourceclear)"></div>
                                 <div *ngIf="sourceclear_results">
-                                    <a href="{{ controls.sourceclear_link }}" target="_blank" rel="noreferrer noopener">
+                                    <a href="{{ sourceclear_link }}" target="_blank" rel="noreferrer noopener">
                                         <img src="../assets/sourceclear.png" width="30px"></a>
                                 </div>
                         </tr>
                         <tr mdbTableCol>
                             <td> Security Manual pentest </td>
                             <td>
-                                <div [innerHTML]="burpShowValue(controls.burp)"></div>
+                                <div [innerHTML]="burpShowValue(burp)"></div>
                                 <div *ngIf="security_pentest">
-                                    <a href="{{ controls.security_pentest_link }}" target="_blank"
+                                    <a href="{{ security_pentest_link }}" target="_blank"
                                         rel="noreferrer noopener">
                                         <img src="../assets/burpsuite.png" width="30px"></a>
                                 </div>
@@ -89,7 +88,7 @@
                         <tr mdbTableCol>
                             <td> Container Image Scan </td>
                             <td>
-                                <div [innerHTML]="trivyShowValue(controls.docker_scan)"></div>
+                                <div [innerHTML]="trivyShowValue(docker_scan)"></div>
                             </td>
                         </tr>
                         <tr mdbTableCol>
@@ -108,7 +107,7 @@
                                 <div [innerHTML]="zapShowValue(zap)"></div>
                                 <div *ngIf="zap_results">
                                     <a href="{{ vulnerability_management }}" target="_blank" rel="noreferrer noopener">
-                                        <imgsrc="../assets/zap.png" width="30px">
+                                        <img src="../assets/zap.png" width="30px">
                                     </a>
                                 </div>
                             </td>
@@ -116,7 +115,7 @@
                         <tr mdbTableCol>
                             <td> CIS scan </td>
                             <td>
-                                <div [innerHTML]="cisscannerShowValue(controls.cis_scanner)"></div>
+                                <div [innerHTML]="cisscannerShowValue(cis_scanner)"></div>
                             </td>
                         </tr>
                     </tbody>

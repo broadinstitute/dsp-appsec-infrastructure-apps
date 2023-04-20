@@ -112,7 +112,7 @@ export class ServiceSecurityControlsComponent implements OnInit {
     if (cis_scanner === true) {
       return '<img src="../assets/sdarq.png" width="45px"></a>'
     } else {
-      return '<p>The GCP project of this service is not scanned.</p>'
+      return '<p>The GCP project (if there is any) of this service is not scanned.</p>'
     }
   }
 
