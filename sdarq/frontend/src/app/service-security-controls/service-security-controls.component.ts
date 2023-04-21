@@ -17,7 +17,7 @@ export class ServiceSecurityControlsComponent implements OnInit {
   showModalError: boolean;
   value: string;
   valuejson: {};
-  headElements = ['Security Control', 'State']
+  headElements = ['Security Control', 'Status']
   data: any;
   service: string;
   product: string;

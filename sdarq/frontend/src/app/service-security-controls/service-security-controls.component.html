@@ -9,11 +9,14 @@
                 </div>
             </div>
         </div>
+        <div class="row text-center">
+            <p><i class="fas indigo-text fa-info-circle"></i> Hello, here you can find the security controls for your service. Some of them have links that will redirect you to the security tool.</p>
+        </div><br>
         <div class="row">
             <div class="col text-center">
                 <table mdbTable #tableEl="mdbTable" hover="true" striped="true" class="z-depth-1"
                     class="animated fadeIn">
-                    <th *ngFor="let head of headElements" class="mdb-color darken-3 white-text">
+                    <th *ngFor="let head of headElements" class="mdb-color primary-color-dark white-text">
                         {{ head }}
                     </th>
                     <tbody #row>
