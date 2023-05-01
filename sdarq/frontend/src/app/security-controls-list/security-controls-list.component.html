@@ -34,7 +34,7 @@
         <tbody #row>
             <!-- tslint:disable-next-line -->
             <tr *ngFor="let controls of serviceSecurityControl | filtersct: searchString ">
-                <td><a href="{{servicesecuritycontrollink}}{{controls.service}}" target="_blank" rel="noreferrer noopener">{{ controls.service }}</a></td>
+                <td>{{ controls.service }}</td>
                 <td>
                     <div [innerHTML]="productShowValue(controls.product)"></div>
                     <div *ngIf="product_value">
@@ -115,6 +115,11 @@
                             <a href="{{ controls.sourceclear_link }}" target="_blank" rel="noreferrer noopener">
                                 <i class="fas fa-check-circle green-color fa-2x"></i></a>
                         </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center">
+                        <a href="{{servicesecuritycontrollink}}{{controls.service}}" target="_blank" rel="noreferrer noopener">Info</a>
                     </div>
                 </td>
             </tr>
