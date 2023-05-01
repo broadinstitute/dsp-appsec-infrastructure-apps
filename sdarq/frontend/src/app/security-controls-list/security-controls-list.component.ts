@@ -28,6 +28,7 @@ export class SecurityControlsListComponent implements OnInit {
   showModalError: boolean;
   showSearch: boolean;
   showTable: boolean;
+  servicesecuritycontrollink: string;
 
 
   constructor(private getSecurityControls: GetSecurityControlsService,  private ngZone: NgZone) {
@@ -130,6 +131,7 @@ export class SecurityControlsListComponent implements OnInit {
   getResults() {
     this.getSecurityControls.getAllSecurityControls().subscribe((serviceSecurityControl: ServiceSecurityControl []) => {
       this.serviceSecurityControl = serviceSecurityControl;
+      this.servicesecuritycontrollink = location.origin + '/service-security-controls/results?servicename=' + serviceSecurityControl['service']
     },
       (serviceSecurityControl) => {
         this.ngZone.run(() => {
