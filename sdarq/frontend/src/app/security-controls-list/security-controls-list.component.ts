@@ -131,7 +131,7 @@ export class SecurityControlsListComponent implements OnInit {
   getResults() {
     this.getSecurityControls.getAllSecurityControls().subscribe((serviceSecurityControl: ServiceSecurityControl []) => {
       this.serviceSecurityControl = serviceSecurityControl;
-      this.servicesecuritycontrollink = location.origin + '/service-security-controls/results?servicename=' + serviceSecurityControl['service']
+      this.servicesecuritycontrollink = location.origin + '/service-security-controls/results?servicename='
     },
       (serviceSecurityControl) => {
         this.ngZone.run(() => {
