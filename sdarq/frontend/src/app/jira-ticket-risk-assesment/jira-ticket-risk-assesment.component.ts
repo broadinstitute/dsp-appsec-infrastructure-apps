@@ -35,7 +35,9 @@ export class JiraTicketRiskAssesmentComponent implements OnInit {
       this.ref.detectChanges();
       this.showModal = true;
       console.log(res)
-      this.showModalMessage = res.statusText;
+      console.log(res.statusText)
+      console.log(res["statusText"])
+      this.showModalMessage = res["statusText"];
     },
       (res) => {
         this.ngZone.run(() => {
