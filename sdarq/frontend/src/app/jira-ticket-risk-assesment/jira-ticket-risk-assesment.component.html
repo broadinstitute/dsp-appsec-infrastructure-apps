@@ -5,9 +5,8 @@
       <p> {{showModalError}} </p>
       <p class="mb-0">Please contact AppSec team for more information!</p>
   </div>
-  <div class="alert animated fadeInRight" role="alert" *ngIf="showModal">
+  <div class="alert alert-danger animated fadeInRight" role="alert" *ngIf="showModal">
     <p> {{showModalMessage}} </p>
-    <p class="mb-0">Please contact AppSec team for more information!</p>
 </div>
     <app-survey *ngIf="showForm" [json]="json" (submitSurvey)="sendData($event)"></app-survey>
   </div>

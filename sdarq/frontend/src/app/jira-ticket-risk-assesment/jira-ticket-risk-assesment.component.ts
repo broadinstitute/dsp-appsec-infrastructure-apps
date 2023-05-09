@@ -25,6 +25,7 @@ export class JiraTicketRiskAssesmentComponent implements OnInit {
   ngOnInit(): void {
     this.showModalErr = false;
     this.showForm = true;
+    this.showModal = false;
    }
 
   json = formJson
@@ -32,7 +33,6 @@ export class JiraTicketRiskAssesmentComponent implements OnInit {
   sendData(result) {
     this.sendJTRAForm.sendJTRAFormData(result).subscribe((res) => {
       this.ref.detectChanges();
-      this.showForm = false;
       this.showModal = true;
       console.log(res)
       this.showModalMessage = res.statusText;
