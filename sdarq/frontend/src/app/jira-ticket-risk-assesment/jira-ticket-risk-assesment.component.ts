@@ -23,7 +23,8 @@ export class JiraTicketRiskAssesmentComponent implements OnInit {
                }
 
   ngOnInit(): void {
-
+    this.showModalErr = false;
+    this.showForm = true;
    }
 
   json = formJson
