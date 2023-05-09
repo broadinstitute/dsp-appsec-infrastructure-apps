@@ -11,8 +11,10 @@ import { JiraTicketRiskAssessmentService } from '../services/jira-ticket-risk-as
 export class JiraTicketRiskAssesmentComponent implements OnInit {
 
   showModalErr: boolean;
+  showModal: boolean;
   showForm: boolean;
   showModalError: any;
+  showModalMessage: any;
 
   constructor(private sendJTRAForm: JiraTicketRiskAssessmentService,
               private ngZone: NgZone,
@@ -28,8 +30,11 @@ export class JiraTicketRiskAssesmentComponent implements OnInit {
   json = formJson
 
   sendData(result) {
-    this.sendJTRAForm.sendJTRAFormData(result).subscribe(() => {
+    this.sendJTRAForm.sendJTRAFormData(result).subscribe((res) => {
       this.ref.detectChanges();
+      this.showForm = false;
+      this.showModal = true;
+      this.showModalMessage = res;
     },
       (res) => {
         this.ngZone.run(() => {
