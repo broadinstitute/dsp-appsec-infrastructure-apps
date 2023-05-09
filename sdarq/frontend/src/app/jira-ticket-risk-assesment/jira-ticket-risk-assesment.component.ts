@@ -23,8 +23,7 @@ export class JiraTicketRiskAssesmentComponent implements OnInit {
                }
 
   ngOnInit(): void {
-    this.showModalErr = false;
-    this.showForm = true;
+
    }
 
   json = formJson
@@ -34,7 +33,8 @@ export class JiraTicketRiskAssesmentComponent implements OnInit {
       this.ref.detectChanges();
       this.showForm = false;
       this.showModal = true;
-      this.showModalMessage = res;
+      console.log(res)
+      this.showModalMessage = res.statusText;
     },
       (res) => {
         this.ngZone.run(() => {
