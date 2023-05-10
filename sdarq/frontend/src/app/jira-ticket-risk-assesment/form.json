@@ -279,5 +279,6 @@
        }],
       "title": "Jira Security Risk Assessment Guide"
      }
-    ]
+    ],
+    "completeText": "Calculate Risk for this ticket"
    }
