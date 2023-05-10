@@ -6,7 +6,7 @@
       <p class="mb-0">Please contact AppSec team for more information!</p>
     </div>
     <div class="alert alert-primary animated fadeInRight" role="alert" *ngIf="showModal">
-      <h6> {{showModalMessage}}</h6>
+      <h6 style="font-weight: 400 !important; padding-top: 0.5em; text-align: center;"> {{showModalMessage}}</h6>
     </div>
     <app-survey *ngIf="showForm" [json]="json" (submitSurvey)="sendData($event)"></app-survey>
   </div>
