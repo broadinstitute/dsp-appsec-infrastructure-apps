@@ -961,12 +961,12 @@ def submit_jtra():
                     user_email,
                     user_data,
                     user_data['AppSec_due_date'])
-            status = {'statusText': 'The risk for this ticket is  HIGH! Please contact AppSec team if you have any questions!'}
+            status = {'statusText': 'The risk for this ticket is HIGH!  Please contact AppSec team if you have any questions!'}
             return Response(json.dumps(status), status=200, mimetype='application/json')
         else:
             logging.info(
                 "User %s submitted a MEDIUM/LOW Risk Jira Ticket", user_email)
-            status = {'statusText': 'The risk for this ticket is MEDIUM/LOW! Please contact AppSec team if you have any questions!'}
+            status = {'statusText': 'The risk for this ticket is MEDIUM/LOW!  Please contact AppSec team if you have any questions!'}
             return Response(json.dumps(status), status=200, mimetype='application/json')
     except Exception as error:
         error_message = f"Exception /submitJTRA enspoint: {error}"
