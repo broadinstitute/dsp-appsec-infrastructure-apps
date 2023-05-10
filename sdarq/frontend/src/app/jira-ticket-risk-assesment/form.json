@@ -1,4 +1,5 @@
 {
+    "completedHtml": "<p><h3>Thank you, please wait for the results!</h3></p>",
     "pages": [
      {
       "name": "Jira Risk Assessment",
@@ -276,8 +277,7 @@
          }
         ]
        }],
-      "title": "Jira Security Risk Assessment Guide",
-      "completedHtml": "<p><h3>Thank you, please wait for the results!</h3></p>"
+      "title": "Jira Security Risk Assessment Guide"
      }
     ]
    }
