@@ -280,85 +280,9 @@
           "text": "I am not sure / I'm not aware of any playbooks that could help with this specific change"
          }
         ]
-       },
-       {
-        "type": "html",
-        "name": "risk_high_infrastructure_only",
-        "visible": false,
-        "visibleIf": "{high_level} = 'change_infrastructure' and {infrastructure_gcp} anyof ['Access control change that involves granting privileged or public access to an entity.', 'Changing an existing firewall rule or adding a new one', 'Changing logging configs'] and {if_access_control_change_playbook} = 'Not sure'",
-        "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>"
-       },
-       {
-        "type": "html",
-        "name": "risk_high_product_only",
-        "visible": false,
-        "visibleIf": "{high_level} = 'change_product_api' and {main_product} anyof ['Changing or adding an API endpoint that processes XML files from user input', 'Introducing/changing a file upload feature', 'Making use of Cryptography']",
-        "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>"
-       },
-       {
-        "type": "html",
-        "name": "high_ui_change_only",
-        "visible": false,
-        "visibleIf": "{high_level} = 'change_product_ui' and {product_ui_question_change} anyof ['change_ui_url_inputs', 'change_ui_load_active_content', 'change_ui_change_dom']",
-        "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n<hr> \n\n\n</div>"
-       },
-       {
-        "type": "html",
-        "name": "risk_medium",
-        "visible": false,
-        "visibleIf": "{high_level} = 'change_infrastructure' and {infrastructure_gcp} = 'Other'",
-        "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\n</div>"
-       },
-       {
-        "type": "html",
-        "name": "risk_low",
-        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'No' and {integrity} = 'No' and {availability} = 'No'",
-        "html": "<div class=\"alert alert-info\">\nRisk: <b>LOW</b>\n<hr>\n</div>\n\n"
-       },
-       {
-        "type": "html",
-        "name": "risk_low_ui_only",
-        "visible": false,
-        "visibleIf": "{high_level} = 'change_product_ui' and {product_ui_question_change} = 'Other'",
-        "html": "<div class=\"alert alert-info\">\nRisk: <b>LOW</b>\n<hr>\n</div>\n\n"
-       },
-       {
-        "type": "html",
-        "name": "risk_low_infrastructure_only",
-        "visible": false,
-        "visibleIf": "{high_level} = 'change_infrastructure' and {infrastructure_gcp} anyof ['Access control change that involves granting privileged or public access to an entity.', 'Changing an existing firewall rule or adding a new one', 'Changing logging configs'] and {if_access_control_change_playbook} = 'Yes'",
-        "html": "<div class=\"alert alert-info\">\nRisk: <b>LOW</b>\n<hr>\n</div>\n\n"
-       },
-       {
-        "type": "html",
-        "name": "risk_medium_product_only",
-        "visible": false,
-        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} anyof ['change_ui_change_dom', 'change_ui_load_active_content', 'change_ui_url_inputs']",
-        "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\n</div>"
-       },
-       {
-        "type": "html",
-        "name": "risk_high_generic",
-        "visible": false,
-        "visibleIf": "{high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'Yes' or {high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'Not sure' or {high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'No' and {integrity} = 'Yes' or {high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'No' and {integrity} = 'Not sure' or {high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'No' and {integrity} = 'No' and {availability} = 'Yes' or {high_level} = 'change_product_api' and {main_product} = 'Other' and {product_features_other} = 'None/other' and {confidentiality} = 'No' and {integrity} = 'No' and {availability} = 'Not sure'",
-        "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nTo determine the risk of this change, please reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>\n\n"
-       },
-       {
-        "type": "html",
-        "name": "high_risk_SA",
-        "visibleIf": "{high_level} = 'add_SA'",
-        "html": "<div class=\"alert alert-danger\">\nRisk: <b>HIGH</b>\n<hr>\nAdding a new Service Account or editing an existing one must be always followed by the LEAST PRIVILEGE principle.\nPlease reach out to the AppSec team or tag someone from the Appsec team in the Jira ticket.\n</div>"
-       },
-       {
-        "type": "html",
-        "name": "risk_medium_product_only",
-        "visible": false,
-        "visibleIf": "{high_level} = 'update_dependecies'",
-        "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\n The AppSec team always recommend to update dependencies and clients to safer versions.\n</div>"
-       }
-      ],
+       }],
       "title": "Jira Security Risk Assessment Guide",
-      "completedHtml": "<p><h3>Thank you!</h3></p>"
+      "completedHtml": "<p><h3>Thank you, please wait for the results!</h3></p>"
      }
     ]
    }
