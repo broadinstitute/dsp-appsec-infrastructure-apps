@@ -1,7 +1,7 @@
 {
     "description": "Welcome to New Service Questionnaire",
     "logoPosition": "right",
-    "completedHtml": "<p><h3>Thank you!</h3></p>",
+    "completedHtml": "<p><h3>Thank you, please wait for the results!</h3></p>",
     "pages": [
      {
       "name": "Metadata",

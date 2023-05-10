@@ -357,7 +357,8 @@
         "html": "<div class=\"alert alert-warning\">\nRisk: <b>MEDIUM</b>\n<hr>\n The AppSec team always recommend to update dependencies and clients to safer versions.\n</div>"
        }
       ],
-      "title": "Jira Security Risk Assessment Guide"
+      "title": "Jira Security Risk Assessment Guide",
+      "completedHtml": "<p><h3>Thank you!</h3></p>"
      }
     ]
    }

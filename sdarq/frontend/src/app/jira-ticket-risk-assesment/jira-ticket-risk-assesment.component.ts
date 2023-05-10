@@ -32,12 +32,11 @@ export class JiraTicketRiskAssesmentComponent implements OnInit {
 
   sendData(result) {
     this.sendJTRAForm.sendJTRAFormData(result).subscribe((res) => {
+      this.ngZone.run(() => {
       this.ref.detectChanges();
       this.showModal = true;
-      console.log(res)
-      console.log(res.statusText)
-      console.log(res["statusText"])
-      this.showModalMessage = res["statusText"];
+      this.showModalMessage = res.statusText;
+    });
     },
       (res) => {
         this.ngZone.run(() => {
