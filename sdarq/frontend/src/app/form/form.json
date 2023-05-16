@@ -100,6 +100,7 @@
         "type": "radiogroup",
         "name": "Federal compliance oversight",
         "title": "Does your application require federal compliance oversight? In order to determine this, please select the most appropriate option.",
+        "description": "Note: Terra is a system environment that is governed by compliance such as NIST 800-53, HIPAA, HITRUST, etc. Terra environment is the environment where Terra Services are deployed.",
         "isRequired": true,
         "requiredErrorText": "Required field",
         "validators": [
@@ -112,15 +113,15 @@
         "choices": [
          {
           "value": "System governed by compliance",
-          "text": "My application is hosted in a system environment that is governed by compliance such as NIST 800-52, HIPAA, HITRUST, etc."
+          "text": "My application is hosted in a system environment that is governed by compliance such as NIST 800-53, HIPAA, HITRUST, etc."
          },
          {
           "value": "Interconnected with system governed by compliance",
-          "text": "My application is not hosted in a system environment that is governed by compliance such as NIST 800-52, HIPAA, HITRUST, etc but will interconnect with this system environment"
+          "text": "My application is not hosted in a system environment that is governed by compliance such as NIST 800-53, HIPAA, HITRUST, etc but will interconnect with this system environment"
          },
          {
           "value": "Not a system governed by compliance",
-          "text": "My application is not hosted in a system environment that is governed by compliance such as NIST 800-52, HIPAA, HITRUST, etc environment and does not require government oversight"
+          "text": "My application is not hosted in a system environment that is governed by compliance such as NIST 800-53, HIPAA, HITRUST, etc environment and does not require government oversight"
          }
         ]
        },
@@ -149,7 +150,7 @@
          },
          {
           "value": "New functionality",
-          "text": "Introduces functionality that is brand new to a system environment that is governed by compliance such as NIST 800-52, HIPAA, HITRUST, etc."
+          "text": "Introduces functionality that is brand new to a system environment that is governed by compliance such as NIST 800-53, HIPAA, HITRUST, etc."
          },
          {
           "value": "Infrastructure migration",
@@ -641,7 +642,7 @@
         "type": "html",
         "name": "Alert-SIA",
         "visibleIf": "{Federal compliance oversight} = \"Interconnected with system governed by compliance\"",
-        "html": "<div class=\"highs\">Your application will not be hosted within a system environment that is governed by compliance such as NIST 800-52, HIPAA, HITRUST, etc. but will interconnect with this system environment. Depending on the details of the interconnection, your application may be required to align with certain information security compliance standards and/or meet specific requirements. Our compliance team will need to evaluate the interconnection to determine what, if any, requirements will be for your application. Please start a discussion with the Compliance Team.</div>"
+        "html": "<div class=\"highs\">Your application will not be hosted within a system environment that is governed by compliance such as NIST 800-53, HIPAA, HITRUST, etc. but will interconnect with this system environment. Depending on the details of the interconnection, your application may be required to align with certain information security compliance standards and/or meet specific requirements. Our compliance team will need to evaluate the interconnection to determine what, if any, requirements will be for your application. Please start a discussion with the Compliance Team.</div>"
        },
        {
         "type": "html",
@@ -853,9 +854,9 @@
          {
           "value": {
            "visibleIf": "{Federal compliance oversight} = \"Interconnected with system governed by compliance\"",
-           "text": "Your application will not be hosted within a system environment that is governed by compliance such as NIST 800-52, HIPAA, HITRUST, etc. but will interconnect with this system environment. Depending on the details of the interconnection, your application may be required to align with certain information security compliance standards and/or meet specific requirements. Our compliance team will need to evaluate the interconnection to determine what, if any, requirements will be for your application. Please start a discussion with the Compliance Team."
+           "text": "Your application will not be hosted within a system environment that is governed by compliance such as NIST 800-53, HIPAA, HITRUST, etc. but will interconnect with this system environment. Depending on the details of the interconnection, your application may be required to align with certain information security compliance standards and/or meet specific requirements. Our compliance team will need to evaluate the interconnection to determine what, if any, requirements will be for your application. Please start a discussion with the Compliance Team."
           },
-          "text": "Your application will not be hosted within a system environment that is governed by compliance such as NIST 800-52, HIPAA, HITRUST, etc. but will interconnect with this system environment. Depending on the details of the interconnection, your application may be required to align with certain information security compliance standards and/or meet specific requirements. Our compliance team will need to evaluate the interconnection to determine what, if any, requirements will be for your application. Please start a discussion with the Compliance Team.",
+          "text": "Your application will not be hosted within a system environment that is governed by compliance such as NIST 800-53, HIPAA, HITRUST, etc. but will interconnect with this system environment. Depending on the details of the interconnection, your application may be required to align with certain information security compliance standards and/or meet specific requirements. Our compliance team will need to evaluate the interconnection to determine what, if any, requirements will be for your application. Please start a discussion with the Compliance Team.",
           "visibleIf": "{Federal compliance oversight} = \"Interconnected with system governed by compliance\""
          },
          {
