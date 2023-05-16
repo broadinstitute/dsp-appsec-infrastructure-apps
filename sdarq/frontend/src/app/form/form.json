@@ -842,6 +842,7 @@
         "title": "Track all security actions by creating a Jira ticket in your board.",
         "description": "Please add the KEY of your Jira project. For example: ATP",
         "isRequired": true,
+        "requiredErrorText": "Please add the KEY of your JIRA project. It should contain capital characters and numbers.",
         "validators": [
          {
           "type": "regex",
