@@ -846,6 +846,7 @@
         "validators": [
          {
           "type": "regex",
+          "text": "It should contain characters and numbers.",
           "regex": "([A-Z][A-Z0-9]+)"
          }
         ]
