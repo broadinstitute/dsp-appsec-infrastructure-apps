@@ -919,6 +919,7 @@ def submit_jtra():
             {'statusText': 'Bad Request'}), status=400, mimetype='application/json')
     try:
         if user_data['high_level'] == 'add_SA' \
+            or user_data['high_level'] == 'phi' \
             or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'Other'  \
                 and user_data['product_features_other'] == 'None/other' and user_data['confidentiality'] == 'Yes' \
             or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'Other'  \
