@@ -919,14 +919,9 @@
         "enableIf": "{JiraProject} notempty",
         "isRequired": true,
         "choices": [
-         {
-          "value": "You should create an on-call playbook for your service, and link it into the main on-call documentation.",
-          "visibleIf": "{Reliability} notcontains \"An on-call playbook for the service, linked it into the main on-call documentation\""
-         },
          "Please reach out to AppSec team for initial security discussion. This is basically a Threat Modeling and Security Architecture Review session. The main purpose of the meeting is for us to take  an iterative, recursive look at the architecture and design of a new service/system.",
          {
-          "value": "[object Object]",
-          "text": "Your application will not be hosted within a system environment that is governed by compliance such as NIST 800-53, HIPAA, HITRUST, etc. but will interconnect with this system environment. Depending on the details of the interconnection, your application may be required to align with certain information security compliance standards and/or meet specific requirements. Our compliance team will need to evaluate the interconnection to determine what, if any, requirements will be for your application. Please start a discussion with the Compliance Team.",
+          "value": "Your application will not be hosted within a system environment that is governed by compliance such as NIST 800-53, HIPAA, HITRUST, etc. but will interconnect with this system environment. Depending on the details of the interconnection, your application may be required to align with certain information security compliance standards and/or meet specific requirements. Our compliance team will need to evaluate the interconnection to determine what, if any, requirements will be for your application. Please start a discussion with the Compliance Team.",
           "visibleIf": "{Federal compliance oversight} = \"Interconnected with system governed by compliance\""
          },
          {
@@ -1065,6 +1060,10 @@
          {
           "value": "Your service must be able to scale in response to load, either manually or automatically. Ask DevOps if you need more clarification on this.",
           "visibleIf": "{Reliability} notcontains \"Service is able to scale in response to load\""
+         },
+         {
+          "value": "You should create an on-call playbook for your service, and link it into the main on-call documentation.",
+          "visibleIf": "{Reliability} notcontains \"An on-call playbook for the service, linked it into the main on-call documentation\""
          }
         ],
         "showSelectAllItem": true
