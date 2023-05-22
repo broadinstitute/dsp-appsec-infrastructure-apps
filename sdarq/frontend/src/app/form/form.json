@@ -689,7 +689,13 @@
         "type": "html",
         "name": "alert-phi",
         "visibleIf": "{PHI_collected} = 'Yes'",
-        "html": "<div class=\"highs\">\nPlease make sure you document and limit the collection of PHI. Have documented the process of PHI if required. Allow users (owners of their PHI) to view and modify their information at will or by request.\n\nTrack all cookies used by the system and the reason for their use. Categorize cookies in accordance with GDPR and other privacy regulations. \n<div>"
+        "html": "<div class=\"highs\">\nPlease make sure you document and limit the collection of PHI. Allow users (owners of their PHI) to view and modify their information at will or by request.\n<div>"
+       },
+       {
+        "type": "html",
+        "name": "alert-cookies",
+        "visibleIf": "{PHI_collected} = 'Yes'",
+        "html": "<div class=\"highs\">\nTrack all cookies used by the system and the reason for their use. Categorize cookies in accordance with <a href='https://gdpr.eu/cookies/'>GDPR </a> and other privacy regulations.\n<div>"
        },
        {
         "type": "html",
@@ -927,7 +933,14 @@
           "value": "Get Started with the SIA doc, build a concept of operations/Security Impact Assessment document. Update/build the Design Specification document. Update/build the Network Diagram and Architecture. Make a user flow of your component, make sure to show how it connects to rest of product. Make a data flow diagram of your component, make sure to show how it connects to rest of product.",
           "visibleIf": "{Federal compliance oversight} = \"System governed by compliance\""
          },
-         "Please make sure you document and limit the collection of PHI. Have documented the process of PHI if required. Allow users (owners of their PHI) to view and modify their information at will or by request.  Track all cookies used by the system and the reason for their use. Categorize cookies in accordance with GDPR and other privacy regulations. ",
+         {
+          "value":"Please make sure you document and limit the collection of PHI. Allow users (owners of their PHI) to view and modify their information at will or by request.",
+          "visibleIf":"{PHI_collected} = 'Yes'"
+         },
+         {
+            "value":"Track all cookies used by the system and the reason for their use. Categorize cookies in accordance with GDPR (https://gdpr.eu/cookies/) and other privacy regulations.",
+            "visibleIf":"{PHI_collected} = 'Yes'"
+         },
          {
           "value": "Please make sure you are using a PRIVATE access for your Database . Please contact the AppSec and Devops team for more information. ",
           "visibleIf": "{PHI_DB_private} = 'No'"
