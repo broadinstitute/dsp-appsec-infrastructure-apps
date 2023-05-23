@@ -3,13 +3,25 @@ import urllib3
 
 # Library for ensuring the service account used for authentication is registered and logged in.
 
-def terra_is_registered(token):
+def terra_is_registered(token, env):
     is_registered = False
-
+    url = ""
+    if env.lower() is "dev":
+        url = "https://sam.dsde-dev.broadinstitute.org/register/user/v2/self/termsOfServiceComplianceStatus"
+    else:
+        url = "https://sam.dsde-prod.broadinstitute.org/register/user/v2/self/termsOfServiceComplianceStatus"
+    resp = urllib3.response(
+        "GET",
+        url,
+        headers={
+            "Authorization": token
+        })
+    if resp.status_code == 200:
+        is_registered = True
     return is_registered
 
 def terra_register_sa(token, env):
-    is_registered = terra_is_registered(token)
+    is_registered = terra_is_registered(token, env)
     url = ""
     # Usually dev URLs have "dev" in them.
     # This will only support dev and prod environments currently
@@ -46,13 +58,14 @@ def terra_register_sa(token, env):
 
 def terra_auth_logged_in(token, env):
     logged_in = False
+    url = ""
     if env.lower() is "dev":
         url = "https://sam.dsde-dev.broadinstitute.org/register/user/v2/self/info"
     else:
         url = "https://sam.dsde-prod.broadinstitute.org/register/user/v2/self/info"
     resp = urllib3.response(
         "GET",
-        "",
+        url,
         headers={
             "Authorization": token
         }

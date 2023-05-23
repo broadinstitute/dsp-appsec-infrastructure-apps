@@ -48,6 +48,7 @@ def zap_sa_auth(zap: ZAPv2, env):
     logging.info("Authenticating via Replacer...")
     token = get_gcp_token()
     bearer = f"Bearer {token}"
+    success = False
     zap.replacer.add_rule(
         description="auth",
         enabled=True,
@@ -56,8 +57,9 @@ def zap_sa_auth(zap: ZAPv2, env):
         matchstring="Authorization",
         replacement=bearer,
     )
-    if not terra_auth.terra_is_registered(token, env):
-        success = terra_auth.terra_register_sa(token, env)
+    # checks to see if the user is logged in, registered,
+    # and has signed the TOS.
+    success = terra_auth.terra_register_sa(token, env)
     if success:
         logging.info("ZAP Service Account is registered with Terra.")
     else:
