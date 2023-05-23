@@ -6,7 +6,7 @@ import urllib3
 def terra_is_registered(token, env):
     is_registered = False
     url = ""
-    if env.lower() is "dev":
+    if env.lower() == "dev":
         url = "https://sam.dsde-dev.broadinstitute.org/register/user/v2/self/termsOfServiceComplianceStatus"
     else:
         url = "https://sam.dsde-prod.broadinstitute.org/register/user/v2/self/termsOfServiceComplianceStatus"
@@ -25,7 +25,7 @@ def terra_register_sa(token, env):
     url = ""
     # Usually dev URLs have "dev" in them.
     # This will only support dev and prod environments currently
-    if env.lower() is "dev":
+    if env.lower() == "dev":
         url = "https://firecloud-orchestration.dsde-dev.broadinstitute.org/register/profile"
     else:
         url = "https://api.firecloud.org"
@@ -52,14 +52,14 @@ def terra_register_sa(token, env):
         },
         data=profile_json)
         if resp.status_code == 200:
-            is_registered = terra_is_registered(token)
+            is_registered = terra_is_registered(token, env)
     return is_registered
     
 
 def terra_auth_logged_in(token, env):
     logged_in = False
     url = ""
-    if env.lower() is "dev":
+    if env.lower() == "dev":
         url = "https://sam.dsde-dev.broadinstitute.org/register/user/v2/self/info"
     else:
         url = "https://sam.dsde-prod.broadinstitute.org/register/user/v2/self/info"
@@ -78,7 +78,7 @@ def terra_auth_logged_in(token, env):
 def terra_tos(token, env):
     tos = False
     url = ""
-    if env.lower() is "dev":
+    if env.lower() == "dev":
         url = "https://sam.dsde-dev.broadinstitute.org/register/user/v1/termsofservice"
     else:
         url = "https://sam.dsde-prod.broadinstitute.org/register/user/v1/termsofservice"
