@@ -87,7 +87,11 @@
          {
             "value": "update_dependecies",
             "text": "Dependencies - Update dependencies, clients of an existing service"
-         }
+         },
+         {
+            "value": "phi",
+            "text": "PHI (Protected Health Information) collection"
+           }
         ],
         "otherText": "Not sure - I need further help with this. "
        },
