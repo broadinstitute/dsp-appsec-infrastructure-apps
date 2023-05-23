@@ -33,7 +33,7 @@ new_service_schema = {
         },
         "JiraProject": {
             "type": "string",
-            "pattern": "[a-zA-Z0-9-_]{1,7}"
+            "pattern": "([A-Z][A-Z0-9]+)"
         }
     },
     "required": ["Service", "Product", "Description", "Security champion", "Github URL", "Architecture Diagram", "Federal compliance oversight", "JiraProject"]

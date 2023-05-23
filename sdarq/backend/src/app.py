@@ -919,6 +919,7 @@ def submit_jtra():
             {'statusText': 'Bad Request'}), status=400, mimetype='application/json')
     try:
         if user_data['high_level'] == 'add_SA' \
+            or user_data['high_level'] == 'phi' \
             or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'Other'  \
                 and user_data['product_features_other'] == 'None/other' and user_data['confidentiality'] == 'Yes' \
             or user_data['high_level'] == 'change_product_api' and user_data['main_product'] == 'Other'  \
@@ -961,16 +962,19 @@ def submit_jtra():
                     user_email,
                     user_data,
                     user_data['AppSec_due_date'])
+            status = {'statusText': 'The risk for this ticket is HIGH!  Please contact AppSec team if you have any questions!'}
+            return Response(json.dumps(status), status=200, mimetype='application/json')
         else:
             logging.info(
                 "User %s submitted a MEDIUM/LOW Risk Jira Ticket", user_email)
-        return ''
+            status = {'statusText': 'The risk for this ticket is MEDIUM/LOW!  Please contact AppSec team if you have any questions!'}
+            return Response(json.dumps(status), status=200, mimetype='application/json')
     except Exception as error:
         error_message = f"Exception /submitJTRA enspoint: {error}"
         logging.warning(error_message)
         slacknotify.slacknotify_jira_ticket_risk_assessment_error(
             jtra_slack_channel, user_email, user_data)
-        status_code = 404
+        status_code = 400
         message = """
             There is something wrong with the input! Server did not respond correctly to your request!
             """
