@@ -8,6 +8,7 @@ import shutil
 from enum import Enum
 
 import google.auth
+import terra_auth
 from google.auth.transport.requests import Request as GoogleAuthRequest
 from zap_common import (wait_for_zap_start, write_report, zap_access_target,
                         zap_active_scan, zap_ajax_spider, zap_spider,
@@ -34,18 +35,20 @@ def zap_init(zap_port: int, target_url: str):
     zap = zap_connect(zap_port)
     zap.core.new_session(name='zap_session', overwrite=True)
     logging.info("Accessing target %s", target_url)
+    # replace with api call to core.accessUrl
     zap_access_target(zap, target_url)
 
     return zap
 
 
-def zap_auth(zap: ZAPv2):
+def zap_sa_auth(zap: ZAPv2, env):
     """
     Set up Google token auth for ZAP requests.
     """
     logging.info("Authenticating via Replacer...")
     token = get_gcp_token()
     bearer = f"Bearer {token}"
+    success = False
     zap.replacer.add_rule(
         description="auth",
         enabled=True,
@@ -54,6 +57,19 @@ def zap_auth(zap: ZAPv2):
         matchstring="Authorization",
         replacement=bearer,
     )
+    # checks to see if the user is logged in, registered,
+    # and has signed the TOS.
+    success = terra_auth.terra_register_sa(bearer, env)
+    if success:
+        logging.info("ZAP Service Account is registered with Terra.")
+        tos = terra_auth.terra_tos(bearer, env)
+        if tos:
+            logging.info("SA has accepted the TOS.")
+    else:
+        logging.info("ZAP Service Account failed to register with Terra.")
+        return
+    
+
 
 
 def zap_api_import(zap: ZAPv2, target_url: str):
@@ -120,9 +136,9 @@ def zap_save_session(zap: ZAPv2, project: str, scan_type: ScanType):
     share_path_sess = share_path+"/session/"
     session_filename = f"{project}_{scan_type}-session"
     session_filename = session_filename.replace("-", "_").replace(" ", "")
-    #zap scanner container saves session to shared volume
+    # zap scanner container saves session to shared volume
     zap.core.save_session(share_path_sess+session_filename)
-    #scan controller uses same shared volume to zip session and return the filename
+    # scan controller uses same shared volume to zip session and return the filename
     try:
         shutil.make_archive(session_filename, 'zip' , share_path_sess)
     except BaseException as base_error: # pylint: disable=bare-except
@@ -141,9 +157,20 @@ def zap_compliance_scan(
     Run a ZAP compliance scan of a given type against the target URL.
     """
     zap = zap_init(zap_port, target_url)
+    env = "prod" #set prod as default
+    if "dev" in target_url:
+        env = "dev"
+    # ZAP scans should be run in a context. This provides a scope for the scan,
+    # and can provide more granular authentication controls.
+
+    # Scan types:
+    # BASELINE - unauthenticated, no active scan.
+    # API - authenticated with SA, imports openid config, active scan is performed.
+    # UI - authenticated with SA, active scan and ajax spider is performed.
+    # AUTH - authenticated with SA, active scan is performed.
 
     if scan_type != ScanType.BASELINE:
-        zap_auth(zap)
+        zap_sa_auth(zap, env)
 
     if scan_type == ScanType.API:
         zap_api_import(zap, target_url)
@@ -155,7 +182,7 @@ def zap_compliance_scan(
 
     zap_wait_for_passive_scan(zap, timeout_in_secs=TIMEOUT_MINS * 60)
 
-    if scan_type == ScanType.UI:
+    if scan_type != ScanType.BASELINE:
         zap_active_scan(zap, target_url, None)
 
     filename = zap_report(zap, project, scan_type)
