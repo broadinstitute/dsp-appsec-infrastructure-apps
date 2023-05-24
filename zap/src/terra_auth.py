@@ -32,6 +32,7 @@ def terra_register_sa(token, env):
     Registers a user with Terra if they are not yet registered.
     Returns True if successfull, False if registration fails.
     """
+    is_registered = False
     is_registered = terra_is_registered(token, env)
     url = ""
     # Usually dev URLs have "dev" in them.

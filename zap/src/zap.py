@@ -59,15 +59,16 @@ def zap_sa_auth(zap: ZAPv2, env):
     )
     # checks to see if the user is logged in, registered,
     # and has signed the TOS.
-    success = terra_auth.terra_register_sa(token, env)
+    success = terra_auth.terra_register_sa(bearer, env)
     if success:
         logging.info("ZAP Service Account is registered with Terra.")
+        tos = terra_auth.terra_tos(bearer, env)
+        if tos:
+            logging.info("SA has accepted the TOS.")
     else:
         logging.info("ZAP Service Account failed to register with Terra.")
         return
-    tos = terra_auth.terra_tos(token, env)
-    if tos:
-        logging.info("SA has accepted the TOS.")
+    
 
 
 
