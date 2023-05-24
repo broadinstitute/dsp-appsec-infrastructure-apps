@@ -2,7 +2,7 @@
 Provides methods for validating that an account is logged in,
 and registered with Terra.
 """
-import urllib3
+import requests
 
 # Library for ensuring the service account used for authentication is registered and logged in.
 
@@ -17,7 +17,7 @@ def terra_is_registered(token, env):
         url = "https://sam.dsde-dev.broadinstitute.org/"
     else:
         url = "https://sam.dsde-prod.broadinstitute.org/"
-    resp = urllib3.request(
+    resp = requests.request(
         "GET",
         url + "register/user/v2/self/termsOfServiceComplianceStatus",
         headers={
@@ -54,7 +54,7 @@ def terra_register_sa(token, env):
                 "programLocationCountry": "None",
                 "pi": "None",
                 "nonProfitStatus": "false"}
-        resp = urllib3.request(
+        resp = requests.request(
         "POST",
         url,
         headers={
@@ -78,7 +78,7 @@ def terra_auth_logged_in(token, env):
         url = "https://sam.dsde-dev.broadinstitute.org/register/user/v2/self/info"
     else:
         url = "https://sam.dsde-prod.broadinstitute.org/register/user/v2/self/info"
-    resp = urllib3.request(
+    resp = requests.request(
         "GET",
         url,
         headers={
@@ -102,14 +102,14 @@ def terra_tos(token, env):
     else:
         url = "https://sam.dsde-prod.broadinstitute.org/register/user/v1/termsofservice"
 
-    resp = urllib3.request(
+    resp = requests.request(
         "POST",
         url,
         headers={
             "Authorization": token,
             "Content-Type": "application/json"
         },
-        data="app.terra.bio/#terms-of-service"
+        data='"app.terra.bio/#terms-of-service"'
     )
     if resp.status_code == 200:
         tos = True

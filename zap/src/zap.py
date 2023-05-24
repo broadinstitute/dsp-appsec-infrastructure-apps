@@ -35,7 +35,7 @@ def zap_init(zap_port: int, target_url: str):
     zap = zap_connect(zap_port)
     zap.core.new_session(name='zap_session', overwrite=True)
     logging.info("Accessing target %s", target_url)
-    # ToDo replace with api call to core.accessUrl
+    # replace with api call to core.accessUrl
     zap_access_target(zap, target_url)
 
     return zap
@@ -63,9 +63,11 @@ def zap_sa_auth(zap: ZAPv2, env):
     if success:
         logging.info("ZAP Service Account is registered with Terra.")
     else:
-        logging.info("ZAP Service Account failed to register with Terra")
+        logging.info("ZAP Service Account failed to register with Terra.")
         return
-    terra_auth.terra_tos(token, env)
+    tos = terra_auth.terra_tos(token, env)
+    if tos:
+        logging.info("SA has accepted the TOS.")
 
 
 
@@ -157,7 +159,7 @@ def zap_compliance_scan(
     env = "prod" #set prod as default
     if "dev" in target_url:
         env = "dev"
-    # ToDo ZAP scans should be run in a context. This provides a scope for the scan,
+    # ZAP scans should be run in a context. This provides a scope for the scan,
     # and can provide more granular authentication controls.
 
     # Scan types:
