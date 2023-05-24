@@ -66,7 +66,7 @@ def zap_sa_auth(zap: ZAPv2, env):
         logging.info("ZAP Service Account failed to register with Terra")
         return
     terra_auth.terra_tos(token, env)
-    
+
 
 
 def zap_api_import(zap: ZAPv2, target_url: str):
@@ -77,7 +77,6 @@ def zap_api_import(zap: ZAPv2, target_url: str):
     res = zap.openapi.import_url(target_url)
     if zap.core.urls() == start_urls:
         raise RuntimeError(f"Failed to import API from {target_url}: {res}")
-    
 
 
 def get_gcp_token() -> str:
@@ -134,9 +133,9 @@ def zap_save_session(zap: ZAPv2, project: str, scan_type: ScanType):
     share_path_sess = share_path+"/session/"
     session_filename = f"{project}_{scan_type}-session"
     session_filename = session_filename.replace("-", "_").replace(" ", "")
-    #zap scanner container saves session to shared volume
+    # zap scanner container saves session to shared volume
     zap.core.save_session(share_path_sess+session_filename)
-    #scan controller uses same shared volume to zip session and return the filename
+    # scan controller uses same shared volume to zip session and return the filename
     try:
         shutil.make_archive(session_filename, 'zip' , share_path_sess)
     except BaseException as base_error: # pylint: disable=bare-except
@@ -159,7 +158,7 @@ def zap_compliance_scan(
     if "dev" in target_url:
         env = "dev"
     # ToDo ZAP scans should be run in a context. This provides a scope for the scan,
-    # and can provide more granular authentication controls. 
+    # and can provide more granular authentication controls.
 
     # Scan types:
     # BASELINE - unauthenticated, no active scan.

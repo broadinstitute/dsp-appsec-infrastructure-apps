@@ -1,18 +1,25 @@
-
+"""
+Provides methods for validating that an account is logged in,
+and registered with Terra.
+"""
 import urllib3
 
 # Library for ensuring the service account used for authentication is registered and logged in.
 
 def terra_is_registered(token, env):
+    """
+    Checks if a user is registered with Terra.
+    Will return True if registered, False if not.
+    """
     is_registered = False
     url = ""
     if env.lower() == "dev":
-        url = "https://sam.dsde-dev.broadinstitute.org/register/user/v2/self/termsOfServiceComplianceStatus"
+        url = "https://sam.dsde-dev.broadinstitute.org/"
     else:
-        url = "https://sam.dsde-prod.broadinstitute.org/register/user/v2/self/termsOfServiceComplianceStatus"
-    resp = urllib3.response(
+        url = "https://sam.dsde-prod.broadinstitute.org/"
+    resp = urllib3.request(
         "GET",
-        url,
+        url + "register/user/v2/self/termsOfServiceComplianceStatus",
         headers={
             "Authorization": token
         })
@@ -21,6 +28,10 @@ def terra_is_registered(token, env):
     return is_registered
 
 def terra_register_sa(token, env):
+    """
+    Registers a user with Terra if they are not yet registered.
+    Returns True if successfull, False if registration fails.
+    """
     is_registered = terra_is_registered(token, env)
     url = ""
     # Usually dev URLs have "dev" in them.
@@ -43,7 +54,7 @@ def terra_register_sa(token, env):
                 "programLocationCountry": "None",
                 "pi": "None",
                 "nonProfitStatus": "false"}
-        resp = urllib3.response(
+        resp = urllib3.request(
         "POST",
         url,
         headers={
@@ -54,28 +65,36 @@ def terra_register_sa(token, env):
         if resp.status_code == 200:
             is_registered = terra_is_registered(token, env)
     return is_registered
-    
+
 
 def terra_auth_logged_in(token, env):
+    """
+    Validates whether a user is logged into Terra.
+    Equivalent to checking if bearer token is still valid.
+    """
     logged_in = False
     url = ""
     if env.lower() == "dev":
         url = "https://sam.dsde-dev.broadinstitute.org/register/user/v2/self/info"
     else:
         url = "https://sam.dsde-prod.broadinstitute.org/register/user/v2/self/info"
-    resp = urllib3.response(
+    resp = urllib3.request(
         "GET",
         url,
         headers={
             "Authorization": token
         }
     )
-    if resp.status is 200:
+    if resp.status == 200:
         logged_in = True
-    
+
     return logged_in
 
 def terra_tos(token, env):
+    """
+    Accepts the Terra TOS.
+    There does not appear to be a problem with accepting it many times.
+    """
     tos = False
     url = ""
     if env.lower() == "dev":
@@ -83,7 +102,7 @@ def terra_tos(token, env):
     else:
         url = "https://sam.dsde-prod.broadinstitute.org/register/user/v1/termsofservice"
 
-    resp = urllib3.response(
+    resp = urllib3.request(
         "POST",
         url,
         headers={

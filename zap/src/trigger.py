@@ -155,11 +155,11 @@ def main():
         level=logging.INFO,
         format=f"%(levelname)-8s [zap-trigger] %(message)s",
     )
-    defect_dojo_url = getenv("DEFECT_DOJO_URL")
+    defectdojo_url = getenv("DEFECT_DOJO_URL")
     defect_dojo_key = getenv("DEFECT_DOJO_KEY")
     zap_topic = getenv("ZAP_TOPIC_NAME")
     gcp_project = getenv("GCP_PROJECT_ID")
-    logging.info(f"Cron job running. Dojo {defect_dojo_url} Topic {zap_topic} Project {gcp_project}")
+    logging.info(f"Cron job running. Dojo {defectdojo_url} Topic {zap_topic} Project {gcp_project}")
 
     parser = argparse.ArgumentParser(description="Get scan types to run")
     parser.add_argument(
@@ -174,7 +174,7 @@ def main():
     scan_types = set(ScanType[s.upper()] for s in args.scans)
     logging.info(f"Scan types: { args.scans }")
 
-    endpoints = get_defect_dojo_endpoints(defect_dojo_url, defect_dojo_key)
+    endpoints = get_defect_dojo_endpoints(defectdojo_url, defect_dojo_key)
     logging.info(f"Defect Dojo {len(endpoints) if endpoints else 'no'} endpoints fetched.")
 
     trigger_scans(endpoints, gcp_project, zap_topic, scan_types)
