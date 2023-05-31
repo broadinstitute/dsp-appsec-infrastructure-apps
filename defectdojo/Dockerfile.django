@@ -1,4 +1,4 @@
-FROM defectdojo/defectdojo-django:2.21.1 as dd
+FROM defectdojo/defectdojo-django as dd
 
 FROM dd as patch
 
