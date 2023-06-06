@@ -92,7 +92,7 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
     # Trying to see if that fixes the issue.
     logging.info("Starting upload of " + zap_filename)
     dojo_upload = dojo.reupload_scan(test_id,
-                                     "Generic Findings Import",
+                                     "ZAP Scan",
                                      file=absolute_path,
                                      active=True, 
                                      scan_date=now)
