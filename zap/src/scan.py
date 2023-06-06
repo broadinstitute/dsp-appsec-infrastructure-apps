@@ -95,7 +95,8 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
                                      "ZAP Scan",
                                      file=absolute_path,
                                      active=True, 
-                                     scan_date=now)
+                                     scan_date=now,
+                                     tags="zapscan")
     # dojo_upload = dojo.upload_scan(engagement_id=engagement_id,
     #                  scan_type="ZAP Scan",
     #                  file=absolute_path,
