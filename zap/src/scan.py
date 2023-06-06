@@ -83,17 +83,19 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
         target_end=now, status="In Progress",
         active='True',deduplication_on_engagement='False')
     engagement_id = engagement.data["id"]
-
-    test = dojo.create_test(engagement_id, 66, 1, now, now)
+    logging.info("Creating test for " + zap_filename)
+    test = dojo.create_test(engagement_id, 158, 1, now, now)
+    logging.info(test)
     test_id = test.data["id"]
 
     # Defect dojo broke deduplication on import, but it works different on reimport
     # Trying to see if that fixes the issue.
+    logging.info("Starting upload of " + zap_filename)
     dojo_upload = dojo.reupload_scan(test_id,
                                      "Generic Findings Import",
                                      file=absolute_path,
                                      active=True, 
-                                     scan_date=str(now))
+                                     scan_date=now)
     # dojo_upload = dojo.upload_scan(engagement_id=engagement_id,
     #                  scan_type="ZAP Scan",
     #                  file=absolute_path,
