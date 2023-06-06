@@ -75,23 +75,34 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
     except:
         logging.error("Did not retrieve dojo user ID, upload failed.")
         return
+    
+    now = datetime.today().strftime("%Y-%m-%d")
 
-    engagement=dojo.create_engagement( name=date, product_id=product_id, lead_id=lead_id,
-        target_start=datetime.today().strftime("%Y-%m-%d"),
-        target_end=datetime.today().strftime("%Y-%m-%d"), status="In Progress",
+    engagement = dojo.create_engagement( name=date, product_id=product_id, lead_id=lead_id,
+        target_start=now,
+        target_end=now, status="In Progress",
         active='True',deduplication_on_engagement='False')
-    print(engagement.data)
-    engagement_id=engagement.data["id"]
+    engagement_id = engagement.data["id"]
 
-    dojo_upload = dojo.upload_scan(engagement_id=engagement_id,
-                     scan_type="ZAP Scan",
-                     file=absolute_path,
-                     active=True,
-                     verified=False,
-                     close_old_findings=True,
-                     skip_duplicates=True,
-                     scan_date=str(datetime.today().strftime('%Y-%m-%d')),
-                     tags="Zap_scan")
+    test = dojo.create_test(engagement_id, 66, 1, now, now)
+    test_id = test.data["id"]
+
+    # Defect dojo broke deduplication on import, but it works different on reimport
+    # Trying to see if that fixes the issue.
+    dojo_upload = dojo.reupload_scan(test_id,
+                                     "Generic Findings Import",
+                                     file=absolute_path,
+                                     active=True, 
+                                     scan_date=str(now))
+    # dojo_upload = dojo.upload_scan(engagement_id=engagement_id,
+    #                  scan_type="ZAP Scan",
+    #                  file=absolute_path,
+    #                  active=True,
+    #                  verified=False,
+    #                  close_old_findings=True,
+    #                  skip_duplicates=True,
+    #                  scan_date=str(datetime.today().strftime('%Y-%m-%d')),
+    #                  tags="Zap_scan")
     logging.info("Dojo file upload: %s", dojo_upload)
     dojo._request('POST','engagements/'+str(engagement_id)+'/close/')
 
