@@ -741,7 +741,7 @@ class DefectDojoAPIv2(object):
         }
 
         return self._request(
-            'POST', 'reimportscan/',
+            'POST', 'reimport-scan/',
             files=data
         )
 
