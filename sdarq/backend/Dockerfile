@@ -14,7 +14,6 @@ RUN apt-get update -q && \
       libffi-dev && \
     rm -rf /var/lib/apt/lists/*
 
-
 RUN pip3 install -U pytest
 
 COPY --from=owasp/zap2docker-weekly /zap/zap_common.py ./
