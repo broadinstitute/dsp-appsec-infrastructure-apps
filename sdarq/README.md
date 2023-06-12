@@ -20,9 +20,9 @@ Run:
 To run locally SDARQ backend, go to `backend` folder of SDARQ
 
 ```
-$ python3 -m venv venv
-$ source venv/bin/activate
-(venv) $ python3 -m pip install -r requirements.txt
+python3 -m venv venv
+source venv/bin/activate
+python3 -m pip install -r requirements.txt
 ```
 
 Backend has a list of env variables that need to be exported with their values.
