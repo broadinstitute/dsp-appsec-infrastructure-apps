@@ -34,7 +34,9 @@ def get_defect_dojo_endpoints(base_url: str, api_key: str) -> List[Endpoint]:
     """
     Fetch endpoints from DefectDojo.
     """
-    endpoint = base_url + "/api/v2/endpoints?limit=1000"
+    # Fetch endpoints that have been tagged with scan:*
+    # It is unlikely that there are more than 1000 of them
+    endpoint = base_url + "/api/v2/endpoints?limit=1000&tag=scan"
     headers = {
         "content-type": "application/json",
         "Authorization": f"Token {api_key}",
