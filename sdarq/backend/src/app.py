@@ -100,7 +100,8 @@ def health():
         200 status
     """
     status = {'statusText': 'Service is healthy'}
-    return Response(jsonify(status), status=200)
+    return jsonify(status), 200
+
 
 
 @app.route('/submit/', methods=['POST'])
