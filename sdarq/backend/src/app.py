@@ -28,7 +28,7 @@ from urllib.parse import urlparse
 import jsonschema
 
 import requests
-from flask import Response, request
+from flask import Response, request, jsonify
 from flask_api import FlaskAPI
 from flask_cors import cross_origin
 import google.cloud.logging
@@ -100,7 +100,7 @@ def health():
         200 status
     """
     status = {'statusText': 'Service is healthy'}
-    return Response(json.dumps(status), status=200, mimetype='application/json')
+    return Response(jsonify(status), status=200)
 
 
 @app.route('/submit/', methods=['POST'])
@@ -118,8 +118,8 @@ def submit():
     """
 
     if request.headers.get('Content-Type') != 'application/json':
-        return Response(json.dumps(
-            {'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+        return Response(jsonify(
+            {'statusText': 'Bad Request'}), status=400)
 
     try:
         json_data = request.get_json()
@@ -216,8 +216,8 @@ def submit():
         message = """
         There is something wrong with the input! Server did not respond correctly to your request!
         """
-        return Response(json.dumps({'statusText': message}),
-                        status=status_code, mimetype='application/json')
+        return Response(jsonify({'statusText': message}),
+                        status=status_code)
 
 
 @app.route('/submit_new_app/', methods=['POST'])
@@ -235,8 +235,8 @@ def submit_app():
     """
 
     if request.headers.get('Content-Type') != 'application/json':
-        return Response(json.dumps(
-            {'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+        return Response(jsonify(
+            {'statusText': 'Bad Request'}), status=400')
 
     try:
         json_data = request.get_json()
@@ -334,8 +334,8 @@ def submit_app():
         message = """
         There is something wrong with the input! Server did not respond correctly to your request!
         """
-        return Response(json.dumps({'statusText': message}),
-                        status=status_code, mimetype='application/json')
+        return Response(jsonify({'statusText': message}),
+                        status=status_code)
 
 
 @app.route('/cis_results/', methods=['POST'])
@@ -361,8 +361,8 @@ def cis_results():
         project_id_edited)
 
     if request.headers.get('Content-Type') != 'application/json':
-        return Response(json.dumps(
-            {'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+        return Response(jsonify(
+            {'statusText': 'Bad Request'}), status=400)
 
     if re.match(pattern, project_id_edited):
         table_id = u"{0}.{1}.{2}".format(
@@ -406,15 +406,15 @@ def cis_results():
             notfound = """
             This Google project is not found! Did you make sure to supply the right GCP Project ID? Please check again!
             """
-            return Response(json.dumps(
-                {'statusText': notfound}), status=status_code, mimetype='application/json')
+            return Response(jsonify(
+                {'statusText': notfound}), status=status_code)
     else:
         status_code = 404
         message = """
         Your GCP project_id is not valid! Enter a valid value!
         """
-        return Response(json.dumps({'statusText': message}),
-                        status=status_code, mimetype='application/json')
+        return Response(jsonify({'statusText': message}),
+                        status=status_code)
 
 
 @app.route('/cis_scan/', methods=['POST'])
@@ -436,8 +436,8 @@ def cis_scan():
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if request.headers.get('Content-Type') != 'application/json':
-        return Response(json.dumps(
-            {'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+        return Response(jsonify(
+            {'statusText': 'Bad Request'}), status=400)
 
     if re.match(pattern, user_project_id):
         try:
@@ -487,8 +487,8 @@ def cis_scan():
                 status_code = 404
                 text_message = check_dict['Error']
                 doc_ref.delete()
-                return Response(json.dumps(
-                    {'statusText': text_message}), status=status_code, mimetype='application/json')
+                return Response(jsonify(
+                    {'statusText': text_message}), status=status_code)
             else:
                 doc_ref.delete()
             return ''
@@ -499,15 +499,15 @@ def cis_scan():
             There is something wrong with the input! Server did not respond correctly to your request!
             """
             status_code = 404
-            return Response(json.dumps(
-                {'statusText': message}), status=status_code, mimetype='application/json')
+            return Response(jsonify(
+                {'statusText': message}), status=status_code)
     else:
         message = """
         Your GCP project_id is not valid! Enter a valid value!
         """
         status_code = 404
-        return Response(json.dumps({'statusText': message}),
-                        status=status_code, mimetype='application/json')
+        return Response(jsonify({'statusText': message}),
+                        status=status_code)
 
 
 @app.route('/request_tm/', methods=['POST'])
@@ -525,7 +525,7 @@ def request_tm():
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if request.headers.get('Content-Type') != 'application/json':
-        return Response(json.dumps({'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+        return Response(jsonify({'statusText': 'Bad Request'}), status=400)
 
     try:
         validate(instance=user_data, schema=tm_schema)
@@ -551,12 +551,12 @@ def request_tm():
     except jsonschema.ValidationError as e:
         error_message = "Validation error in /request_tm endpoint!"
         logging.warning(error_message)
-        return Response(json.dumps({'statusText': error_message}), status=400, mimetype='application/json')
+        return Response(jsonify({'statusText': error_message}), status=400)
 
     except Exception as e:
         error_message = f"Exception in /request_tm endpoint: {e}"
         logging.warning(error_message)
-        return Response(json.dumps({'statusText': str(e)}), status=400, mimetype='application/json')
+        return Response(jsonify({'statusText': str(e)}), status=400)
 
 
 @app.route('/zap_scan/', methods=['POST'])
@@ -580,8 +580,8 @@ def zap_scan():
                     or maybe it doesn't exist in AppSec list. Please contact AppSec team.
                     """
     if request.headers.get('Content-Type') != 'application/json':
-        return Response(json.dumps(
-            {'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+        return Response(jsonify(
+            {'statusText': 'Bad Request'}), status=400)
 
     try:
         validate(instance=json_data, schema=zap_scan_schema)
@@ -613,8 +613,8 @@ def zap_scan():
                         logging.info(
                             "User %s requested to scan via ZAP a service that does not exist in DefectDojo endpoint list",
                             user_email)
-                        return Response(json.dumps(
-                            {'statusText': text_message}), status=status_code, mimetype='application/json')
+                        return Response(jsonify(
+                            {'statusText': text_message}), status=status_code)
                 severities = parse_json_data.parse_severities(
                     json_data['severities'])
                 publisher.publish(zap_topic_path,
@@ -632,16 +632,15 @@ def zap_scan():
             logging.info(
                 "User %s requested to scan via ZAP a service that does not exist in DefectDojo endpoint list",
                 user_email)
-            return Response(json.dumps(
-                {'statusText': text_message}), status=status_code, mimetype='application/json')
+            return Response(jsonify(
+                {'statusText': text_message}), status=status_code)
     except Exception as error:
         error_message = f"Exception /zap_scan enspoint: {error}"
         logging.warning(error_message)
         message = """
         There is something wrong with the input! Server did not respond correctly to your request!
         """
-        return Response(json.dumps({'statusText': message}),
-                        status=status_code, mimetype='application/json')
+        return Response(jsonify({'statusText': message}),status=status_code)
 
 
 @app.route('/create_sec_control_template/', methods=['POST'])
@@ -659,8 +658,8 @@ def create_sec_control_template():
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if request.headers.get('Content-Type') != 'application/json':
-        return Response(json.dumps(
-            {'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+        return Response(jsonify(
+            {'statusText': 'Bad Request'}), status=400)
 
     if not re.match(pattern, service_name):
         message = """
@@ -669,8 +668,8 @@ def create_sec_control_template():
         logging.info(
             "User %s requested to create SCT for a service, but INVALID input was provided",
             user_email)
-        return Response(json.dumps({'statusText': message}),
-                        status=400, mimetype='application/json')
+        return Response(jsonify({'statusText': message}),
+                        status=400)
 
     try:
         validate(instance=user_input, schema=security_controls_schema)
@@ -681,8 +680,8 @@ def create_sec_control_template():
             logging.info(
                 "A new security controls template is created by %s",
                 user_email)
-            return Response(json.dumps(
-                {'statusText': message}), status=200, mimetype='application/json')
+            return Response(jsonify(
+                {'statusText': message}), status=200)
         else:
             message = """
             This service already exists, if you want to edit it, go to the edit page.
@@ -690,16 +689,16 @@ def create_sec_control_template():
             logging.info(
                 "User %s requested to create SCT for a service, but it already exists",
                 user_email)
-            return Response(json.dumps(
-                {'statusText': message}), status=400, mimetype='application/json')
+            return Response(jsonify(
+                {'statusText': message}), status=400)
     except Exception as error:
         error_message = f"Exception /create_sec_controls_template endpoint: {error}"
         logging.warning(error_message)
         message = """
         There is something wrong with the input! Server did not respond correctly to your request!
         """
-        return Response(json.dumps(
-            {'statusText': message}), status=400, mimetype='application/json')
+        return Response(jsonify(
+            {'statusText': message}), status=400)
 
 
 @app.route('/edit_sec_controls/', methods=['PUT'])
@@ -717,8 +716,8 @@ def edit_sec_controls():
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if request.headers.get('Content-Type') != 'application/json':
-        return Response(json.dumps(
-            {'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+        return Response(jsonify(
+            {'statusText': 'Bad Request'}), status=400)
 
     if re.match(pattern, service_name):
         try:
@@ -742,8 +741,8 @@ def edit_sec_controls():
                 logging.info(
                     "User %s requested to edit a service security controls, but this service does not exist!",
                     user_email)
-                return Response(json.dumps(
-                    {'statusText': message}), status=404, mimetype='application/json')
+                return Response(jsonify(
+                    {'statusText': message}), status=404)
         except Exception as error:
             error_message = f"Exception /edit_sec_controls enspoint: {error}"
             logging.warning(error_message)
@@ -751,8 +750,8 @@ def edit_sec_controls():
             There is something wrong with the input! Server did not respond correctly to your request!
             """
             status_code = 404
-            return Response(json.dumps(
-                {'statusText': message}), status=status_code, mimetype='application/json')
+            return Response(jsonify(
+                {'statusText': message}), status=status_code)
     else:
         message = """
         Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.
@@ -760,8 +759,8 @@ def edit_sec_controls():
         logging.info(
             "User %s requested to edit SCT for a service, but INVALID input was provided",
             user_email)
-        return Response(json.dumps({'statusText': message}),
-                        status=404, mimetype='application/json')
+        return Response(jsonify({'statusText': message}),
+                        status=404)
 
 
 @app.route('/get_sec_controls/', methods=['GET'])
@@ -774,8 +773,8 @@ def get_sec_controls():
         400 status
     """
     if request.headers.get('Content-Type') != 'application/json':
-        return Response(json.dumps({'statusText': 'Bad Request'}),
-                        status=400, mimetype='application/json')
+        return Response(jsonify({'statusText': 'Bad Request'}),
+                        status=400)
 
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
     security_controls = []
@@ -789,7 +788,7 @@ def get_sec_controls():
     except Exception as error:
         message = "Server can't get security controls! Contact AppSec team for more information."
         logging.warning(f"Exception /get_sec_controls endpoint: {error}")
-        return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
+        return Response(jsonify({'statusText': message}), status=404)
 
 
 @app.route('/get_sec_controls_service/', methods=['POST'])
@@ -805,8 +804,8 @@ def get_sec_controls_service():
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if request.headers.get('Content-Type') != 'application/json':
-        return Response(json.dumps({'statusText': 'Bad Request'}),
-                        status=400, mimetype='application/json')
+        return Response(jsonify({'statusText': 'Bad Request'}),
+                        status=400)
 
     json_data = request.get_json()
     service_name = json_data.get('service')
@@ -814,8 +813,8 @@ def get_sec_controls_service():
     if not service_name or not re.match(r'^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$', service_name):
         message = 'Please enter a valid value for your service name! Contact team for more information.'
         logging.info('User %s did not provide a valid value for the service name to read security controls.', user_email)
-        return Response(json.dumps({'statusText': message}),
-                        status=400, mimetype='application/json')
+        return Response(jsonify({'statusText': message}),
+                        status=400)
 
     try:
         service_name_lowercase = service_name.lower()
@@ -826,18 +825,18 @@ def get_sec_controls_service():
         else:
             message = 'This service does not exist!'
             logging.info('User %s requested to read security controls of a service that does not exist.', user_email)
-            return Response(json.dumps({'statusText': message}), status=404, mimetype='application/json')
+            return Response(jsonify({'statusText': message}), status=404)
 
     except firestore.exceptions.InvalidArgument:
         message = 'Invalid service name. Please enter a valid service name.'
         logging.warning('User %s provided an invalid service name: %s', user_email, service_name)
-        return Response(json.dumps({'statusText': message}), status=400, mimetype='application/json')
+        return Response(jsonify({'statusText': message}), status=400)
 
     except Exception as error:
         error_message = f'Exception /get_sec_controls_service endpoint: {error}'
         logging.warning(error_message)
         message = 'Server can\'t get security controls! Contact AppSec team for more information.'
-        return Response(json.dumps({'statusText': message}), status=400, mimetype='application/json')
+        return Response(jsonify({'statusText': message}), status=400)
 
 
 
@@ -856,8 +855,8 @@ def request_manual_pentest():
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if request.headers.get('Content-Type') != 'application/json':
-        return Response(json.dumps(
-            {'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+        return Response(jsonify(
+            {'statusText': 'Bad Request'}), status=400)
 
     try:
         validate(instance=user_data, schema=mp_schema)
@@ -891,13 +890,13 @@ def request_manual_pentest():
     except jsonschema.ValidationError as e:
         error_message = "Validation error in /request_manual_pentest endpoint!"
         logging.warning(error_message)
-        return Response(json.dumps({'statusText': error_message}), status=400, mimetype='application/json')
+        return Response(jsonify({'statusText': error_message}), status=400)
     
     except Exception as e:
         error_message = f"Exception /request_manual_pentest enspoint: {e}"
         logging.warning(error_message)
-        return Response(json.dumps({'statusText': str(e)}),
-                        status=400, mimetype='application/json')
+        return Response(jsonify({'statusText': str(e)}),
+                        status=400)
 
 
 @app.route('/submit_jtra/', methods=['POST'])
@@ -915,8 +914,8 @@ def submit_jtra():
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
     if request.headers.get('Content-Type') != 'application/json':
-        return Response(json.dumps(
-            {'statusText': 'Bad Request'}), status=400, mimetype='application/json')
+        return Response(jsonify(
+            {'statusText': 'Bad Request'}), status=400)
     try:
         if user_data['high_level'] == 'add_SA' \
             or user_data['high_level'] == 'phi' \
@@ -963,12 +962,12 @@ def submit_jtra():
                     user_data,
                     user_data['AppSec_due_date'])
             status = {'statusText': 'The risk for this ticket is HIGH!  Please contact AppSec team if you have any questions!'}
-            return Response(json.dumps(status), status=200, mimetype='application/json')
+            return Response(jsonify(status), status=200)
         else:
             logging.info(
                 "User %s submitted a MEDIUM/LOW Risk Jira Ticket", user_email)
             status = {'statusText': 'The risk for this ticket is MEDIUM/LOW!  Please contact AppSec team if you have any questions!'}
-            return Response(json.dumps(status), status=200, mimetype='application/json')
+            return Response(jsonify(status), status=200)
     except Exception as error:
         error_message = f"Exception /submitJTRA enspoint: {error}"
         logging.warning(error_message)
@@ -978,8 +977,8 @@ def submit_jtra():
         message = """
             There is something wrong with the input! Server did not respond correctly to your request!
             """
-        return Response(json.dumps({'statusText': message}),
-                        status=status_code, mimetype='application/json')
+        return Response(jsonify({'statusText': message}),
+                        status=status_code)
 
 
 if __name__ == "__main__":
