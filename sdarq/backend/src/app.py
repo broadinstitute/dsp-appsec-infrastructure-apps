@@ -215,7 +215,7 @@ def submit():
         message = """
         There is something wrong with the input! Server did not respond correctly to your request!
         """
-        return jsonify({'statusText': message}), 404
+        return jsonify({'statusText': message}), 400
 
 
 @app.route('/submit_new_app/', methods=['POST'])
@@ -328,11 +328,10 @@ def submit_app():
     except Exception as error:
         error_message = f"Exception /submit enspoint: {error}"
         logging.warning(error_message)
-        status_code = 404
         message = """
         There is something wrong with the input! Server did not respond correctly to your request!
         """
-        return jsonify({'statusText': message}), 404
+        return jsonify({'statusText': message}), 400
 
 @app.route('/cis_results/', methods=['POST'])
 @cross_origin(origins=sdarq_host)
@@ -405,7 +404,7 @@ def cis_results():
         message = """
         Your GCP project_id is not valid! Enter a valid value!
         """
-        return jsonify({'statusText': message}), 404
+        return jsonify({'statusText': message}), 400
 
 
 @app.route('/cis_scan/', methods=['POST'])
@@ -486,12 +485,12 @@ def cis_scan():
             message = """
             There is something wrong with the input! Server did not respond correctly to your request!
             """
-            return jsonify({'statusText': message}), 404
+            return jsonify({'statusText': message}), 400
     else:
         message = """
         Your GCP project_id is not valid! Enter a valid value!
         """
-        return jsonify({'statusText': message}), 404
+        return jsonify({'statusText': message}), 400
 
 
 @app.route('/request_tm/', methods=['POST'])
@@ -620,7 +619,7 @@ def zap_scan():
         message = """
         There is something wrong with the input! Server did not respond correctly to your request!
         """
-        return jsonify({'statusText': message}), 404
+        return jsonify({'statusText': message}), 400
 
 
 @app.route('/create_sec_control_template/', methods=['POST'])
@@ -722,7 +721,7 @@ def edit_sec_controls():
             message = """
             There is something wrong with the input! Server did not respond correctly to your request!
             """
-            return jsonify({'statusText': message}), 404
+            return jsonify({'statusText': message}), 400
     else:
         message = """
         Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.
@@ -730,7 +729,7 @@ def edit_sec_controls():
         logging.info(
             "User %s requested to edit SCT for a service, but INVALID input was provided",
             user_email)
-        return jsonify({'statusText': message}), 404
+        return jsonify({'statusText': message}), 400
 
 
 @app.route('/get_sec_controls/', methods=['GET'])
@@ -757,7 +756,7 @@ def get_sec_controls():
     except Exception as error:
         message = "Server can't get security controls! Contact AppSec team for more information."
         logging.warning(f"Exception /get_sec_controls endpoint: {error}")
-        return jsonify({'statusText': message}), 404
+        return jsonify({'statusText': message}), 400
 
 
 @app.route('/get_sec_controls_service/', methods=['POST'])
