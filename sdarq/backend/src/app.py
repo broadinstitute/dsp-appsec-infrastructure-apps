@@ -235,8 +235,9 @@ def submit_app():
     """
 
     if request.headers.get('Content-Type') != 'application/json':
-        return Response(jsonify(
-            {'statusText': 'Bad Request'}), status=400')
+        return Response(jsonify({'statusText': 'Bad Request'}),
+                        status=400)
+
 
     try:
         json_data = request.get_json()
