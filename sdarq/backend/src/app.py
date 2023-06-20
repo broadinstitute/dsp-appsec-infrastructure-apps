@@ -603,7 +603,7 @@ def zap_scan():
             if endpoint['host'] == parsed_user_url.netloc:
                 service_codex_project, default_slack_channel, service_scan_type, product_id = parse_tags(
                     endpoint)
-                if endpoint['path'] is None:
+                if parsed_user_url.path is None:
                     service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}"
                 else:
                     if endpoint['path'].strip(
