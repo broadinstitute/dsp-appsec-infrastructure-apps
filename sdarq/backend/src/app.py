@@ -603,7 +603,7 @@ def zap_scan():
             if endpoint['host'] == parsed_user_url.netloc:
                 service_codex_project, default_slack_channel, service_scan_type, product_id = parse_tags(
                     endpoint)
-                if parsed_user_url.path is None:
+                if parsed_user_url.path.strip('/') is None:
                     service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}"
                 else:
                     if endpoint['path'].strip(
@@ -611,7 +611,7 @@ def zap_scan():
                         service_full_endpoint = f"{endpoint['protocol']}://{endpoint['host']}/{endpoint['path']}"
                     else:
                         logging.info(
-                            "User %s requested to scan via ZAP a service that does not exist in DefectDojo endpoint list",
+                            "___TEST___User %s requested to scan via ZAP a service that does not exist in DefectDojo endpoint list",
                             user_email)
                         return Response(json.dumps(
                             {'statusText': text_message}), status=status_code, mimetype='application/json')
