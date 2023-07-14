@@ -19,35 +19,35 @@ This module
 #!/usr/bin/env python3
 
 import json
+import logging
 import os
 import re
-import logging
 import threading
 from typing import List
 from urllib.parse import urlparse
-import jsonschema
 
+import dojo_helper
+import google.cloud.logging
+import jiranotify
+import jsonschema
+import parse_data as parse_json_data
 import requests
-from flask import Response, request, jsonify
+import slacknotify
+from flask import Response, jsonify, request
 from flask_api import FlaskAPI
 from flask_cors import cross_origin
-import google.cloud.logging
 from google.cloud import bigquery, firestore, pubsub_v1
 from jsonschema import validate
-from trigger import parse_tags
-
-import parse_data as parse_json_data
-import slacknotify
-import jiranotify
 from schemas.cis_scan_schema import cis_scan_schema
 from schemas.edit_security_controls_schema import edit_security_controls_schema
 from schemas.manual_pentest_request_schema import mp_schema
+from schemas.new_app_schema import new_app_schema
 from schemas.new_service_schema import new_service_schema
 from schemas.security_controls_schema import security_controls_schema
 from schemas.threat_model_request_schema import tm_schema
 from schemas.zap_scan_schema import zap_scan_schema
-from schemas.new_app_schema import new_app_schema
 from security_headers import security_headers
+from trigger import parse_tags
 
 dojo_host = os.getenv('dojo_host')
 dojo_api_key = os.getenv('dojo_api_key')
@@ -156,17 +156,7 @@ def submit():
 
         del json_data['Ticket_Description']
 
-        data = {
-            'name': dojo_name,
-            'description': parse_json_data.prepare_dojo_input(json_data),
-            'prod_type': product_type}
-        res = requests.post(products_endpoint,
-                            headers=headers, data=json.dumps(data))
-        res.raise_for_status()
-        product_id = res.json()['id']
-
-        logging.info("Product created: %s by %s request",
-                     dojo_name, user_email)
+        dojo_helper.dojo_create_or_update(dojo_name, parse_json_data.prepare_dojo_input(json_data), product_type, user_email)
 
         slacknotify.slacknotify_jira(
             appsec_slack_channel,
@@ -272,17 +262,7 @@ def submit_app():
 
         del json_data['Ticket_Description']
 
-        data = {
-            'name': dojo_name,
-            'description': parse_json_data.prepare_dojo_input(json_data),
-            'prod_type': product_type}
-        res = requests.post(products_endpoint,
-                            headers=headers, data=json.dumps(data))
-        res.raise_for_status()
-        product_id = res.json()['id']
-
-        logging.info("Product created: %s by %s request",
-                     dojo_name, user_email)
+        dojo_helper.dojo_create_or_update(dojo_name, parse_json_data.prepare_dojo_input(json_data), product_type, user_email)
 
         slacknotify.slacknotify_app_jira(
             appsec_slack_channel,

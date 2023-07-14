@@ -1,0 +1,35 @@
+import json
+import logging
+import os
+
+import requests
+
+dojo_host = os.getenv('dojo_host')
+dojo_api_key = os.getenv('dojo_api_key')
+headers = {
+    "content-type": "application/json",
+    "Authorization": f"Token {dojo_api_key}",
+}
+
+
+products_endpoint = f"{dojo_host}api/v2/products/"
+
+def dojo_create_or_update(name, description, product_type, user_email):
+    data = {
+        'name': name,
+        'description': description,
+        'prod_type': product_type}
+    response = requests.get(products_endpoint+"?name_exact="+name, headers=headers)
+    if response.json()['count'] > 0:
+        id = response.json()['results'][0]['id']
+        res = requests.patch(products_endpoint+"/"+id, data=json.dump(data))
+        logging.info("Product updated: %s by %s request",
+                        name, user_email)
+    else:
+        res = requests.post(products_endpoint,
+                                headers=headers, data=json.dumps(data))
+        res.raise_for_status()
+        product_id = res.json()['id']
+
+        logging.info("Product created: %s by %s request",
+                        name, user_email)
