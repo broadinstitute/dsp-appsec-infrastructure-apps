@@ -191,6 +191,7 @@ def submit():
 
         logging.info("Jira tickets in AppSec board are created")
 
+        #
         setSecConDDlink = db.collection(security_controls_firestore_collection).document(
             dojo_name.lower())
         doc = setSecConDDlink.get()
@@ -263,7 +264,7 @@ def submit_app():
 
         del json_data['Ticket_Description']
 
-        dojo_helper.dojo_create_or_update(dojo_name, parse_json_data.prepare_dojo_input(json_data), product_type, user_email)
+        product_id = dojo_helper.dojo_create_or_update(dojo_name, parse_json_data.prepare_dojo_input(json_data), product_type, user_email)
 
         slacknotify.slacknotify_app_jira(
             appsec_slack_channel,
