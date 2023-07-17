@@ -25,6 +25,7 @@ def dojo_create_or_update(name, description, product_type, user_email):
         res = requests.patch(products_endpoint+"/"+id, data=json.dump(data))
         logging.info("Product updated: %s by %s request",
                         name, user_email)
+        return id
     else:
         res = requests.post(products_endpoint,
                                 headers=headers, data=json.dumps(data))
@@ -33,3 +34,4 @@ def dojo_create_or_update(name, description, product_type, user_email):
 
         logging.info("Product created: %s by %s request",
                         name, user_email)
+        return product_id
