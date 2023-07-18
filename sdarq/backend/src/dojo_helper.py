@@ -23,15 +23,12 @@ def dojo_create_or_update(name, description, product_type, user_email):
     if response.json()['count'] > 0:
         product_id = response.json()['results'][0]['id']
         data['description'] = data['description'] + " updated by " + user_email
-        logging.info(data)
         res = requests.patch(products_endpoint + str(product_id) + "/", headers=headers, data=json.dumps(data))
         if res.status_code != 200:
             logging.info("failed to update product")
-            logging.info(res.text)
         else:
             logging.info("Product updated: %s by %s request",
                         name, user_email)
-            logging.info(res.text)
         return product_id
     else:
         res = requests.post(products_endpoint,
