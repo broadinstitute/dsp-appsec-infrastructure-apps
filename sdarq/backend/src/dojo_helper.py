@@ -30,6 +30,7 @@ def dojo_create_or_update(name, description, product_type, user_email):
         else:
             logging.info("Product updated: %s by %s request",
                         name, user_email)
+            logging.info(res.text)
         return id
     else:
         res = requests.post(products_endpoint,
