@@ -126,7 +126,6 @@ def submit():
         dojo_name = json_data['Service']
         security_champion = json_data['Security champion']
         product_type = 1
-        products_endpoint = f"{dojo_host}api/v2/products/"
         user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
         architecture_diagram = json_data['Architecture Diagram']
@@ -233,7 +232,6 @@ def submit_app():
         dojo_name = json_data['Service']
         security_champion = json_data['Security champion']
         product_type = 1
-        products_endpoint = f"{dojo_host}api/v2/products/"
         user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
         architecture_diagram = json_data['Architecture Diagram']
