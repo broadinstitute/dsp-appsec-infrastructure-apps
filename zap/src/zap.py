@@ -41,7 +41,7 @@ def zap_init(zap_port: int, target_url: str):
     return zap
 
 
-def zap_sa_auth(zap: ZAPv2, env):
+def zap_sa_auth(zap: ZAPv2, env, target):
     """
     Set up Google token auth for ZAP requests.
     """
@@ -56,6 +56,7 @@ def zap_sa_auth(zap: ZAPv2, env):
         matchregex=False,
         matchstring="Authorization",
         replacement=bearer,
+        url=target + ".*"
     )
     # checks to see if the user is logged in, registered,
     # and has signed the TOS.
@@ -168,16 +169,26 @@ def zap_compliance_scan(
     # API - authenticated with SA, imports openid config, active scan is performed.
     # UI - authenticated with SA, active scan and ajax spider is performed.
     # AUTH - authenticated with SA, active scan is performed.
+    
+    # Set up context for scan
+    zap.context.new_context(project)
+    contextID = zap.context.context(project)["id"]
+    zap.authentication.set_authentication_method(contextID,"manualAuthentication")
+    # target_url can be any url, so we probably need to parse the thing.
+    zap.context.include_in_context(project, target_url + ".*")
+
 
     if scan_type != ScanType.BASELINE:
-        zap_sa_auth(zap, env)
+        zap_sa_auth(zap, env, target_url)
 
     if scan_type == ScanType.API:
         zap_api_import(zap, target_url)
 
+    zap.spider.scan(contextname=project,url=target_url)
     zap_spider(zap, target_url)
 
     if scan_type == ScanType.UI:
+
         zap_ajax_spider(zap, target_url, max_time=TIMEOUT_MINS)
 
     zap_wait_for_passive_scan(zap, timeout_in_secs=TIMEOUT_MINS * 60)
