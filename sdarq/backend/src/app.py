@@ -156,17 +156,8 @@ def submit():
         del json_data['Ticket_Description']
 
 
-        product_id = dojo_helper.dojo_create_or_update(dojo_name, parse_json_data.prepare_dojo_input(json_data), product_type, user_email)
+        product_id = dojo_helper.dojo_create_or_update(dojo_name, parse_json_data.prepare_dojo_input(json_data), product_type, user_email, appsec_slack_channel, security_champion, dojo_host_url, jira_instance, project_key_id, jira_ticket)
 
-        slacknotify.slacknotify_jira(
-            appsec_slack_channel,
-            dojo_name,
-            security_champion,
-            product_id,
-            dojo_host_url,
-            jira_instance,
-            project_key_id,
-            jira_ticket)
 
         jiranotify.create_board_ticket(
             appsec_jira_project_key,
