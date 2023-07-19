@@ -80,7 +80,6 @@ def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product
     """
     Sends slack notification when there is: 
         1. New service
-        2. Jira ticket is selected 
 
     Args:
         appsec_slack_channel: Slack channel name
@@ -98,6 +97,66 @@ def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product
     client.chat_postMessage(
         channel=appsec_slack_channel,
         text="New service created",
+        attachments=[{"blocks": [
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Service name:* {0} " .format(str(dojo_name))
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Security champion:* {0} " .format(str(security_champion))
+                }
+            },
+            {
+                "type": "actions",
+                "elements": [
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Defect Dojo"
+                        },
+                        "url": "{0}/product/{1}" .format(dojo_host_url, str(product_id))
+                    },
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Jira Ticket"
+                        },
+                        "url": "{0}/projects/{1}/issues/{2}" .format(jira_instance, str(project_key_id), str(jira_ticket))
+                    }
+                ]
+            }
+        ], "color": "#0731b0"}]
+    )
+
+def slacknotify_updateprod_jira(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket):
+    """
+    Sends slack notification when there is: 
+        1. Existing service updated
+
+    Args:
+        appsec_slack_channel: Slack channel name
+        dojo_name: Engagement name in defect dojo
+        security_champion: Security champion name
+        product_id: Product in defectdojo
+        dojo_host: DefectDojo host
+        jira_instance:  Jira Cloud instance
+        project_key_id: Jira project id
+        jira_ticket: Jira ticket path 
+
+    Returns:
+        Sends slack notification
+    """
+    client.chat_postMessage(
+        channel=appsec_slack_channel,
+        text="Existing service updated",
         attachments=[{"blocks": [
             {
                 "type": "section",
