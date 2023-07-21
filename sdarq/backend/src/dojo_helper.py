@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-
+import slacknotify
 import requests
 
 dojo_host = os.getenv('dojo_host')
@@ -14,7 +14,7 @@ headers = {
 
 products_endpoint = f"{dojo_host}api/v2/products/"
 
-def dojo_create_or_update(name, description, product_type, user_email):
+def dojo_create_or_update(name, description, product_type, user_email, appsec_slack_channel, security_champion, dojo_host_url, jira_instance, project_key_id, jira_ticket):
     data = {
         'name': name,
         'description': description,
@@ -29,12 +29,33 @@ def dojo_create_or_update(name, description, product_type, user_email):
         else:
             logging.info("Product updated: %s by %s request",
                         name, user_email)
+            
+            slacknotify.slacknotify_updateprod_jira(
+            appsec_slack_channel,
+            name,
+            security_champion,
+            product_id,
+            dojo_host_url,
+            jira_instance,
+            project_key_id,
+            jira_ticket)
+            
         return product_id
     else:
         res = requests.post(products_endpoint,
                                 headers=headers, data=json.dumps(data))
         res.raise_for_status()
         product_id = res.json()['id']
+
+        slacknotify.slacknotify_jira(
+        appsec_slack_channel,
+        name,
+        security_champion,
+        product_id,
+        dojo_host_url,
+        jira_instance,
+        project_key_id,
+        jira_ticket)
 
         logging.info("Product created: %s by %s request",
                         name, user_email)
