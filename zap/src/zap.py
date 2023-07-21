@@ -70,8 +70,7 @@ def zap_sa_auth(zap: ZAPv2, env, target):
         matchtype="REQ_HEADER",
         matchregex=False,
         matchstring="Authorization",
-        replacement=bearer,
-        url=target + ".*"
+        replacement=bearer
     )
     # checks to see if the user is logged in, registered,
     # and has signed the TOS.
