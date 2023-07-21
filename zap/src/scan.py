@@ -16,6 +16,7 @@ from urllib.parse import urlparse, urlunparse
 
 import defectdojo_apiv2 as defectdojo
 import defusedxml.ElementTree as ET
+import requests
 from codedx_api.CodeDxAPI import CodeDx  # pylint: disable=import-error
 from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
@@ -30,7 +31,7 @@ def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, prod
     dojo = defectdojo.DefectDojoAPIv2(
         defect_dojo, defect_dojo_key, defect_dojo_user, debug=False, timeout=120)
     product = dojo.get_product(product_id=product_id)
-    return product["name"]
+    return product.data["name"]
 
 def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str, subfoldername=None):
     """
