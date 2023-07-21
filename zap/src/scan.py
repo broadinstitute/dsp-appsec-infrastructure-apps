@@ -72,7 +72,7 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
     
     try:
         lead_id = dojo.list_users(defect_dojo_user).data["results"][0]["id"]
-    except:
+    except Exception:
         logging.error("Did not retrieve dojo user ID, upload failed.")
         return
 
@@ -281,6 +281,9 @@ def slack_alert_without_report(  # pylint: disable=too-many-arguments
         logging.info("Alert sent to Slack channel for DefectDojo upload report")
 
 def clean_uri_path(xml_report):
+    """
+    Remove the changing hash from the path of static resources in zap report.
+    """
     tree = ET.parse(xml_report)
     root = tree.getroot()
     #There's a hash in bundled files that is causing flaws to not match, this should remove the hash.
