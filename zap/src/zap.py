@@ -108,24 +108,24 @@ def leo_auth(host, path, token):
         return True
     return False
 
-def zap_setup_cookie(zap, domain, context_ID):
+def zap_setup_cookie(zap, domain, context_id):
     """
     Zap needs to be told to use cookies while scanning.
     This can be done within a context.
     """
     # Copied from dsp-appsec-zap-automation
     username = "testuser"
-    zap.users.new_user(context_ID, username)
-    userid = zap.users.users_list(context_ID)[0]["id"]
+    zap.users.new_user(context_id, username)
+    userid = zap.users.users_list(context_id)[0]["id"]
     # This is the secret sauce for using cookies.
     # The user above is now associated with the active cookie.
     # It should always choose the newest one.
     sessions=zap.httpsessions.sessions(site = domain)
     session_name=sessions[-1]["session"][0]
-    zap.users.set_authentication_credentials(context_ID,userid,"sessionName=" + session_name)
+    zap.users.set_authentication_credentials(context_id,userid,"sessionName=" + session_name)
 
-    zap.users.set_user_enabled(context_ID,userid,True)
-    zap.forcedUser.set_forced_user(context_ID,userid)
+    zap.users.set_user_enabled(context_id,userid,True)
+    zap.forcedUser.set_forced_user(context_id,userid)
     zap.forcedUser.set_forced_user_mode_enabled(True)
     return username, userid
 
@@ -216,7 +216,7 @@ def zap_compliance_scan(
     Run a ZAP compliance scan of a given type against the target URL.
     """
 
-    host, port, path = parse_url(target_url)
+    host, _, path = parse_url(target_url)
 
     zap = zap_init(zap_port, target_url)
     env = "prod" #set prod as default
@@ -233,8 +233,8 @@ def zap_compliance_scan(
     
     # Set up context for scan
     zap.context.new_context(project)
-    context_ID = zap.context.context(project)["id"]
-    zap.authentication.set_authentication_method(context_ID,"manualAuthentication")
+    context_id = zap.context.context(project)["id"]
+    zap.authentication.set_authentication_method(context_id,"manualAuthentication")
 
     zap.context.include_in_context(project, ".*" + host + ".*")
 
@@ -246,7 +246,7 @@ def zap_compliance_scan(
             cookie_name = "LeoToken"
             zap.httpsessions.add_default_session_token(cookie_name)
             # Sets a user in the context with the cookie, and forces all Zap requests to use that cookie
-            zap_setup_cookie(zap, host, context_ID)
+            zap_setup_cookie(zap, host, context_id)
 
     if scan_type == ScanType.API:
         zap_api_import(zap, target_url)
@@ -259,7 +259,7 @@ def zap_compliance_scan(
     zap_wait_for_passive_scan(zap, timeout_in_secs=TIMEOUT_MINS * 60)
 
     if scan_type != ScanType.BASELINE:
-        zap.ascan.scan(target_url, contextid=context_ID, recurse=True)
+        zap.ascan.scan(target_url, contextid=context_id, recurse=True)
 
     filename = zap_report(zap, project, scan_type)
     session_file = zap_save_session(zap, project, scan_type)

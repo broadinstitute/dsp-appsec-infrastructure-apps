@@ -23,6 +23,15 @@ from slack_sdk.web import WebClient as SlackClient
 from zap import ScanType, zap_compliance_scan, zap_connect
 
 
+def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, product_id):
+    """
+    Fetch dojo product name using product_id
+    """
+    dojo = defectdojo.DefectDojoAPIv2(
+        defect_dojo, defect_dojo_key, defect_dojo_user, debug=False, timeout=120)
+    product = dojo.get_product(product_id=product_id)
+    return product["name"]
+
 def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str, subfoldername=None):
     """
     Upload scans to a GCS bucket and return the path to the file in Cloud Console.
@@ -331,6 +340,10 @@ def main(): # pylint: disable=too-many-locals
             defect_dojo = getenv("DEFECT_DOJO_URL")
             dd = getenv("DEFECT_DOJO")
 
+            # fetch dd poject name
+            dojo_product_name = fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, product_id)
+
+
             # configure logging
             logging.basicConfig(level=logging.INFO,
                 format=f"%(levelname)-8s [{codedx_project} {scan_type}-scan] %(message)s",
@@ -340,7 +353,7 @@ def main(): # pylint: disable=too-many-locals
                 s.value for s in severities))
 
             (zap_filename, session_filename) = zap_compliance_scan(
-                codedx_project, zap_port, target_url, scan_type)
+                dojo_product_name, zap_port, target_url, scan_type)
 
             # optionally, upload them to GCS
             xml_report_url = ""
