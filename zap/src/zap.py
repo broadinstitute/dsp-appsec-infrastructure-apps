@@ -6,8 +6,10 @@ import logging
 import os
 import shutil
 from enum import Enum
+from urllib.parse import urlparse
 
 import google.auth
+import requests
 import terra_auth
 from google.auth.transport.requests import Request as GoogleAuthRequest
 from zap_common import (wait_for_zap_start, write_report, zap_access_target,
@@ -40,6 +42,20 @@ def zap_init(zap_port: int, target_url: str):
 
     return zap
 
+def parse_url(url):
+    """
+    Helper function for parsing the target URL into component parts.
+
+    Returns:
+    string: hostname, int: port, string: path
+    """
+    o = urlparse(url)
+    parsed_hostname = o.hostname
+    parsed_path = o.path
+    parsed_port = o.port
+
+    return parsed_hostname, parsed_port, parsed_path
+
 
 def zap_sa_auth(zap: ZAPv2, env, target):
     """
@@ -68,9 +84,50 @@ def zap_sa_auth(zap: ZAPv2, env, target):
             logging.info("SA has accepted the TOS.")
     else:
         logging.info("ZAP Service Account failed to register with Terra.")
-        return
+    return token
     
 
+def leo_auth(host, path, token):
+    """
+    Set up cookie auth for leo apps.
+    """
+    logging.info("Authenticating to Leo...")
+    # Leo apps if already launched have a separate domain from Leo.
+    # And there's a workspace id after the host. https://custom.host/workspaceId/apiEndPoints
+    
+    # Make a request to host/first part of path//setCookie with bearer token header
+    path_parts = path.split('/')
+    if len(path_parts) > 1:
+        target_dir = path_parts[1]
+    else:
+        # Leo endpoint is /proxy//setCookie
+        target_dir = "proxy"
+    set_cookie_endpoint = f"https://{host}/{target_dir}//setCookie"
+    headers = {"Authorization": token}
+    response = requests.get(set_cookie_endpoint, headers=headers)
+    if response.status_code == 200:
+        return True
+    return False
+
+def zap_setup_cookie(zap, domain, contextID):
+    """
+    Zap needs to be told to use cookies while scanning.
+    This can be done within a context.
+    """
+    # Copied from dsp-appsec-zap-automation
+    username = "testuser"
+    zap.users.new_user(contextID, username)
+    userid = zap.users.users_list(contextID)[0]["id"]
+    #this is the secret sauce for using cookies. The user above is now associated with the active cookie.
+    #It should always choose the newest one.
+    sessions=zap.httpsessions.sessions(site = domain)
+    sessionName=sessions[-1]["session"][0]
+    zap.users.set_authentication_credentials(contextID,userid,"sessionName=" + sessionName)
+
+    zap.users.set_user_enabled(contextID,userid,True)
+    zap.forcedUser.set_forced_user(contextID,userid)
+    zap.forcedUser.set_forced_user_mode_enabled(True)
+    return username, userid
 
 
 def zap_api_import(zap: ZAPv2, target_url: str):
@@ -108,6 +165,7 @@ class ScanType(str, Enum):
     AUTH = "Authenticated"
     BASELINE = "Baseline"
     UI = "UI"
+    LEOAPP = "LeoApp"
 
     def __str__(self):
         return str(self.name).lower()
@@ -157,9 +215,12 @@ def zap_compliance_scan(
     """
     Run a ZAP compliance scan of a given type against the target URL.
     """
+
+    host, port, path = parse_url(target_url)
+
     zap = zap_init(zap_port, target_url)
     env = "prod" #set prod as default
-    if "dev" in target_url:
+    if "dev" in host:
         env = "dev"
     # ZAP scans should be run in a context. This provides a scope for the scan,
     # and can provide more granular authentication controls.
@@ -174,27 +235,31 @@ def zap_compliance_scan(
     zap.context.new_context(project)
     contextID = zap.context.context(project)["id"]
     zap.authentication.set_authentication_method(contextID,"manualAuthentication")
-    # target_url can be any url, so we probably need to parse the thing.
-    zap.context.include_in_context(project, target_url + ".*")
+
+    zap.context.include_in_context(project, ".*" + host + ".*")
 
 
     if scan_type != ScanType.BASELINE:
-        zap_sa_auth(zap, env, target_url)
+        token = zap_sa_auth(zap, env, target_url)
+        if scan_type == ScanType.LEOAPP:
+            leo_auth(host, path, token)
+            cookie_name = "LeoToken"
+            zap.httpsessions.add_default_session_token(cookie_name)
+            # Sets a user in the context with the cookie, and forces all Zap requests to use that cookie
+            zap_setup_cookie(zap, host, contextID)
 
     if scan_type == ScanType.API:
         zap_api_import(zap, target_url)
 
     zap.spider.scan(contextname=project,url=target_url)
-    zap_spider(zap, target_url)
 
     if scan_type == ScanType.UI:
-
-        zap_ajax_spider(zap, target_url, max_time=TIMEOUT_MINS)
+        zap.ajaxSpider.scan(target_url, contextname=project)
 
     zap_wait_for_passive_scan(zap, timeout_in_secs=TIMEOUT_MINS * 60)
 
     if scan_type != ScanType.BASELINE:
-        zap_active_scan(zap, target_url, None)
+        zap.ascan.scan(target_url, contextid=contextID, recurse=True)
 
     filename = zap_report(zap, project, scan_type)
     session_file = zap_save_session(zap, project, scan_type)
