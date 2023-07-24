@@ -399,7 +399,7 @@ def slacknotify_error_submit_endpoint(error_message, appsec_slack_channel, user_
     """
     client.chat_postMessage(
         channel=appsec_slack_channel,
-        text="Error happened for new service endpoint",
+        text="Error happened for new service endpoint, please check this message and logs",
         attachments=[{"blocks":[
             {
                 "type": "section",

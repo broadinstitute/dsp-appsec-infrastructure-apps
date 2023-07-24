@@ -191,7 +191,7 @@ def submit():
 
         return ''
     except Exception as error:
-        error_message = f"Exception /submit endpoint: {error}"
+        error_message = f"Exception for /submit endpoint: {error}"
         slacknotify.slacknotify_error_submit_endpoint(error_message, appsec_slack_channel, user_email, dojo_name, json_data)
         logging.warning(error_message)
         message = """
