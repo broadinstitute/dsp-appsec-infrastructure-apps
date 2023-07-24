@@ -182,7 +182,6 @@ def submit():
 
         logging.info("Jira tickets in AppSec board are created")
 
-        #
         setSecConDDlink = db.collection(security_controls_firestore_collection).document(
             dojo_name.lower())
         doc = setSecConDDlink.get()
