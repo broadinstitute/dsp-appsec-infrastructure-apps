@@ -383,7 +383,7 @@ def slacknotify_jira_ticket_risk_assessment_error(jtra_slack_channel, user_email
         ], "color": "#bd3022"}]
     )
 
-def slacknotify_error_submit_endpoint(error_message, appsec_slack_channel, user_email, dojo_name):
+def slacknotify_error_submit_endpoint(error_message, appsec_slack_channel, user_email, dojo_name, json_data):
     """
     Sends Slack notifications to AppSec when there is an error happening in submit endpoint
 
@@ -420,6 +420,13 @@ def slacknotify_error_submit_endpoint(error_message, appsec_slack_channel, user_
                 "text": {
                     "type": "mrkdwn",
                     "text": "*Service name:* `{0}` " .format(str(dojo_name))
+                }
+            },            
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*User data:* `{0}` " .format(str(json_data))
                 }
             }
         ], "color": "#bd3022"}]

@@ -117,12 +117,11 @@ def submit():
         200 status
         400 status
     """
-
+    json_data = request.get_json()
     if request.headers.get('Content-Type') != 'application/json':
         return jsonify({'statusText': 'Bad Request'}), 400
 
     try:
-        json_data = request.get_json()
         dojo_name = json_data['Service']
         security_champion = json_data['Security champion']
         product_type = 1
@@ -193,7 +192,7 @@ def submit():
         return ''
     except Exception as error:
         error_message = f"Exception /submit endpoint: {error}"
-        slacknotify.slacknotify_error_submit_endpoint(error_message, appsec_slack_channel, user_email, dojo_name)
+        slacknotify.slacknotify_error_submit_endpoint(error_message, appsec_slack_channel, user_email, dojo_name, json_data)
         logging.warning(error_message)
         message = """
         There is something wrong with the input! Server did not respond correctly to your request!
