@@ -383,22 +383,21 @@ def slacknotify_jira_ticket_risk_assessment_error(jtra_slack_channel, user_email
         ], "color": "#bd3022"}]
     )
 
-def slacknotify_error_submit_endpoint(error_message, appsec_slack_channel, user_email, dojo_name):
+def slacknotify_error_submit_endpoint(error_message, appsec_sdarq_error_channel, user_email, dojo_name):
     """
     Sends Slack notifications to AppSec when there is an error happening in submit endpoint
 
     Args:
-        appsec_slack_channel: Jira Ticket Risk Assessment Slack channel 
-        user_email: Dev email that filled the form
-        json_data: All data submitted by users
-        error: exception 
-        dojo_name: service name
+        appsec_slack_channel: AppSec Slack channel 
+        user_email: Dev email that completed the form
+        error: Exception message 
+        dojo_name: Service name
 
     Returns:
         Sends slack notification
     """
     client.chat_postMessage(
-        channel=appsec_slack_channel,
+        channel=appsec_sdarq_error_channel,
         text="Error happened for new service endpoint",
         attachments=[{"blocks":[
             {
