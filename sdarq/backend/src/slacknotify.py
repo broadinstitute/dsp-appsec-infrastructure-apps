@@ -15,7 +15,7 @@ client = WebClient(token=slack_token,
                          ssl=ssl_context)
 
 
-def slacknotify_app_jira(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket):
+def slacknotify_app_jira(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url):
     """
     Sends slack notification when there is:
         1. New app 
@@ -62,21 +62,13 @@ def slacknotify_app_jira(appsec_slack_channel, dojo_name, security_champion, pro
                             "text": "Defect Dojo"
                         },
                         "url": "{0}/product/{1}" .format(dojo_host_url, str(product_id))
-                    },
-                    {
-                        "type": "button",
-                        "text": {
-                            "type": "plain_text",
-                            "text": "Jira Ticket"
-                        },
-                        "url": "{0}/projects/{1}/issues/{2}" .format(jira_instance, str(project_key_id), str(jira_ticket))
                     }
                 ]
             }
         ], "color": "#0731b0"}]
     )
 
-def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket):
+def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url):
     """
     Sends slack notification when there is: 
         1. New service
@@ -122,14 +114,6 @@ def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product
                             "text": "Defect Dojo"
                         },
                         "url": "{0}/product/{1}" .format(dojo_host_url, str(product_id))
-                    },
-                    {
-                        "type": "button",
-                        "text": {
-                            "type": "plain_text",
-                            "text": "Jira Ticket"
-                        },
-                        "url": "{0}/projects/{1}/issues/{2}" .format(jira_instance, str(project_key_id), str(jira_ticket))
                     }
                 ]
             }

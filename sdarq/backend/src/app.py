@@ -145,20 +145,11 @@ def submit():
 
         validate(instance=json_data, schema=new_service_schema)
 
-        formatted_jira_description = jira_description.strip(
-            '", "').replace('", "', '\n-')
-
-        jira_ticket = jiranotify.create_board_ticket(
-            project_key_id, dev_jira_ticket_summury_alerts, formatted_jira_description)
-
-        logging.info("Jira ticket in %s board created by %s",
-                     project_key_id, user_email)
+        formatted_jira_description = jira_description.strip('", "').replace('", "', '\n-')
 
         del json_data['Ticket_Description']
 
-
-        product_id = dojo_helper.dojo_create_or_update(dojo_name, parse_json_data.prepare_dojo_input(json_data), product_type, user_email, appsec_slack_channel, security_champion, dojo_host_url, jira_instance, project_key_id, jira_ticket)
-
+        product_id = dojo_helper.dojo_create_or_update(dojo_name, parse_json_data.prepare_dojo_input(json_data), product_type, user_email, appsec_slack_channel, security_champion, dojo_host_url)
 
         jiranotify.create_board_ticket(
             appsec_jira_project_key,
@@ -181,6 +172,13 @@ def submit():
             appsec_jira_ticket_description)
 
         logging.info("Jira tickets in AppSec board are created")
+
+        jiranotify.create_board_ticket(
+            project_key_id,
+            dev_jira_ticket_summury_alerts,
+            formatted_jira_description)
+
+        logging.info("Jira ticket in %s board created by %s", project_key_id, user_email)
 
         setSecConDDlink = db.collection(security_controls_firestore_collection).document(
             dojo_name.lower())
@@ -254,7 +252,7 @@ def submit_app():
 
         del json_data['Ticket_Description']
 
-        product_id = dojo_helper.dojo_create_or_update(dojo_name, parse_json_data.prepare_dojo_input(json_data), product_type, user_email, appsec_slack_channel, security_champion, dojo_host_url, jira_instance, project_key_id, jira_ticket )
+        product_id = dojo_helper.dojo_create_or_update(dojo_name, parse_json_data.prepare_dojo_input(json_data), product_type, user_email, appsec_slack_channel, security_champion, dojo_host_url)
 
         slacknotify.slacknotify_app_jira(
             appsec_slack_channel,
