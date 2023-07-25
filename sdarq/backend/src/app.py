@@ -151,6 +151,14 @@ def submit():
 
         product_id = dojo_helper.dojo_create_or_update(dojo_name, parse_json_data.prepare_dojo_input(json_data), product_type, user_email, appsec_slack_channel, security_champion, dojo_host_url)
 
+        setSecConDDlink = db.collection(security_controls_firestore_collection).document(
+            dojo_name.lower())
+        doc = setSecConDDlink.get()
+        if bool(doc.to_dict()) is True:
+            setSecConDDlink.set({
+                u'defect_dojo': '{0}/product/{1}'.format(dojo_host_url, str(product_id))
+            }, merge=True)
+            
         jiranotify.create_board_ticket(
             appsec_jira_project_key,
             app_jira_ticket_summury_alerts,
@@ -179,14 +187,6 @@ def submit():
             formatted_jira_description)
 
         logging.info("Jira ticket in %s board created by %s", project_key_id, user_email)
-
-        setSecConDDlink = db.collection(security_controls_firestore_collection).document(
-            dojo_name.lower())
-        doc = setSecConDDlink.get()
-        if bool(doc.to_dict()) is True:
-            setSecConDDlink.set({
-                u'defect_dojo': '{0}/product/{1}'.format(dojo_host_url, str(product_id))
-            }, merge=True)
 
         return ''
     except Exception as error:
