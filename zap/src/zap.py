@@ -99,12 +99,16 @@ def leo_auth(host, path, token):
         target_dir = path_parts[1]
     else:
         # Leo endpoint is /proxy//setCookie
+        logging.info("Using the default proxy directory for setCookie")
         target_dir = "proxy"
+    logging.info("Using the setCookie endpoint to set the cookie.")
     set_cookie_endpoint = f"https://{host}/{target_dir}//setCookie"
     headers = {"Authorization": token}
     response = requests.get(set_cookie_endpoint, headers=headers, timeout=10)
-    if response.status_code == 200:
+    if response.status_code == 204:
+        logging.info("Set cookie was successful")
         return True
+    logging.info("Set cookie did not succeed")
     return False
 
 def zap_setup_cookie(zap, domain, context_id):
@@ -113,6 +117,7 @@ def zap_setup_cookie(zap, domain, context_id):
     This can be done within a context.
     """
     # Copied from dsp-appsec-zap-automation
+    logging.info("Set up test user in context: " + context_id)
     username = "testuser"
     zap.users.new_user(context_id, username)
     userid = zap.users.users_list(context_id)[0]["id"]
