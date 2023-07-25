@@ -54,6 +54,7 @@ dojo_api_key = os.getenv('dojo_api_key')
 sdarq_host = os.getenv('sdarq_host')
 dojo_host_url = os.getenv('dojo_host_url')
 appsec_slack_channel = os.getenv('appsec_slack_channel')
+appsec_sdarq_error_channel = os.getenv('appsec_sdarq_error_channel')
 appsec_jira_project_key = os.getenv('appsec_jira_project_key')
 jtra_slack_channel = os.getenv('jtra_slack_channel')
 jira_instance = os.getenv('jira_instance')
@@ -181,7 +182,6 @@ def submit():
 
         logging.info("Jira tickets in AppSec board are created")
 
-        #
         setSecConDDlink = db.collection(security_controls_firestore_collection).document(
             dojo_name.lower())
         doc = setSecConDDlink.get()
@@ -192,7 +192,8 @@ def submit():
 
         return ''
     except Exception as error:
-        error_message = f"Exception /submit enspoint: {error}"
+        error_message = f"Exception /submit endpoint: {error}"
+        slacknotify.slacknotify_error_submit_endpoint(error, appsec_sdarq_error_channel, user_email, dojo_name)
         logging.warning(error_message)
         message = """
         There is something wrong with the input! Server did not respond correctly to your request!
@@ -297,7 +298,8 @@ def submit_app():
 
         return ''
     except Exception as error:
-        error_message = f"Exception /submit enspoint: {error}"
+        error_message = f"Exception /submit_new_app endpoint: {error}"
+        slacknotify.slacknotify_error_submit_endpoint(error, appsec_sdarq_error_channel, user_email, dojo_name)
         logging.warning(error_message)
         message = """
         There is something wrong with the input! Server did not respond correctly to your request!
