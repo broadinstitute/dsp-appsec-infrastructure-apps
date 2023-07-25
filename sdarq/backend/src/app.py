@@ -179,14 +179,10 @@ def submit():
             appsec_jira_ticket_summury_sast,
             appsec_jira_ticket_description)
 
-        logging.info("Jira tickets in AppSec board are created")
-
         jiranotify.create_board_ticket(
             project_key_id,
             dev_jira_ticket_summury_alerts,
             formatted_jira_description)
-
-        logging.info("Jira ticket in %s board created by %s", project_key_id, user_email)
 
         return ''
     except Exception as error:
@@ -276,15 +272,10 @@ def submit_app():
             appsec_jira_ticket_summury_sast,
             appsec_jira_ticket_description)
 
-        logging.info("Jira tickets in AppSec board created")
-
         jiranotify.create_board_ticket(
             project_key_id,
             dev_jira_ticket_summury_alerts,
             formatted_jira_description)
-
-        logging.info("Jira ticket in %s board created by %s",
-                     project_key_id, user_email)
 
         return ''
     except Exception as error:
