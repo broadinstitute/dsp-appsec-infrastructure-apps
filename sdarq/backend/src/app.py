@@ -298,7 +298,8 @@ def submit_app():
 
         return ''
     except Exception as error:
-        error_message = f"Exception /submit enspoint: {error}"
+        error_message = f"Exception /submit_new_app endpoint: {error}"
+        slacknotify.slacknotify_error_submit_endpoint(error, appsec_sdarq_error_channel, user_email, dojo_name)
         logging.warning(error_message)
         message = """
         There is something wrong with the input! Server did not respond correctly to your request!
