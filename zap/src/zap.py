@@ -18,7 +18,7 @@ from zapv2 import ZAPv2
 
 TIMEOUT_MINS = 5
 
-zap_port = int(os.getenv("ZAP_PORT", ""))
+zap_port = int(os.getenv("ZAP_PORT"))
 proxy = f"http://localhost:{zap_port}"
 
 
