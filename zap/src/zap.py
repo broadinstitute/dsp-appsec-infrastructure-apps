@@ -108,7 +108,8 @@ def leo_auth(host, path, token, zap_port):
         target_dir = "proxy"
     logging.info("Using the setCookie endpoint to set the cookie.")
     set_cookie_endpoint = f"https://{host}/{target_dir}//setCookie"
-    headers = {"Authorization": token}
+    headers = {"Authorization": token,
+               "Referer":f"https://{host}/"}
     # verify is set to false in order to proxy requests through ZAP
     response = requests.get(set_cookie_endpoint, headers=headers,
                             timeout=25, proxies=proxies, verify=False)
