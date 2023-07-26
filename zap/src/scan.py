@@ -354,7 +354,7 @@ def main(): # pylint: disable=too-many-locals
                 s.value for s in severities))
 
             (zap_filename, session_filename) = zap_compliance_scan(
-                dojo_product_name, target_url, scan_type)
+                dojo_product_name, zap_port, target_url, scan_type)
 
             # optionally, upload them to GCS
             xml_report_url = ""

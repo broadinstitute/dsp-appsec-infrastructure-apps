@@ -18,24 +18,22 @@ from zapv2 import ZAPv2
 
 TIMEOUT_MINS = 5
 
-zap_port = int(os.getenv("ZAP_PORT"))
-proxy = f"http://localhost:{zap_port}"
 
-
-def zap_connect():
+def zap_connect(zap_port: int):
     """
     Connect to the Zap instance
     """
+    proxy = f"http://localhost:{zap_port}"
     zap = ZAPv2(proxies={"http": proxy, "https": proxy})
     wait_for_zap_start(zap, timeout_in_secs=TIMEOUT_MINS * 60)
     return zap
 
 
-def zap_init(target_url: str):
+def zap_init(zap_port: int, target_url: str):
     """
     Connect to ZAP service running on localhost.
     """
-    zap = zap_connect()
+    zap = zap_connect(zap_port)
     zap.core.new_session(name='zap_session', overwrite=True)
     logging.info("Accessing target %s", target_url)
     # replace with api call to core.accessUrl
@@ -87,14 +85,15 @@ def zap_sa_auth(zap: ZAPv2, env, target):
     return token
 
 
-def leo_auth(host, path, token):
+def leo_auth(host, path, token, zap_port):
     """
     Set up cookie auth for leo apps.
     """
+    proxy = f"http://localhost:{zap_port}"
     proxies = {
-            'http': proxy,
-            'https': proxy,
-            }
+        'http': proxy,
+        'https': proxy,
+        }
     logging.info("Authenticating to Leo...")
     # Leo apps if already launched have a separate domain from Leo.
     # And there's a workspace id after the host. https://custom.host/workspaceId/apiEndPoints
@@ -218,6 +217,7 @@ def zap_save_session(zap: ZAPv2, project: str, scan_type: ScanType):
 
 def zap_compliance_scan(
     project: str,
+    zap_port: int,
     target_url: str,
     scan_type: ScanType = ScanType.BASELINE,
 ):
@@ -227,7 +227,7 @@ def zap_compliance_scan(
 
     host, _, path = parse_url(target_url)
 
-    zap = zap_init(target_url)
+    zap = zap_init(zap_port, target_url)
     env = "prod" #set prod as default
     if "dev" in host:
         env = "dev"
