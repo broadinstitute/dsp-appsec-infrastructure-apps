@@ -251,7 +251,7 @@ def zap_compliance_scan(
     if scan_type != ScanType.BASELINE:
         token = zap_sa_auth(zap, env, target_url)
         if scan_type == ScanType.LEOAPP:
-            leo_auth(host, path, token)
+            leo_auth(host, path, token, zap_port)
             cookie_name = "LeoToken"
             zap.httpsessions.add_default_session_token(cookie_name)
             # Sets a user in the context with the cookie, and forces all Zap requests to use that cookie
