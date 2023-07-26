@@ -131,7 +131,7 @@ def zap_setup_cookie(zap, domain, context_id):
     # This is the secret sauce for using cookies.
     # The user above is now associated with the active cookie.
     # It should always choose the newest one.
-    sessions=zap.httpsessions.sessions(site = domain)
+    sessions=zap.httpsessions.sessions(site = domain+":443")
     session_name=sessions[-1]["session"][0]
     zap.users.set_authentication_credentials(context_id,userid,"sessionName=" + session_name)
 
