@@ -390,3 +390,37 @@ def slacknotify_error_submit_endpoint(error_message, appsec_sdarq_error_channel,
         ], "color": "#bd3022"}]
     )
 
+
+def slacknotify_jira_ticket_error(error, appsec_sdarq_error_channel, appsec_jira_project_key):
+    """
+    Sends Slack notifications to AppSec when there is an error happening in submit endpoint
+
+    Args:
+        appsec_slack_channel: AppSec Slack channel 
+        user_email: Dev email that completed the form
+        error: Exception message 
+        dojo_name: Service name
+
+    Returns:
+        Sends slack notification
+    """
+    client.chat_postMessage(
+        channel=appsec_sdarq_error_channel,
+        text="Error happened for ticket creation",
+        attachments=[{"blocks":[
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Error:* `{0}` " .format(str(error))
+                }
+            },           
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*JIra Board:* `{0}` " .format(str(appsec_jira_project_key))
+                }
+            }
+        ], "color": "#bd3022"}]
+    )
