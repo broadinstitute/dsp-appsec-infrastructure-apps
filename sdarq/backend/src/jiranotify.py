@@ -20,7 +20,7 @@ def create_task_ticket(appsec_jira_project_key, ticket_summary, ticket_descripti
         ticket_summary
         ticket_description
     Returns: 
-        Jira Ticket id or None (with an exception)
+        Jira Ticket id
     """
     try:
         jira_ticket = jira.create_issue(project=appsec_jira_project_key,
@@ -32,7 +32,7 @@ def create_task_ticket(appsec_jira_project_key, ticket_summary, ticket_descripti
     except Exception as error:
         print(f"Jira Task creation failed with error: {error}")
         logging.warning(error)
-        return None
+        return error
     
 
 def create_story_ticket(appsec_jira_project_key, ticket_summary, ticket_description):
@@ -43,7 +43,7 @@ def create_story_ticket(appsec_jira_project_key, ticket_summary, ticket_descript
         ticket_summary
         ticket_description
     Returns: 
-        Jira Ticket id or None (with an exception)
+        Jira Ticket id
     """
     try:
         jira_ticket = jira.create_issue(project=appsec_jira_project_key,
@@ -55,7 +55,7 @@ def create_story_ticket(appsec_jira_project_key, ticket_summary, ticket_descript
     except Exception as error:
         print(f"Jira Story creation failed with error: {error}")
         logging.warning(error)
-        return None
+        return error
 
 
 def create_board_ticket(appsec_jira_project_key, ticket_summary, ticket_description):
