@@ -55,6 +55,34 @@ def parse_url(url):
 
     return parsed_hostname, parsed_port, parsed_path
 
+def zap_setup_context(zap, project, host):
+    """
+    Setup context and scope for scan
+    """
+    proxy = f"http://localhost:{zap_port}"
+    proxies = {
+        'http': proxy,
+        'https': proxy,
+        }
+    
+    zap.context.new_context(project)
+    context_id = zap.context.context(project)["id"]
+    zap.authentication.set_authentication_method(context_id,"manualAuthentication")
+
+    zap.context.include_in_context(project, ".*" + host + ".*")
+    resp =requests.get(f"https://{host}/config.json", proxies=proxies, verify=False)
+    try:
+        config_json = resp.json()
+        for key in config_json:
+            if "Root" in key:
+                # do cool things
+                zap.context.include_in_context(project, config_json[key] + ".*") 
+    except Exception:
+        # If there's no config.json, return.
+        return context_id
+
+    return context_id
+
 
 def zap_sa_auth(zap: ZAPv2, env, target):
     """
@@ -247,14 +275,10 @@ def zap_compliance_scan(
     # API - authenticated with SA, imports openid config, active scan is performed.
     # UI - authenticated with SA, active scan and ajax spider is performed.
     # AUTH - authenticated with SA, active scan is performed.
+    #LEOAPP - authenticated with SA and registered cookie, active scan and ajax spider is performed
     
     # Set up context for scan
-    zap.context.new_context(project)
-    context_id = zap.context.context(project)["id"]
-    zap.authentication.set_authentication_method(context_id,"manualAuthentication")
-
-    zap.context.include_in_context(project, ".*" + host + ".*")
-
+    context_id = zap_setup_context(zap, project, host)
 
     if scan_type != ScanType.BASELINE:
         token = zap_sa_auth(zap, env, target_url)
@@ -272,7 +296,7 @@ def zap_compliance_scan(
 
     zap.spider.scan(contextname=project,url=target_url)
 
-    if scan_type == ScanType.UI:
+    if scan_type == ScanType.UI or scan_type == ScanType.LEOAPP:
         zap.ajaxSpider.scan(target_url, contextname=project)
 
     zap_wait_for_passive_scan(zap, timeout_in_secs=TIMEOUT_MINS * 60)
