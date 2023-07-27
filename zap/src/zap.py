@@ -55,7 +55,7 @@ def parse_url(url):
 
     return parsed_hostname, parsed_port, parsed_path
 
-def zap_setup_context(zap, project, host):
+def zap_setup_context(zap, project, host, zap_port):
     """
     Setup context and scope for scan
     """
@@ -278,7 +278,7 @@ def zap_compliance_scan(
     #LEOAPP - authenticated with SA and registered cookie, active scan and ajax spider is performed
     
     # Set up context for scan
-    context_id = zap_setup_context(zap, project, host)
+    context_id = zap_setup_context(zap, project, host, zap_port)
 
     if scan_type != ScanType.BASELINE:
         token = zap_sa_auth(zap, env, target_url)
