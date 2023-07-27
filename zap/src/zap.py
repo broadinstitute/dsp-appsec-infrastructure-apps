@@ -94,6 +94,9 @@ def leo_auth(host, path, token, zap_port):
         'http': proxy,
         'https': proxy,
         }
+    
+    zap = zap_connect(zap_port)
+    zap.httpsessions.add_default_session_token("LeoToken")
     logging.info("Authenticating to Leo...")
     # Leo apps if already launched have a separate domain from Leo.
     # And there's a workspace id after the host. https://custom.host/workspaceId/apiEndPoints
@@ -106,13 +109,15 @@ def leo_auth(host, path, token, zap_port):
         # Leo endpoint is /proxy//setCookie
         logging.info("Using the default proxy directory for setCookie")
         target_dir = "proxy"
+
     logging.info("Using the setCookie endpoint to set the cookie.")
     set_cookie_endpoint = f"https://{host}/{target_dir}//setCookie"
     headers = {"Authorization": token,
-               "Referer":f"https://{host}/"}
+               "Referer": f"https://{host}/"}
     # verify is set to false in order to proxy requests through ZAP
     response = requests.get(set_cookie_endpoint, headers=headers,
                             timeout=25, proxies=proxies, verify=False)
+    logging.info(response.text)
     if response.status_code == 204:
         logging.info("Set cookie was successful")
         return True
@@ -254,11 +259,13 @@ def zap_compliance_scan(
     if scan_type != ScanType.BASELINE:
         token = zap_sa_auth(zap, env, target_url)
         if scan_type == ScanType.LEOAPP:
-            leo_auth(host, path, token, zap_port)
-            cookie_name = "LeoToken"
-            zap.httpsessions.add_default_session_token(cookie_name)
-            # Sets a user in the context with the cookie, and forces all Zap requests to use that cookie
-            zap_setup_cookie(zap, host, context_id)
+            success = leo_auth(host, path, token, zap_port)
+            if success:                
+                # Sets a user in the context with the cookie,
+                # and forces all Zap requests to use that cookie
+                zap_setup_cookie(zap, host, context_id)
+            else:
+                logging.info("Leo authentication was unsuccessful")
 
     if scan_type == ScanType.API:
         zap_api_import(zap, target_url)
