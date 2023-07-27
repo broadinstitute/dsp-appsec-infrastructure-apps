@@ -14,7 +14,7 @@ headers = {
 
 products_endpoint = f"{dojo_host}api/v2/products/"
 
-def dojo_create_or_update(name, description, product_type, user_email, appsec_slack_channel, security_champion, dojo_host_url, jira_instance, project_key_id, jira_ticket):
+def dojo_create_or_update(name, description, product_type, user_email, appsec_slack_channel, security_champion, dojo_host_url):
     data = {
         'name': name,
         'description': description,
@@ -35,10 +35,7 @@ def dojo_create_or_update(name, description, product_type, user_email, appsec_sl
             name,
             security_champion,
             product_id,
-            dojo_host_url,
-            jira_instance,
-            project_key_id,
-            jira_ticket)
+            dojo_host_url)
             
         return product_id
     else:
@@ -52,10 +49,7 @@ def dojo_create_or_update(name, description, product_type, user_email, appsec_sl
         name,
         security_champion,
         product_id,
-        dojo_host_url,
-        jira_instance,
-        project_key_id,
-        jira_ticket)
+        dojo_host_url)
 
         logging.info("Product created: %s by %s request",
                         name, user_email)
