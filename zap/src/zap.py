@@ -286,7 +286,7 @@ def zap_compliance_scan(
     context_id = zap_setup_context(zap, project, host, zap_port)
 
     if scan_type != ScanType.BASELINE:
-        token = zap_sa_auth(zap, env, target_url)
+        token = zap_sa_auth(zap, env)
         if scan_type == ScanType.LEOAPP:
             success = leo_auth(host, path, token, zap_port)
             if success:
