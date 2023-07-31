@@ -80,12 +80,12 @@ def zap_setup_context(zap, project, host, zap_port):
                 zap.context.include_in_context(project, config_json[key] + ".*")
     except Exception:
         # If there's no config.json, return.
-        return context_id
+        logging.info("No config.json found")
 
     return context_id
 
 
-def zap_sa_auth(zap: ZAPv2, env, target):
+def zap_sa_auth(zap: ZAPv2, env):
     """
     Set up Google token auth for ZAP requests.
     """
