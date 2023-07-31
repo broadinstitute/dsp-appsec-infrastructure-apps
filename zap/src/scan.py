@@ -16,7 +16,6 @@ from urllib.parse import urlparse, urlunparse
 
 import defectdojo_apiv2 as defectdojo
 import defusedxml.ElementTree as ET
-import requests
 from codedx_api.CodeDxAPI import CodeDx  # pylint: disable=import-error
 from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
@@ -33,6 +32,7 @@ def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, prod
     product = dojo.get_product(product_id=product_id)
     return product.data["name"]
 
+
 def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str, subfoldername=None):
     """
     Upload scans to a GCS bucket and return the path to the file in Cloud Console.
@@ -46,7 +46,8 @@ def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str, subfolderna
         path = f"{scan_type}-scans/{date}/{subfoldername}/{filename}"
     blob = bucket.blob(path)
     blob.upload_from_filename(filename)
-    return f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}"        
+    return f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}"
+
 
 def error_slack_alert(error: str, token: str, channel: str):
     """
@@ -79,7 +80,7 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
 
     absolute_path = os.path.abspath(zap_filename)
     date = datetime.today().strftime("%Y%m%d%H:%M")
-    
+
     try:
         lead_id = dojo.list_users(defect_dojo_user).data["results"][0]["id"]
     except Exception:

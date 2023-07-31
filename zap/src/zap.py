@@ -41,6 +41,7 @@ def zap_init(zap_port: int, target_url: str):
 
     return zap
 
+
 def parse_url(url):
     """
     Helper function for parsing the target URL into component parts.
@@ -55,6 +56,7 @@ def parse_url(url):
 
     return parsed_hostname, parsed_port, parsed_path
 
+
 def zap_setup_context(zap, project, host, zap_port):
     """
     Setup context and scope for scan
@@ -64,19 +66,18 @@ def zap_setup_context(zap, project, host, zap_port):
         'http': proxy,
         'https': proxy,
         }
-    
+
     zap.context.new_context(project)
     context_id = zap.context.context(project)["id"]
-    zap.authentication.set_authentication_method(context_id,"manualAuthentication")
+    zap.authentication.set_authentication_method(context_id, "manualAuthentication")
 
     zap.context.include_in_context(project, ".*" + host + ".*")
-    resp =requests.get(f"https://{host}/config.json", proxies=proxies, verify=False)
+    resp = requests.get(f"https://{host}/config.json", proxies=proxies, verify=False)
     try:
         config_json = resp.json()
         for key in config_json:
             if "Root" in key:
-                # do cool things
-                zap.context.include_in_context(project, config_json[key] + ".*") 
+                zap.context.include_in_context(project, config_json[key] + ".*")
     except Exception:
         # If there's no config.json, return.
         return context_id
@@ -122,7 +123,7 @@ def leo_auth(host, path, token, zap_port):
         'http': proxy,
         'https': proxy,
         }
-    
+
     zap = zap_connect(zap_port)
     zap.httpsessions.add_default_session_token("LeoToken")
     logging.info("Authenticating to Leo...")
@@ -152,6 +153,7 @@ def leo_auth(host, path, token, zap_port):
     logging.info("Set cookie did not succeed")
     return False
 
+
 def zap_setup_cookie(zap, domain, context_id):
     """
     Zap needs to be told to use cookies while scanning.
@@ -165,12 +167,12 @@ def zap_setup_cookie(zap, domain, context_id):
     # This is the secret sauce for using cookies.
     # The user above is now associated with the active cookie.
     # It should always choose the newest one.
-    sessions=zap.httpsessions.sessions(site = domain+":443")
-    session_name=sessions[-1]["session"][0]
-    zap.users.set_authentication_credentials(context_id,userid,"sessionName=" + session_name)
+    sessions = zap.httpsessions.sessions(site=domain+":443")
+    session_name = sessions[-1]["session"][0]
+    zap.users.set_authentication_credentials(context_id, userid, "sessionName=" + session_name)
 
-    zap.users.set_user_enabled(context_id,userid,True)
-    zap.forcedUser.set_forced_user(context_id,userid)
+    zap.users.set_user_enabled(context_id, userid, True)
+    zap.forcedUser.set_forced_user(context_id, userid)
     zap.forcedUser.set_forced_user_mode_enabled(True)
     return username, userid
 
@@ -232,7 +234,10 @@ def zap_report(zap: ZAPv2, project: str, scan_type: ScanType):
 
     return filename
 
-def zap_save_session(zap: ZAPv2, project: str, scan_type: ScanType):
+
+def zap_save_session(zap: ZAPv2,
+                     project: str,
+                     scan_type: ScanType):
     """
     Save and zip zap session.
     """
@@ -244,8 +249,8 @@ def zap_save_session(zap: ZAPv2, project: str, scan_type: ScanType):
     zap.core.save_session(share_path_sess+session_filename)
     # scan controller uses same shared volume to zip session and return the filename
     try:
-        shutil.make_archive(session_filename, 'zip' , share_path_sess)
-    except BaseException as base_error: # pylint: disable=bare-except
+        shutil.make_archive(session_filename, 'zip', share_path_sess)
+    except BaseException as base_error:  # pylint: disable=bare-except
         print("Unable to zip session file.")
         raise base_error
     return session_filename + ".zip"
@@ -264,7 +269,7 @@ def zap_compliance_scan(
     host, _, path = parse_url(target_url)
 
     zap = zap_init(zap_port, target_url)
-    env = "prod" #set prod as default
+    env = "prod"  # set prod as default
     if "dev" in host:
         env = "dev"
     # ZAP scans should be run in a context. This provides a scope for the scan,
@@ -275,8 +280,8 @@ def zap_compliance_scan(
     # API - authenticated with SA, imports openid config, active scan is performed.
     # UI - authenticated with SA, active scan and ajax spider is performed.
     # AUTH - authenticated with SA, active scan is performed.
-    #LEOAPP - authenticated with SA and registered cookie, active scan and ajax spider is performed
-    
+    # LEOAPP - authenticated with SA and registered cookie, active scan and ajax spider is performed
+
     # Set up context for scan
     context_id = zap_setup_context(zap, project, host, zap_port)
 
@@ -284,7 +289,7 @@ def zap_compliance_scan(
         token = zap_sa_auth(zap, env, target_url)
         if scan_type == ScanType.LEOAPP:
             success = leo_auth(host, path, token, zap_port)
-            if success:                
+            if success:
                 # Sets a user in the context with the cookie,
                 # and forces all Zap requests to use that cookie
                 zap_setup_cookie(zap, host, context_id)
@@ -294,7 +299,7 @@ def zap_compliance_scan(
     if scan_type == ScanType.API:
         zap_api_import(zap, target_url)
 
-    zap.spider.scan(contextname=project,url=target_url)
+    zap.spider.scan(contextname=project, url=target_url)
 
     if scan_type == ScanType.UI or scan_type == ScanType.LEOAPP:
         zap.ajaxSpider.scan(target_url, contextname=project)
