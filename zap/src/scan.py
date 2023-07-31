@@ -23,6 +23,16 @@ from slack_sdk.web import WebClient as SlackClient
 from zap import ScanType, zap_compliance_scan, zap_connect
 
 
+def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, product_id):
+    """
+    Fetch dojo product name using product_id
+    """
+    dojo = defectdojo.DefectDojoAPIv2(
+        defect_dojo, defect_dojo_key, defect_dojo_user, debug=False, timeout=120)
+    product = dojo.get_product(product_id=product_id)
+    return product.data["name"]
+
+
 def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str, subfoldername=None):
     """
     Upload scans to a GCS bucket and return the path to the file in Cloud Console.
@@ -36,7 +46,8 @@ def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str, subfolderna
         path = f"{scan_type}-scans/{date}/{subfoldername}/{filename}"
     blob = bucket.blob(path)
     blob.upload_from_filename(filename)
-    return f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}"        
+    return f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}"
+
 
 def error_slack_alert(error: str, token: str, channel: str):
     """
@@ -69,10 +80,10 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
 
     absolute_path = os.path.abspath(zap_filename)
     date = datetime.today().strftime("%Y%m%d%H:%M")
-    
+
     try:
         lead_id = dojo.list_users(defect_dojo_user).data["results"][0]["id"]
-    except:
+    except Exception:
         logging.error("Did not retrieve dojo user ID, upload failed.")
         return
 
@@ -281,6 +292,9 @@ def slack_alert_without_report(  # pylint: disable=too-many-arguments
         logging.info("Alert sent to Slack channel for DefectDojo upload report")
 
 def clean_uri_path(xml_report):
+    """
+    Remove the changing hash from the path of static resources in zap report.
+    """
     tree = ET.parse(xml_report)
     root = tree.getroot()
     #There's a hash in bundled files that is causing flaws to not match, this should remove the hash.
@@ -328,6 +342,10 @@ def main(): # pylint: disable=too-many-locals
             defect_dojo = getenv("DEFECT_DOJO_URL")
             dd = getenv("DEFECT_DOJO")
 
+            # fetch dd poject name
+            dojo_product_name = fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, product_id)
+
+
             # configure logging
             logging.basicConfig(level=logging.INFO,
                 format=f"%(levelname)-8s [{codedx_project} {scan_type}-scan] %(message)s",
@@ -337,7 +355,7 @@ def main(): # pylint: disable=too-many-locals
                 s.value for s in severities))
 
             (zap_filename, session_filename) = zap_compliance_scan(
-                codedx_project, zap_port, target_url, scan_type)
+                dojo_product_name, zap_port, target_url, scan_type)
 
             # optionally, upload them to GCS
             xml_report_url = ""

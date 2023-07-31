@@ -20,6 +20,7 @@ def terra_is_registered(token, env):
     resp = requests.request(
         "GET",
         url + "register/user/v2/self/termsOfServiceComplianceStatus",
+        timeout=5,
         headers={
             "Authorization": token
         })
@@ -58,6 +59,7 @@ def terra_register_sa(token, env):
         resp = requests.request(
         "POST",
         url,
+        timeout=5,
         headers={
             "Authorization": token,
             "Content-Type": "application/json"
@@ -82,6 +84,7 @@ def terra_auth_logged_in(token, env):
     resp = requests.request(
         "GET",
         url,
+        timeout=5,
         headers={
             "Authorization": token
         }
@@ -106,6 +109,7 @@ def terra_tos(token, env):
     resp = requests.request(
         "POST",
         url,
+        timeout=5,
         headers={
             "Authorization": token,
             "Content-Type": "application/json"
