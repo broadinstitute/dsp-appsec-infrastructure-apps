@@ -15,11 +15,10 @@ client = WebClient(token=slack_token,
                          ssl=ssl_context)
 
 
-def slacknotify_app_jira(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket):
+def slacknotify_app_jira(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url):
     """
     Sends slack notification when there is:
         1. New app 
-        2. Jira ticket is selected 
 
     Args:
         appsec_slack_channel: Slack channel name
@@ -27,9 +26,6 @@ def slacknotify_app_jira(appsec_slack_channel, dojo_name, security_champion, pro
         security_champion: Security champion name
         product_id: Product in defectdojo
         dojo_host: DefectDojo host
-        jira_instance:  Jira Cloud instance
-        project_key_id: Jira project id
-        jira_ticket: Jira ticket path 
 
     Returns:
         Sends slack notification
@@ -62,21 +58,13 @@ def slacknotify_app_jira(appsec_slack_channel, dojo_name, security_champion, pro
                             "text": "Defect Dojo"
                         },
                         "url": "{0}/product/{1}" .format(dojo_host_url, str(product_id))
-                    },
-                    {
-                        "type": "button",
-                        "text": {
-                            "type": "plain_text",
-                            "text": "Jira Ticket"
-                        },
-                        "url": "{0}/projects/{1}/issues/{2}" .format(jira_instance, str(project_key_id), str(jira_ticket))
                     }
                 ]
             }
         ], "color": "#0731b0"}]
     )
 
-def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket):
+def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url):
     """
     Sends slack notification when there is: 
         1. New service
@@ -87,9 +75,6 @@ def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product
         security_champion: Security champion name
         product_id: Product in defectdojo
         dojo_host: DefectDojo host
-        jira_instance:  Jira Cloud instance
-        project_key_id: Jira project id
-        jira_ticket: Jira ticket path 
 
     Returns:
         Sends slack notification
@@ -122,21 +107,13 @@ def slacknotify_jira(appsec_slack_channel, dojo_name, security_champion, product
                             "text": "Defect Dojo"
                         },
                         "url": "{0}/product/{1}" .format(dojo_host_url, str(product_id))
-                    },
-                    {
-                        "type": "button",
-                        "text": {
-                            "type": "plain_text",
-                            "text": "Jira Ticket"
-                        },
-                        "url": "{0}/projects/{1}/issues/{2}" .format(jira_instance, str(project_key_id), str(jira_ticket))
                     }
                 ]
             }
         ], "color": "#0731b0"}]
     )
 
-def slacknotify_updateprod_jira(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url, jira_instance, project_key_id, jira_ticket):
+def slacknotify_updateprod_jira(appsec_slack_channel, dojo_name, security_champion, product_id, dojo_host_url):
     """
     Sends slack notification when there is: 
         1. Existing service updated
@@ -147,9 +124,6 @@ def slacknotify_updateprod_jira(appsec_slack_channel, dojo_name, security_champi
         security_champion: Security champion name
         product_id: Product in defectdojo
         dojo_host: DefectDojo host
-        jira_instance:  Jira Cloud instance
-        project_key_id: Jira project id
-        jira_ticket: Jira ticket path 
 
     Returns:
         Sends slack notification
@@ -182,14 +156,6 @@ def slacknotify_updateprod_jira(appsec_slack_channel, dojo_name, security_champi
                             "text": "Defect Dojo"
                         },
                         "url": "{0}/product/{1}" .format(dojo_host_url, str(product_id))
-                    },
-                    {
-                        "type": "button",
-                        "text": {
-                            "type": "plain_text",
-                            "text": "Jira Ticket"
-                        },
-                        "url": "{0}/projects/{1}/issues/{2}" .format(jira_instance, str(project_key_id), str(jira_ticket))
                     }
                 ]
             }
@@ -383,3 +349,78 @@ def slacknotify_jira_ticket_risk_assessment_error(jtra_slack_channel, user_email
         ], "color": "#bd3022"}]
     )
 
+def slacknotify_error_submit_endpoint(error_message, appsec_sdarq_error_channel, user_email, dojo_name):
+    """
+    Sends Slack notifications to AppSec when there is an error happening in submit endpoint
+
+    Args:
+        appsec_slack_channel: AppSec Slack channel 
+        user_email: Dev email that completed the form
+        error: Exception message 
+        dojo_name: Service name
+
+    Returns:
+        Sends slack notification
+    """
+    client.chat_postMessage(
+        channel=appsec_sdarq_error_channel,
+        text="Error happened for new service/ new app endpoint",
+        attachments=[{"blocks":[
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Error:* `{0}` " .format(str(error_message))
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Dev:* {0} " .format(parse_email.parse_user_email(user_email))
+                }
+            },            
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Service name:* `{0}` " .format(str(dojo_name))
+                }
+            }
+        ], "color": "#bd3022"}]
+    )
+
+
+def slacknotify_jira_ticket_error(error, appsec_sdarq_error_channel, appsec_jira_project_key):
+    """
+    Sends Slack notifications to AppSec when there is an error happening in submit endpoint
+
+    Args:
+        appsec_slack_channel: AppSec Slack channel 
+        user_email: Dev email that completed the form
+        error: Exception message 
+        dojo_name: Service name
+
+    Returns:
+        Sends slack notification
+    """
+    client.chat_postMessage(
+        channel=appsec_sdarq_error_channel,
+        text="Error happened for ticket creation",
+        attachments=[{"blocks":[
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Error:* `{0}` " .format(str(error))
+                }
+            },           
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*JIra Board:* `{0}` " .format(str(appsec_jira_project_key))
+                }
+            }
+        ], "color": "#bd3022"}]
+    )
