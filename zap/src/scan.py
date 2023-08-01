@@ -359,7 +359,7 @@ def main(): # pylint: disable=too-many-locals
 
             # optionally, upload them to GCS
             xml_report_url = ""
-            if scan_type == ScanType.UI:
+            if scan_type == ScanType.UI or scan_type == ScanType.LEOAPP:
                 xml_report_url = upload_gcs(
                     bucket_name,
                     scan_type,
@@ -377,7 +377,7 @@ def main(): # pylint: disable=too-many-locals
             clean_uri_path(zap_filename)
 
             #upload scrubbed results in case we need to do a manual upload
-            if scan_type == ScanType.UI:
+            if scan_type == ScanType.UI or scan_type == ScanType.LEOAPP:
                 xml_report_url = upload_gcs(
                     bucket_name,
                     scan_type,
