@@ -60,7 +60,7 @@ def parse_url(url):
     return parsed_hostname, parsed_port, parsed_path
 
 
-def zap_setup_context(zap, project, host, zap_port):
+def zap_setup_context(zap, project, host):
     """
     Setup context and scope for scan
     """
