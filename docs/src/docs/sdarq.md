@@ -15,7 +15,7 @@ SDARQ orchestrates different security tools and scanners owned by the DSP Appsec
 
 ## What does it offer?
 
-### New Service Requirements
+### New Service/App Requirements
 
 - Create a security checklist (recommendations) for dev teams
 - Report to Slack
