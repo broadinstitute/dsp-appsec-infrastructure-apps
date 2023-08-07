@@ -12,6 +12,7 @@ apiVersion: v1
 data:
   appsec_jira_project_key: Appsec team Jira board Key
   appsec_slack_channel: Appsec team Slack channel to get notifications
+  appsec_sdarq_error_channel: AppSec Slack channel to get notifications when there is an error for the user requests
   dojo_api_key: DefectDojo API key
   dojo_host_url: DefectDojo host link
   jira_api_token: Jira API token

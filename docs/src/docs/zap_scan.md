@@ -12,7 +12,7 @@ Defect Dojo is the single source of truth for zap scans. List of endpoints found
 Each endpoint to be scanned must include a tag with the format 
 - (OPTIONAL) “codedx:[CODEDX-PROJECT]” to identify which project the results of the scan should be uploaded to on codedx, if you are not using CodeDx, add this tag with a test name 
 - "product_id:[PRODUCT_ID]” Defectdojo product id where zap scan will upload the results.  
-- “scan:[SCAN-TYPE]” the endpoint must also include a tag for each scan to be run on the endpoint in the form of `baseline`, `api`, `auth`, `ui`.
+- “scan:[SCAN-TYPE]” the endpoint must also include a tag for each scan to be run on the endpoint in the form of `baseline`, `api`, `auth`, `ui`, `leoapp`.
 - “slack:[#SLACK-CHANNEL]” a tag specifying a slack channel for notifications is also included with each endpoint in the form .
 
 
@@ -21,6 +21,7 @@ Scan types:
 - Auth Scans - Spidering and Passive scans but authenticate every 30 minutes by fetching a GCP OAuth token and using Zap’s Replacer tool
 - API Scan - Imports an OpenAPI file (via URL) before running an auth scan
 - UI Scan - Auth scan + Active Scan
+- Leo App - Auth scan + Active Scan for apps running in Azure
 
 
 ZAP scanner runs:
