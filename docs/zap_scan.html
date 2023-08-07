@@ -61,7 +61,7 @@ Zap scans uses the GKE job-dispatcher pattern to run weekly and monthly scans. A
 <ul>
 <li>(OPTIONAL) “codedx:[CODEDX-PROJECT]” to identify which project the results of the scan should be uploaded to on codedx, if you are not using CodeDx, add this tag with a test name</li>
 <li>&quot;product_id:[PRODUCT_ID]” Defectdojo product id where zap scan will upload the results.</li>
-<li>“scan:[SCAN-TYPE]” the endpoint must also include a tag for each scan to be run on the endpoint in the form of <code>baseline</code>, <code>api</code>, <code>auth</code>, <code>ui</code>.</li>
+<li>“scan:[SCAN-TYPE]” the endpoint must also include a tag for each scan to be run on the endpoint in the form of <code>baseline</code>, <code>api</code>, <code>auth</code>, <code>ui</code>, <code>leoapp</code>.</li>
 <li>“slack:[#SLACK-CHANNEL]” a tag specifying a slack channel for notifications is also included with each endpoint in the form .</li>
 </ul>
 <p>Scan types:</p>
@@ -70,6 +70,7 @@ Zap scans uses the GKE job-dispatcher pattern to run weekly and monthly scans. A
 <li>Auth Scans - Spidering and Passive scans but authenticate every 30 minutes by fetching a GCP OAuth token and using Zap’s Replacer tool</li>
 <li>API Scan - Imports an OpenAPI file (via URL) before running an auth scan</li>
 <li>UI Scan - Auth scan + Active Scan</li>
+<li>Leo App - Auth scan + Active Scan for apps running in Azure</li>
 </ul>
 <p>ZAP scanner runs:</p>
 <ul>
