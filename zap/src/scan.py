@@ -318,8 +318,6 @@ def main(): # pylint: disable=too-many-locals
         # run Zap scan
         try:
             # parse env variables
-            zap_port = int(getenv("ZAP_PORT", ""))
-
             codedx_project = getenv("CODEDX_PROJECT")
             codedx_url = getenv("CODEDX_URL")
             codedx_api_key = getenv("CODEDX_API_KEY")
@@ -355,7 +353,7 @@ def main(): # pylint: disable=too-many-locals
                 s.value for s in severities))
 
             (zap_filename, session_filename) = zap_compliance_scan(
-                dojo_product_name, zap_port, target_url, scan_type)
+                dojo_product_name, target_url, scan_type)
 
             # optionally, upload them to GCS
             xml_report_url = ""
@@ -418,7 +416,7 @@ def main(): # pylint: disable=too-many-locals
                 )
 
 
-            zap = zap_connect(zap_port)
+            zap = zap_connect()
             zap.core.shutdown()
         except Exception as error: # pylint: disable=broad-except
             error_message = f"[RETRY-{ attempt }] Exception running Zap Scans: { error }"
@@ -427,7 +425,7 @@ def main(): # pylint: disable=too-many-locals
                 error_message = f"Error running Zap Scans for { target_url }. Last known error: { error }"
                 error_slack_alert(error_message, slack_token, slack_channel)
                 try:
-                    zap = zap_connect(zap_port)
+                    zap = zap_connect()
                     zap.core.shutdown()
                 except Exception as zap_e: # pylint: disable=broad-except
                     error_message = f"Error shutting down zap: { zap_e }"

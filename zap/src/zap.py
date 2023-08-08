@@ -14,26 +14,29 @@ import terra_auth
 from google.auth.transport.requests import Request as GoogleAuthRequest
 from zap_common import (wait_for_zap_start, write_report, zap_access_target,
                         zap_wait_for_passive_scan)
+from zap_scan_type import ScanType
 from zapv2 import ZAPv2
 
 TIMEOUT_MINS = 5
 
+zap_port = int(os.getenv("ZAP_PORT", ""))
+proxy = f"http://localhost:{zap_port}"
 
-def zap_connect(zap_port: int):
+
+def zap_connect():
     """
     Connect to the Zap instance
     """
-    proxy = f"http://localhost:{zap_port}"
     zap = ZAPv2(proxies={"http": proxy, "https": proxy})
     wait_for_zap_start(zap, timeout_in_secs=TIMEOUT_MINS * 60)
     return zap
 
 
-def zap_init(zap_port: int, target_url: str):
+def zap_init(target_url: str):
     """
     Connect to ZAP service running on localhost.
     """
-    zap = zap_connect(zap_port)
+    zap = zap_connect()
     zap.core.new_session(name='zap_session', overwrite=True)
     logging.info("Accessing target %s", target_url)
     # replace with api call to core.accessUrl
@@ -57,30 +60,17 @@ def parse_url(url):
     return parsed_hostname, parsed_port, parsed_path
 
 
-def zap_setup_context(zap, project, host, zap_port):
+def zap_setup_context(zap, project, host):
     """
     Setup context and scope for scan
     """
-    proxy = f"http://localhost:{zap_port}"
-    proxies = {
-        'http': proxy,
-        'https': proxy,
-        }
 
     zap.context.new_context(project)
     context_id = zap.context.context(project)["id"]
     zap.authentication.set_authentication_method(context_id, "manualAuthentication")
 
     zap.context.include_in_context(project, ".*" + host + ".*")
-    resp = requests.get(f"https://{host}/config.json", proxies=proxies, verify=False)
-    try:
-        config_json = resp.json()
-        for key in config_json:
-            if "Root" in key:
-                zap.context.include_in_context(project, config_json[key] + ".*")
-    except Exception:
-        # If there's no config.json, return.
-        logging.info("No config.json found")
+    
 
     return context_id
 
@@ -114,17 +104,16 @@ def zap_sa_auth(zap: ZAPv2, env):
     return token
 
 
-def leo_auth(host, path, token, zap_port):
+def leo_auth(host, path, token):
     """
     Set up cookie auth for leo apps.
     """
-    proxy = f"http://localhost:{zap_port}"
     proxies = {
         'http': proxy,
         'https': proxy,
         }
 
-    zap = zap_connect(zap_port)
+    zap = zap_connect()
     zap.httpsessions.add_default_session_token("LeoToken")
     logging.info("Authenticating to Leo...")
     # Leo apps if already launched have a separate domain from Leo.
@@ -203,23 +192,7 @@ def get_gcp_token() -> str:
     return credentials.token
 
 
-class ScanType(str, Enum):
-    """
-    Enumerates Zap compliance scan types
-    """
 
-    API = "API"
-    AUTH = "Authenticated"
-    BASELINE = "Baseline"
-    UI = "UI"
-    LEOAPP = "LeoApp"
-
-    def __str__(self):
-        return str(self.name).lower()
-
-    def label(self):
-        """"Get user-friendly name of the scan type"""
-        return str(self.value)
 
 
 def zap_report(zap: ZAPv2, project: str, scan_type: ScanType):
@@ -258,7 +231,6 @@ def zap_save_session(zap: ZAPv2,
 
 def zap_compliance_scan(
     project: str,
-    zap_port: int,
     target_url: str,
     scan_type: ScanType = ScanType.BASELINE,
 ):
@@ -268,7 +240,7 @@ def zap_compliance_scan(
 
     host, _, path = parse_url(target_url)
 
-    zap = zap_init(zap_port, target_url)
+    zap = zap_init(target_url)
     env = "prod"  # set prod as default
     if "dev" in host:
         env = "dev"
@@ -283,12 +255,12 @@ def zap_compliance_scan(
     # LEOAPP - authenticated with SA and registered cookie, active scan and ajax spider is performed
 
     # Set up context for scan
-    context_id = zap_setup_context(zap, project, host, zap_port)
+    context_id = zap_setup_context(zap, project, host)
 
     if scan_type != ScanType.BASELINE:
         token = zap_sa_auth(zap, env)
         if scan_type == ScanType.LEOAPP:
-            success = leo_auth(host, path, token, zap_port)
+            success = leo_auth(host, path, token)
             if success:
                 # Sets a user in the context with the cookie,
                 # and forces all Zap requests to use that cookie
