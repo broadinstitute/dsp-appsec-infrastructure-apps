@@ -493,7 +493,7 @@ def request_tm():
     except Exception as e:
         error_message = f"Exception in /request_tm endpoint: {e}"
         logging.warning(error_message)
-        return jsonify({'statusText': str(e)}), 400
+        return jsonify({'statusText': 'There was an exception!'}), 400
 
 
 @app.route('/zap_scan/', methods=['POST'])
@@ -812,9 +812,9 @@ def request_manual_pentest():
         return jsonify({'statusText': error_message}), 400 
     
     except Exception as e:
-        error_message = f"Exception /request_manual_pentest enspoint: {e}"
+        error_message = f"Exception for /request_manual_pentest endpoint: {e}"
         logging.warning(error_message)
-        return jsonify({'statusText': str(e)}), 400
+        return jsonify({'statusText': 'There was an exception!'}), 400
 
 
 @app.route('/submit_jtra/', methods=['POST'])

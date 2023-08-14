@@ -21,12 +21,12 @@ def notify_appsec(security_controls_firestore_collection, slack_token, slack_cha
     firestore_docs = firestore.Client()
     docs = firestore_docs.collection(security_controls_firestore_collection).stream()
     keyword_maps = {
-        "burp": "security manual pentest",
+        "burp": "Security manual pentest",
         "zap": "DAST",
         "cis_scanner": "CIS scanner",
         "sourceclear": "3rd party dependencies scan",
-        "docker_scan": "container image scan",
-        "threat_model": "threat model",
+        "docker_scan": "Container image scan",
+        "threat_model": "Threat model",
         "sast": "SAST"
     }
 
