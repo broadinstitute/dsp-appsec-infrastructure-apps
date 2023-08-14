@@ -13,7 +13,7 @@ RUN apt-get update && \
         build-essential \
         git-core \
         ruby-dev \
-        ruby2.2.0 \
+        ruby 2.2.0 \
     && \
     pip3 install -Ur requirements.txt \
     && \
