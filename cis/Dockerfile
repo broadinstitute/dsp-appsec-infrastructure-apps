@@ -44,7 +44,7 @@ RUN apt-get update && \
     && \
     useradd -m "${USER}" && \
     mkdir .inspec && \
-    which inspec && \
+    which inspec &&  \
     chown "${USER}" .inspec inspec-*-cis-*
 
 
