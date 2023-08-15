@@ -37,7 +37,7 @@ def benchmark(target_project_id: str, profile: str):
         '-t', 'gcp://', '--reporter', 'json',
         '--input', f'gcp_project_id={target_project_id}',
         f"registry_storage_legacy_bucket_owner_list=[projectEditor:{target_project_id},projectOwner:{target_project_id}]",
-    ], stdout=subprocess.PIPE, stderr=sys.stderr, text=True, check=False)
+    ], stdout=subprocess.PIPE, stderr=sys.stderr, text=True, check=False, shell=True)
 
     # normal exit codes as documented at
     # https://www.inspec.io/docs/reference/cli
