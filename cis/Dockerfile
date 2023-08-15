@@ -17,7 +17,7 @@ RUN apt-get update && \
         && \
     /bin/bash -c "\curl -sSL https://get.rvm.io | bash -s stable --ruby=2.7.8"
 
-# ENV PATH="/usr/local/rvm/rubies/ruby-2.7.6/bin:${PATH}"
+ENV PATH="/usr/local/rvm/rubies/ruby-2.7.8/bin:${PATH}"
 
 COPY requirements.txt .
 
