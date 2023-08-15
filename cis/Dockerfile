@@ -15,9 +15,15 @@ RUN apt-get update && \
         ruby-dev \
         ruby \
     && \
-    pip3 install -Ur requirements.txt \
-    && \
-    gem install inspec-bin -v 5.18.14 -qN && \
+    pip3 install -Ur requirements.txt && \
+    # Clone InSpec repository, apply fix, and install modified gem
+    git clone https://github.com/inspec/inspec.git && \
+    cd inspec && \
+    git checkout cc5346f780d08b76aa7493062ed25127bf5c8b16 && \
+    gem build inspec.gemspec && \
+    gem install inspec-*.gem -qN && \
+    cd .. && \
+    gem install inspec-bin -qN && \
     git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gcp-cis-benchmark.git && \
     git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gke-cis-benchmark.git && \
     mv inspec-gke-cis-benchmark/inspec-gke-cis-gcp . && \
@@ -45,7 +51,6 @@ COPY *.py /
 RUN pylint --disable=W0702,W0613,E0611,C0301,E1101,R0913,W1309,C0209 /*.py
 
 RUN pytest /entrypoint_test.py
-
 
 
 FROM base
