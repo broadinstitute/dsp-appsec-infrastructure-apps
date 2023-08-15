@@ -6,6 +6,19 @@ ARG USER
 
 ENV CHEF_LICENSE="accept-no-persist"
 
+# Install Ruby 2.7.6 using RVM
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        git-core \
+        ruby-dev \
+        && \
+    apt-get install -y wget \
+        && \
+    /bin/bash -c "\curl -sSL https://get.rvm.io | bash -s stable --ruby=2.7.6"
+
+ENV PATH="/usr/local/rvm/rubies/ruby-2.7.6/bin:${PATH}"
+
 COPY requirements.txt .
 
 RUN apt-get update && \
@@ -13,11 +26,10 @@ RUN apt-get update && \
         build-essential \
         git-core \
         ruby-dev \
-        ruby \
     && \
     pip3 install -Ur requirements.txt \
     && \
-    gem install inspec-bin -v 5.18.14 -qN && \
+    gem install inspec-bin -qN && \
     git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gcp-cis-benchmark.git && \
     git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gke-cis-benchmark.git && \
     mv inspec-gke-cis-benchmark/inspec-gke-cis-gcp . && \
