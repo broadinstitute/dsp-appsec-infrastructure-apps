@@ -16,14 +16,7 @@ RUN apt-get update && \
         ruby \
     && \
     pip3 install -Ur requirements.txt && \
-    # Clone InSpec repository, apply fix, and install modified gem
-    git clone https://github.com/inspec/inspec.git && \
-    cd inspec && \
-    git checkout cc5346f780d08b76aa7493062ed25127bf5c8b16 && \
-    gem build inspec.gemspec && \
-    gem install inspec-*.gem -qN && \
-    cd .. && \
-    gem install inspec-bin -qN && \
+    gem install inspec-bin -v 4.48.3 -qN && \  # Replace with the correct version
     git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gcp-cis-benchmark.git && \
     git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gke-cis-benchmark.git && \
     mv inspec-gke-cis-benchmark/inspec-gke-cis-gcp . && \
