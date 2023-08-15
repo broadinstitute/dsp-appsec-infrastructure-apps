@@ -39,8 +39,7 @@ def benchmark(target_project_id: str, profile: str):
         f"registry_storage_legacy_bucket_owner_list=[projectEditor:{target_project_id},projectOwner:{target_project_id}]",
     ], stdout=subprocess.PIPE, stderr=sys.stderr, text=True, check=False, shell=True)
 
-    # normal exit codes as documented at
-    # https://www.inspec.io/docs/reference/cli
+    # normal exit codes as documented at https://www.inspec.io/docs/reference/cli
     if proc.returncode not in (0, 100, 101):
         raise subprocess.CalledProcessError(proc.returncode, proc.args)
 
