@@ -13,11 +13,11 @@ RUN apt-get update && \
         build-essential \
         git-core \
         ruby-dev \
-        ruby 2.2.0 \
+        ruby \
     && \
     pip3 install -Ur requirements.txt \
     && \
-    gem install inspec-bin -qN && \
+    gem install inspec-bin -v 5.18.14 -qN && \
     git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gcp-cis-benchmark.git && \
     git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gke-cis-benchmark.git && \
     mv inspec-gke-cis-benchmark/inspec-gke-cis-gcp . && \
