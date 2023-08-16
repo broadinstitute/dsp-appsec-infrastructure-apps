@@ -211,7 +211,7 @@ steps:
 # deploy CIS scanner resources
 - id: cis
   name: *kubectl
-  waitFor: ['shared', 'batch-dispatcher-image', 'cis-image']
+  waitFor: ['shared', 'batch-dispatcher-image']
   entrypoint: ./deploy.sh
   dir: cis
   env:
