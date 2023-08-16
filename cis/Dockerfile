@@ -17,7 +17,7 @@ RUN apt-get update && \
         && \
     /bin/bash -c "\curl -sSL https://get.rvm.io | bash -s stable --ruby=2.7.8"
 
-ENV PATH="/usr/local/rvm/rubies/ruby-2.7.8/bin:${PATH}"
+# ENV PATH="/usr/local/rvm/rubies/ruby-2.7.8/bin:${PATH}"
 
 COPY requirements.txt .
 
@@ -29,7 +29,7 @@ RUN apt-get update && \
     && \
     pip3 install -Ur requirements.txt \
     && \
-    gem install inspec-bin -v 5.21.29 -qN && \
+    gem install inspec-bin -qN && \
     # Clone GitHub repositories here
     mkdir inspec-gke-cis-benchmark && \
     git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gcp-cis-benchmark.git inspec-gke-cis-benchmark && \
