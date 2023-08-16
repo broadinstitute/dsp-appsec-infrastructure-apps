@@ -71,17 +71,17 @@ steps:
       --destination=$${BATCH_DISPATCHER_IMAGE}
       --cache
 
-# build CIS Docker image
-- id: cis-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/cis
-      --destination=$${CIS_IMAGE}
-      --cache
+# # build CIS Docker image
+# - id: cis-image
+#   name: *kaniko
+#   waitFor: ['kaniko']
+#   entrypoint: sh
+#   args:
+#   - -c
+#   - executor
+#       --context=dir:///workspace/cis
+#       --destination=$${CIS_IMAGE}
+#       --cache
 
 # build SDARQ-security-controls Docker image
 - id: sdarq-security-controls-image
