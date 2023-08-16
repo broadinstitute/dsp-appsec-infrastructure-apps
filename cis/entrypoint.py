@@ -33,7 +33,7 @@ def benchmark(target_project_id: str, profile: str):
     """
     logging.info("Running %s for %s", profile, target_project_id)
     proc = subprocess.run([
-        'inspec', 'exec', profile,
+        '/bin/sh/inspec', 'exec', profile,
         '-t', 'gcp://', '--reporter', 'json',
         '--input', f'gcp_project_id={target_project_id}',
         f"registry_storage_legacy_bucket_owner_list=[projectEditor:{target_project_id},projectOwner:{target_project_id}]",
