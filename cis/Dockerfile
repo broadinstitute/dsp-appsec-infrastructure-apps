@@ -7,15 +7,15 @@ ARG USER
 ENV CHEF_LICENSE="accept-no-persist"
 
 # Install Ruby 2.7.8 using RVM
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        build-essential \
-        git-core \
-        ruby-dev \
-        && \
-    apt-get install -y wget \
-        && \
-    /bin/bash -c "\curl -sSL https://get.rvm.io | bash -s stable --ruby=2.7.8"
+# RUN apt-get update && \
+#     apt-get install -y --no-install-recommends \
+#         build-essential \
+#         git-core \
+#         ruby-dev \
+#         && \
+#     apt-get install -y wget \
+#         && \
+#     /bin/bash -c "\curl -sSL https://get.rvm.io | bash -s stable --ruby=2.7.8"
 
 # ENV PATH="/usr/local/rvm/rubies/ruby-2.7.8/bin:${PATH}"
 
@@ -27,13 +27,18 @@ RUN apt-get update && \
         git-core \
         ruby-dev \
     && \
+    apt-get install -y wget \
+    && \
+    /bin/bash -c "\curl -sSL https://get.rvm.io | bash -s stable --ruby=2.7.8" \
+    && \
     pip3 install -Ur requirements.txt \
     && \
     gem install inspec-bin -qN && \
-    # Clone GitHub repositories here
-    mkdir inspec-gke-cis-benchmark && \
-    git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gcp-cis-benchmark.git inspec-gke-cis-benchmark && \
-    git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gke-cis-benchmark.git inspec-gke-cis-k8s && \
+    git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gcp-cis-benchmark.git && \
+    git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gke-cis-benchmark.git && \
+    mv inspec-gke-cis-benchmark/inspec-gke-cis-gcp . && \
+    mv inspec-gke-cis-benchmark/inspec-gke-cis-k8s . \
+    && \
     apt-get remove -y \
         build-essential \
         git-core \
@@ -44,9 +49,9 @@ RUN apt-get update && \
     && \
     useradd -m "${USER}" && \
     mkdir .inspec && \
-    which inspec && \
     chown "${USER}" .inspec inspec-*-cis-*
 
+RUN which inspec
 
 FROM base AS test
 
