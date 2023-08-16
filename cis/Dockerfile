@@ -6,7 +6,7 @@ ARG USER
 
 ENV CHEF_LICENSE="accept-no-persist"
 
-# Install Ruby 2.7.6 using RVM
+# Install Ruby 2.7.8 using RVM
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         build-essential \
@@ -17,7 +17,7 @@ RUN apt-get update && \
         && \
     /bin/bash -c "\curl -sSL https://get.rvm.io | bash -s stable --ruby=2.7.8"
 
-# ENV PATH="/usr/local/rvm/rubies/ruby-2.7.8/bin:${PATH}"
+ENV PATH="/usr/local/rvm/rubies/ruby-2.7.8/bin:${PATH}"
 
 COPY requirements.txt .
 
