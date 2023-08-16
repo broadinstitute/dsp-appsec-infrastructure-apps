@@ -15,7 +15,7 @@ options:
   - BATCH_DISPATCHER_IMAGE=us.gcr.io/${PROJECT_ID}/batch-dispatcher:${SHORT_SHA}
   - BASTION_IMAGE=us.gcr.io/${PROJECT_ID}/bastion
   - BASTION_PORT=1080
-  - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis@sha256:4fcb0c8c6f1d9829e4435663aa7ce79ccdeb3359316640edbd56afa6303420e6
+  - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis@sha256:391cc8970233c29cb461af5cb7cdf5dea24ed00549506633601bf75be5f78baf
   - ZAP_IMAGE=us.gcr.io/${PROJECT_ID}/zap:${SHORT_SHA}
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
   - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx
