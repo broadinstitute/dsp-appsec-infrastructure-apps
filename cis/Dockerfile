@@ -29,7 +29,7 @@ RUN apt-get update && \
     && \
     pip3 install -Ur requirements.txt \
     && \
-    gem install inspec-bin -qN && \
+    gem install inspec-bin -v 5.21.29 -qN && \
     # Clone GitHub repositories here
     mkdir inspec-gke-cis-benchmark && \
     git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gcp-cis-benchmark.git inspec-gke-cis-benchmark && \
