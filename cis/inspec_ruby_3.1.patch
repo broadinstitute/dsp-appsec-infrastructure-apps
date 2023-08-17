@@ -1,0 +1,49 @@
+From cc5346f780d08b76aa7493062ed25127bf5c8b16 Mon Sep 17 00:00:00 2001
+From: Robert Clark <robert.clark@kirkpatrickprice.com>
+Date: Mon, 20 Jun 2022 15:12:16 -0400
+Subject: [PATCH] Properly split args and kwargs for Ruby 3.x when loading
+ resources.
+
+By default, InSpec calls super on defined resources automatically. On Ruby 3.x this is broken since args and kwargs are handled differently. This fixes the problem by properly splitting out the parameters. Fixes #6154 https://github.com/GoogleCloudPlatform/inspec-gcp-helpers/issues/12
+
+Signed-off-by: Robert Clark <robert.clark@kirkpatrickprice.com>
+---
+ lib/inspec/profile_context.rb | 4 ++--
+ lib/inspec/resource.rb        | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/lib/inspec/profile_context.rb b/lib/inspec/profile_context.rb
+index a479736d3d..17b40daaa0 100644
+--- a/lib/inspec/profile_context.rb
++++ b/lib/inspec/profile_context.rb
+@@ -253,11 +253,11 @@ def add_registry_methods(profile_context)
+ 
+           registry = profile_context.resource_registry
+           registry.each do |id, r|
+-            define_method(id) { |*args| r.new(be, id.to_s, *args) }
++            define_method(id) { |*args, **kwargs| r.new(be, id.to_s, *args, **kwargs) }
+ 
+             next if be.respond_to?(id)
+ 
+-            bec.define_method(id) { |*args| r.new(be, id.to_s, *args) }
++            bec.define_method(id) { |*args, **kwargs| r.new(be, id.to_s, *args, **kwargs) }
+           end
+         end # add_resource_methods
+       end # ClassMethods
+diff --git a/lib/inspec/resource.rb b/lib/inspec/resource.rb
+index 253c710e89..c695e5bd90 100644
+--- a/lib/inspec/resource.rb
++++ b/lib/inspec/resource.rb
+@@ -121,10 +121,10 @@ def self.__register(name, resource_klass)
+         # initialize methods from having to call super, which is,
+         # quite frankly, dumb. Avoidable even with some simple
+         # documentation.
+-        def initialize(backend, name, *args)
++        def initialize(backend, name, *args, **kwargs)
+           supersuper_initialize(backend, name) do
+             @resource_params = args
+-            super(*args)
++            super(*args, **kwargs)
+           end
+         end
+       end

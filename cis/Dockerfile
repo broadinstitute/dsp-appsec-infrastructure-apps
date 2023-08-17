@@ -6,7 +6,7 @@ ARG USER
 
 ENV CHEF_LICENSE="accept-no-persist"
 
-COPY requirements.txt .
+COPY requirements.txt inspec_ruby_3.1.patch /
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -18,6 +18,11 @@ RUN apt-get update && \
     pip3 install -Ur requirements.txt \
     && \
     gem install inspec-bin -qN && \
+    # Remove patching if this PR is merged:
+    # https://github.com/inspec/inspec/pull/6155
+    cd /var/lib/gems/*/gems/inspec-core-*/ && \
+    patch -N -p1 < /inspec_ruby_3.1.patch && \
+    cd / && \
     git clone --depth 1 https://github.com/GoogleCloudPlatform/inspec-gcp-cis-benchmark.git && \
     git clone --depth 1 https://github.com/broadinstitute/inspec-gke-cis-benchmark.git && \
     mv inspec-gke-cis-benchmark/inspec-gke-cis-gcp . && \
