@@ -25,7 +25,6 @@ BENCHMARK_PROFILES = (
     'inspec-gke-cis-k8s',
 )
 
-
 def benchmark(target_project_id: str, profile: str):
     """
     Runs a Google Cloud Inspec CIS benchmark profile
