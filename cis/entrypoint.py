@@ -4,7 +4,7 @@ This module
 - scans a GCP project with Inspec GCP CIS Benchmark
 - records results into a BigQuery table
 - optionally notifies a Slack channel about results
-- optionally records completion in a Firestore doc
+- optionally records completion in a Firestore doc and Slack
 """
 
 import json
