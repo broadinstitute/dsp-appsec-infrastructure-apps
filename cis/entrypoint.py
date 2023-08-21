@@ -297,6 +297,54 @@ def slack_notify_high(records: List[Any], slack_token: str,
             ], "color": "#C31818"}]
         )
 
+def slack_error(slack_token ,slack_channel, error, target_project_id):
+    """
+    This functions sends an alert if there is scanning error
+    """
+    client = WebClient(token=slack_token)
+    client.chat_postMessage(
+            channel=slack_channel,
+            attachments=[{"blocks": [
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text":
+                            f"* Error raised while running `{target_project_id}` GCP project* :gcpcloud: :",
+                    }
+                },
+                {
+                    "type": "divider"
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": f"*Title*:* {0} " .format(str(error))
+
+                    }
+                },
+                {
+                    "type": "divider"
+                },
+                {
+                    "type": "context",
+                    "elements": [
+                        {
+                            "type": "image",
+                            "image_url":
+                            "https://platform.slack-edge.com/img/default_application_icon.png",
+                            "alt_text": "slack"
+                        },
+                        {
+                            "type": "mrkdwn",
+                            "text": "*GCP* Project Weekly Scan"
+                        }
+                    ]
+                }
+            ], "color": "#CD0000"}]
+        )
+
 
 def validate_project(target_project_id: str):
     """
@@ -349,8 +397,9 @@ def main():
         if fs_collection:
             doc_ref.set({})
 
-    # writes an error in Firestore document if an exception occurs
+    # writes an error in Firestore document if an exception occurs and sends a Slack notification
     except (Exception) as error:
+        slack_error(slack_token, slack_channel, error, target_project_id)
         if fs_collection:
             doc_ref.set({'Error': '{}'.format(error)})
         raise error
