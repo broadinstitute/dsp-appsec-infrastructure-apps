@@ -41,6 +41,7 @@ RUN apt-get update && \
     chown "${USER}" .inspec inspec-*-cis-*
 
 
+
 FROM base AS test
 
 RUN pip3 install -U pylint pytest
