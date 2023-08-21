@@ -18,6 +18,8 @@ RUN apt-get update && \
     pip3 install -Ur requirements.txt \
     && \
     gem install inspec-bin -qN && \
+    # Remove patching if this PR is merged:
+    # https://github.com/inspec/inspec/pull/6155
     cd /var/lib/gems/*/gems/inspec-core-*/ && \
     patch -N -p1 < /inspec_ruby_3.1.patch && \
     cd / && \
