@@ -320,7 +320,7 @@ def slack_error(slack_token ,slack_channel, error, target_project_id):
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": f"*Title*:* {0} " .format(str(error))
+                        "text": f"Error: `{error}`"
 
                     }
                 },
