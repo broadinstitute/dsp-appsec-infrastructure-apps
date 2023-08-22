@@ -21,6 +21,7 @@ def slack_notify(target_project_id: str, slack_token: str, slack_channel: str, r
     client = WebClient(token=slack_token, ssl=ssl_context)
     client.chat_postMessage(
         channel=slack_channel,
+        text="CIS Scanner",
         attachments=[{"blocks": [
             {
                 "type": "section",
@@ -54,6 +55,7 @@ def slack_notify_high(records: List[Any], slack_token: str,
     for row in records:
         client.chat_postMessage(
             channel=slack_channel,
+            text="CIS Scanner",
             attachments=[{"blocks": [
                 {
                     "type": "section",
@@ -118,6 +120,7 @@ def slack_error(slack_token ,slack_channel, error, target_project_id):
     client = WebClient(token=slack_token, ssl=ssl_context)
     client.chat_postMessage(
             channel=slack_channel,
+            text="CIS Scanner",
             attachments=[{"blocks": [
                 {
                     "type": "section",
