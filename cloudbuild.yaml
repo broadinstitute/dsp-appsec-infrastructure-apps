@@ -4,6 +4,7 @@ substitutions:
   _DNS_DOMAIN: '' # fully-resolved DNS domain name (e.g. appsec.example.org)
   _DNS_ZONE: '' # DNS zone name to be created/updated (e.g. appsec)
   _CIS_CONTROLS_IGNORE: '' # CIS controls rule to ignore
+  _CIS_PROD_PROJECTS: '' # CIS prod projects
   _SECURITY_CONTROLS_IGNORE: '' # Security controls set to false ignore for some services
   _SONAR_ORGS: '' # in-scope SonarCloud organizations
   _CODACY_ORGS: '' # in-scope Codacy organizations
@@ -216,6 +217,7 @@ steps:
   dir: cis
   env:
   - CIS_CONTROLS_IGNORE=${_CIS_CONTROLS_IGNORE}
+  - CIS_PROD_PROJECTS=${_CIS_PROD_PROJECTS}
 
 # deploy CodeDx to GKE cluster
 - id: codedx

@@ -28,6 +28,8 @@ data:
             value: ${CIS_DATASET}
           - name: CIS_CONTROLS_IGNORE
             value: ${CIS_CONTROLS_IGNORE}
+          - name: CIS_PROD_PROJECTS
+            value: ${CIS_PROD_PROJECTS}
           - name: SLACK_TOKEN
             valueFrom:
               secretKeyRef:
