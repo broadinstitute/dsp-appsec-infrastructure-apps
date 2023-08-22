@@ -58,7 +58,7 @@ ARG USER
 
 ENV RUBYOPT="-W:no-deprecated"
 
-COPY entrypoint.py scanweekly.py /
+COPY slacknotifications.py entrypoint.py scanweekly.py /
 
 USER ${USER}
 
