@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+This module
+- send slack notifications about results, high findings of level 1 and errors raised.
+"""
 
 import ssl
 from typing import Any, List
@@ -41,32 +45,10 @@ def slack_notify(target_project_id: str, slack_token: str, slack_channel: str, r
     )
 
 
-def find_highs(rows: List[Any], slack_channel: str, slack_token: str, target_project_id: str):
-    """
-    Find high vulnerabilities from GCP project scan.
-    Args:
-       List of project findings, slack channel, slack token
-    Returns:
-        None
-    """
-    records = []
-    for row in rows:
-        if row['failures'] and float(row['impact']) > 0.6:
-            records.append({
-                'impact': row['impact'],
-                'title': row['title'],
-                'description': row['description']
-            })
-    if records:
-        slack_notify_high(records, slack_token,
-                          slack_channel, target_project_id)
-
-
 def slack_notify_high(records: List[Any], slack_token: str,
                       slack_channel: str, target_project_id: str):
     """
-    Post notifications in Slack
-    about high findings
+    Post notifications in Slack about high findings
     """
     client = WebClient(token=slack_token, ssl=ssl_context)
     for row in records:

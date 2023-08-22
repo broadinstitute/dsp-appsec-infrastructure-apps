@@ -186,6 +186,26 @@ def validate_project(target_project_id: str):
     client = resourcemanager.ProjectsClient()
     client.get_project(name=f"projects/{target_project_id}")
 
+def find_highs(rows: List[Any], slack_channel: str, slack_token: str, target_project_id: str):
+    """
+    Find high vulnerabilities from GCP project scan.
+    Args:
+       List of project findings, slack channel, slack token
+    Returns:
+        None
+    """
+    records = []
+    for row in rows:
+        if row['failures'] and float(row['impact']) > 0.6:
+            records.append({
+                'impact': row['impact'],
+                'title': row['title'],
+                'description': row['description']
+            })
+    if records:
+        slacknotifications.slack_notify_high(records, slack_token,
+                          slack_channel, target_project_id)
+
 def main():
     """
     Implements the entrypoint.
@@ -223,7 +243,7 @@ def main():
         if slack_token and slack_channel and slack_results_url:
             slacknotifications.slack_notify(target_project_id, slack_token,
                          slack_channel, slack_results_url)
-            slacknotifications.find_highs(rows, slack_channel, slack_token, target_project_id)
+            find_highs(rows, slack_channel, slack_token, target_project_id)
         # create Firestore document, if specified
 
         if fs_collection:
