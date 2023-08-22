@@ -28,8 +28,6 @@ data:
             value: ${CIS_DATASET}
           - name: CIS_CONTROLS_IGNORE
             value: ${CIS_CONTROLS_IGNORE}
-          - name: CIS_PROD_PROJECTS
-            value: ${CIS_PROD_PROJECTS}
           - name: SLACK_TOKEN
             valueFrom:
               secretKeyRef:
@@ -142,6 +140,8 @@ spec:
                 value: ${PROJECT_ID}
               - name: BQ_DATASET
                 value: ${CIS_DATASET}
+              - name: CIS_PROD_PROJECTS
+                value: ${CIS_PROD_PROJECTS}
               - name: JOB_TOPIC
                 value: ${JOB_TOPIC}
               - name: SLACK_CHANNEL_WEEKLY_REPORT

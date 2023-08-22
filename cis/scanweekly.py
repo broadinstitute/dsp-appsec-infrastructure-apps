@@ -49,6 +49,7 @@ def scan_projects(
     topic_name: str,
     slack_channel_weekly_report: str,
     sdarq_host: str,
+    cis_prod_projects_list_final_list
 ):
     """
     Scan multiply projects by publishing multiple
@@ -70,18 +71,19 @@ def scan_projects(
     for table in tables:
         gcp_project_id = table.table_id.replace("_", "-")
         results_url = f"{sdarq_host}/gcp-project-security-posture/results?project_id={gcp_project_id}"
-        # When a message is published, the client returns a future.
-
-        future = publisher.publish(
-            topic_path,
-            data=message,
-            GCP_PROJECT_ID=gcp_project_id,
-            SLACK_RESULTS_URL=results_url,
-            SLACK_CHANNEL=formatted_slack_channel,
-        )
-        # Publish failures shall be handled in the callback function.
-        future.add_done_callback(get_callback(gcp_project_id))
-        futures.append(future)
+        #Check if the project is prod projects list to scan
+        if gcp_project_id in cis_prod_projects_list_final_list:
+             # When a message is published, the client returns a future.
+            future = publisher.publish(
+                topic_path,
+                data=message,
+                GCP_PROJECT_ID=gcp_project_id,
+                SLACK_RESULTS_URL=results_url,
+                SLACK_CHANNEL=formatted_slack_channel,
+            )
+            # Publish failures shall be handled in the callback function.
+            future.add_done_callback(get_callback(gcp_project_id))
+            futures.append(future)
     concurrent.futures.wait(futures)
 
 
@@ -95,11 +97,14 @@ def main():
     dataset_project_id = os.environ["DATASET_PROJECT_ID"]
     topic_name = os.environ["JOB_TOPIC"]
     sdarq_host = os.environ["SDARQ_HOST"]
+    cis_prod_projects_list = os.getenv('CIS_PROD_PROJECTS', '')
+    cis_prod_projects_list_final_list = cis_prod_projects_list.split(",")
+
 
     tables = list_projects(dataset_project_id, bq_dataset)
 
     scan_projects(
-        tables, dataset_project_id, topic_name, slack_channel_weekly_report, sdarq_host
+        tables, dataset_project_id, topic_name, slack_channel_weekly_report, sdarq_host, cis_prod_projects_list_final_list
     )
 
 

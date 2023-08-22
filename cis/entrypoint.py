@@ -224,8 +224,6 @@ def main():
     fs_collection = os.getenv('FIRESTORE_COLLECTION')
     cis_controls_ignore_list = os.getenv('CIS_CONTROLS_IGNORE', '')
     cis_controls_ignore_final_list = cis_controls_ignore_list.split(",")
-    cis_prod_projects_list = os.getenv('CIS_PROD_PROJECTS', '')
-    cis_prod_projects_list_final_list = cis_prod_projects_list.split(",")
 
     try:
         # define table_id and Firestore doc_ref for reporting success/errors
@@ -242,7 +240,7 @@ def main():
         load_bigquery(target_project_id, dataset_id, table_id, title, rows)
 
         # post to Slack, if specified
-        if slack_token and slack_channel and slack_results_url and target_project_id in cis_prod_projects_list_final_list:
+        if slack_token and slack_channel and slack_results_url:
             slacknotifications.slack_notify(target_project_id, slack_token,
                          slack_channel, slack_results_url)
             find_highs(rows, slack_channel, slack_token, target_project_id)
