@@ -1,24 +1,20 @@
 #!/usr/bin/env python3
 
 import ssl
-import os
+from typing import Any, List
 from slack_sdk import WebClient
-from typing import Any, List, Set
+
 
 ssl_context = ssl.create_default_context()
 ssl_context.check_hostname = True
 ssl_context.verify_mode = ssl.CERT_REQUIRED
 
-slack_token = os.getenv('slack_token')
-
-client = WebClient(token=slack_token,
-                         ssl=ssl_context)
 
 def slack_notify(target_project_id: str, slack_token: str, slack_channel: str, results_url: str):
     """
     Posts a notification about results to Slack.
     """
-    client = WebClient(token=slack_token)
+    client = WebClient(token=slack_token, ssl=ssl_context)
     client.chat_postMessage(
         channel=slack_channel,
         attachments=[{"blocks": [
@@ -72,7 +68,7 @@ def slack_notify_high(records: List[Any], slack_token: str,
     Post notifications in Slack
     about high findings
     """
-    client = WebClient(token=slack_token)
+    client = WebClient(token=slack_token, ssl=ssl_context)
     for row in records:
         client.chat_postMessage(
             channel=slack_channel,
@@ -137,7 +133,7 @@ def slack_error(slack_token ,slack_channel, error, target_project_id):
     """
     This functions sends an alert if there is scanning error
     """
-    client = WebClient(token=slack_token)
+    client = WebClient(token=slack_token, ssl=ssl_context)
     client.chat_postMessage(
             channel=slack_channel,
             attachments=[{"blocks": [
