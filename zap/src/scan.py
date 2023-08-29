@@ -300,7 +300,8 @@ def clean_uri_path(xml_report):
     #There's a hash in bundled files that is causing flaws to not match, this should remove the hash.
     for uri in root.iter('uri'):
         r=urlparse(uri.text)
-        r=r._replace(path=re.sub('\.([a-zA-Z0-9]+){8,9}', '', r.path))
+        # match a hash after a hyphen or dot and only match 8 or 9 characters of hex
+        r=r._replace(path=re.sub('[-\.][a-fA-F0-9]{8,9}[^a-fA-F0-9]', '', r.path))
         uri.text = urlunparse(r)
     tree.write(xml_report)
 
@@ -387,7 +388,7 @@ def main(): # pylint: disable=too-many-locals
             defectdojo_upload(product_id, zap_filename,
                               defect_dojo_key, defect_dojo_user, defect_dojo)
 
-            
+
             if codedx_api_key == '""' or codedx_project == '':
                 slack_alert_without_report(
                     slack_token,
