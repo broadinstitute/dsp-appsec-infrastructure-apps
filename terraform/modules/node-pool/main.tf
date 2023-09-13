@@ -1,5 +1,5 @@
 resource "google_container_node_pool" "pool" {
-  provider = google-beta
+  provider = google
 
   name     = var.name
   location = var.location
