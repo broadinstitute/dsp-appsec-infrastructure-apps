@@ -436,6 +436,7 @@ def cis_scan():
         except Exception as error:
             error_message = f"Exception /cis_scan endpoint: {error}"
             logging.warning(error_message)
+            slacknotify.slacknotify_error_endpoint(error_message, appsec_sdarq_error_channel, user_email)
             message = """
             There is something wrong with the input! Server did not respond correctly to your request!
             """
@@ -487,11 +488,13 @@ def request_tm():
 
     except jsonschema.ValidationError as e:
         error_message = "Validation error in /request_tm endpoint!"
+        slacknotify.slacknotify_error_endpoint(error_message, appsec_sdarq_error_channel, user_email)
         logging.warning(error_message)
         return jsonify({'statusText': error_message}), 400
 
     except Exception as e:
         error_message = f"Exception in /request_tm endpoint: {e}"
+        slacknotify.slacknotify_error_endpoint(error_message, appsec_sdarq_error_channel, user_email)
         logging.warning(error_message)
         return jsonify({'statusText': 'There was an exception!'}), 400
 
@@ -569,6 +572,7 @@ def zap_scan():
             return jsonify( {'statusText': text_message}), 404
     except Exception as error:
         error_message = f"Exception /zap_scan enspoint: {error}"
+        slacknotify.slacknotify_error_endpoint(error_message, appsec_sdarq_error_channel, user_email)
         logging.warning(error_message)
         message = """
         There is something wrong with the input! Server did not respond correctly to your request!
@@ -622,6 +626,7 @@ def create_sec_control_template():
             return jsonify({'statusText': message}), 400
     except Exception as error:
         error_message = f"Exception /create_sec_controls_template endpoint: {error}"
+        slacknotify.slacknotify_error_endpoint(error_message, appsec_sdarq_error_channel, user_email)
         logging.warning(error_message)
         message = """
         There is something wrong with the input! Server did not respond correctly to your request!
@@ -671,6 +676,7 @@ def edit_sec_controls():
                 return jsonify({'statusText': message}), 404
         except Exception as error:
             error_message = f"Exception /edit_sec_controls enspoint: {error}"
+            slacknotify.slacknotify_error_endpoint(error_message, appsec_sdarq_error_channel, user_email)
             logging.warning(error_message)
             message = """
             There is something wrong with the input! Server did not respond correctly to your request!
@@ -708,9 +714,10 @@ def get_sec_controls():
         logging.info('User %s read security controls for the list of services.', user_email)
         return security_controls
     except Exception as error:
-        message = "Server can't get security controls! Contact AppSec team for more information."
+        error_message = "Server can't get security controls! Contact AppSec team for more information."
+        slacknotify.slacknotify_error_endpoint(error_message, appsec_sdarq_error_channel, user_email)
         logging.warning(f"Exception /get_sec_controls endpoint: {error}")
-        return jsonify({'statusText': message}), 400
+        return jsonify({'statusText': error_message}), 400
 
 
 @app.route('/get_sec_controls_service/', methods=['POST'])
@@ -754,6 +761,7 @@ def get_sec_controls_service():
 
     except Exception as error:
         error_message = f'Exception /get_sec_controls_service endpoint: {error}'
+        slacknotify.slacknotify_error_endpoint(error_message, appsec_sdarq_error_channel, user_email)
         logging.warning(error_message)
         message = 'Server can\'t get security controls! Contact AppSec team for more information.'
         return jsonify({'statusText': message}), 400
@@ -808,11 +816,13 @@ def request_manual_pentest():
 
     except jsonschema.ValidationError as e:
         error_message = "Validation error in /request_manual_pentest endpoint!"
+        slacknotify.slacknotify_error_endpoint(error_message, appsec_sdarq_error_channel, user_email)
         logging.warning(error_message)
         return jsonify({'statusText': error_message}), 400 
     
     except Exception as e:
         error_message = f"Exception for /request_manual_pentest endpoint: {e}"
+        slacknotify.slacknotify_error_endpoint(error_message, appsec_sdarq_error_channel, user_email)
         logging.warning(error_message)
         return jsonify({'statusText': 'There was an exception!'}), 400
 
@@ -887,6 +897,7 @@ def submit_jtra():
             return jsonify(status), 200
     except Exception as error:
         error_message = f"Exception /submitJTRA enspoint: {error}"
+        slacknotify.slacknotify_error_endpoint(error_message, appsec_sdarq_error_channel, user_email)
         logging.warning(error_message)
         slacknotify.slacknotify_jira_ticket_risk_assessment_error(
             jtra_slack_channel, user_email, user_data)
