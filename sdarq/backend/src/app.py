@@ -348,7 +348,8 @@ def cis_results():
                 }
             }, indent=2)
         except Exception as error:
-            error_message = f"Exception /cis_results enspoint: {error}"
+            error_message = f"Exception /cis_results endpoint: {error}"
+            slacknotify.slacknotify_error_endpoint(error_message, appsec_sdarq_error_channel, user_email)
             logging.warning(error_message)
             notfound = """
             This Google project is not found! Did you make sure to supply the right GCP Project ID? Please check again!
