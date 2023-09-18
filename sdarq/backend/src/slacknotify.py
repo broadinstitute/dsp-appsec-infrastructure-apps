@@ -424,3 +424,37 @@ def slacknotify_jira_ticket_error(error, appsec_sdarq_error_channel, appsec_jira
             }
         ], "color": "#bd3022"}]
     )
+
+
+def slacknotify_error_endpoint(error_message, appsec_sdarq_error_channel, user_email):
+    """
+    Sends Slack notifications to AppSec when there is an error happening in submit endpoint
+
+    Args:
+        appsec_slack_channel: AppSec Slack channel 
+        user_email: Dev email that completed the form
+        error: Exception message 
+
+    Returns:
+        Sends slack notification
+    """
+    client.chat_postMessage(
+        channel=appsec_sdarq_error_channel,
+        text="Error happened in SDARQ endpoint",
+        attachments=[{"blocks":[
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Error:* `{0}` " .format(str(error_message))
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "*Dev:* {0} " .format(parse_email.parse_user_email(user_email))
+                }
+            }
+        ], "color": "#bd3022"}]
+    )
