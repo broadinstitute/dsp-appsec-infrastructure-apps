@@ -15,19 +15,10 @@ export class EditSecurityControlsFormComponent implements OnInit {
   json = formJson;
   answers: object;
   service: string;
-  dev_url: string;
-  docker_scan: boolean;
-  cis_scanner: boolean;
-  burp: boolean;
-  security_pentest_link: string;
-  threat_model: boolean;
-  threat_model_link: string;
   data: any;
-  item: any;
   chooseServiceToEditForm: boolean;
   serviceToEditForm: boolean;
   choosenService: string;
-  datas: any;
   showModalError: boolean;
   errorMessage: string;
 
@@ -59,9 +50,6 @@ export class EditSecurityControlsFormComponent implements OnInit {
 
   loadSecurityControls(serviceName) {
     this.getSecurityControls.getServiceSecurityControls(serviceName).subscribe((serviceSecurityControl) => {
-        this.service = serviceSecurityControl.service;
-        this.threat_model = serviceSecurityControl.threat_model;
-        this.burp = serviceSecurityControl.burp;
         this.answers = serviceSecurityControl
       },
       (serviceSecurityControl) => {

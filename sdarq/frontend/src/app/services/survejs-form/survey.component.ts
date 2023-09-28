@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core';
+import { Component, Input, EventEmitter, Output, OnInit, SimpleChanges } from '@angular/core';
 import * as Survey from 'survey-angular';
 import * as widgets from 'surveyjs-widgets';
 import * as SurveyPDF from 'survey-pdf';
@@ -29,13 +29,18 @@ Survey.StylesManager.applyTheme('default');
 })
 export class SurveyComponent implements OnInit {
   @Output() submitSurvey = new EventEmitter<any>();
-  @Input()
-  json: object;
+  @Input() json: object;
+  @Input() answers: object;
   result: any;
   showPDFButton: false;
+  surveyModel: any;
+  arrRequired: object;
+
 
   ngOnInit() {
     const surveyModel = new Survey.Model(this.json);
+    this.surveyModel = surveyModel;
+
     surveyModel.onAfterRenderQuestion.add((survey, options) => {
       if (!options.question.popupdescription) { return; }
       const btn = document.createElement('button');
@@ -60,7 +65,17 @@ export class SurveyComponent implements OnInit {
     Survey.SurveyNG.render('surveyElement', { model: surveyModel });
   }
 
-
+  ngOnChanges(changes: SimpleChanges) {
+    for (const propName in changes) {
+      if (propName ==  "answers")
+      {
+        if (changes[propName].currentValue)
+        {
+          this.surveyModel.data = changes[propName].currentValue;
+        }
+      }
+    }
+  }
 
   savePDF() {
     const options = {
