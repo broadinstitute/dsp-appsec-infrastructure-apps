@@ -18,7 +18,7 @@
        {
         "type": "boolean",
         "name": "threat_model",
-        "title": "Does this servise have a threat model?",
+        "title": "Does this service have a threat model?",
         "hideNumber": true
        },
        {
@@ -67,7 +67,7 @@
        }
       ],
       "questionTitleLocation": "top",
-      "title": "Security Controls Template"
+      "title": "{service} security controls:"
      }
     ]
    }

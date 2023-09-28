@@ -13,6 +13,7 @@ import formJson from './form.json';
 })
 export class EditSecurityControlsFormComponent implements OnInit {
   json = formJson;
+  answers: object;
   service: string;
   dev_url: string;
   docker_scan: boolean;
@@ -25,7 +26,6 @@ export class EditSecurityControlsFormComponent implements OnInit {
   item: any;
   chooseServiceToEditForm: boolean;
   serviceToEditForm: boolean;
-  showServiceData: boolean;
   choosenService: string;
   datas: any;
   showModalError: boolean;
@@ -55,80 +55,27 @@ export class EditSecurityControlsFormComponent implements OnInit {
     this.chooseServiceToEditForm = false;
     this.showModalError = false;
     this.serviceToEditForm = true;
-    this.showServiceData = true;
   }
 
-  loadSecurityControls(datas) {
-    this.getSecurityControls.getServiceSecurityControls(datas).subscribe((serviceSecurityControl) => {
+  loadSecurityControls(serviceName) {
+    this.getSecurityControls.getServiceSecurityControls(serviceName).subscribe((serviceSecurityControl) => {
         this.service = serviceSecurityControl.service;
-        this.dev_url = serviceSecurityControl.dev_url;
         this.threat_model = serviceSecurityControl.threat_model;
-        this.threat_model_link = serviceSecurityControl.threat_model_link;
-        this.docker_scan = serviceSecurityControl.docker_scan;
-        this.cis_scanner = serviceSecurityControl.cis_scanner;
         this.burp = serviceSecurityControl.burp;
-        this.security_pentest_link = serviceSecurityControl.security_pentest_link;
+        this.answers = serviceSecurityControl
       },
       (serviceSecurityControl) => {
         this.ngZone.run(() => {
         this.errorMessage = serviceSecurityControl;
         this.showModalError = true;
         this.serviceToEditForm = false;
-        this.showServiceData = false;
       });
     });
   }
 
 
-  copyDevUrl() {
-    const pending =
-      this.clipboard.beginCopy(this.dev_url);
-    let remainingAttempts = 3;
-    const attempt = () => {
-      const result = pending.copy();
-      if (!result && --remainingAttempts) {
-        setTimeout(attempt);
-      } else {
-        pending.destroy();
-      }
-    };
-    attempt();
-  }
-
-
-  copyTMLink() {
-    const pending =
-      this.clipboard.beginCopy(this.threat_model_link);
-    let remainingAttempts = 3;
-    const attempt = () => {
-      const result = pending.copy();
-      if (!result && --remainingAttempts) {
-        setTimeout(attempt);
-      } else {
-        pending.destroy();
-      }
-    };
-    attempt();
-  }
-
-  copyManualPentestLink() {
-    const pending =
-      this.clipboard.beginCopy(this.security_pentest_link);
-    let remainingAttempts = 3;
-    const attempt = () => {
-      const result = pending.copy();
-      if (!result && --remainingAttempts) {
-        setTimeout(attempt);
-      } else {
-        pending.destroy();
-      }
-    };
-    attempt();
-  }
-
   onSubmit(result) {
     result['service'] = this.service
-    this.showServiceData = false;
     this.editSecurityControls.editSCT(result).subscribe(() => {
       this.ref.detectChanges();
     },
@@ -137,7 +84,6 @@ export class EditSecurityControlsFormComponent implements OnInit {
         this.errorMessage = data;
         this.showModalError = true;
         this.serviceToEditForm = false;
-        this.showServiceData = false;
       });
     });
   }
