@@ -6,6 +6,7 @@ import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { SurveyComponent } from './services/survejs-form/survey.component';
+import {EditSurveyComponent} from './services/edit-survey/editsurvey.component'
 import { SurveyCreatorComponent } from './services/survejs-form/survey.creator.component';
 import { FormComponent } from './form/form.component';
 import { MainpageComponent } from './mainpage/mainpage.component';
@@ -53,6 +54,7 @@ import { SearchServiceSecurityControlsComponent } from './search-service-securit
   declarations: [
     AppComponent,
     SurveyComponent,
+    EditSurveyComponent,
     SurveyCreatorComponent,
     FormComponent,
     MainpageComponent,

@@ -13,6 +13,7 @@ import formJson from './form.json';
 })
 export class EditSecurityControlsFormComponent implements OnInit {
   json = formJson;
+  answers: object;
   service: string;
   dev_url: string;
   docker_scan: boolean;
@@ -68,6 +69,7 @@ export class EditSecurityControlsFormComponent implements OnInit {
         this.cis_scanner = serviceSecurityControl.cis_scanner;
         this.burp = serviceSecurityControl.burp;
         this.security_pentest_link = serviceSecurityControl.security_pentest_link;
+        this.answers = serviceSecurityControl
       },
       (serviceSecurityControl) => {
         this.ngZone.run(() => {

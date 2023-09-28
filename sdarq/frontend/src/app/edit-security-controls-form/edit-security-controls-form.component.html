@@ -46,7 +46,7 @@
                 </div>
             </div>
             <div class="col-sm" *ngIf="serviceToEditForm">
-                <app-survey [json]="json" (submitSurvey)="onSubmit($event)"></app-survey>
+                <app-editsurvey [json]="json" [answers]="answers" (submitSurvey)="onSubmit($event)"></app-editsurvey>
             </div>
         </div>
 
