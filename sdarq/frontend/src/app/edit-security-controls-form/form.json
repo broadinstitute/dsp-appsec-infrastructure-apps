@@ -67,7 +67,7 @@
        }
       ],
       "questionTitleLocation": "top",
-      "title": "Security Controls Template"
+      "title": "{service} security controls:"
      }
     ]
    }

@@ -57,16 +57,11 @@ export class EditSecurityControlsFormComponent implements OnInit {
     this.serviceToEditForm = true;
   }
 
-  loadSecurityControls(datas) {
-    this.getSecurityControls.getServiceSecurityControls(datas).subscribe((serviceSecurityControl) => {
+  loadSecurityControls(serviceName) {
+    this.getSecurityControls.getServiceSecurityControls(serviceName).subscribe((serviceSecurityControl) => {
         this.service = serviceSecurityControl.service;
-        this.dev_url = serviceSecurityControl.dev_url;
         this.threat_model = serviceSecurityControl.threat_model;
-        this.threat_model_link = serviceSecurityControl.threat_model_link;
-        this.docker_scan = serviceSecurityControl.docker_scan;
-        this.cis_scanner = serviceSecurityControl.cis_scanner;
         this.burp = serviceSecurityControl.burp;
-        this.security_pentest_link = serviceSecurityControl.security_pentest_link;
         this.answers = serviceSecurityControl
       },
       (serviceSecurityControl) => {
