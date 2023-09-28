@@ -26,7 +26,6 @@ export class EditSecurityControlsFormComponent implements OnInit {
   item: any;
   chooseServiceToEditForm: boolean;
   serviceToEditForm: boolean;
-  showServiceData: boolean;
   choosenService: string;
   datas: any;
   showModalError: boolean;
@@ -56,7 +55,6 @@ export class EditSecurityControlsFormComponent implements OnInit {
     this.chooseServiceToEditForm = false;
     this.showModalError = false;
     this.serviceToEditForm = true;
-    this.showServiceData = true;
   }
 
   loadSecurityControls(datas) {
@@ -76,61 +74,13 @@ export class EditSecurityControlsFormComponent implements OnInit {
         this.errorMessage = serviceSecurityControl;
         this.showModalError = true;
         this.serviceToEditForm = false;
-        this.showServiceData = false;
       });
     });
   }
 
 
-  copyDevUrl() {
-    const pending =
-      this.clipboard.beginCopy(this.dev_url);
-    let remainingAttempts = 3;
-    const attempt = () => {
-      const result = pending.copy();
-      if (!result && --remainingAttempts) {
-        setTimeout(attempt);
-      } else {
-        pending.destroy();
-      }
-    };
-    attempt();
-  }
-
-
-  copyTMLink() {
-    const pending =
-      this.clipboard.beginCopy(this.threat_model_link);
-    let remainingAttempts = 3;
-    const attempt = () => {
-      const result = pending.copy();
-      if (!result && --remainingAttempts) {
-        setTimeout(attempt);
-      } else {
-        pending.destroy();
-      }
-    };
-    attempt();
-  }
-
-  copyManualPentestLink() {
-    const pending =
-      this.clipboard.beginCopy(this.security_pentest_link);
-    let remainingAttempts = 3;
-    const attempt = () => {
-      const result = pending.copy();
-      if (!result && --remainingAttempts) {
-        setTimeout(attempt);
-      } else {
-        pending.destroy();
-      }
-    };
-    attempt();
-  }
-
   onSubmit(result) {
     result['service'] = this.service
-    this.showServiceData = false;
     this.editSecurityControls.editSCT(result).subscribe(() => {
       this.ref.detectChanges();
     },
@@ -139,7 +89,6 @@ export class EditSecurityControlsFormComponent implements OnInit {
         this.errorMessage = data;
         this.showModalError = true;
         this.serviceToEditForm = false;
-        this.showServiceData = false;
       });
     });
   }
