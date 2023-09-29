@@ -19,7 +19,7 @@
         </div>
         <div class="row" *ngIf="serviceToEditForm">
             <div class="col-sm" *ngIf="serviceToEditForm">
-                <app-editsurvey [json]="json" [answers]="answers" (submitSurvey)="onSubmit($event)"></app-editsurvey>
+                <app-survey [json]="json" [answers]="answers" (submitSurvey)="onSubmit($event)"></app-survey>
             </div>
         </div>
 
