@@ -676,7 +676,7 @@ def edit_sec_controls():
                     user_email)
                 return jsonify({'statusText': message}), 404
         except Exception as error:
-            error_message = f"Exception /edit_sec_controls enspoint: {error}"
+            error_message = f"Exception /edit_sec_controls endpoint: {error}"
             slacknotify.slacknotify_error_endpoint(error_message, appsec_sdarq_error_channel, user_email)
             logging.warning(error_message)
             message = """
