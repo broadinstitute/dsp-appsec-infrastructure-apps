@@ -713,7 +713,7 @@ def get_sec_controls():
         for doc in docs:
             security_controls.append(doc.to_dict())
         logging.info('User %s read security controls for the list of services.', user_email)
-        return security_controls
+        return jsonify(security_controls)
     except Exception as error:
         error_message = "Server can't get security controls! Contact AppSec team for more information."
         slacknotify.slacknotify_error_endpoint(error_message, appsec_sdarq_error_channel, user_email)
