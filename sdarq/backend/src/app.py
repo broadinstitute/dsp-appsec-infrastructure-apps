@@ -749,7 +749,7 @@ def get_sec_controls_service():
         doc_ref = db.collection(security_controls_firestore_collection).document(service_name_lowercase)
         doc = doc_ref.get()
         if doc.exists:
-            return doc.to_dict()
+            return jsonify(doc.to_dict())
         else:
             message = 'This service does not exist!'
             logging.info('User %s requested to read security controls of a service that does not exist.', user_email)
