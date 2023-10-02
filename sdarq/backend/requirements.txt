@@ -16,5 +16,5 @@ google-cloud-logging
 google-cloud-resource-manager
 google-api-core[grpc]>=1.14.0
 python-owasp-zap-v2.4
-werkzeug==0.16.1
+werkzeug
 jsonschema
