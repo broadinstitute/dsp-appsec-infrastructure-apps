@@ -676,7 +676,7 @@ def edit_sec_controls():
                     user_email)
                 return jsonify({'statusText': message}), 404
         except Exception as error:
-            error_message = f"Exception /edit_sec_controls enspoint: {error}"
+            error_message = f"Exception /edit_sec_controls endpoint: {error}"
             slacknotify.slacknotify_error_endpoint(error_message, appsec_sdarq_error_channel, user_email)
             logging.warning(error_message)
             message = """
@@ -713,7 +713,7 @@ def get_sec_controls():
         for doc in docs:
             security_controls.append(doc.to_dict())
         logging.info('User %s read security controls for the list of services.', user_email)
-        return security_controls
+        return jsonify(security_controls)
     except Exception as error:
         error_message = "Server can't get security controls! Contact AppSec team for more information."
         slacknotify.slacknotify_error_endpoint(error_message, appsec_sdarq_error_channel, user_email)
@@ -749,7 +749,7 @@ def get_sec_controls_service():
         doc_ref = db.collection(security_controls_firestore_collection).document(service_name_lowercase)
         doc = doc_ref.get()
         if doc.exists:
-            return doc.to_dict()
+            return jsonify(doc.to_dict())
         else:
             message = 'This service does not exist!'
             logging.info('User %s requested to read security controls of a service that does not exist.', user_email)
