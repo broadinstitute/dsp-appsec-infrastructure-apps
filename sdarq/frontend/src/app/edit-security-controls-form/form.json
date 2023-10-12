@@ -13,12 +13,12 @@
          {
              "type": "regex",
              "text": "Please include a valid link.",
-             "regex": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$"}]
+             "regex": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$|^ *$"}]
        },
        {
         "type": "boolean",
         "name": "threat_model",
-        "title": "Does this servise have a threat model?",
+        "title": "Does this service have a threat model?",
         "hideNumber": true
        },
        {
@@ -32,7 +32,7 @@
          {
              "type": "regex",
              "text": "Please include a valid link.",
-             "regex": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$"}]
+             "regex": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$|^ *$"}]
        },
        {
         "type": "boolean",
@@ -63,11 +63,11 @@
          {
              "type": "regex",
              "text": "Please include a valid link.",
-             "regex": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$"}]
+             "regex": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$|^ *$"}]
        }
       ],
       "questionTitleLocation": "top",
-      "title": "Security Controls Template"
+      "title": "{service} security controls:"
      }
     ]
    }

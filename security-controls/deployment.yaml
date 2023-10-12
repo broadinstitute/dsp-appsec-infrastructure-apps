@@ -12,7 +12,7 @@ spec:
     kind: Project
     external: projects/${PROJECT_ID}
 ---
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name:  ${SERVICE}
@@ -52,7 +52,7 @@ spec:
               - name: SONAR_ORGS
                 value: ${SONAR_ORGS}
 ---
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name:  security-controls-trigger-weekly

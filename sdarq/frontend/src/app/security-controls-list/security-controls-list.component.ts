@@ -61,7 +61,7 @@ export class SecurityControlsListComponent implements OnInit {
 
   threatmodelShowValue(threat_model, threat_model_link) {
     if (threat_model === true) {
-      if (!threat_model_link){
+      if (!threat_model_link || !threat_model_link.trim()){
         this.threat_model_results = true;
         this.threat_model_results_link = false;
       } else {
@@ -111,7 +111,7 @@ export class SecurityControlsListComponent implements OnInit {
   }
 
   devURLShowValue(dev_url) {
-    if (dev_url === '') {
+    if (dev_url === '' || !dev_url.trim()) {
       this.dev_link = false;
       return '<a href="#" data-mdb-toggle="tooltip" title="The URL does not exist!"><i class="fas fa-info-circle blue-color fa-2x"></i><a>'
     } else {

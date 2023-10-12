@@ -34,7 +34,7 @@ SDARQ orchestrates different security tools and scanners owned by the DSP Appsec
 
 - Assess security posture of a service/endpoint
 - Report to Slack
-- Upload results to CodeDx
+- Upload results to CodeDx (optional)
 - Upload results to DefectDojo
 
 ### Jira Ticket Risk Assessment
