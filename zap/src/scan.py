@@ -291,6 +291,9 @@ def slack_alert_without_report(  # pylint: disable=too-many-arguments
         slack.chat_postMessage(channel=channel, text=gcs_slack_text)
         logging.info("Alert sent to Slack channel for DefectDojo upload report")
 
+# match a hash after a hyphen or dot, and only match 8 or 9 characters of hex
+URI_HASH_REGEX = re.compile(r"[-\.][a-fA-F0-9]{8,9}(?![a-fA-F0-9])")
+
 def clean_uri_path(xml_report):
     """
     Remove the changing hash from the path of static resources in zap report.
@@ -300,8 +303,7 @@ def clean_uri_path(xml_report):
     #There's a hash in bundled files that is causing flaws to not match, this should remove the hash.
     for uri in root.iter('uri'):
         r=urlparse(uri.text)
-        # match a hash after a hyphen or dot and only match 8 or 9 characters of hex
-        r=r._replace(path=re.sub('[-\.][a-fA-F0-9]{8,9}[^a-fA-F0-9]', '', r.path))
+        r=r._replace(path=URI_HASH_REGEX.sub('', r.path))
         uri.text = urlunparse(r)
     tree.write(xml_report)
 
