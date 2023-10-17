@@ -1,11 +1,12 @@
 FROM owasp/zap2docker-weekly AS zap
 
-FROM us.gcr.io/broad-dsp-gcr-public/base/python:debian AS base
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:3.10-debian AS base
 
 FROM base AS build
 
 RUN apt-get update && \
-    apt-get install --no-install-recommends -qq git-core && \
+    apt-get install -y --no-install-recommends -qq git-core && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
     python3 -m venv /venv && \
     /venv/bin/pip3 install -U pip
 
