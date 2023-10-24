@@ -19,7 +19,7 @@ data:
 
         containers:
         - name: zap
-          image: owasp/zap2docker-weekly
+          image: softwaresecurityproject/zap-stable
           volumeMounts:
             - name: shared-data
               mountPath: ${VOLUME_SHARE}
