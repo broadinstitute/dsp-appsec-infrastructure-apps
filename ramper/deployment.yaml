@@ -40,7 +40,7 @@ spec:
           containerPort: 80
         readinessProbe: &readinessProbe
           httpGet:
-            path: /Identity/Account/Login
+            path: /index.html
             port: ${TARGET_PORT}
           timeoutSeconds: 5
           initialDelaySeconds: 35
