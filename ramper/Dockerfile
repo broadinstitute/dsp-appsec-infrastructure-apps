@@ -29,8 +29,9 @@ RUN apt-get update && \
     && \
     apt-get update && \
     apt-get install --no-install-recommends -y \
-      aspnetcore-runtime-3.1 \
+      aspnetcore-runtime-6.0 \
       gosu && \
+    apt-get install -y apt-transport-https && \
     rm -rf /var/cache/apt/lists && \
     ln -sf /etc/nginx/conf.d/appsettings.json appsettings.json
 
