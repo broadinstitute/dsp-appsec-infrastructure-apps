@@ -116,7 +116,7 @@ locals {
 
 resource "google_compute_ssl_policy" "ssl_policy" {
   name            = var.cluster_name
-  profile         = "MODERN"
+  profile         = "RESTRICTED"
   min_tls_version = "TLS_1_2"
 }
 
@@ -359,6 +359,7 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
     "dns.resourceRecordSets.create",
     "dns.resourceRecordSets.update",
     "dns.resourceRecordSets.delete",
+    "iam.serviceAccounts.getAccessToken",
     "iam.serviceAccounts.get",
     "iam.serviceAccounts.list",
     "iam.serviceAccounts.create",

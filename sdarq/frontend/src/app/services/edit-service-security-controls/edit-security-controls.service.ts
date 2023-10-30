@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { catchError, map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class EditSecurityControlsService {
 
   editSCT(data): Observable<any> {
     const options = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      headers: new HttpHeaders({ 'Content-Type': 'application/json'}),
     };
     return this.http.put(this.Url, data, options).pipe(
       catchError(this.handleError)

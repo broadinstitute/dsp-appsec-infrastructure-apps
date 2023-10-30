@@ -6,45 +6,20 @@
       "elements": [
        {
         "type": "text",
-        "name": "product",
-        "title": "Product name",
-        "hideNumber": true,
-        "isRequired": true
-       },
-       {
-        "type": "text",
-        "name": "security_champion",
-        "title": "Security Champion",
-        "hideNumber": true,
-        "isRequired": true
-       },
-       {
-        "type": "text",
-        "name": "github",
-        "title": "Github link",
-        "hideNumber": true,
-        "isRequired": true
-       },
-       {
-        "type": "text",
         "name": "dev_url",
         "title": "Dev URL",
         "hideNumber": true,
-        "isRequired": true
-       },
-       {
-        "type": "text",
-        "name": "defect_dojo",
-        "title": "Defect Dojo URL",
-        "hideNumber": true,
-        "isRequired": true
+        "validators": [
+         {
+             "type": "regex",
+             "text": "Please include a valid link.",
+             "regex": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$|^ *$"}]
        },
        {
         "type": "boolean",
         "name": "threat_model",
-        "title": "Does this servise have a threat model?",
-        "hideNumber": true,
-        "isRequired": true
+        "title": "Does this service have a threat model?",
+        "hideNumber": true
        },
        {
         "type": "text",
@@ -53,62 +28,29 @@
         "visibleIf": "{threat_model} = true",
         "title": "Enter threat model documentation link",
         "enableIf": "{threat_model} = true",
-        "isRequired": true
-       },
-       {
-        "type": "boolean",
-        "name": "zap",
-        "title": "Service scan ( via Zap or similar tool)",
-        "hideNumber": true,
-        "isRequired": true
-       },
-       {
-        "type": "text",
-        "name": "vulnerability_management",
-        "hideNumber": true,
-        "visibleIf": "{zap} = true",
-        "title": "Vulnerability management results link",
-        "enableIf": "{zap} = true",
-        "isRequired": true,
-        "requiredIf": "{zap} = true"
-       },
-       {
-        "type": "boolean",
-        "name": "sourceclear",
-        "title": "Downstream dependency scan (via Sourceclear, Snyk or similar tool)",
-        "hideNumber": true,
-        "isRequired": true
-       },
-       {
-        "type": "text",
-        "name": "sourceclear_link",
-        "visibleIf": "{sourceclear} = true",
-        "title": "Enter downstream dependency result link",
-        "hideNumber": true,
-        "enableIf": "{sourceclear} = true",
-        "isRequired": true,
-        "requiredIf": "{sourceclear} = true"
+        "validators": [
+         {
+             "type": "regex",
+             "text": "Please include a valid link.",
+             "regex": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$|^ *$"}]
        },
        {
         "type": "boolean",
         "name": "docker_scan",
         "title": "Docker image scan (via Trivy or similar tool)",
-        "hideNumber": true,
-        "isRequired": true
+        "hideNumber": true
        },
        {
         "type": "boolean",
         "name": "cis_scanner",
         "title": "GCP project scan (via CIS scanner or similar tool)",
-        "hideNumber": true,
-        "isRequired": true
+        "hideNumber": true
        },
        {
         "type": "boolean",
         "name": "burp",
-        "title": "Have you performed any manual security pentest (via Burp or similar tool)",
-        "hideNumber": true,
-        "isRequired": true
+        "title": "Have you performed any manual security pentest (via Burp or similar tool)?",
+        "hideNumber": true
        },
        {
         "type": "text",
@@ -117,11 +59,15 @@
         "visibleIf": "{burp} = true",
         "title": "Enter security pentest results link",
         "enableIf": "{burp} = true",
-        "isRequired": true
+        "validators": [
+         {
+             "type": "regex",
+             "text": "Please include a valid link.",
+             "regex": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$|^ *$"}]
        }
       ],
       "questionTitleLocation": "top",
-      "title": "Security Controls Template"
+      "title": "{service} security controls:"
      }
     ]
    }

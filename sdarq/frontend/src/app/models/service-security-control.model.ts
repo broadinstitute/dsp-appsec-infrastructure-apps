@@ -7,7 +7,6 @@ export class ServiceSecurityControl implements Deserializable {
     }
     service: string;
     product: string;
-    security_champion: string;
     burp: boolean;
     security_pentest_link: string;
     cis_scanner: boolean;
@@ -21,4 +20,6 @@ export class ServiceSecurityControl implements Deserializable {
     zap: boolean;
     vulnerability_management: string;
     defect_dojo: string;
+    sast: boolean;
+    sast_link: string;
   }

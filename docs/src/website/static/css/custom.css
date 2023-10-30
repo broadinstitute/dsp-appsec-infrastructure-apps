@@ -7,27 +7,35 @@
  
 /* your custom css */
 
-@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
-}
-
-@media only screen and (min-width: 1024px) {
-}
-
-@media only screen and (max-width: 1023px) {
-}
-
-@media only screen and (min-width: 1400px) {
-}
-
-@media only screen and (min-width: 1500px) {
-}
-
 .announcement {
-  background-color: #fff6dd;
+  background-color: #ededed;
   color: #fff;
   font-weight: 700;
   font-size: 24px;
-  padding: 48px;
+  padding: 10% !important;
   margin: 0 auto -40px;
   text-align: center;
+}
+
+.appsecEdit {
+background: #ededed !important;
+}
+
+.nav-footer {
+  padding-top: 1em !important;
+  padding-bottom: 1em !important;
+}
+
+.fixedHeaderContainer header .headerTitleWithLogo {
+  font-size: 1.25em;
+  line-height: 18px;
+  margin: 0;
+  display: none !important;
+  position: relative;
+  z-index: 9999;
+}
+
+.projectTitle {
+  font-family: Roboto,sans-serif !important;
+  font-weight: 300 !important;
 }

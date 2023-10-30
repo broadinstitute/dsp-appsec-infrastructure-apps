@@ -26,6 +26,13 @@ spec:
             name: ${SERVICE}
             port:
               name: ${BACKEND_PORT}
+      - path: /submit_new_app/
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: ${SERVICE}
+            port:
+              name: ${BACKEND_PORT}
       - path: /cis_scan/
         pathType: ImplementationSpecific
         backend:
@@ -83,6 +90,13 @@ spec:
             port:
               name: ${BACKEND_PORT}
       - path: /request_manual_pentest/
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: ${SERVICE}
+            port:
+              name: ${BACKEND_PORT}
+      - path: /submit_jtra/
         pathType: ImplementationSpecific
         backend:
           service:

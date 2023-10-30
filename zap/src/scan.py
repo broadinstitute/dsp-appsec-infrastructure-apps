@@ -5,29 +5,45 @@ Runs ZAP scan, uploads results to Code Dx and GCS, and alerts Slack.
 
 import logging
 import os
+import re
 from datetime import datetime
 from enum import Enum
 from os import getenv
 from sys import exit  # pylint: disable=redefined-builtin
 from time import sleep
 from typing import List
+from urllib.parse import urlparse, urlunparse
 
+import defectdojo_apiv2 as defectdojo
+import defusedxml.ElementTree as ET
 from codedx_api.CodeDxAPI import CodeDx  # pylint: disable=import-error
 from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
 
-import defectdojo_apiv2 as defectdojo
 from zap import ScanType, zap_compliance_scan, zap_connect
 
 
-def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str):
+def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, product_id):
+    """
+    Fetch dojo product name using product_id
+    """
+    dojo = defectdojo.DefectDojoAPIv2(
+        defect_dojo, defect_dojo_key, defect_dojo_user, debug=False, timeout=120)
+    product = dojo.get_product(product_id=product_id)
+    return product.data["name"]
+
+
+def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str, subfoldername=None):
     """
     Upload scans to a GCS bucket and return the path to the file in Cloud Console.
     """
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     date = datetime.today().strftime("%Y%m%d")
-    path = f"{scan_type}-scans/{date}/{filename}"
+    if subfoldername is None:
+        path = f"{scan_type}-scans/{date}/{filename}"
+    else:
+        path = f"{scan_type}-scans/{date}/{subfoldername}/{filename}"
     blob = bucket.blob(path)
     blob.upload_from_filename(filename)
     return f"https://console.cloud.google.com/storage/browser/_details/{bucket_name}/{path}"
@@ -55,25 +71,40 @@ def codedx_upload(cdx: CodeDx, project: str, filename: str):
     cdx.analyze(project, filename)
 
 
-def defectdojo_upload(engagement_id: int, zap_filename: str, defect_dojo_key: str, defect_dojo_user: str, defect_dojo: str):  # pylint: disable=line-too-long
+def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, defect_dojo_user: str, defect_dojo: str):  # pylint: disable=line-too-long
     """
-    Upload Zap results in DefectDojo engagement
+    Upload Zap results in DefectDojo product
     """
     dojo = defectdojo.DefectDojoAPIv2(
-        defect_dojo, defect_dojo_key, defect_dojo_user, debug=False)
+        defect_dojo, defect_dojo_key, defect_dojo_user, debug=False, timeout=120)
 
     absolute_path = os.path.abspath(zap_filename)
+    date = datetime.today().strftime("%Y%m%d%H:%M")
+
+    try:
+        lead_id = dojo.list_users(defect_dojo_user).data["results"][0]["id"]
+    except Exception:
+        logging.error("Did not retrieve dojo user ID, upload failed.")
+        return
+
+    engagement=dojo.create_engagement( name=date, product_id=product_id, lead_id=lead_id,
+        target_start=datetime.today().strftime("%Y-%m-%d"),
+        target_end=datetime.today().strftime("%Y-%m-%d"), status="In Progress",
+        active='True',deduplication_on_engagement='False')
+    print(engagement.data)
+    engagement_id=engagement.data["id"]
 
     dojo_upload = dojo.upload_scan(engagement_id=engagement_id,
                      scan_type="ZAP Scan",
                      file=absolute_path,
                      active=True,
                      verified=False,
-                     close_old_findings=False,
+                     close_old_findings=True,
                      skip_duplicates=True,
                      scan_date=str(datetime.today().strftime('%Y-%m-%d')),
                      tags="Zap_scan")
     logging.info("Dojo file upload: %s", dojo_upload)
+    dojo._request('POST','engagements/'+str(engagement_id)+'/close/')
 
 class Severity(str, Enum):
     """
@@ -226,16 +257,16 @@ def slack_alert_with_report(  # pylint: disable=too-many-arguments
     else:
         logging.warning("No findings for alert to Slack")
         return
-    logging.info("Alert sent to Slack channel: %s", 
-    )
+    logging.info("Alert sent to Slack channel")
 
 
 def slack_alert_without_report(  # pylint: disable=too-many-arguments
         token: str,
         channel: str,
         xml_report_url: str,
-        engagement_id: str,
-        dd: str
+        product_id: str,
+        dd: str,
+        target_url: str
 ):
     """
     Alert Slack on requested findings, if any.
@@ -249,17 +280,32 @@ def slack_alert_without_report(  # pylint: disable=too-many-arguments
 
     if xml_report_url:
         gcs_slack_text = (
-            f"New vulnerability report uploaded to GCS bucket: {xml_report_url}\n and DefectDojo engagement: {dd}{engagement_id}"
+            f"New vulnerability report uploaded to GCS bucket: {xml_report_url}\n and DefectDojo product: {dd}product/{product_id}"
         )
         slack.chat_postMessage(channel=channel, text=gcs_slack_text)
         logging.info("Alert sent to Slack channel for GCS bucket and DefectDojo upload report")
     else:
         gcs_slack_text = (
-            f"New vulnerability report uploaded to DefectDojo engagement: {dd}engagement/{engagement_id}"
+            f"New vulnerability report uploaded to DefectDojo for {target_url}: {dd}product/{product_id}"
         )
         slack.chat_postMessage(channel=channel, text=gcs_slack_text)
         logging.info("Alert sent to Slack channel for DefectDojo upload report")
 
+# match a hash after a hyphen or dot, and only match 8 or 9 characters of hex
+URI_HASH_REGEX = re.compile(r"[-\.][a-fA-F0-9]{8,9}(?![a-fA-F0-9])")
+
+def clean_uri_path(xml_report):
+    """
+    Remove the changing hash from the path of static resources in zap report.
+    """
+    tree = ET.parse(xml_report)
+    root = tree.getroot()
+    #There's a hash in bundled files that is causing flaws to not match, this should remove the hash.
+    for uri in root.iter('uri'):
+        r=urlparse(uri.text)
+        r=r._replace(path=URI_HASH_REGEX.sub('', r.path))
+        uri.text = urlunparse(r)
+    tree.write(xml_report)
 
 
 def main(): # pylint: disable=too-many-locals
@@ -269,14 +315,12 @@ def main(): # pylint: disable=too-many-locals
     - Upload ZAP XML report to GCS, if needed
     - Send a Slack alert with Code Dx report, if needed.
     """
-    max_retries = int(getenv("MAX_RETRIES", '5'))
+    max_retries = int(getenv("MAX_RETRIES", '1'))
 
     for attempt in range(max_retries):
         # run Zap scan
         try:
             # parse env variables
-            zap_port = int(getenv("ZAP_PORT", ""))
-
             codedx_project = getenv("CODEDX_PROJECT")
             codedx_url = getenv("CODEDX_URL")
             codedx_api_key = getenv("CODEDX_API_KEY")
@@ -285,6 +329,7 @@ def main(): # pylint: disable=too-many-locals
             scan_type = ScanType[getenv("SCAN_TYPE").upper()]
 
             bucket_name = getenv("BUCKET_NAME")
+            session_bucket = getenv("SESSION_BUCKET")
 
             slack_channel = getenv("SLACK_CHANNEL")
             slack_token = getenv("SLACK_TOKEN")
@@ -293,10 +338,14 @@ def main(): # pylint: disable=too-many-locals
 
             # variables needed for DefectDojo
             defect_dojo_key = getenv("DEFECT_DOJO_KEY")
-            engagement_id = int(getenv("ENGAGEMENT_ID"))
+            product_id = int(getenv("PRODUCT_ID"))
             defect_dojo_user = getenv("DEFECT_DOJO_USER")
             defect_dojo = getenv("DEFECT_DOJO_URL")
             dd = getenv("DEFECT_DOJO")
+
+            # fetch dd poject name
+            dojo_product_name = fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, product_id)
+
 
             # configure logging
             logging.basicConfig(level=logging.INFO,
@@ -306,33 +355,55 @@ def main(): # pylint: disable=too-many-locals
             logging.info("Severities: %s", ", ".join(
                 s.value for s in severities))
 
-            zap_filename = zap_compliance_scan(
-                codedx_project, zap_port, target_url, scan_type)
-
-            # upload its results in defectDojo
-            defectdojo_upload(engagement_id, zap_filename,
-                              defect_dojo_key, defect_dojo_user, defect_dojo)
+            (zap_filename, session_filename) = zap_compliance_scan(
+                dojo_product_name, target_url, scan_type)
 
             # optionally, upload them to GCS
             xml_report_url = ""
-            if scan_type == ScanType.UI:
+            if scan_type == ScanType.UI or scan_type == ScanType.LEOAPP:
                 xml_report_url = upload_gcs(
                     bucket_name,
                     scan_type,
                     zap_filename,
+                    subfoldername='raw'
+                )
+                upload_gcs(
+                    session_bucket,
+                    scan_type,
+                    session_filename,
                 )
 
-            if codedx_api_key == '""':
+            #removes hash from certain static files to improve flaw matching.
+            #done after upload of raw report to GCS to preserve raw report xml.
+            clean_uri_path(zap_filename)
+
+            #upload scrubbed results in case we need to do a manual upload
+            if scan_type == ScanType.UI or scan_type == ScanType.LEOAPP:
+                xml_report_url = upload_gcs(
+                    bucket_name,
+                    scan_type,
+                    zap_filename,
+                    subfoldername='clean'
+                )
+
+            # upload its results in defectDojo
+            defectdojo_upload(product_id, zap_filename,
+                              defect_dojo_key, defect_dojo_user, defect_dojo)
+
+
+            if codedx_api_key == '""' or codedx_project == '':
                 slack_alert_without_report(
                     slack_token,
                     slack_channel,
                     xml_report_url,
-                    engagement_id,
+                    product_id,
                     dd,
+                    target_url
                 )
             else:
                 # upload its results to Code Dx
                 cdx = CodeDx(codedx_url, codedx_api_key)
+
                 codedx_upload(cdx, codedx_project, zap_filename)
 
                 # alert Slack, if needed
@@ -348,16 +419,16 @@ def main(): # pylint: disable=too-many-locals
                 )
 
 
-            zap = zap_connect(zap_port)
+            zap = zap_connect()
             zap.core.shutdown()
         except Exception as error: # pylint: disable=broad-except
             error_message = f"[RETRY-{ attempt }] Exception running Zap Scans: { error }"
             logging.warning(error_message)
             if attempt == max_retries - 1:
-                error_message = f"Error running Zap Scans for { codedx_project }. Last known error: { error }"
+                error_message = f"Error running Zap Scans for { target_url }. Last known error: { error }"
                 error_slack_alert(error_message, slack_token, slack_channel)
                 try:
-                    zap = zap_connect(zap_port)
+                    zap = zap_connect()
                     zap.core.shutdown()
                 except Exception as zap_e: # pylint: disable=broad-except
                     error_message = f"Error shutting down zap: { zap_e }"

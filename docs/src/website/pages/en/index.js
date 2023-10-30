@@ -64,8 +64,7 @@ class HomeSplash extends React.Component {
         <div className="inner">
           <ProjectTitle tagline={siteConfig.tagline} title={siteConfig.title} />
           <PromoSection>
-            <Button href={docUrl('kubernetes-cluster')}>Infrastructure Docs</Button>
-            <Button href={docUrl('security-apps')}>Security Automation Tooling</Button>
+            <Button href={docUrl('security-apps')}>Docs</Button>
             <Button href="https://github.com/broadinstitute/dsp-appsec-infrastructure-apps">Github</Button>
           </PromoSection>
         </div>
@@ -96,8 +95,8 @@ class Index extends React.Component {
       <div
         className="productShowcaseSection paddingBottom"
         style={{textAlign: 'center'}}>
-        <h2>Contributions Welcomed. Check out <a href="https://github.com/broadinstitute/dsp-appsec-infrastructure-apps">our Github</a>></h2>
-        <MarkdownBlock>We welcome contributions to this project</MarkdownBlock>
+        <h2>Check out our code of conduct in our<a href="https://github.com/broadinstitute/dsp-appsec-infrastructure-apps"> Github repository</a></h2>
+        <MarkdownBlock> All contributions are welcomed.</MarkdownBlock>
       </div>
     );
 
@@ -155,7 +154,7 @@ class Index extends React.Component {
             title: 'Kubernetes Ready',
           },
           {
-            content: 'Burpsuite / OWASP ZAP / NMAP Automation',
+            content: 'ZAP and CIS scanner automation',
             image: `${baseUrl}img/tooling-logo.svg`,
             imageAlign: 'top',
             title: 'Security Automation Tools',
@@ -164,7 +163,7 @@ class Index extends React.Component {
             content: 'Easily extend the infrastructure by plugging in new tools',
             image: `${baseUrl}img/modular-logo.svg`,
             imageAlign: 'top',
-            title: 'Modular',
+            title: 'Modular Architecture',
           },
         ]}
       </Block>
@@ -179,7 +178,7 @@ class Index extends React.Component {
         .filter(user => user.pinned)
         .map(user => (
           <a href={user.infoLink} key={user.infoLink}>
-            <img src={user.image} alt={user.caption} title={user.caption} />
+            <img src={user.image} alt={user.caption} title={user.caption} />  {/* // nosemgrep */}
           </a>
         ));
 
@@ -200,16 +199,16 @@ class Index extends React.Component {
     };
 
     return (
-      <div>
+      <div class="appsecEdit">
         <HomeSplash siteConfig={siteConfig} language={language} />
-        <div className="mainContainer">
-          <Features />
-          <FeatureCallout />
+        {/* <div className="mainContainer"> */}
+          {/* <Features /> */}
+          {/* <FeatureCallout /> */}
           {/* <LearnHow /> */}
           {/* <TryOut /> */}
           {/* <Description /> */}
-          <Showcase />
-        </div>
+          {/* <Showcase /> */}
+        {/* </div> */}
       </div>
     );
   }

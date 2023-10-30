@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { EditSecurityControlsService } from '../services/edit-service-security-controls/edit-security-controls.service';
 import { GetServiceSecurityControlsService } from '../services/get-service-security-controls/get-service-security-controls.service';
-
+import { Clipboard } from '@angular/cdk/clipboard';
 import formJson from './form.json';
 
 
@@ -12,34 +12,23 @@ import formJson from './form.json';
   styleUrls: ['./edit-security-controls-form.component.css']
 })
 export class EditSecurityControlsFormComponent implements OnInit {
-  product: string;
+  json = formJson;
+  answers: object;
   service: string;
-  github: string;
-  security_champion: string;
-  dev_url: string;
-  vulnerability_management: string;
-  defect_dojo: string;
-  zap: boolean;
-  sourceclear: boolean;
-  sourceclear_link: string;
-  docker_scan: boolean;
-  cis_scanner: boolean;
-  burp: boolean;
-  security_pentest_link: string;
-  threat_model: boolean;
-  threat_model_link: string;
   data: any;
-  item: any;
   chooseServiceToEditForm: boolean;
   serviceToEditForm: boolean;
-  showServiceData: boolean;
   choosenService: string;
-  json = formJson;
-  datas: any;
   showModalError: boolean;
   errorMessage: string;
 
-  constructor(private getSecurityControls: GetServiceSecurityControlsService, private editSecurityControls: EditSecurityControlsService) { }
+  constructor(private getSecurityControls: GetServiceSecurityControlsService,
+              private editSecurityControls: EditSecurityControlsService,
+              private clipboard: Clipboard,
+              private ngZone: NgZone,
+              private ref: ChangeDetectorRef) {
+                // This is intentional
+              }
 
   ngOnInit(): void {
     this.chooseServiceToEditForm = true;
@@ -48,7 +37,7 @@ export class EditSecurityControlsFormComponent implements OnInit {
   }
 
   chooseServiceForm = new FormGroup({
-    service: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]),
+    service: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
   })
 
 
@@ -57,49 +46,34 @@ export class EditSecurityControlsFormComponent implements OnInit {
     this.chooseServiceToEditForm = false;
     this.showModalError = false;
     this.serviceToEditForm = true;
-    this.showServiceData = true;
   }
 
-  loadSecurityControls(datas) {
-    this.getSecurityControls.getServiceSecurityControls(datas).subscribe((serviceSecurityControl) => {
-        this.product = serviceSecurityControl.product;
+  loadSecurityControls(serviceName) {
+    this.getSecurityControls.getServiceSecurityControls(serviceName).subscribe((serviceSecurityControl) => {
+        this.answers = serviceSecurityControl
         this.service = serviceSecurityControl.service;
-        this.security_champion = serviceSecurityControl.security_champion
-        this.github = serviceSecurityControl.github;
-        this.dev_url = serviceSecurityControl.dev_url;
-        this.vulnerability_management = serviceSecurityControl.vulnerability_management;
-        this.defect_dojo = serviceSecurityControl.defect_dojo;
-        this.threat_model = serviceSecurityControl.threat_model;
-        this.threat_model_link = serviceSecurityControl.threat_model_link;
-        this.zap = serviceSecurityControl.zap;
-        this.sourceclear = serviceSecurityControl.sourceclear;
-        this.sourceclear_link = serviceSecurityControl.sourceclear_link;
-        this.docker_scan = serviceSecurityControl.docker_scan;
-        this.cis_scanner = serviceSecurityControl.cis_scanner;
-        this.burp = serviceSecurityControl.burp;
-        this.security_pentest_link = serviceSecurityControl.security_pentest_link;
-    },
-    (serviceSecurityControl) => {
-      this.errorMessage = serviceSecurityControl;
-      this.showModalError = true;
-      this.serviceToEditForm = false;
-      this.showServiceData = false;
+      },
+      (serviceSecurityControl) => {
+        this.ngZone.run(() => {
+        this.errorMessage = serviceSecurityControl;
+        this.showModalError = true;
+        this.serviceToEditForm = false;
+      });
     });
   }
 
 
   onSubmit(result) {
     result['service'] = this.service
-    this.showServiceData = false;
-    this.editSecurityControls.editSCT(result).subscribe((data: any) => {
+    this.editSecurityControls.editSCT(result).subscribe(() => {
+      this.ref.detectChanges();
     },
       (data) => {
+        this.ngZone.run(() => {
         this.errorMessage = data;
         this.showModalError = true;
         this.serviceToEditForm = false;
-        this.showServiceData = false;
       });
+    });
   }
 }
-
-

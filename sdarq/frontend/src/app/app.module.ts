@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { SurveyComponent } from './services/survejs-form/survey.component';
 import { SurveyCreatorComponent } from './services/survejs-form/survey.creator.component';
@@ -11,7 +12,6 @@ import { MainpageComponent } from './mainpage/mainpage.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { CisComponent } from './cis/cis.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { ScanpageComponent } from './scanpage/scanpage.component';
 import { FooterComponent } from './footer/footer.component';
 import { CisResultsComponent } from './cis-results/cis-results.component';
 import { CisScanComponent } from './cis-scan/cis-scan.component';
@@ -25,6 +25,8 @@ import { SecurityControlsFormComponent } from './security-controls-form/security
 import { SecurityControlsListComponent } from './security-controls-list/security-controls-list.component';
 import { EditSecurityControlsFormComponent } from './edit-security-controls-form/edit-security-controls-form.component';
 import { SecurityPentestComponent } from './security-pentest/security-pentest.component';
+import { SecurityRequestsComponent } from './security-requests/security-requests.component';
+import { SecurityControlsComponent } from './security-controls/security-controls.component';
 import { GetSecurityControlsService } from './services/get-all-security-controls/get-security-controls.service';
 import { CreateNewSctService } from './services/create-new-security-controls/create-new-sct.service';
 import { ScanServiceService } from './services/scan-service/scan-service.service';
@@ -36,9 +38,15 @@ import { GetServiceSecurityControlsService } from './services/get-service-securi
 import { SendFormDataService } from './services/create-new-service/send-form-data.service';
 import { EditSecurityControlsService } from './services/edit-service-security-controls/edit-security-controls.service';
 import { RequestSecurityPentestService } from './services/security-pentest-request/request-security-pentest.service';
+import { JiraTicketRiskAssessmentService } from './services/jira-ticket-risk-assessment/jira-ticket-risk-assessment.service';
+import { SendAppFormDataService } from './services/create-new-app/send-app-form-data.service';
 import { FilterPipe } from './pipes/filter.pipe';
 import { FiltersctPipe } from './pipes/filtersct.pipe';
 import { AppRoutingModule } from './app-routing.module';
+import { AppFormComponent } from './app-form/app-form.component';
+import { AppsMainpageComponent } from './apps-mainpage/apps-mainpage.component';
+import { ServiceSecurityControlsComponent } from './service-security-controls/service-security-controls.component';
+import { SearchServiceSecurityControlsComponent } from './search-service-security-controls/search-service-security-controls.component';
 
 
 @NgModule({
@@ -51,7 +59,6 @@ import { AppRoutingModule } from './app-routing.module';
     HomepageComponent,
     CisComponent,
     NavbarComponent,
-    ScanpageComponent,
     FooterComponent,
     CisResultsComponent,
     CisScanComponent,
@@ -66,7 +73,13 @@ import { AppRoutingModule } from './app-routing.module';
     SecurityControlsFormComponent,
     SecurityControlsListComponent,
     EditSecurityControlsFormComponent,
-    SecurityPentestComponent
+    SecurityPentestComponent,
+    SecurityRequestsComponent,
+    SecurityControlsComponent,
+    AppFormComponent,
+    AppsMainpageComponent,
+    ServiceSecurityControlsComponent,
+    SearchServiceSecurityControlsComponent
     ],
   imports: [
     BrowserModule,
@@ -74,6 +87,7 @@ import { AppRoutingModule } from './app-routing.module';
     HttpClientModule,
     AppRoutingModule,
     ReactiveFormsModule,
+    BrowserAnimationsModule,
     MDBBootstrapModule.forRoot()
   ],
   providers: [
@@ -87,7 +101,9 @@ import { AppRoutingModule } from './app-routing.module';
     GetSecurityControlsService,
     EditSecurityControlsService,
     GetServiceSecurityControlsService,
-    RequestSecurityPentestService
+    RequestSecurityPentestService,
+    JiraTicketRiskAssessmentService,
+    SendAppFormDataService
     ],
   bootstrap: [
     AppComponent

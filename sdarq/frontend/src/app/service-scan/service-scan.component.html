@@ -3,7 +3,6 @@
         <div class="alert alert-danger animated fadeInRight" role="alert" *ngIf="showModalErr">
             <h4 class="alert-heading">Oops!</h4>
             <p> {{showModalError}} </p>
-            <p class="mb-0">Please contact AppSec team for more information!</p>
         </div>
         <app-survey *ngIf="showForm" [json]="json" (submitSurvey)="requestServiceScan($event)"></app-survey>
     </div>

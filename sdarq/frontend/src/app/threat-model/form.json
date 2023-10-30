@@ -1,58 +1,77 @@
 {
     "pages": [
-     {
-      "name": "page1",
-      "elements": [
-       {
-        "type": "dropdown",
-        "name": "Type",
-        "title": "Choose your request",
-        "isRequired": true,
-        "choices": [
-         {
-          "value": "First time threat model ",
-          "text": "First time threat model"
-         },
-         {
-          "value": "Edit existing threat model ",
-          "text": "Edit existing threat model"
-         }
-        ]
-       },
-       {
-        "type": "text",
-        "name": "Name",
-        "title": "Service name",
-        "isRequired": true
-       },
-       {
-        "type": "text",
-        "name": "Github",
-        "title": "Github link",
-        "isRequired": true
-       },
-       {
-        "type": "text",
-        "name": "Diagram",
-        "title": "Architecture diagram",
-        "isRequired": true
-       },
-       {
-        "type": "text",
-        "name": "Document",
-        "title": "Architecture document",
-        "isRequired": true
-       },
-       {
-        "type": "text",
-        "name": "Eng",
-        "title": "Security Champion",
-        "isRequired": true
-       }
-      ]
-     }
+        {
+            "name": "page1",
+            "elements": [
+                {
+                    "type": "dropdown",
+                    "name": "Type",
+                    "title": "Choose your request",
+                    "isRequired": true,
+                    "validators": [
+                        {
+                            "type": "regex",
+                            "text": "Please choose one of the options",
+                            "regex": "^[a-zA-Z0-9][a-zA-Z0-9\\s]{1,30}[a-zA-Z0-9\\s]$"}],
+                    "choices": [
+                        {
+                            "value": "First time threat model ",
+                            "text": "First time threat model"
+                        },
+                        {
+                            "value": "Edit existing threat model ",
+                            "text": "Edit existing threat model"
+                        }
+                    ]
+                },
+                {
+                    "type": "text",
+                    "name": "Name",
+                    "title": "Service name",
+                    "validators": [
+                        {
+                            "text": "Please include numbers, a-z characters, _,- and spaces",
+                            "type": "regex",
+                            "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,40}[a-zA-Z0-9]$"}],
+                    "isRequired": true
+                },
+                {
+                    "type": "text",
+                    "name": "Github",
+                    "title": "Github link",
+                    "validators": [
+                        {
+                            "type": "regex",
+                            "text": "Please enter a valid input.",
+                            "regex": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$"}],
+                    "isRequired": true
+                },
+                {
+                    "type": "text",
+                    "name": "Diagram",
+                    "title": "Architecture diagram",
+                    "validators": [
+                        {
+                            "type": "regex",
+                            "text": "Please enter a valid input.",
+                            "regex": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$"}],
+                    "isRequired": true
+                },
+                {
+                    "type": "text",
+                    "name": "Document",
+                    "title": "Architecture document",
+                    "validators": [
+                        {
+                            "type": "regex",
+                            "text": "Please enter a valid input.",
+                            "regex": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$"}],
+                    "isRequired": true
+                }
+            ]
+        }
     ],
     "showCompletedPage": true,
     "showQuestionNumbers": "off",
     "completedHtml": "<p><h3>Thank you!</h3><br><h5>Appsec team will review your request!</h5></p>"
-   }
+}

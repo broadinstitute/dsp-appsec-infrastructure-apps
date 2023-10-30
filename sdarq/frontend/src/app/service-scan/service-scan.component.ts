@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import formJson from './form.json';
 import { ScanServiceService } from '../services/scan-service/scan-service.service';
 
@@ -14,22 +14,29 @@ export class ServiceScanComponent implements OnInit {
   showForm: boolean;
   showModalError: any;
 
-  constructor(private sendServiceScanrRequest: ScanServiceService) { }
+  constructor(private sendServiceScanrRequest: ScanServiceService,
+              private ngZone: NgZone,
+              private ref: ChangeDetectorRef) {
+                // This is intentional
+               }
 
   ngOnInit(): void {
-    this.showModalError = false;
+    this.showModalErr = false;
     this.showForm = true;
   }
 
   json = formJson
 
   requestServiceScan(result) {
-    this.sendServiceScanrRequest.sendServiceScanrRequest(result).subscribe((res) => {
+    this.sendServiceScanrRequest.sendServiceScanrRequest(result).subscribe(() => {
+      this.ref.detectChanges();
     },
       (res) => {
+        this.ngZone.run(() => {
         this.showModalErr = true;
         this.showModalError = res;
         this.showForm = false;
       });
+    });
   }
 }

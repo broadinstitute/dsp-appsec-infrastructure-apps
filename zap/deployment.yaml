@@ -11,12 +11,18 @@ data:
         serviceAccountName: ${JOB_SERVICE_ACCOUNT}
         runtimeClassName: gvisor
         restartPolicy: Never
+        volumes:
+        - name: shared-data
+          emptyDir: {}
         nodeSelector:
           cloud.google.com/gke-nodepool: batch
 
         containers:
         - name: zap
-          image: owasp/zap2docker-weekly
+          image: softwaresecurityproject/zap-stable
+          volumeMounts:
+            - name: shared-data
+              mountPath: ${VOLUME_SHARE}
           command: ['zap.sh']
           args: [
             '-daemon',
@@ -31,6 +37,9 @@ data:
 
         - name: zap-scan
           image: ${ZAP_IMAGE}
+          volumeMounts:
+            - name: shared-data
+              mountPath: ${VOLUME_SHARE}
           imagePullPolicy: Always
           args: ['scan']
           env:
@@ -38,6 +47,10 @@ data:
             value: ${CODEDX_URL}
           - name: BUCKET_NAME
             value: ${BUCKET_NAME}
+          - name: SESSION_BUCKET
+            value: ${SESSION_BUCKET}
+          - name: VOLUME_SHARE
+            value: ${VOLUME_SHARE}
           - name: ZAP_PORT
             value: '${ZAP_PORT}'
           - name: DEFECT_DOJO_URL
@@ -83,10 +96,10 @@ data:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.annotations['SLACK_CHANNEL']
-          - name: ENGAGEMENT_ID
+          - name: PRODUCT_ID
             valueFrom:
               fieldRef:
-                fieldPath: metadata.annotations['ENGAGEMENT_ID']
+                fieldPath: metadata.annotations['PRODUCT_ID']
           - name: SEVERITIES
             valueFrom:
               fieldRef:
@@ -115,7 +128,7 @@ apiVersion: v1
 kind: List
 items:
 - &cron-job
-  apiVersion: batch/v1beta1
+  apiVersion: batch/v1
   kind: CronJob
   metadata:
     name: ${CRON_JOB}-weekly
@@ -170,7 +183,7 @@ items:
             << : *cron-job-spec
             containers:
             - << : *cron-job-container
-              args: ['trigger', '-s', 'ui']
+              args: ['trigger', '-s', 'ui','leoapp']
 ---
 apiVersion: storage.cnrm.cloud.google.com/v1beta1
 kind: StorageBucket
@@ -184,6 +197,16 @@ spec:
   versioning:
     enabled: true
 ---
+apiVersion: storage.cnrm.cloud.google.com/v1beta1
+kind: StorageBucket
+metadata:
+  name: ${SESSION_BUCKET}
+  namespace: ${NAMESPACE}
+spec:
+  uniformBucketLevelAccess: true
+  versioning:
+    enabled: false
+---
 apiVersion: iam.cnrm.cloud.google.com/v1beta1
 kind: IAMPolicyMember
 metadata:
@@ -196,3 +219,16 @@ spec:
     apiVersion: storage.cnrm.cloud.google.com/v1beta1
     kind: StorageBucket
     name: ${BUCKET_NAME}
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: ${SESSION_BUCKET}-policy
+  namespace: ${NAMESPACE}
+spec:
+  member: serviceAccount:${JOB_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
+  role: roles/storage.objectAdmin
+  resourceRef:
+    apiVersion: storage.cnrm.cloud.google.com/v1beta1
+    kind: StorageBucket
+    name: ${SESSION_BUCKET}

@@ -4,8 +4,6 @@ title: Kubernetes Cluster Architecture
 sidebar_label: AppSec Infrastructure
 ---
 
-Check the [documentation](https://dsp-security.broadinstitute.org) for how we do AppSec. 
-
 ## Deployment
 
 All apps are deployed via Cloud Build, as defined in [cloudbuild.yaml](cloudbuild.yaml).

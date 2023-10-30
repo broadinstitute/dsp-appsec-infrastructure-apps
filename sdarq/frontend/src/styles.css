@@ -85,6 +85,10 @@
 .sv_main .sv_progress_bar {
   background-color: #5885d0 !important;
   -webkit-transition: width 1s;
+  transition: width 1s;
+}
+.sv_main.sv_default_css .sv_custom_header {
+  background-color: rgb(255 255 255) !important;;
 }
 
 .sv_p_root,
@@ -127,7 +131,7 @@
   border: none;
   min-width: 100px;
   cursor: pointer;
-  padding: 0 2em;
+  padding: 0 2em !important;
   border-radius: 5px !important;
 }
 
@@ -160,13 +164,6 @@
   color: #ff0000 !important;
   text-indent: 1em;
 
-}
-
-label {
-  display: inline-block;
-  max-width: 100%;
-  margin-bottom: 5px;
-  font-weight: normal !important;
 }
 
 .sv_main .sv_container .sv_body .sv_p_root .sv_q .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) {
@@ -203,38 +200,33 @@ label {
   font-weight: 400 !important;
 }
 
-
 .tip {
-  background: #aad7fb !important;
-  padding: 10px;
+  background: #0983e6 !important;
+  padding: 15px;
   border-radius: 10px;
-  color: #000 !important;
-}
-
-.tip a {
-  color: #000 !important;
+  color: #fff !important;
 }
 
 .highs {
-  background: #faadad !important;
-  padding: 10px;
+  background: #dd1616 !important;
+  padding: 15px;
   border-radius: 10px;
-  color: #000 !important;
+  color: #fff !important;
 }
 
 .highs a {
-  color: #000 !important;
+  color: #fb1 !important;
 }
 
 .medium {
-  background: #f7da9a !important;
-  padding: 10px;
+  background: #e4a40e !important;
+  padding: 15px;
   border-radius: 10px;
-  color: #000 !important;
+  color: #fff !important;
 }
 
 .medium a {
-  color: #000 !important;
+  color: #007bff !important;
 }
 
 .jira_ticket_alert {
@@ -246,12 +238,11 @@ label {
 }
 
 .saveResponses {
-  background-color: #2752b7 !important;
-  font-weight: lighter !important;
+  background-color: #2752b7!important;
   line-height: 3em !important;
-  min-width: 100px;
-  margin: 0 0 0 44.5%;
-  color: white;
+  min-width: 14%;
+  margin: 10% 0 0 43%;
+  color: #fff;
   border: 0px;
   border-radius: 7px !important;
 }
@@ -263,6 +254,10 @@ input,
 .sv_main .sv_container .sv_body .sv_p_root .sv_q select,
 .sv_main .sv_container .sv_body .sv_p_root .sv_q textarea {
   border-radius: 6px;
+}
+
+.sv_main.sv_default_css {
+  background-color: #aa3d3d00 !important;
 }
 
 .sv_main.sv_default_css .sv_select_wrapper::before {
@@ -296,11 +291,11 @@ body {
 .primary-color,
 ul.stepper li.active a .circle,
 ul.stepper li.completed a .circle {
-  background: linear-gradient(87deg, #2438a2 0, #2196F3 100%) !important;
+  background: linear-gradient(87deg, #13247e 0, #138def 100%) !important;
 }
 
 .teal {
-  background: linear-gradient(87deg, #2438a2 0, #2196F3 100%) !important;
+  background: linear-gradient(87deg, #13247e 0, #138def 100%) !important;
 }
 
 .center {
@@ -311,6 +306,7 @@ ul.stepper li.completed a .circle {
   border-radius: 0.125rem;
   box-shadow: none !important;
   overflow: auto;
+  background-color: #ffffff !important;
   margin-bottom: 0px;
 }
 
@@ -371,9 +367,10 @@ ul.stepper li.completed a .circle {
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 0.25rem;
 }
+
 .navbar .dropdown-menu a {
-  padding: 7px 0 2px 14px !important;;
-  font-size: 0.74rem !important;;
+  padding: 7px 8px 2px 8px !important;
+  font-size: 0.74rem !important;
   font-weight: 300;
   color: #000;
 }
@@ -416,6 +413,10 @@ color: #17af17 !important
   color: #d50a0a !important;
 }
 
+.blue-color {
+  color: #1873d5!important;
+}
+
 .fa-2x {
   font-size: 1.55em !important;
 }
@@ -423,3 +424,46 @@ color: #17af17 !important
 .fa-3x {
   font-size: 2.1em !important;
 } 
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-weight: 200 !important;
+}
+
+.sv_main .sv-action-bar {
+  display: flex;
+  position: relative;
+  align-items: center;
+  margin-left: auto;
+  float: right !important;
+  padding: 0px 0px 0px 16px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.sv_main.sv_default_css .sv_container .sv_body .sv_p_root .sv_q .sv_q_dropdown_control .sv_q_dropdown__value .sv_q_dropdown__filter-string-input[type="text"] {
+  width: 100% !important;
+  border-radius: 0px !important;
+}
+
+.sv_main .sv_p_root .sv_q .sv_q_dropdown_control {
+  padding-left: 0em !important;
+}
+
+.sv_main.sv_default_css .sv_container .sv_body .sv_p_root .sv_q .sv_select_wrapper .sv_q_dropdown_control:focus-within {
+  border: 1px solid #007bff !important;
+}
+
+.sv-list__item-body {
+  font-size: calc(2 * var(--base-unit, 6px)) !important;
+  line-height: calc(2 * var(--base-unit, 6px)) !important;
+}
+.sv-list__item {
+  font-family: sans-serif !important;
+}
+
+.sv_main .sv_q_dropdown__value {
+  padding: 0% 0% 0% 1% !important;
+}
+.sv_main .sv_q_dropdown_clean-button {
+  margin: 0em 1.5em !important;
+}

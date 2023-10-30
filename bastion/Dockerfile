@@ -1,4 +1,4 @@
-FROM alpine
+FROM us.gcr.io/broad-dsp-gcr-public/base/nodejs:alpine AS base
 
 RUN apk add --no-cache dante-server
 

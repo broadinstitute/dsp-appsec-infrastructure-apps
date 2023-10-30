@@ -114,7 +114,7 @@ spec:
     - serviceAccount:${CRON_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
     - serviceAccount:${SDARQ_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
 ---
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: cis-trigger-weekly
@@ -140,6 +140,8 @@ spec:
                 value: ${PROJECT_ID}
               - name: BQ_DATASET
                 value: ${CIS_DATASET}
+              - name: CIS_PROD_PROJECTS
+                value: ${CIS_PROD_PROJECTS}
               - name: JOB_TOPIC
                 value: ${JOB_TOPIC}
               - name: SLACK_CHANNEL_WEEKLY_REPORT

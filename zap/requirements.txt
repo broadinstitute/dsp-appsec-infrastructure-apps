@@ -1,8 +1,10 @@
-aiohttp==3.7.3
+aiohttp==3.8.6
 codedx-api @ git+https://github.com/broadinstitute/dsp-appsec-codedx-api-client-python.git@cf0de6fcdd0a4db98f2c2a35bd9d2ae7e8056d6b
 google-auth==1.30.0
 google-cloud-pubsub==2.5.0
 google-cloud-storage==1.38.0
 python-owasp-zap-v2.4==0.0.18
-requests==2.25.1
+requests==2.31.0
 slack-sdk==3.5.1
+defusedxml==0.7.1
+pytz

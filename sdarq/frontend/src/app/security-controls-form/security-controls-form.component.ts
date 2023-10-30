@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import formJson from './form.json';
 import { CreateNewSctService } from '../services/create-new-security-controls/create-new-sct.service';
 
@@ -10,26 +10,32 @@ import { CreateNewSctService } from '../services/create-new-security-controls/cr
 })
 export class SecurityControlsFormComponent implements OnInit {
 
-  showModalErr: boolean;
-  showForm: boolean;
-  showModalError: any;
+  showModalErr: boolean = false;
+  showForm: boolean = true;
+  showModalError: string;
 
   json = formJson;
 
-  constructor(private createSCT: CreateNewSctService) { }
+  constructor(private createSCT: CreateNewSctService,
+              private ngZone: NgZone,
+              private ref: ChangeDetectorRef) {
+                // This is intentional
+               }
 
-  ngOnInit(): void {
-    this.showModalError = false;
-    this.showForm = true;
+  ngOnInit() {
+    // This is intentional
   }
 
   sendSCTData(result) {
-    this.createSCT.createNewSCT(result).subscribe((data: any) => {
+    this.createSCT.createNewSCT(result).subscribe(() => {
+      this.ref.detectChanges();
     },
-      (data) => {
-        this.showModalErr = true;
-        this.showModalError = data;
-        this.showForm = false;
+      (data) => {    
+        this.ngZone.run(() => {
+          this.showModalErr = true;
+          this.showForm = false;
+          this.showModalError = data;
+      });    
       });
   }
 }

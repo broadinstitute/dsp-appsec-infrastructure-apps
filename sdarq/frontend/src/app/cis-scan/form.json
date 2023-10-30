@@ -4,6 +4,11 @@
      {
       "name": "Scan GCP Project",
       "elements": [
+        {
+          "type": "html",
+          "name": "Important information",
+          "html": "<h4> Important information </h4><br>\n\n- Submiting this form will run a CIS scan against the provided GCP project. It will also add the project to weekly CIS scans run by the AppSec team. <br>\n\n\n\n\n"
+        },
        {
         "type": "text",
         "name": "project_id",
@@ -14,7 +19,13 @@
          {
           "type": "regex",
           "text": "Start with an alphabetic character and include only '-' , '_' , numbers and alphabetic characters.",
-          "regex": "^[a-z0-9][a-z0-9-_]{4,28}[a-z0-9]$"
+          "validators": [
+            {
+             "type": "regex",
+             "text": "Please enter a valid GCP project name",
+             "regex": "^[a-z0-9][a-z0-9-_]{4,42}[a-z0-9]$"
+            }
+           ]
          }
         ]
        },
@@ -35,6 +46,13 @@
         "visibleIf": "{results_in_slack} = ['Yes']",
         "title": "Enter a public Slack channel",
         "enableIf": "{results_in_slack} = ['Yes']",
+        "validators": [
+            {
+             "type": "regex",
+             "text": "Please enter a valid channel",
+             "regex": "^[a-z0-9-_]{1}[a-z0-9-_]{0,20}$"
+            }
+           ],
         "isRequired": true
        }
       ],

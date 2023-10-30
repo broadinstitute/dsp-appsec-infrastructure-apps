@@ -1,12 +1,35 @@
+<!-- 
+  Note that templates/logback.xml.base does not automatically overwrite /opt/codedx/logback.xml 
 
+  This is the logback.xml from the CodeDx 7.3 image but modified to retain 3 days rather than 7 days.
+  -->
 <configuration>
+	<appender name="logFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${codedx.log.dir}/codedx.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${codedx.log.dir}/codedx-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<!-- or whenever the file size reaches 100MB -->
+				<maxFileSize>100MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<!-- keep 3 days worth of history -->
+			<maxHistory>3</maxHistory>
+			<cleanHistoryOnStart>true</cleanHistoryOnStart>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder>
-      <pattern>%-5level [%thread] %logger{36} - %msg%n</pattern>
-    </encoder>
-  </appender>
+		<encoder>
+			<pattern>%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	<logger name="net.liftweb" level="WARN" />
 
-  <root level="INFO">
-    <appender-ref ref="stdout" />
-  </root>
+	<root level="INFO">
+		<appender-ref ref="logFile" />
+		<appender-ref ref="stdout" />
+	</root>
 </configuration>

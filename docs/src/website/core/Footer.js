@@ -24,54 +24,25 @@ class Footer extends React.Component {
   render() {
     return (
       <footer className="nav-footer" id="footer">
-        <section className="sitemap">
-          <a href={this.props.config.baseUrl} className="nav-home">
-            {this.props.config.footerIcon && (
-              <img
-                src={this.props.config.baseUrl + this.props.config.footerIcon}
-                alt={this.props.config.title}
-                width="66"
-                height="58"
-              />
-            )}
-          </a>
-          <div>
+        {/* <section className="sitemap"> */}
+          {/* <div>
             <h5>Docs</h5>
-            <a href={this.docUrl('doc1.html', this.props.language)}>
-              Getting Started (or other categories)
+            <a href={docUrl('kubernetes-cluster')}>
+             Guides
             </a>
-            <a href={this.docUrl('doc2.html', this.props.language)}>
-              Guides (or other categories)
-            </a>
-            <a href={this.docUrl('doc3.html', this.props.language)}>
-              API Reference (or other categories)
-            </a>
-          </div>
-          <div>
+          </div> */}
+          {/* <div>
             <h5>Community</h5>
             
             <a href="https://broadinstitute.slack.com/">
               Join chat group in Slack
             </a>
-
-            <a
-              href="https://twitter.com/aldrazhi"
-              target="_blank"
-              rel="noreferrer noopener">
-              Twitter
-            </a>
-
-            <a href={this.pageUrl('users.html', this.props.language)}>
-              User Showcase
-            </a>
-           
-
-          </div>
-          <div>
-            <h5>More</h5>
-            <a href={`${this.props.config.baseUrl}blog`}>Blog</a>
-            <a href="https://github.com/broadinstitute/dsp-appsec-infrastructure-apps">GitHub</a>
-            <a
+          </div> */}
+          {/* <div> */}
+            {/* <h5>More</h5> */}
+            {/* <a href={`${this.props.config.baseUrl}blog`}>Blog</a> */}
+            {/* <a href="https://github.com/broadinstitute/dsp-appsec-infrastructure-apps">GitHub</a> */}
+            {/* <a
               className="github-button"
               href={this.props.config.repoUrl}
               data-icon="octicon-star"
@@ -80,8 +51,8 @@ class Footer extends React.Component {
               data-count-aria-label="# stargazers on GitHub"
               aria-label="Star this project on GitHub">
               Star
-            </a>
-            {this.props.config.twitterUsername && (
+            </a> */}
+            {/* {this.props.config.twitterUsername && (
               <div className="social">
                 <a
                   href={`https://twitter.com/${this.props.config.twitterUsername}`}
@@ -89,8 +60,8 @@ class Footer extends React.Component {
                   Follow @{this.props.config.twitterUsername}
                 </a>
               </div>
-            )}
-            {this.props.config.facebookAppId && (
+            )} */}
+            {/* {this.props.config.facebookAppId && (
               <div className="social">
                 <div
                   className="fb-like"
@@ -103,8 +74,8 @@ class Footer extends React.Component {
                 />
               </div>
             )}
-          </div>
-        </section>
+          </div> */}
+        {/* </section> */}
 
         {/* <a
           href="https://opensource.facebook.com/"

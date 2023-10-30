@@ -14,8 +14,7 @@ from typing import List, Literal, Optional, Set, TypedDict
 
 import requests
 from google.cloud.pubsub_v1 import PublisherClient
-
-from zap import ScanType
+from zap_scan_type import ScanType
 
 
 class Endpoint(TypedDict):  # pylint: disable=inherit-non-class,too-few-public-methods
@@ -34,7 +33,9 @@ def get_defect_dojo_endpoints(base_url: str, api_key: str) -> List[Endpoint]:
     """
     Fetch endpoints from DefectDojo.
     """
-    endpoint = base_url + "/api/v2/endpoints?limit=1000"
+    # Fetch endpoints that have been tagged with scan:*
+    # It is unlikely that there are more than 1000 of them
+    endpoint = base_url + "/api/v2/endpoints?limit=1000&tag=scan"
     headers = {
         "content-type": "application/json",
         "Authorization": f"Token {api_key}",
@@ -65,7 +66,7 @@ def trigger_scan(  # pylint: disable=too-many-arguments
     codedx_project: str,
     scan_type: ScanType,
     slack_channel: str,
-    engagement_id: str,
+    product_id: str,
 ):
     """
     Trigger scan for a given endpoint via a Pub/Sub message.
@@ -79,7 +80,7 @@ def trigger_scan(  # pylint: disable=too-many-arguments
         URL=url,
         SCAN_TYPE=scan_type.name,
         SLACK_CHANNEL=slack_channel,
-        ENGAGEMENT_ID=engagement_id,
+        PRODUCT_ID=product_id,
     )
     future.add_done_callback(pubsub_callback(endpoint))
     return future
@@ -95,7 +96,7 @@ def parse_tags(endpoint: Endpoint):
     codedx_project = ""
     slack_channel = ""
     scan_type: Optional[ScanType] = None
-    engagement_id = ""
+    product_id = ""
     for tag in endpoint["tags"]:
         tag_match = TAG_MATCHER.match(tag)
         if not tag_match:
@@ -105,12 +106,15 @@ def parse_tags(endpoint: Endpoint):
         if tag_key == "codedx":
             codedx_project = tag_val
         if tag_key == "scan":
-            scan_type = ScanType[tag_val.upper()]
+            try:
+                scan_type = ScanType[tag_val.upper()]
+            except Exception:
+                scan_type = ""
         if tag_key == "slack":
             slack_channel = tag_val
-        if tag_key == "engagement_id":
-            engagement_id = tag_val
-    return codedx_project, slack_channel, scan_type, engagement_id
+        if tag_key == "product_id":
+            product_id = tag_val
+    return codedx_project, slack_channel, scan_type, product_id
 
 
 def trigger_scans(
@@ -130,14 +134,15 @@ def trigger_scans(
     for endpoint in endpoints:
         slack_channel = None
         try:
-            codedx_project, slack_channel, scan_type, engagement_id = parse_tags(endpoint)
-            if codedx_project and (scan_type in scan_types):
+            codedx_project, slack_channel, scan_type, product_id = parse_tags(endpoint)
+            if scan_type in scan_types:
                 future = trigger_scan(
-                    publisher, endpoint, topic, codedx_project, scan_type, slack_channel, engagement_id
+                    publisher, endpoint, topic, codedx_project, scan_type, slack_channel, product_id
                 )
                 futures.append(future)
-        except BaseException as error:
+        except BaseException as base_error: # pylint: disable=bare-except
             logging.error(f"Error triggering scan for: { endpoint }\n{ traceback.print_exc() }")
+            raise base_error
 
     concurrent.futures.wait(futures)
 
@@ -151,11 +156,11 @@ def main():
         level=logging.INFO,
         format=f"%(levelname)-8s [zap-trigger] %(message)s",
     )
-    defect_dojo_url = getenv("DEFECT_DOJO_URL")
+    defectdojo_url = getenv("DEFECT_DOJO_URL")
     defect_dojo_key = getenv("DEFECT_DOJO_KEY")
     zap_topic = getenv("ZAP_TOPIC_NAME")
     gcp_project = getenv("GCP_PROJECT_ID")
-    logging.info(f"Cron job running. Dojo {defect_dojo_url} Topic {zap_topic} Project {gcp_project}")
+    logging.info(f"Cron job running. Dojo {defectdojo_url} Topic {zap_topic} Project {gcp_project}")
 
     parser = argparse.ArgumentParser(description="Get scan types to run")
     parser.add_argument(
@@ -170,7 +175,7 @@ def main():
     scan_types = set(ScanType[s.upper()] for s in args.scans)
     logging.info(f"Scan types: { args.scans }")
 
-    endpoints = get_defect_dojo_endpoints(defect_dojo_url, defect_dojo_key)
+    endpoints = get_defect_dojo_endpoints(defectdojo_url, defect_dojo_key)
     logging.info(f"Defect Dojo {len(endpoints) if endpoints else 'no'} endpoints fetched.")
 
     trigger_scans(endpoints, gcp_project, zap_topic, scan_types)

@@ -1,0 +1,11 @@
+.card-title {
+    margin-bottom: 0.75rem;
+    font-weight: 200 !important;
+    color: #2774d7 !important;
+  }
+  
+  .fa,
+  .fas {
+    font-weight: 900;
+    color: #253ea7;
+  }

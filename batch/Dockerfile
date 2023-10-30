@@ -1,8 +1,10 @@
-FROM us.gcr.io/broad-dsp-gcr-public/base/python:debian AS base
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:alpine AS base
 
 COPY requirements.txt .
 
-RUN pip3 install -Ur requirements.txt
+RUN pip3 install --upgrade pip
+RUN pip install "Cython<3.0" pyyaml --no-build-isolation
+RUN pip3 install -r requirements.txt
 
 FROM base AS test
 

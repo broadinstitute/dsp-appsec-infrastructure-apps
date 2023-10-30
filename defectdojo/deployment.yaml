@@ -40,7 +40,7 @@ spec:
 
       containers:
       - name: nginx
-        image: ${DD_NGINX_IMAGE}
+        image: defectdojo/defectdojo-nginx
         env:
         - name: DD_UWSGI_HOST
           value: ${LOCALHOST}
@@ -54,7 +54,7 @@ spec:
           timeoutSeconds: 10
         volumeMounts:
         - name: ${SERVICE_VOLUME}
-          mountPath: /usr/share/nginx/media
+          mountPath: /usr/share/nginx/html/media
           readOnly: true
 
       - name: uwsgi
@@ -75,6 +75,22 @@ spec:
           value: '*' # validated by Ingress
         - name: DD_DEBUG
           value: 'False'
+        - name: DD_SOCIAL_AUTH_GOOGLE_OAUTH2_ENABLED
+          value: 'True'
+        - name: DD_SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS
+          value: 'broadinstitute.org' #should be made dynamic
+        - name: DD_SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
+          valueFrom:
+            secretKeyRef:
+              name: googleoauth2
+              key: oauth2_key
+              optional: false
+        - name: DD_SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: googleoauth2
+              key: oauth2_secret
+              optional: false  
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /app/media
@@ -204,7 +220,10 @@ metadata:
   name: ${CELERY_CONFIG}
   namespace: ${NAMESPACE}
 data:
+  DD_CELERY_BROKER_SCHEME: amqp
   DD_CELERY_BROKER_HOST: ${LOCALHOST}
+  DD_CELERY_BROKER_PORT: '5672'
+  DD_CELERY_BROKER_PATH: /
   DD_CELERY_BROKER_USER: celery
 ---
 apiVersion: v1

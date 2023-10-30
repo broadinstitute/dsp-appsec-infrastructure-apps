@@ -3,7 +3,11 @@ substitutions:
   _ORG_VIEWER_SA_EMAIL: '' # email of an existing Service Account with Org Viewer role
   _DNS_DOMAIN: '' # fully-resolved DNS domain name (e.g. appsec.example.org)
   _DNS_ZONE: '' # DNS zone name to be created/updated (e.g. appsec)
-  _CIS_CONTROLS_IGNORE: ''
+  _CIS_CONTROLS_IGNORE: '' # CIS controls rule to ignore
+  _CIS_PROD_PROJECTS: '' # CIS prod projects
+  _SECURITY_CONTROLS_IGNORE: '' # Security controls set to false ignore for some services
+  _SONAR_ORGS: '' # in-scope SonarCloud organizations
+  _CODACY_ORGS: '' # in-scope Codacy organizations
 
 options:
   machineType: N1_HIGHCPU_8
@@ -15,12 +19,11 @@ options:
   - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis
   - ZAP_IMAGE=us.gcr.io/${PROJECT_ID}/zap:${SHORT_SHA}
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
-  - DD_NGINX_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-nginx
-  - DOCS_IMAGE=us.gcr.io/${PROJECT_ID}/docs:${SHORT_SHA}
   - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx
   - RAMPER_IMAGE=us.gcr.io/${PROJECT_ID}/ramper:2.3.2
   - SDARQ_FRONTEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-frontend:${SHORT_SHA}
   - SDARQ_BACKEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-backend:${SHORT_SHA}
+  - SDARQ_SECURITY_CONTROLS=us.gcr.io/${PROJECT_ID}/sdarq-security-controls:${SHORT_SHA}
   - DNS_DOMAIN=${_DNS_DOMAIN}
   - DNS_ZONE=${_DNS_ZONE}
   - TERRAFORM_BUCKET=${PROJECT_ID}-terraform
@@ -82,6 +85,18 @@ steps:
       --destination=$${CIS_IMAGE}
       --cache
 
+# build SDARQ-security-controls Docker image
+- id: sdarq-security-controls-image
+  name: *kaniko
+  waitFor: ['kaniko']
+  entrypoint: sh
+  args:
+  - -c
+  - executor
+      --context=dir:///workspace/security-controls
+      --destination=$${SDARQ_SECURITY_CONTROLS}
+      --cache
+
 # build patched CodeDx image
 - id: codedx-image
   name: *kaniko
@@ -105,19 +120,6 @@ steps:
       --context=dir:///workspace/defectdojo
       --dockerfile=Dockerfile.django
       --destination=$${DD_DJANGO_IMAGE}
-      --cache
-
-# build patched DefectDojo Nginx image
-- id: defectdojo-nginx-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/defectdojo
-      --dockerfile=Dockerfile.nginx
-      --destination=$${DD_NGINX_IMAGE}
       --cache
 
 # build SDARQ frontend Docker image
@@ -197,6 +199,16 @@ steps:
   entrypoint: ./global.sh
   dir: shared
 
+# deploy SDARQ security controls to GKE cluster
+- id: security-controls
+  name: *kubectl
+  waitFor: ['shared', 'sdarq-security-controls-image']
+  entrypoint: ./deploy.sh
+  dir: security-controls
+  env:
+  - SECURITY_CONTROLS_IGNORE=${_SECURITY_CONTROLS_IGNORE}
+  - CODACY_ORGS=${_CODACY_ORGS}
+  - SONAR_ORGS=${_SONAR_ORGS}
 
 # deploy CIS scanner resources
 - id: cis
@@ -206,6 +218,7 @@ steps:
   dir: cis
   env:
   - CIS_CONTROLS_IGNORE=${_CIS_CONTROLS_IGNORE}
+  - CIS_PROD_PROJECTS=${_CIS_PROD_PROJECTS}
 
 # deploy CodeDx to GKE cluster
 - id: codedx
@@ -217,7 +230,7 @@ steps:
 # deploy DefectDojo to GKE cluster
 - id: defectdojo
   name: *kubectl
-  waitFor: ['shared', 'defectdojo-django-image', 'defectdojo-nginx-image']
+  waitFor: ['shared', 'defectdojo-django-image']
   entrypoint: ./deploy.sh
   dir: defectdojo
 

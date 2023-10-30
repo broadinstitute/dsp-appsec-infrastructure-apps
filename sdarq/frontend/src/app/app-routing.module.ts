@@ -4,7 +4,6 @@ import { MainpageComponent } from './mainpage/mainpage.component';
 import { FormComponent } from './form/form.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { CisComponent } from './cis/cis.component';
-import { ScanpageComponent } from './scanpage/scanpage.component';
 import { CisResultsComponent } from './cis-results/cis-results.component';
 import { CisScanComponent } from './cis-scan/cis-scan.component';
 import { CisLandingPageComponent } from './cis-landing-page/cis-landing-page.component';
@@ -17,7 +16,12 @@ import { SecurityControlsFormComponent} from './security-controls-form/security-
 import { SecurityControlsListComponent } from './security-controls-list/security-controls-list.component';
 import { EditSecurityControlsFormComponent } from './edit-security-controls-form/edit-security-controls-form.component';
 import { SecurityPentestComponent } from './security-pentest/security-pentest.component';
-
+import { SecurityRequestsComponent } from './security-requests/security-requests.component';
+import { SecurityControlsComponent } from './security-controls/security-controls.component';
+import { AppFormComponent } from './app-form/app-form.component';
+import { AppsMainpageComponent } from './apps-mainpage/apps-mainpage.component';
+import { ServiceSecurityControlsComponent } from './service-security-controls/service-security-controls.component';
+import { SearchServiceSecurityControlsComponent } from './search-service-security-controls/search-service-security-controls.component';
 
 
 const routes: Routes = [
@@ -25,18 +29,23 @@ const routes: Routes = [
   { path: 'about', component: AboutPageComponent },
   { path: 'newservice', component: MainpageComponent },
   { path: 'questionnaire', component: FormComponent },
-  { path: 'scan', component: ScanpageComponent },
-  { path: 'cis/latest', component: CisComponent },
-  { path: 'cis/results', component: CisResultsComponent },
-  { path: 'cis/scan', component: CisScanComponent },
-  { path: 'cis', component: CisLandingPageComponent },
+  { path: '3rd-party-app-questionnaire', component: AppFormComponent },
+  { path: 'new-3rd-party-app', component: AppsMainpageComponent },
+  { path: 'gcp-project-security-posture/latest', component: CisComponent },
+  { path: 'gcp-project-security-posture/results', component: CisResultsComponent },
+  { path: 'gcp-project-security-posture/scan', component: CisScanComponent },
+  { path: 'gcp-project-security-posture', component: CisLandingPageComponent },
   { path: 'jira-ticket-risk-assesment', component: JiraTicketRiskAssesmentComponent },
   { path: 'threat-model/request', component: ThreatModelComponent },
   { path: 'scan-service', component: ServiceScanComponent },
+  { path: 'security-requests', component: SecurityRequestsComponent },
+  { path: 'security-controls', component: SecurityControlsComponent },
   { path: 'security-control/create', component: SecurityControlsFormComponent },
   { path: 'security-control/view', component: SecurityControlsListComponent },
   { path: 'security-control/edit', component: EditSecurityControlsFormComponent },
   { path: 'security-pentest/request', component: SecurityPentestComponent },
+  { path: 'service-security-controls/results', component: ServiceSecurityControlsComponent },
+  { path: 'search-service-security-controls', component: SearchServiceSecurityControlsComponent },
   { path: '404', component: NotfoundComponent },
   { path: '**', redirectTo: '/404' }
 ];
