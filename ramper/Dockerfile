@@ -23,7 +23,7 @@ RUN apt-get update && \
       apt-transport-https \
       wget \
     && \
-    wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages.deb && \
+    wget --max-redirect=0 https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages.deb && \
     dpkg -i packages.deb && \
     rm packages.deb \
     && \
@@ -32,6 +32,7 @@ RUN apt-get update && \
       aspnetcore-runtime-6.0 \
       gosu && \
     apt-get install -y apt-transport-https && \
+    apt-get install -y libc6-dev libgdiplus libx11-dev &&\
     rm -rf /var/cache/apt/lists && \
     ln -sf /etc/nginx/conf.d/appsettings.json appsettings.json
 

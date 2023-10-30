@@ -47,7 +47,7 @@ spec:
         livenessProbe: *readinessProbe
 
       - name: ramper-db
-        image: mysql
+        image: mysql:8.0.28
         imagePullPolicy: Always
         envFrom:
         - configMapRef:
