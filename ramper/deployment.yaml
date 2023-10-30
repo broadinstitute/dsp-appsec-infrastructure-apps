@@ -43,7 +43,7 @@ spec:
             path: /Identity/Account/Login
             port: ${TARGET_PORT}
           timeoutSeconds: 5
-          initialDelaySeconds: 15
+          initialDelaySeconds: 35
         livenessProbe: *readinessProbe
 
       - name: ramper-db
