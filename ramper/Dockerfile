@@ -36,7 +36,6 @@ RUN apt-get update && \
     rm -rf /var/cache/apt/lists && \
     ln -sf /etc/nginx/conf.d/appsettings.json appsettings.json
 
-COPY *.license /usr/share/ramper/licenses
 
 COPY *.template /etc/nginx/templates/
 COPY entrypoint.sh /

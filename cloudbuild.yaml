@@ -20,7 +20,7 @@ options:
   - ZAP_IMAGE=us.gcr.io/${PROJECT_ID}/zap:${SHORT_SHA}
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
   - CODEDX_IMAGE=us.gcr.io/${PROJECT_ID}/codedx
-  - RAMPER_IMAGE=us.gcr.io/${PROJECT_ID}/ramper:2.3.2
+  - RAMPER_IMAGE=us.gcr.io/${PROJECT_ID}/ramper
   - SDARQ_FRONTEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-frontend:${SHORT_SHA}
   - SDARQ_BACKEND_IMAGE=us.gcr.io/${PROJECT_ID}/sdarq-backend:${SHORT_SHA}
   - SDARQ_SECURITY_CONTROLS=us.gcr.io/${PROJECT_ID}/sdarq-security-controls:${SHORT_SHA}
