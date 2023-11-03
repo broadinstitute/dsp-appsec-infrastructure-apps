@@ -13,7 +13,7 @@ security_controls_schema = {
         },
         "github": {
             "type": "string",
-            "pattern": url_pattern
+            "pattern": "^(https:\/\/github\.com\/[a-zA-Z0-9-]+\/[a-zA-Z0-9-]+|(N\/A))$"
         },
         "dev_url": {
             "type": "string",

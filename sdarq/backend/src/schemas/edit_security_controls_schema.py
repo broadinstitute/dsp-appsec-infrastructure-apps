@@ -11,6 +11,10 @@ edit_security_controls_schema = {
             "type": "string",
             "pattern": url_pattern
         },
+        "github": {
+            "type": "string",
+            "pattern": "^(https:\/\/github\.com\/[a-zA-Z0-9-]+\/[a-zA-Z0-9-]+|(N\/A))$"
+        },
         "threat_model": {
             "type": "boolean",
         },
