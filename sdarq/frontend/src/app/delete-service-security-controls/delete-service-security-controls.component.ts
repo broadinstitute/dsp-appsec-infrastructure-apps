@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
-import { DeleteServiceSecurityControlsService } from 'app/services/delete-service-security-controls/delete-service-security-controls.service';
+import { DeleteServiceSecurityControlsService } from '../services/delete-service-security-controls/delete-service-security-controls.service';
 import formJson from './form.json';
 
 @Component({
