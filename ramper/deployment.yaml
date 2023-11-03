@@ -40,7 +40,7 @@ spec:
           containerPort: 80
         readinessProbe: &readinessProbe
           httpGet:
-            path: /index.html
+            path: /swagger/index.html
             port: ${TARGET_PORT}
           timeoutSeconds: 5
           initialDelaySeconds: 35
