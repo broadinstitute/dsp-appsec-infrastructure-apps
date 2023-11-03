@@ -1,6 +1,6 @@
 {
     "pages": [{
-        "name": "Get security controls for one service",
+        "name": "Delete security controls for service",
         "elements": [{
             "type": "text",
             "name": "service",
@@ -13,7 +13,7 @@
                 "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,40}[a-zA-Z0-9]$"
             }]
         }],
-        "title": "Get security controls for one service"
+        "title": "Delete security controls for service"
     }],
     "showCompletedPage": false,
     "showQuestionNumbers": "off"
