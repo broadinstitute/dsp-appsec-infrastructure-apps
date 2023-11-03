@@ -21,7 +21,7 @@ new_service_schema = {
         },
         "Github URL": {
             "type": "string",
-            "pattern": "^(https:\/\/github\.com\/[a-zA-Z0-9-]+\/[a-zA-Z0-9-]+|(N\/A))$"
+            "pattern": "^(https://github\.com/[a-zA-Z0-9-]+/[a-zA-Z0-9-]+|(N/A))$"
         },
         "Architecture Diagram": {
             "type": "string",
