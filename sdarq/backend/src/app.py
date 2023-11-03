@@ -693,7 +693,7 @@ def edit_sec_controls():
         return jsonify({'statusText': message}), 400
 
 
-@app.route('/delete_service_sec_controls/', methods=['GET'])
+@app.route('/delete_service_sec_controls/', methods=['POST'])
 @cross_origin(origins=sdarq_host)
 def delete_service_sec_controls():
     """
