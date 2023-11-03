@@ -16,7 +16,7 @@ export class DeleteServiceSecurityControlsService {
     const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json'}),
     };
-    return this.http.put(this.Url, data, options).pipe(
+    return this.http.post(this.Url, data, options).pipe(
       catchError(this.handleError)
     )
   }
