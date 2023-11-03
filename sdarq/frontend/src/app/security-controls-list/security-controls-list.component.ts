@@ -1,7 +1,6 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit} from '@angular/core';
 import { GetSecurityControlsService } from '../services/get-all-security-controls/get-security-controls.service'
 import { ServiceSecurityControl } from '../models/service-security-control.model';
-
 
 @Component({
   selector: 'app-security-controls-list',
@@ -29,17 +28,27 @@ export class SecurityControlsListComponent implements OnInit {
   showSearch: boolean;
   showTable: boolean;
   servicesecuritycontrollink: string;
+  github: string;
+  github_link: boolean;
 
 
-  constructor(private getSecurityControls: GetSecurityControlsService,  private ngZone: NgZone) {
+  constructor(private getSecurityControls: GetSecurityControlsService, private ngZone: NgZone) {
     // This is intentional
-   }
+  }
 
   ngOnInit() {
     this.showModalError = false;
     this.showSearch = true;
     this.showTable = true;
     this.getResults()
+  }
+
+  githubShowValue(github) {
+    if (github === 'N/A') {
+      this.github_link = false;
+      return '<a href="#" data-mdb-toggle="tooltip" title="Github repo still does not exist!"><i class="fas fa-info-circle blue-color fa-2x"></i><a>'
+    } else
+      this.github_link = true;
   }
 
   trivyShowValue(docker_scan) {
@@ -61,7 +70,7 @@ export class SecurityControlsListComponent implements OnInit {
 
   threatmodelShowValue(threat_model, threat_model_link) {
     if (threat_model === true) {
-      if (!threat_model_link || !threat_model_link.trim()){
+      if (!threat_model_link || !threat_model_link.trim()) {
         this.threat_model_results = true;
         this.threat_model_results_link = false;
       } else {
@@ -119,7 +128,7 @@ export class SecurityControlsListComponent implements OnInit {
     }
   }
 
-  productShowValue(product){
+  productShowValue(product) {
     if (product === '') {
       this.product_value = false;
       return '<a href="#" data-mdb-toggle="tooltip" title="The product name is not available!"><i class="fas fa-info-circle blue-color fa-2x"></i><a>'
@@ -129,19 +138,17 @@ export class SecurityControlsListComponent implements OnInit {
   }
 
   getResults() {
-    this.getSecurityControls.getAllSecurityControls().subscribe((serviceSecurityControl: ServiceSecurityControl []) => {
-      this.serviceSecurityControl = serviceSecurityControl;
-      this.servicesecuritycontrollink = location.origin + '/service-security-controls/results?servicename='
-    },
+    this.getSecurityControls.getAllSecurityControls().subscribe((serviceSecurityControl: ServiceSecurityControl[]) => {
+        this.serviceSecurityControl = serviceSecurityControl;
+        this.servicesecuritycontrollink = location.origin + '/service-security-controls/results?servicename='
+      },
       (serviceSecurityControl) => {
         this.ngZone.run(() => {
-        this.errorMessage = serviceSecurityControl;
-        this.showModalError = true;
-        this.showSearch = false;
-        this.showTable = false;
-      }); 
+          this.errorMessage = serviceSecurityControl;
+          this.showModalError = true;
+          this.showSearch = false;
+          this.showTable = false;
+        });
       });
   }
 }
-
-

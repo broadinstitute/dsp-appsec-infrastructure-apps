@@ -50,9 +50,12 @@
                     </div>
                 </td>
                 <td>
-                    <div class="text-center"><a href="{{ controls.github  }}" target="_blank" rel="noreferrer noopener">
+                    <div [innerHTML]="githubShowValue(controls.github)"></div>
+                    <div *ngIf="github_link">
+                        <a href="{{ controls.github  }}" target="_blank" rel="noreferrer noopener">
                             <mdb-icon fab icon="github" size="2x"></mdb-icon>
-                        </a></div>
+                        </a>
+                    </div>
                 </td>
                 <td>
                     <div class="text-center"><a href="{{ controls.defect_dojo }}" target="_blank"
