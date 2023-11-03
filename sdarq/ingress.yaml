@@ -103,6 +103,13 @@ spec:
             name: ${SERVICE}
             port:
               name: ${BACKEND_PORT}
+      - path: /delete_service_sec_controls/
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: ${SERVICE}
+            port:
+              name: ${BACKEND_PORT}
 ---
 apiVersion: networking.gke.io/v1beta1
 kind: FrontendConfig
