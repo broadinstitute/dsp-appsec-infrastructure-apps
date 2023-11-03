@@ -40,6 +40,7 @@ import { EditSecurityControlsService } from './services/edit-service-security-co
 import { RequestSecurityPentestService } from './services/security-pentest-request/request-security-pentest.service';
 import { JiraTicketRiskAssessmentService } from './services/jira-ticket-risk-assessment/jira-ticket-risk-assessment.service';
 import { SendAppFormDataService } from './services/create-new-app/send-app-form-data.service';
+import { DeleteServiceSecurityControlsService } from './services/delete-service-security-controls/delete-service-security-controls.service';
 import { FilterPipe } from './pipes/filter.pipe';
 import { FiltersctPipe } from './pipes/filtersct.pipe';
 import { AppRoutingModule } from './app-routing.module';
@@ -47,6 +48,8 @@ import { AppFormComponent } from './app-form/app-form.component';
 import { AppsMainpageComponent } from './apps-mainpage/apps-mainpage.component';
 import { ServiceSecurityControlsComponent } from './service-security-controls/service-security-controls.component';
 import { SearchServiceSecurityControlsComponent } from './search-service-security-controls/search-service-security-controls.component';
+import { DeleteServiceSecurityControlsComponent } from './delete-service-security-controls/delete-service-security-controls.component';
+
 
 
 @NgModule({
@@ -79,7 +82,8 @@ import { SearchServiceSecurityControlsComponent } from './search-service-securit
     AppFormComponent,
     AppsMainpageComponent,
     ServiceSecurityControlsComponent,
-    SearchServiceSecurityControlsComponent
+    SearchServiceSecurityControlsComponent,
+    DeleteServiceSecurityControlsComponent
     ],
   imports: [
     BrowserModule,
@@ -103,7 +107,8 @@ import { SearchServiceSecurityControlsComponent } from './search-service-securit
     GetServiceSecurityControlsService,
     RequestSecurityPentestService,
     JiraTicketRiskAssessmentService,
-    SendAppFormDataService
+    SendAppFormDataService,
+    DeleteServiceSecurityControlsService
     ],
   bootstrap: [
     AppComponent
