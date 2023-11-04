@@ -1,0 +1,20 @@
+{
+    "pages": [{
+        "name": "Delete security controls for service",
+        "elements": [{
+            "type": "text",
+            "name": "service",
+            "title": "Enter service name",
+            "isRequired": true,
+            "requiredErrorText": "Service name is required.",
+            "validators": [{
+                "type": "regex",
+                "text": "Please enter a valid service name",
+                "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,40}[a-zA-Z0-9]$"
+            }]
+        }],
+        "title": "Delete security controls for service"
+    }],
+    "showCompletedPage": false,
+    "showQuestionNumbers": "off"
+}

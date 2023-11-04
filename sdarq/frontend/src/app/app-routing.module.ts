@@ -22,6 +22,7 @@ import { AppFormComponent } from './app-form/app-form.component';
 import { AppsMainpageComponent } from './apps-mainpage/apps-mainpage.component';
 import { ServiceSecurityControlsComponent } from './service-security-controls/service-security-controls.component';
 import { SearchServiceSecurityControlsComponent } from './search-service-security-controls/search-service-security-controls.component';
+import { DeleteServiceSecurityControlsComponent } from './delete-service-security-controls/delete-service-security-controls.component';
 
 
 const routes: Routes = [
@@ -46,6 +47,7 @@ const routes: Routes = [
   { path: 'security-pentest/request', component: SecurityPentestComponent },
   { path: 'service-security-controls/results', component: ServiceSecurityControlsComponent },
   { path: 'search-service-security-controls', component: SearchServiceSecurityControlsComponent },
+  { path: 'security-control/delete-service', component: DeleteServiceSecurityControlsComponent },
   { path: '404', component: NotfoundComponent },
   { path: '**', redirectTo: '/404' }
 ];

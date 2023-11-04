@@ -5,7 +5,7 @@ tm_schema = {
     "properties": {
         "Type": {
             "type": "string",
-            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9\\s]{1,30}[a-zA-Z0-9\s]$"
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9\s]{1,30}[a-zA-Z0-9\s]$"
         },
         "Name": {
             "type": "string",

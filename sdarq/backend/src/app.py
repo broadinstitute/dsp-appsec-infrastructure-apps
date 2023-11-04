@@ -693,6 +693,61 @@ def edit_sec_controls():
         return jsonify({'statusText': message}), 400
 
 
+@app.route('/delete_service_sec_controls/', methods=['POST'])
+@cross_origin(origins=sdarq_host)
+def delete_service_sec_controls():
+    """
+    Delete security controls for a service
+    Args: Provided json data from user
+    Returns: 200 status if data remove successfully
+             404 if service not found
+             400 is there is an error
+    """
+    json_data = request.get_json()
+    service_name = json_data['service']
+    pattern = "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
+    user_email = request.headers.get('X-Goog-Authenticated-User-Email')
+
+    if request.headers.get('Content-Type') != 'application/json':
+        return jsonify({'statusText': 'Bad Request'}), 400
+    
+    if re.match(pattern, service_name):
+        try:
+            validate(instance=json_data, schema=edit_security_controls_schema)
+            doc_ref = db.collection(security_controls_firestore_collection).document(
+                service_name.lower())
+            doc = doc_ref.get()
+            if bool(doc.to_dict()) is True:
+                db.collection(security_controls_firestore_collection).document(service_name.lower()).delete()
+                logging.info("Security control %s for the choosen service are removed by %s !",
+                        service_name, user_email)
+                return ''
+            else:
+                message = """
+                This service does not exist!
+                """
+                logging.info(
+                    "User %s requested to remove service security controls, but this service does not exist!",
+                    user_email)
+                return jsonify({'statusText': message}), 404
+        except Exception as error:
+            error_message = f"Exception /delete_service_sec_controls endpoint: {error}"
+            slacknotify.slacknotify_error_endpoint(error_message, appsec_sdarq_error_channel, user_email)
+            logging.warning(error_message)
+            message = """
+            There is something wrong with the input! Server did not respond correctly to your request!
+            """
+            return jsonify({'statusText': message}), 400
+    else:
+        message = """
+        Invalid input! Please make sure you include numbers, -, _ and alphabetical characters.
+        """
+        logging.info(
+            "User %s requested to remove Security Controls for a service, but INVALID input was provided",
+            user_email)
+        return jsonify({'statusText': message}), 400
+
+
 @app.route('/get_sec_controls/', methods=['GET'])
 @cross_origin(origins=sdarq_host)
 def get_sec_controls():
