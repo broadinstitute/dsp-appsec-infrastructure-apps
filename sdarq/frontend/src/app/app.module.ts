@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SurveyComponent } from './services/survejs-form/survey.component';
 import { SurveyCreatorComponent } from './services/survejs-form/survey.creator.component';
 import { FormComponent } from './form/form.component';
@@ -49,11 +50,13 @@ import { ServiceSecurityControlsComponent } from './service-security-controls/se
 import { SearchServiceSecurityControlsComponent } from './search-service-security-controls/search-service-security-controls.component';
 import { DeleteServiceSecurityControlsComponent } from './delete-service-security-controls/delete-service-security-controls.component';
 import { DeleteServiceSecurityControlsService } from './services/delete-service-security-controls/delete-service-security-controls.service';
+import { SortableHeaderDirective } from './cis-results/cis-results.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
+    SortableHeaderDirective,
     SurveyComponent,
     SurveyCreatorComponent,
     FormComponent,
@@ -91,6 +94,7 @@ import { DeleteServiceSecurityControlsService } from './services/delete-service-
     AppRoutingModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
+    NgbModule,
     MDBBootstrapModule.forRoot()
   ],
   providers: [
