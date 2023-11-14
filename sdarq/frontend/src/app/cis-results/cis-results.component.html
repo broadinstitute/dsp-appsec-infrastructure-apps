@@ -42,7 +42,7 @@
   <div class="row">
     <div class="col">
       <p *ngIf="showTable" class="updateDate">Last updated: {{ updateDate.toLocaleString() }}</p>
-      <table class="table table-hover" *ngIf="showTable">
+      <table mdbTable #tableEl="mdbTable" hover="true"  class="z-depth-1" class="table table-hover" *ngIf="showTable" class="animated fadeIn">
         <thead class="thead-light">
           <tr>
         <th scope="col" sortable="benchmark" (sort)="onSort($event, cisfinding, data)">Benchmark</th>
