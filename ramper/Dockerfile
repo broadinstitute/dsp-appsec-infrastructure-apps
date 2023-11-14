@@ -4,7 +4,7 @@ RUN apt-get update && \
     apt-get install --no-install-recommends -y \
       unzip
 
-COPY Ramper*.zip "Ramper.zip"
+COPY Ramper_OnPrem_*.zip "Ramper.zip"
 RUN unzip Ramper.zip
 
 
@@ -16,7 +16,7 @@ ENV HOST=ramper \
 
 WORKDIR /var/www/${HOST}
 
-COPY --from=build /RamperOnPrem* .
+COPY --from=build /OnPremPackage* .
 
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
