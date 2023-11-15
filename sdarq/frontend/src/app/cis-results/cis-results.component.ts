@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit, ViewChildren, QueryList } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit, ViewChildren, QueryList, HostBinding, HostListener } from '@angular/core';
 import { GetCisScanService } from '../services/get-project-cis-results/get-cis-scan.service';
 import { ActivatedRoute } from '@angular/router';
 import { CsvDataService } from '../services/convert-json-to-csv/csv-data.service';
@@ -27,20 +27,17 @@ export interface SortEvent {
 }
 
 @Directive({
-  selector: 'th[sortable]',
-  host: {
-    '[class.asc]': 'direction === "asc"',
-    '[class.desc]': 'direction === "desc"',
-    '(click)': 'rotate()',
-  },
+  selector: 'th[sortable]'
 })
-
 export class SortableHeaderDirective {
   @Input() sortable: SortColumn = '';
   @Input() direction: SortDirection = '';
   @Output() sort = new EventEmitter<SortEvent>();
 
-  rotate() {
+  @HostBinding('class.asc') get isAsc() { return this.direction === 'asc'; }
+  @HostBinding('class.desc') get isDesc() { return this.direction === 'desc'; }
+
+  @HostListener('click') rotate() {
     this.direction = rotate[this.direction];
     this.sort.emit({ column: this.sortable, direction: this.direction });
   }
