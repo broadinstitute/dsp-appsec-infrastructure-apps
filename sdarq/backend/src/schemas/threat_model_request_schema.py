@@ -5,7 +5,7 @@ tm_schema = {
     "properties": {
         "Type": {
             "type": "string",
-            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9\s]{1,30}[a-zA-Z0-9\s]$"
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9 ]{1,30}[a-zA-Z0-9 ]$"
         },
         "Name": {
             "type": "string",
@@ -13,7 +13,7 @@ tm_schema = {
         },
         "Github": {
             "type": "string",
-            "pattern": url_pattern
+            "pattern": "^(https://github.com/[a-zA-Z0-9-]+/[a-zA-Z0-9-]+|(N/A))$"
         },
         "Diagram": {
             "type": "string",
