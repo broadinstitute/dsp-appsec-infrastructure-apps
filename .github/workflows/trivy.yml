@@ -23,7 +23,7 @@ jobs:
       SARIF_PATH: ${{ matrix.dir }}/trivy-results.sarif
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - uses: broadinstitute/dsp-appsec-trivy-action@v1
       with:
