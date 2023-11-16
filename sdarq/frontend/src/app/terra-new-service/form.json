@@ -2,325 +2,358 @@
     "description": "Welcome to the New Service Questionnaire",
     "logoPosition": "right",
     "completedHtml": "<p><h3>Thank you!</h3></p>",
-    "pages": [{
-            "name": "Metadata",
-            "elements": [{
-                    "type": "text",
-                    "name": "Service",
-                    "title": "Service name",
-                    "isRequired": true,
-                    "requiredErrorText": "Required field",
-                    "validators": [{
-                        "type": "regex",
-                        "text": "Please include numbers, a-z characters, _,- and spaces.",
-                        "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,40}[a-zA-Z0-9]$"
-                    }]
-                },
-                {
-                    "type": "text",
-                    "name": "Product",
-                    "title": "Product name",
-                    "isRequired": true,
-                    "requiredErrorText": "Required field",
-                    "validators": [{
-                        "type": "regex",
-                        "text": "Please include numbers, a-z characters, _,- (3-20).",
-                        "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
-                    }]
-                },
-                {
-                    "type": "comment",
-                    "name": "Description",
-                    "title": "A brief description of the application/service (provide link to external doc if easier)",
-                    "isRequired": true,
-                    "requiredErrorText": "Required field",
-                    "validators": [{
-                        "type": "regex",
-                        "text": "Please include numbers, a-z characters, _,- . ? !(4-200).",
-                        "regex": "[[a-zA-Z0-9-_/ .?!]{4,200}"
-                    }]
-                },
-                {
-                    "type": "text",
-                    "name": "Security champion",
-                    "title": "Please enter the development team responsible for this service",
-                    "isRequired": true,
-                    "requiredErrorText": "Required field",
-                    "validators": [{
-                        "type": "regex",
-                        "text": "Please include numbers, a-z characters, _,- (1-20).",
-                        "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{1,20}[a-zA-Z0-9]$"
-                    }]
-                },
-                {
-                    "type": "text",
-                    "name": "Github URL",
-                    "title": "Github URL (N/A if you have not written a line of code yet)",
-                    "isRequired": true,
-                    "requiredErrorText": "Required field",
-                    "validators": [{
-                        "type": "regex",
-                        "text": "Please enter a valid link",
-                        "regex": "^(https://github\\.com/[a-zA-Z0-9-]+/[a-zA-Z0-9-]+|(N/A))$"
-                    }]
-                },
-                {
-                    "type": "text",
-                    "name": "Architecture Diagram",
-                    "title": "Link to Architecture Diagram, ideally a Lucidchart diagram.",
-                    "isRequired": true,
-                    "requiredErrorText": "Required field",
-                    "validators": [{
-                        "type": "regex",
-                        "text": "Please enter a valid link.",
-                        "regex": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$"
-                    }]
-                }
-            ],
-            "title": "Metadata"
-        },
-        {
-            "name": "Architecture",
-            "elements": [{
-                    "type": "checkbox",
-                    "name": "Cloud",
-                    "title": "Which Cloud Plaform are you using to deploy your service?",
-                    "choices": [{
-                            "value": "Azure",
-                            "text": "Microsoft Azure"
-                        },
-                        {
-                            "value": "GCP",
-                            "text": "Google Cloud Platform"
-                        }
-                    ],
-                    "otherText": "Other"
-                },
-                {
-                    "type": "radiogroup",
-                    "name": "question1",
-                    "title": "Your service must be based on one of the following",
-                    "choices": [{
-                            "value": "GAE",
-                            "text": "Based in GAE (Google App Engine)"
-                        },
-                        {
-                            "value": "GCF",
-                            "text": "Based in GCF (Google Cloud Functions)"
-                        },
-                        {
-                            "value": "GKE",
-                            "text": "Based in GKE (Google Kubernetes Engine)"
-                        },
-                        {
-                            "value": "AKS",
-                            "text": "Based in AKS (Azure Kubernetes Service)"
-                        }
-                    ],
-                    "showOtherItem": true,
-                    "otherText": "Other"
-                },
-                {
-                    "type": "text",
-                    "name": "Cluster",
-                    "visibleIf": "{Architecture} = 'GKE'",
-                    "title": "Cluster name"
-                },
-                {
-                    "type": "text",
-                    "name": "Function Name",
-                    "visibleIf": "{Architecture} = 'GCF'",
-                    "title": "Function name"
-                },
-                {
-                    "type": "text",
-                    "name": "GAE Service",
-                    "visibleIf": "{Architecture} = 'GAE'",
-                    "title": "Service name"
-                },
-                {
-                    "type": "text",
-                    "name": "project_id",
-                    "visibleIf": "{Architecture} = 'GKE' or {Architecture} = 'GCF' or {Architecture} = 'GAE'",
-                    "title": "Google project name"
-                }
-            ],
-            "title": "Architecture"
-        },
-        {
-            "name": "Security",
-            "elements": [{
-                    "type": "checkbox",
-                    "name": "Security tools",
-                    "title": "Please select applicable items",
-                    "choices": [{
-                            "value": "dependency_scan",
-                            "text": "We are currently using SourceClear or similar tools for downstream dependency/3rd party component management "
-                        },
-                        {
-                            "value": "Git-secrets",
-                            "text": "We are currently using git-secrets in our repository"
-                        },
-                        {
-                            "value": "Secret_management",
-                            "text": "We are currently using Vault/Secret Manager to store our secrets"
-                        },
-                        {
-                            "value": "SAST",
-                            "text": "We are currently using Codacy, SonarCloud or similar tools for security static code analysis"
-                        },
-                        {
-                            "value": "Image_scan",
-                            "text": "We are currently using Trivy or similar tools to scan our Docker images"
-                        },
-                        {
-                            "value": "DAST",
-                            "text": "Our service is currently scanned weekly/monthly via ZAP or similar tools"
-                        },
-                        {
-                            "value": "RASP",
-                            "text": "We are using Tcell Rapid or a similar tool to enable RASP (Runtime application self-protection) mode"
-                        }
-                    ]
-                },
-                {
-                    "type": "checkbox",
-                    "name": "Applicable",
-                    "title": "Check what's applicable",
-                    "choices": [{
-                            "value": "managed-sql",
-                            "text": "I am using a managed SQL database"
-                        },
-                        {
-                            "value": "in-cluster-sql",
-                            "text": "I am using an in-cluster SQL database"
-                        }
-                    ]
-                }
-            ],
-            "title": "Security"
-        },
-        {
-            "name": "Jira Ticket",
-            "elements": [{
-                    "type": "text",
-                    "name": "JiraProject",
-                    "title": "Track all security actions by creating a Jira ticket in your board.",
-                    "description": "Please add the KEY of your Jira project. For example: ATP",
-                    "isRequired": true,
-                    "requiredErrorText": "Please add the KEY of your JIRA project. It should contain characters and numbers.",
-                    "validators": [{
-                        "type": "regex",
-                        "text": "It should contain characters and numbers.",
-                        "regex": "([A-Z][A-Z0-9]+)"
-                    }]
-                },
-                {
-                    "type": "checkbox",
-                    "name": "Ticket_Description",
-                    "title": "Add actions to your ticket:",
-                    "enableIf": "{JiraProject} notempty",
-                    "isRequired": true,
-                    "choices": [{
-                            "value": "You must use git-secrets to prevent accidental commit of secrets to source code repository.",
-                            "text": "Please make sure your service is using Tcell Rapid functionalities or is behind the orchestration layer to add some runtime protection to your stack. RASP in the app is preferred over WAF/Apache proxy. Ask the appsec team if you need more clarification on this.",
-                            "visibleIf": "{Security tools} notcontains \"Git-secrets\""
-                        },
-                        {
-                            "value": "You must use SourceClear or similar tools for downstream dependency/3rd  party component management. Ask AppSec team to add your repo.",
-                            "visibleIf": "{Security tools} notcontains \"dependency_scan\""
-                        },
-                        {
-                            "value": "You must use security tools to scan your Docker images. Ask AppSec team to help you setup this tool.",
-                            "visibleIf": "{Security tools} notcontains \"Image_scan\""
-                        },
-                        {
-                            "value": "Your service must be scanned weekly/mothly via SAST tools. Ask AppSec team to help you setup this tool.",
-                            "visibleIf": "{Security tools} notcontains \"DAST\""
-                        },
-                        {
-                            "value": "You should only store secrets in Vault, Secret Manager or similar tools.",
-                            "visibleIf": "{Security tools} notcontains 'Secret_management'"
-                        },
-                        {
-                            "value": "You should use Codacy, SonarCloud or similar tools for security static code analysis. Ask AppSec team to help you setup this tool.",
-                            "visibleIf": "{Security tools} notcontains \"SAST\""
-                        },
-                        {
-                            "value": "Please make sure your service is using Tcell Rapid functionalities or is behind the orchestration layer to add some runtime protection in your stack. RASP in the app is preferred over WAF/Apache proxy. Ask appsec team if you need more clarification on this.",
-                            "visibleIf": "{Security tools} notcontains \"RASP\""
-                        },
-                        {
-                            "visibleIf": "{Applicable} contains \"managed-sql\"",
-                            "value": "Please make sure your database is using a private IP or is behind a proxy."
-                        }
-                    ],
-                    "showSelectAllItem": true
-                }
-            ],
-            "title": "Jira Ticket"
-        },
-        {
-            "name": "Alerts",
-            "elements": [{
-                    "type": "html",
-                    "name": "Alert-general",
-                    "html": "<div class=\"tip\">Please reach out to AppSec team for initial security discussion. This is basically a\n            Threat Modeling and Security Architecture Review session. The main purpose of the meeting is for us to take\n an iterative, recursive look at the architecture and design of a new service/system.</div>"
-                },
-                {
-                    "type": "html",
-                    "name": "Alert-Sourceclear",
-                    "visibleIf": "{Security tools} notcontains \"dependency_scan\"",
-                    "html": "<div class=\"highs\">You must use SourceClear or similar tools for downstream dependency/3rd\n            party component management. Ask AppSec team to add your repo.</div>"
-                },
-                {
-                    "type": "html",
-                    "name": "Alert-Trivy",
-                    "visibleIf": "{Security tools} notcontains \"Image_scan\"",
-                    "html": "<div class=\"highs\">You must use Trivy or security tools to scan your Docker images. Ask AppSec team to help you setup this tool.</div>"
-                },
-                {
-                    "type": "html",
-                    "name": "Alert-ZAP",
-                    "visibleIf": "{Security tools} notcontains \"DAST\"",
-                    "html": "<div class=\"highs\">Your service must be scanned weekly/mothly via SAST tools. Ask AppSec team to help you setup this tool.</div>"
-                },
-                {
-                    "type": "html",
-                    "name": "Alert",
-                    "visibleIf": "{Security tools} notcontains \"RASP\"",
-                    "html": "<div class=\"highs\">Please make sure your service is using Tcell Rapid functionalities or is behind the orchestration layer to add some runtime protection to your stack. RASP in the app is preferred over WAF/Apache proxy. Ask the appsec team if you need more clarification on this.</div>"
-                },
-                {
-                    "type": "html",
-                    "name": "Alert-gitsecrets",
-                    "visibleIf": "{Security tools} notcontains \"Git-secrets\"",
-                    "html": "<div class=\"highs\">You must use <a href=\"https://github.com/awslabs/git-secrets\">git-secrets</a>\n            to prevent accidental commit of secrets to source code repository.</div>"
-                },
-                {
-                    "type": "html",
-                    "name": "Alert-vault",
-                    "visibleIf": "{Security tools} notcontains 'Secret_management'",
-                    "html": "<div class=\"highs\">You should only store secrets in\n Vault , Google Secret Manager or similar tools. </div>  "
-                },
-                {
-                    "type": "html",
-                    "name": "Alert-codacy",
-                    "visibleIf": "{Security tools} notcontains \"SAST\"",
-                    "html": "<div class=\"highs\">You should use\n  Codacy, SonarCloud or similar tools for security static code analysis.\n  Reach out to Appsec team to set it up for your repository.\n</div>"
-                },
-                {
-                    "type": "html",
-                    "name": "Alert-database",
-                    "visibleIf": "{Applicable} contains \"managed-sql\"",
-                    "html": "<div class=\"highs\">Please make sure your database is using a private IP or is behind a proxy.</div>"
-                }
-            ],
-            "title": "Alerts"
-        }
+    "pages": [
+     {
+      "name": "Metadata",
+      "elements": [
+       {
+        "type": "text",
+        "name": "Service",
+        "title": "Service name",
+        "isRequired": true,
+        "requiredErrorText": "Required field",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please include numbers, a-z characters, _,- and spaces.",
+          "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,40}[a-zA-Z0-9]$"
+         }
+        ]
+       },
+       {
+        "type": "text",
+        "name": "Product",
+        "title": "Product name",
+        "isRequired": true,
+        "requiredErrorText": "Required field",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please include numbers, a-z characters, _,- (3-20).",
+          "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
+         }
+        ]
+       },
+       {
+        "type": "comment",
+        "name": "Description",
+        "title": "A brief description of the application/service (provide link to external doc if easier)",
+        "isRequired": true,
+        "requiredErrorText": "Required field",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please include numbers, a-z characters, _,- . ? !(4-200).",
+          "regex": "[[a-zA-Z0-9-_/ .?!]{4,200}"
+         }
+        ]
+       },
+       {
+        "type": "text",
+        "name": "Security champion",
+        "title": "Please enter the development team responsible for this service",
+        "isRequired": true,
+        "requiredErrorText": "Required field",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please include numbers, a-z characters, _,- (1-20).",
+          "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{1,20}[a-zA-Z0-9]$"
+         }
+        ]
+       },
+       {
+        "type": "text",
+        "name": "Github URL",
+        "title": "Github URL",
+        "isRequired": true,
+        "requiredErrorText": "Required field",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please enter a valid link",
+          "regex": "^(https://github\\.com/[a-zA-Z0-9-]+/[a-zA-Z0-9-]+|(N/A))$"
+         }
+        ]
+       },
+       {
+        "type": "text",
+        "name": "Architecture Diagram",
+        "title": "Link to Architecture Diagram, ideally a Lucidchart diagram.",
+        "isRequired": true,
+        "requiredErrorText": "Required field",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please enter a valid link.",
+          "regex": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$"
+         }
+        ]
+       }
+      ],
+      "title": "Metadata"
+     },
+     {
+      "name": "Architecture",
+      "elements": [
+       {
+        "type": "checkbox",
+        "name": "Cloud",
+        "title": "Which Cloud Plaform are you using to deploy your service?",
+        "choices": [
+         {
+          "value": "Azure",
+          "text": "Microsoft Azure"
+         },
+         {
+          "value": "GCP",
+          "text": "Google Cloud Platform"
+         }
+        ],
+        "otherText": "Other"
+       },
+       {
+        "type": "radiogroup",
+        "name": "question1",
+        "visibleIf": "{Cloud} contains 'GCP'",
+        "title": "Your service must be based on one of the following",
+        "choices": [
+         {
+          "value": "GAE",
+          "text": "Based in GAE (Google App Engine)"
+         },
+         {
+          "value": "GCF",
+          "text": "Based in GCF (Google Cloud Functions)"
+         },
+         {
+          "value": "GKE",
+          "text": "Based in GKE (Google Kubernetes Engine)"
+         },
+         {
+          "value": "AKS",
+          "text": "Based in AKS (Azure Kubernetes Service)"
+         }
+        ],
+        "showOtherItem": true,
+        "otherText": "Other"
+       },
+       {
+        "type": "text",
+        "name": "Cluster",
+        "visibleIf": "{Architecture} = 'GKE'",
+        "title": "Cluster name"
+       },
+       {
+        "type": "text",
+        "name": "Function Name",
+        "visibleIf": "{Architecture} = 'GCF'",
+        "title": "Function name"
+       },
+       {
+        "type": "text",
+        "name": "GAE Service",
+        "visibleIf": "{Architecture} = 'GAE'",
+        "title": "Service name"
+       },
+       {
+        "type": "text",
+        "name": "project_id",
+        "visibleIf": "{Architecture} = 'GKE' or {Architecture} = 'GCF' or {Architecture} = 'GAE'",
+        "title": "Google project name"
+       },
+       {
+        "type": "text",
+        "name": "azure_subscription",
+        "visibleIf": "{Cloud} contains 'Azure'",
+        "title": "Azure subscription"
+       }
+      ],
+      "title": "Architecture"
+     },
+     {
+      "name": "Security",
+      "elements": [
+       {
+        "type": "checkbox",
+        "name": "Security tools",
+        "title": "Please select applicable items",
+        "choices": [
+         {
+          "value": "dependency_scan",
+          "text": "We are currently using SourceClear or similar tools for downstream dependency/3rd party component management"
+         },
+         {
+          "value": "Git-secrets",
+          "text": "We are currently using git-secrets in our repository"
+         },
+         {
+          "value": "Secret_management",
+          "text": "We are currently using Vault/Secret Manager to store our secrets"
+         },
+         {
+          "value": "SAST",
+          "text": "We are currently using Codacy, SonarCloud or similar tools for security static code analysis"
+         },
+         {
+          "value": "Image_scan",
+          "text": "We are currently using Trivy or similar tools to scan our Docker images"
+         },
+         {
+          "value": "DAST",
+          "text": "Our service is currently scanned weekly/monthly via ZAP or similar tools"
+         },
+         {
+          "value": "blessed_image",
+          "text": "We are using an AppSec \"blessed\" docker image"
+         }
+        ]
+       },
+       {
+        "type": "checkbox",
+        "name": "Applicable",
+        "title": "Check what's applicable",
+        "choices": [
+         {
+          "value": "managed-sql",
+          "text": "We are using a managed SQL database"
+         },
+         {
+          "value": "in-cluster-sql",
+          "text": "We are using an in-cluster SQL database"
+         }
+        ],
+        "showOtherItem": true
+       }
+      ],
+      "title": "Security"
+     },
+     {
+      "name": "Jira Ticket",
+      "elements": [
+       {
+        "type": "text",
+        "name": "JiraProject",
+        "title": "Track all security actions by creating a Jira ticket in your board.",
+        "description": "Please add the KEY of your Jira project. For example: ATP",
+        "isRequired": true,
+        "requiredErrorText": "Please add the KEY of your JIRA project. It should contain characters and numbers.",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "It should contain characters and numbers.",
+          "regex": "([A-Z][A-Z0-9]+)"
+         }
+        ]
+       },
+       {
+        "type": "checkbox",
+        "name": "Ticket_Description",
+        "title": "Add actions to your ticket:",
+        "enableIf": "{JiraProject} notempty",
+        "isRequired": true,
+        "choices": [
+         {
+          "value": "You must use git-secrets to prevent accidental commit of secrets to source code repository.",
+          "text": "AppSec team recommends to use \"blessed image\" for your service, and AppSec team will be responsible for the findings reported by our scanning tools. If you decide not to use the AppSec \"blessed\" image, then the dev team will be responsible to fix the findings reported by our scanning tools.",
+          "visibleIf": "{Security tools} notcontains 'blessed_image'"
+         },
+         {
+          "value": "You must use SourceClear or similar tools for downstream dependency/3rd  party component management. Ask AppSec team to add your repo.",
+          "text": "You must use SourceClear or similar tools for downstream dependency/3rd party component management. Ask the AppSec team to add your repo.",
+          "visibleIf": "{Security tools} notcontains \"dependency_scan\""
+         },
+         {
+          "value": "You must use security tools to scan your Docker images. Ask AppSec team to help you setup this tool.",
+          "visibleIf": "{Security tools} notcontains \"Image_scan\""
+         },
+         {
+          "value": "Your service must be scanned weekly/mothly via SAST tools. Ask AppSec team to help you setup this tool.",
+          "text": "Your service must be scanned weekly/monthly via DAST tools. Ask the AppSec team to help you set up this scanner for your service.",
+          "visibleIf": "{Security tools} notcontains \"DAST\""
+         },
+         {
+          "value": "You should only store secrets in Vault, Secret Manager or similar tools.",
+          "text": "You should only store secrets in Vault, Secret Manager, or similar tools.",
+          "visibleIf": "{Security tools} notcontains 'Secret_management'"
+         },
+         {
+          "value": "You should use Codacy, SonarCloud or similar tools for security static code analysis. Ask AppSec team to help you setup this tool.",
+          "text": "You should use Codacy, SonarCloud, or similar tools for security static code analysis. Ask the AppSec team to help you set up this tool.",
+          "visibleIf": "{Security tools} notcontains \"SAST\""
+         },
+         {
+          "value": "Please make sure your database is using a private IP or is behind a proxy.",
+          "visibleIf": "{Applicable} contains \"managed-sql\""
+         }
+        ],
+        "showSelectAllItem": true
+       }
+      ],
+      "title": "Jira Ticket"
+     },
+     {
+      "name": "Alerts",
+      "elements": [
+       {
+        "type": "html",
+        "name": "Alert-general",
+        "html": "<div class=\"tip\">Please reach out to AppSec team for initial security discussion. This is basically a\n            Threat Modeling and Security Architecture Review session. The main purpose of the meeting is for us to take\n an iterative, recursive look at the architecture and design of a new service/system.</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert-Sourceclear",
+        "visibleIf": "{Security tools} notcontains \"dependency_scan\"",
+        "html": "<div class=\"highs\">You must use SourceClear or similar tools for downstream dependency/3rd\n            party component management. Ask AppSec team to add your repo.</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert-Trivy",
+        "visibleIf": "{Security tools} notcontains \"Image_scan\"",
+        "html": "<div class=\"highs\">You must use Trivy or security tools to scan your Docker images. Ask AppSec team to help you setup this tool.</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert-ZAP",
+        "visibleIf": "{Security tools} notcontains \"DAST\"",
+        "html": "<div class=\"highs\">Your service must be scanned weekly/mothly via SAST tools. Ask AppSec team to help you setup this tool.</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert",
+        "visibleIf": "{Security tools} notcontains 'blessed_image'",
+        "html": "<div class=\"highs\">AppSec team recommends to use \"blessed image\" for your service, and AppSec team will be responsible for the findings reported by our scanning tools. If you decide not to use the AppSec \"blessed\" image, then the dev team will be responsible for fixing the findings reported by our scanning tools.</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert-gitsecrets",
+        "visibleIf": "{Security tools} notcontains \"Git-secrets\"",
+        "html": "<div class=\"highs\">You must use <a href=\"https://github.com/awslabs/git-secrets\">git-secrets</a>\n            to prevent accidental commit of secrets to source code repository.</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert-vault",
+        "visibleIf": "{Security tools} notcontains 'Secret_management'",
+        "html": "<div class=\"highs\">You should only store secrets in\n Vault , Google Secret Manager or similar tools. </div>  "
+       },
+       {
+        "type": "html",
+        "name": "Alert-codacy",
+        "visibleIf": "{Security tools} notcontains \"SAST\"",
+        "html": "<div class=\"highs\">You should use\n  Codacy, SonarCloud or similar tools for security static code analysis.\n  Reach out to Appsec team to set it up for your repository.\n</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert-database",
+        "visibleIf": "{Applicable} contains \"managed-sql\"",
+        "html": "<div class=\"highs\">Please make sure your database is using a private IP or is behind a Cloud SQL Auth Proxy.</div>"
+       }
+      ],
+      "title": "Alerts"
+     }
     ],
     "showNavigationButtons": "top",
     "showQuestionNumbers": "off",
     "questionErrorLocation": "bottom",
     "showProgressBar": "top"
-}
+   }
