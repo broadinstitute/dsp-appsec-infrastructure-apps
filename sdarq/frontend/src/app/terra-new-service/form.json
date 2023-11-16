@@ -114,7 +114,7 @@
        },
        {
         "type": "radiogroup",
-        "name": "question1",
+        "name": "Service_Architecture",
         "visibleIf": "{Cloud} contains 'GCP'",
         "title": "Your service must be based on one of the following",
         "choices": [
@@ -141,25 +141,25 @@
        {
         "type": "text",
         "name": "Cluster",
-        "visibleIf": "{Architecture} = 'GKE'",
+        "visibleIf": "{Service_Architecture} = 'GKE'",
         "title": "Cluster name"
        },
        {
         "type": "text",
         "name": "Function Name",
-        "visibleIf": "{Architecture} = 'GCF'",
+        "visibleIf": "{Service_Architecture} = 'GCF'",
         "title": "Function name"
        },
        {
         "type": "text",
         "name": "GAE Service",
-        "visibleIf": "{Architecture} = 'GAE'",
+        "visibleIf": "{Service_Architecture} = 'GAE'",
         "title": "Service name"
        },
        {
         "type": "text",
         "name": "project_id",
-        "visibleIf": "{Architecture} = 'GKE' or {Architecture} = 'GCF' or {Architecture} = 'GAE'",
+        "visibleIf": "{Cloud} contains 'GCP'",
         "title": "Google project name"
        },
        {
