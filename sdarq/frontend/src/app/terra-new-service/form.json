@@ -122,19 +122,23 @@
         "choices": [
          {
           "value": "GAE",
-          "text": "Based in GAE (Google App Engine)"
+          "text": "Based in GAE (Google App Engine)",
+          "visibleIf": "{Cloud} allof ['GCP']"
          },
          {
           "value": "GCF",
-          "text": "Based in GCF (Google Cloud Functions)"
+          "text": "Based in GCF (Google Cloud Functions)",
+          "visibleIf": "{Cloud} allof ['GCP']"
          },
          {
           "value": "GKE",
-          "text": "Based in GKE (Google Kubernetes Engine)"
+          "text": "Based in GKE (Google Kubernetes Engine)",
+          "visibleIf": "{Cloud} allof ['GCP']"
          },
          {
           "value": "AKS",
-          "text": "Based in AKS (Azure Kubernetes Service)"
+          "text": "Based in AKS (Azure Kubernetes Service)",
+          "visibleIf": "{Cloud} allof ['Azure']"
          }
         ],
         "showOtherItem": true,
@@ -220,7 +224,7 @@
        {
         "type": "checkbox",
         "name": "Applicable",
-        "title": "Check what's applicable",
+        "title": "Check what's applicable for the database",
         "choices": [
          {
           "value": "managed-sql",
@@ -229,6 +233,14 @@
          {
           "value": "in-cluster-sql",
           "text": "We are using an in-cluster SQL database"
+         },
+         {
+          "value": "graphql",
+          "text": "We are using GraphQL"
+         },
+         {
+          "value": "nonSQL",
+          "text": "We are using a noSQL database"
          }
         ],
         "showOtherItem": true
@@ -293,6 +305,14 @@
          {
           "value": "Please make sure your database is using a private IP or is behind a proxy.",
           "visibleIf": "{Applicable} contains \"managed-sql\""
+         },
+         {
+          "value": "Please make sure to disable introspection query in GraphQL",
+          "visibleIf": "{Applicable} contains 'graphql'"
+         },
+         {
+          "value": "Please make sure to use prepared statements to prevent any SQL injection.",
+          "visibleIf": "{Applicable} contains 'managed-sql' and {Applicable} contains 'in-cluster-sql'"
          }
         ],
         "showSelectAllItem": true
@@ -355,6 +375,18 @@
         "name": "Alert-database",
         "visibleIf": "{Applicable} contains \"managed-sql\"",
         "html": "<div class=\"highs\">Please make sure your database is using a private IP or is behind a Cloud SQL Auth Proxy.</div>"
+       },
+       {
+        "type": "html",
+        "name": "alert-graphql",
+        "visibleIf": "{Applicable} contains 'graphql'",
+        "html": "<div class=\"highs\">Please make sure to disable introspection query in GraphQL.</div>"
+       },
+       {
+        "type": "html",
+        "name": "alert-prepraredstatements",
+        "visibleIf": "{Applicable} contains 'in-cluster-sql' or {Applicable} contains 'managed-sql'",
+        "html": "<div class=\"highs\">Please make sure to use prepared statements to prevent any SQL injection.</div>"
        }
       ],
       "title": "Alerts"
