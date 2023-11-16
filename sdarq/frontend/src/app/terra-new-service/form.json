@@ -10,6 +10,7 @@
         "type": "text",
         "name": "Service",
         "title": "Service name",
+        "description": "Please fill this field with the name of the microservice, for example some microservices are Sam, Rawls, Leonardo, etc",
         "isRequired": true,
         "requiredErrorText": "Required field",
         "validators": [
@@ -24,6 +25,7 @@
         "type": "text",
         "name": "Product",
         "title": "Product name",
+        "description": "Please fill this field with the product name to which the microservice belongs, for example Terra, DUOS, Jade",
         "isRequired": true,
         "requiredErrorText": "Required field",
         "validators": [
@@ -37,7 +39,7 @@
        {
         "type": "comment",
         "name": "Description",
-        "title": "A brief description of the application/service (provide link to external doc if easier)",
+        "title": "A brief description of the service (provide a link to the external doc if it is easier)",
         "isRequired": true,
         "requiredErrorText": "Required field",
         "validators": [
@@ -65,7 +67,7 @@
        {
         "type": "text",
         "name": "Github URL",
-        "title": "Github URL",
+        "title": "Github repository link",
         "isRequired": true,
         "requiredErrorText": "Required field",
         "validators": [
@@ -115,7 +117,7 @@
        {
         "type": "radiogroup",
         "name": "Service_Architecture",
-        "visibleIf": "{Cloud} contains 'GCP'",
+        "visibleIf": "{Cloud} anyof ['Azure', 'GCP']",
         "title": "Your service must be based on one of the following",
         "choices": [
          {
