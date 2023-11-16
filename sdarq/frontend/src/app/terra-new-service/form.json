@@ -161,7 +161,7 @@
        {
         "type": "text",
         "name": "project_id",
-        "visibleIf": "{Cloud} contains 'GCP'",
+        "visibleIf": "{Service_Architecture} = 'GKE' and {Cloud} contains 'GCP'",
         "title": "Google project name"
        },
        {
@@ -210,7 +210,13 @@
           "text": "We are using an AppSec \"blessed\" docker image"
          }
         ]
-       },
+       }
+      ],
+      "title": "Security tools"
+     },
+     {
+      "name": "page1",
+      "elements": [
        {
         "type": "checkbox",
         "name": "Applicable",
@@ -228,7 +234,7 @@
         "showOtherItem": true
        }
       ],
-      "title": "Security"
+      "title": "Service Security"
      },
      {
       "name": "Jira Ticket",
