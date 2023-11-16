@@ -143,19 +143,19 @@
        {
         "type": "text",
         "name": "Cluster",
-        "visibleIf": "{Service_Architecture} = 'GKE'",
+        "visibleIf": "{Service_Architecture} = 'GKE' and {Cloud} contains 'GCP'",
         "title": "Cluster name"
        },
        {
         "type": "text",
         "name": "Function Name",
-        "visibleIf": "{Service_Architecture} = 'GCF'",
+        "visibleIf": "{Service_Architecture} = 'GCF' and {Cloud} contains 'GCP'",
         "title": "Function name"
        },
        {
         "type": "text",
         "name": "GAE Service",
-        "visibleIf": "{Service_Architecture} = 'GAE'",
+        "visibleIf": "{Service_Architecture} = 'GAE' and {Cloud} contains 'GCP'",
         "title": "Service name"
        },
        {
