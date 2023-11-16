@@ -324,11 +324,11 @@
          },
          {
           "value": "Please make sure to disable introspection query in GraphQL",
-          "visibleIf": "{Applicable} contains \"graphql\"."
+          "visibleIf": "{Applicable} contains 'graphql'"
          },
          {
           "value": "Please make sure to use prepared statements to prevent any SQL injection.",
-          "visibleIf": "{Applicable} contains  \"managed-sql\" and {Applicable} contains \"in-cluster-sql\"."
+          "visibleIf": "{Applicable} contains 'in-cluster-sql' or {Applicable} contains 'managed-sql'"
          },
          {
           "value": "Please make sure to build a matrix for your service permissions and prevent any horizontal and vertical privilege escalations.",
