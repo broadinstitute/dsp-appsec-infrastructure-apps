@@ -258,9 +258,9 @@
        {
         "type": "boolean",
         "name": "Permissions",
-        "title": "Does this service have more then 1 layer of permissions?",
+        "title": "Does this service have more than 1 layer of permissions?",
         "description": "For example, my service will have separated permissions for admin and non admin users, which means this service has 2 layers of permissions."
-       },
+       }
       ],
       "title": "Service Security"
      },
