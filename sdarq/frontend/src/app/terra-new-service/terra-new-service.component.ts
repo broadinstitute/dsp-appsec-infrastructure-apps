@@ -46,6 +46,8 @@ export class TerraNewServiceComponent implements OnInit {
         'service': result['Service'],
         'github': result['Github URL'],
         'product': result['Product'],
+        'description': result['Description'],
+        'team': result['Security champion'],
         'dev_url': '',
         'burp': false,
         'zap': false,
@@ -55,7 +57,7 @@ export class TerraNewServiceComponent implements OnInit {
         'threat_model': false,
         'sast': false
       };
-      
+
       this.createNewSctService.createNewSCT(this.arrRequired).subscribe((createNewSCTResponse) => {
         console.log("Security Controls template created for this service")
       });
