@@ -27,14 +27,10 @@ new_service_schema = {
             "type": "string",
             "pattern": url_pattern
         },
-        "Compliance": {
-            "type": "string",
-            "pattern": "[a-zA-Z0-9-_,. ]{1,100}"
-        },
         "JiraProject": {
             "type": "string",
             "pattern": "([A-Z][A-Z0-9]+)"
         }
     },
-    "required": ["Service", "Product", "Description", "Security champion", "Github URL", "Architecture Diagram", "Federal compliance oversight", "JiraProject"]
+    "required": ["Service", "Product", "Description", "Security champion", "Github URL", "Architecture Diagram", "JiraProject"]
 }

@@ -247,20 +247,20 @@
        },
        {
         "type": "boolean",
-        "name": "Permissions",
-        "title": "Does this service have more then 1 layer of permissions?",
-        "description": "For example, my service will have separated permissions for admin and non admin users, which means this service has 2 layers of permissions."
-       },
-       {
-        "type": "boolean",
         "name": "service_input",
         "title": "Does this service accepts inputs from users or other services?"
        },
        {
         "type": "boolean",
         "name": "file_upload",
-        "title": "Does this service process any file in the server?"
-       }
+        "title": "Does this service process any file?"
+       },
+       {
+        "type": "boolean",
+        "name": "Permissions",
+        "title": "Does this service have more then 1 layer of permissions?",
+        "description": "For example, my service will have separated permissions for admin and non admin users, which means this service has 2 layers of permissions."
+       },
       ],
       "title": "Service Security"
      },
@@ -335,7 +335,7 @@
           "visibleIf": "{Permissions} = true"
          },
          {
-          "value": "Please make sure you validate every user input or input from other systems. If there is user input , validation should be done both in frontend and backend.",
+          "value": "Please make sure you sanitize and validate all user-supplied input data or input from other systems. If there is user input , validation should be done both in frontend and backend.",
           "visibleIf": "{service_input} = true"
          },
          {
@@ -426,7 +426,7 @@
         "type": "html",
         "name": "alert_service_input",
         "visibleIf": "{service_input} = true",
-        "html": "<div class=\"highs\">Please make sure you validate every user input or input from other systems. If there is user input , validation should be done both in frontend and backend.</div>"
+        "html": "<div class=\"highs\">Please make sure you sanitize and validate all user-supplied input data or input from other systems. If there is user input , validation should be done both in frontend and backend.</div>"
        },
        {
         "type": "html",
