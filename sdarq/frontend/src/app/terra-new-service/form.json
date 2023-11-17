@@ -319,7 +319,7 @@
           "visibleIf": "{Security tools} notcontains \"SAST\""
          },
          {
-          "value": "Please make sure your database is using a private IP or is behind a proxy.",
+          "value": "Please make sure your database is using a private IP or is behind a Cloud SQL Auth Proxy..",
           "visibleIf": "{Applicable} contains \"managed-sql\""
          },
          {
