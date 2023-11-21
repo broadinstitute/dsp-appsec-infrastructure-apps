@@ -247,8 +247,8 @@ def main():
             find_highs(rows, slack_channel, slack_token, target_project_id)
        
         # create Firestore document, if specified
-        # if fs_collection:
-        #     doc_ref.set({})
+        if fs_collection:
+            doc_ref.set({})
 
     # writes an error in Firestore document if an exception occurs and sends a Slack notification
     except (Exception) as error:
