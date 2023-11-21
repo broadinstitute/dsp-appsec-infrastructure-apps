@@ -425,6 +425,7 @@ def cis_scan():
             callback_done.wait(timeout=3600)
             doc_watch.unsubscribe()
             doc = doc_ref.get()
+
             check_dict = doc.to_dict()
             if check_dict:
                 text_message = check_dict['Error']
@@ -432,7 +433,7 @@ def cis_scan():
                 return jsonify({'statusText': text_message}), 404
             else:
                 doc_ref.delete()
-                return ''
+            return ''
         except Exception as error:
             error_message = f"Exception /cis_scan endpoint: {error}"
             logging.warning(error_message)
