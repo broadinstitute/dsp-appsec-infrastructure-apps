@@ -253,7 +253,7 @@ def main():
 
     # writes an error in Firestore document if an exception occurs and sends a Slack notification
     except (Exception) as error:
-        slacknotifications.slack_error(slack_token, slack_channel, error, target_project_id)
+        # slacknotifications.slack_error(slack_token, slack_channel, error, target_project_id)
         if fs_collection:
             print(fs_collection)
             doc_ref.set({'Error': '{}'.format(error)})
