@@ -29,7 +29,7 @@ ENTRYPOINT [ \
   "--workers", "5", \
   "--worker-tmp-dir", "/dev/shm", \
   "--worker-connections", "1000", \
-  "--timeout", "360", \
+  "--timeout", "3600", \
   "--graceful-timeout", "360", \
   "--limit-request-fields", "30", \
   "--limit-request-line", "8190", \
