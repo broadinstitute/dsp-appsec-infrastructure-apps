@@ -245,8 +245,8 @@ def main():
             slacknotifications.slack_notify(target_project_id, slack_token,
                          slack_channel, slack_results_url)
             find_highs(rows, slack_channel, slack_token, target_project_id)
+       
         # create Firestore document, if specified
-
         # if fs_collection:
         #     doc_ref.set({})
 
