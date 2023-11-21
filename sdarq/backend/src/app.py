@@ -422,7 +422,7 @@ def cis_scan():
             doc_ref = db.collection(firestore_collection).document(user_proj)
             doc_ref.delete()
             doc_watch = doc_ref.on_snapshot(on_snapshot)
-            callback_done.wait(timeout=7200)
+            callback_done.wait(timeout=8000)
             doc_watch.unsubscribe()
             doc = doc_ref.get()
 
