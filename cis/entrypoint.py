@@ -229,6 +229,7 @@ def main():
         # define table_id and Firestore doc_ref for reporting success/errors
         table_id = target_project_id.replace('-', '_')
         if fs_collection:
+            print(fs_collection)
             doc_ref = firestore.Client().collection(fs_collection).document(table_id)
 
         # validate inputs
@@ -247,12 +248,14 @@ def main():
         # create Firestore document, if specified
 
         if fs_collection:
+            print(fs_collection)
             doc_ref.set({})
 
     # writes an error in Firestore document if an exception occurs and sends a Slack notification
     except (Exception) as error:
         slacknotifications.slack_error(slack_token, slack_channel, error, target_project_id)
         if fs_collection:
+            print(fs_collection)
             doc_ref.set({'Error': '{}'.format(error)})
         raise error
 
