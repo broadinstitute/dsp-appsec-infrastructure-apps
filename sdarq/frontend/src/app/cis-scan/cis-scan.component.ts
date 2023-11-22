@@ -35,9 +35,11 @@ export class CisScanComponent implements OnInit {
   });
     if (result.slack_channel) {
       this.sendProject.sendCisProject(result).subscribe((data) => {
+        this.ngZone.run(() => {
         this.showModal = true;
         this.showForm = false;
         this.showSpinner = false;
+      });
       },
       (data) => {
         this.ngZone.run(() => {
