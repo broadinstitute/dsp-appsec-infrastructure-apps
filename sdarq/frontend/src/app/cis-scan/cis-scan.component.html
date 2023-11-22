@@ -1,23 +1,5 @@
 <div class="jumbotron min-vh-100">
   <div class="container">
-    <div class="row">
-      <div class="col"> </div>
-      <div class="col text-center">
-        <div class="spinner-grow text-primary" role="status" *ngIf="showSpinner">
-          <span class="sr-only">Loading...</span>
-        </div>
-        <div class="spinner-grow text-primary" role="status" *ngIf="showSpinner">
-          <span class="sr-only">Loading...</span>
-        </div>
-        <div class="spinner-grow text-primary" role="status" *ngIf="showSpinner">
-          <span class="sr-only">Loading...</span>
-        </div>
-      </div>
-      <div class="col"> </div>
-    </div>
-    <div class="alert alert-success animated fadeInRight" role="alert" *ngIf="showModal">
-      Notification is sent to the slack channel.
-    </div>
     <div class="alert alert-danger animated fadeInRight" role="alert" *ngIf="showModalErr">
       <h4 class="alert-heading">Oops!</h4>
       <p> {{showModalError}} </p>
