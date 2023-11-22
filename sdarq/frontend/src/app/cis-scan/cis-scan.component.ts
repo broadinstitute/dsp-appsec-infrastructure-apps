@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import formJson from './form.json';
 import { CisProjectService } from '../services/scan-gcp-project/cis-project.service';
 
@@ -19,7 +19,7 @@ export class CisScanComponent implements OnInit {
   showModalErr: boolean;
   showModalError: string;
 
-  constructor(private sendProject: CisProjectService, private ngZone: NgZone, private ref: ChangeDetectorRef) {
+  constructor(private sendProject: CisProjectService, private ngZone: NgZone) {
     // This is intentional
    }
 
@@ -30,11 +30,9 @@ export class CisScanComponent implements OnInit {
   }
 
   sendData(result) {
-    this.ref.detectChanges();
     this.showSpinner = true;
     if (result.slack_channel) {
       this.sendProject.sendCisProject(result).subscribe((data) => {
-        this.ref.detectChanges();
         this.showModal = true;
         this.showForm = false;
         this.showSpinner = false;
