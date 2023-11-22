@@ -431,9 +431,8 @@ def cis_scan():
                 text_message = check_dict['Error']
                 doc_ref.delete()
                 return jsonify({'statusText': text_message}), 404
-            else:
-                doc_ref.delete()
-                return jsonify({'statusText': 'Scan run successfully!'}), 200
+
+            return jsonify({'statusText': 'Scan run successfully!'}), 200
         except Exception as error:
             error_message = f"Exception /cis_scan endpoint: {error}"
             logging.warning(error_message)
