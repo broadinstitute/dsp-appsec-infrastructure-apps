@@ -14,7 +14,7 @@ export class CisScanComponent implements OnInit {
   data: any[] = [];
   json = formJson;
   showSpinner: boolean;
-// showModal: boolean;
+  showModal: boolean;
   showForm: boolean;
   showModalErr: boolean;
   showModalError: string;
@@ -24,25 +24,41 @@ export class CisScanComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    // this.showModal = false;
+    this.showModal = false;
     this.showForm = true;
     this.showModalErr = false;
   }
 
   sendData(result) {
+    this.showSpinner = true;
+    if (result.slack_channel) {
       this.sendProject.sendCisProject(result).subscribe((data) => {
-        // this.showModal = true;
+        this.showModal = true;
         this.showForm = false;
         this.showSpinner = false;
       },
       (data) => {
         this.ngZone.run(() => {
-        // this.showModal = false;
+        this.showModal = false;
         this.showModalErr = true;
         this.showModalError = data;
         this.showForm = false;
         this.showSpinner = false;
       });
     });
+    } else {
+      this.sendProject.sendCisProject(result).subscribe((data) => {
+        location.href = location.origin + '/gcp-project-security-posture/results?project_id=' + result.project_id;
+      },
+      (data) => {
+        this.ngZone.run(() => {
+        this.showModal = false;
+        this.showModalError = data;
+        this.showModalErr = true;
+        this.showForm = false;
+        this.showSpinner = false;
+      });
+    });
     }
+  }
 }

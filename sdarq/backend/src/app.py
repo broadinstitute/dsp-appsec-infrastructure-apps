@@ -422,7 +422,7 @@ def cis_scan():
             doc_ref = db.collection(firestore_collection).document(user_proj)
             doc_ref.delete()
             doc_watch = doc_ref.on_snapshot(on_snapshot)
-            callback_done.wait(timeout=800)
+            callback_done.wait(timeout=7200)
             doc_watch.unsubscribe()
             doc = doc_ref.get()
 
@@ -431,8 +431,9 @@ def cis_scan():
                 text_message = check_dict['Error']
                 doc_ref.delete()
                 return jsonify({'statusText': text_message}), 404
-
-            return jsonify({'statusText': 'Scan run successfully!'}), 200
+            else:
+                doc_ref.delete()
+                return jsonify({'statusText': 'Scan run successfully!'}), 200
         except Exception as error:
             error_message = f"Exception /cis_scan endpoint: {error}"
             logging.warning(error_message)
