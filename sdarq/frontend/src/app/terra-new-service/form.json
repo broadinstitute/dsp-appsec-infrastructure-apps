@@ -211,7 +211,7 @@
       "description": "You are submitting this questionnaire for a service that needs to be part of the Terra system boundary. Terra is compliant with HIPAA and the NIST 800-53 Rev 5 information security control framework as a Moderate impact system. Your service must uphold all of these requirements, which can be done by following the New Service Production Readiness Checklist."
      },
      {
-      "name": "page1",
+      "name": "Privacy",
       "elements": [
        {
         "type": "checkbox",
