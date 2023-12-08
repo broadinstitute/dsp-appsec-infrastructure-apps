@@ -25,7 +25,7 @@
         "type": "text",
         "name": "Product",
         "title": "Product name",
-        "description": "Please provide the product name (for example: Terra, Jade, Duos)",
+        "description": "Please provide the product name (for example: Terra, Rawls, Duos)",
         "isRequired": true,
         "requiredErrorText": "Required field",
         "validators": [
@@ -141,7 +141,6 @@
           "visibleIf": "{Cloud} contains 'Azure'"
          }
         ],
-        "showOtherItem": true,
         "otherText": "Other"
        },
        {
