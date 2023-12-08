@@ -25,7 +25,7 @@
         "type": "text",
         "name": "Product",
         "title": "Product name",
-        "description": "Please provide the product name (for example: Terra, Rawls, Duos)",
+        "description": "Please provide the product name (for example: Terra, Jade, DUOS)",
         "isRequired": true,
         "requiredErrorText": "Required field",
         "validators": [
