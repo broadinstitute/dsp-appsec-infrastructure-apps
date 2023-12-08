@@ -211,6 +211,81 @@
       "description": "You are submitting this questionnaire for a service that needs to be part of the Terra system boundary. Terra is compliant with HIPAA and the NIST 800-53 Rev 5 information security control framework as a Moderate impact system. Your service must uphold all of these requirements, which can be done by following the New Service Production Readiness Checklist."
      },
      {
+      "name": "page1",
+      "elements": [
+       {
+        "type": "checkbox",
+        "name": "data_collection",
+        "title": "Does your service collect any of the following data about a Terra user (select all that apply):",
+        "choices": [
+         {
+          "value": "PHI",
+          "text": "Protected Health Information - data that is protected by HIPAA and governed by a Business Associates Agreement"
+         },
+         {
+          "value": "PII",
+          "text": "Personally Identifiable Information - data that contains direct identifiers or one or more indirect identifiers"
+         },
+         {
+          "value": "PD",
+          "text": "Personal Data - any information which are related to an identified or identifiable natural person"
+         }
+        ]
+       },
+       {
+        "type": "text",
+        "name": "data_collected",
+        "visibleIf": "{data_collection} contains 'PHI'",
+        "title": "What data is collected?"
+       },
+       {
+        "type": "checkbox",
+        "name": "Process/Store_userdata",
+        "title": "Does your service process or store any of the following data about a Terra user, even if that data is collected by a different service (select all that apply):",
+        "choices": [
+         {
+          "value": "store_PHI",
+          "text": "Protected Health Information - data that is protected by HIPAA and governed by a Business Associates Agreement"
+         },
+         {
+          "value": "store_PII",
+          "text": "Personally Identifiable Information - data that contains direct identifiers or one or more indirect identifiers"
+         },
+         {
+          "value": "store_PD",
+          "text": "Personal Data - any information which are related to an identified or identifiable natural person"
+         }
+        ]
+       },
+       {
+        "type": "text",
+        "name": "data_processed/stored",
+        "visibleIf": "{Process/Store_userdata} contains 'store_PD'",
+        "title": "What data is processed or stored?"
+       },
+       {
+        "type": "boolean",
+        "name": "identify_dataThatCollectsProcessesStores",
+        "visibleIf": "{Process/Store_userdata} anyof ['store_PHI', 'store_PD']",
+        "title": "Does your service clearly flag or otherwise identify the data that is identified above that it collects, processes, or stores?"
+       },
+       {
+        "type": "boolean",
+        "name": "process_data_deletion",
+        "visibleIf": "{Process/Store_userdata} anyof ['store_PHI', 'store_PD']",
+        "title": "Does your service have a process for fully deleting the data that is identified above if we are required to do so?"
+       },
+       {
+        "type": "boolean",
+        "name": "View_edit_data_user_option",
+        "visibleIf": "{Process/Store_userdata} allof ['store_PHI']",
+        "title": "Does your service have a methodology for allowing users to view the data your service has collected about them and to modify it, if needed?"
+       }
+      ],
+      "title": "Privacy",
+      "description": "Terra is compliant with HIPAA and the NIST 800-53 Rev 5 information security control framework, both of which require privacy controls. Please answer the following questions about your service to help us determine its privacy impact."
+     },
+     {
       "name": "Security",
       "elements": [
        {
@@ -247,21 +322,6 @@
           "text": "We are using Tcell Rapid or a similar tool to enable RASP (Runtime application self-protection) mode"
          }
         ]
-       },
-       {
-        "type": "checkbox",
-        "name": "Applicable",
-        "title": "Check what's applicable",
-        "choices": [
-         {
-          "value": "managed-sql",
-          "text": "I am using a managed SQL database"
-         },
-         {
-          "value": "in-cluster-sql",
-          "text": "I am using an in-cluster SQL database"
-         }
-        ]
        }
       ],
       "title": "Security"
@@ -293,7 +353,6 @@
         "choices": [
          {
           "value": "You must use git-secrets to prevent accidental commit of secrets to source code repository.",
-          "text": "Please make sure your service is using Tcell Rapid functionalities or is behind the orchestration layer to add some runtime protection to your stack. RASP in the app is preferred over WAF/Apache proxy. Ask the appsec team if you need more clarification on this.",
           "visibleIf": "{Security tools} notcontains \"Git-secrets\""
          },
          {
@@ -309,7 +368,7 @@
           "visibleIf": "{Security tools} notcontains \"DAST\""
          },
          {
-          "value": "You should only store secrets in Vault, Secret Manager or similar tools.",
+          "value": "You should only store secrets in Vault, Google Secret Manager to store the secrets. Reach out to AppSec and DevOps team to help you with setup. ",
           "visibleIf": "{Security tools} notcontains 'Secret_management'"
          },
          {
@@ -319,10 +378,6 @@
          {
           "value": "Please make sure your service is using Tcell Rapid functionalities or is behind the orchestration layer to add some runtime protection in your stack. RASP in the app is preferred over WAF/Apache proxy. Ask appsec team if you need more clarification on this.",
           "visibleIf": "{Security tools} notcontains \"RASP\""
-         },
-         {
-          "value": "Please make sure your database is using a private IP or is behind a proxy.",
-          "visibleIf": "{Applicable} contains \"managed-sql\""
          }
         ],
         "showSelectAllItem": true
@@ -336,19 +391,19 @@
        {
         "type": "html",
         "name": "Alert-general",
-        "html": "<div class=\"tip\">Please reach out to AppSec team for initial security discussion. This is basically a\n            Threat Modeling and Security Architecture Review session. The main purpose of the meeting is for us to take\n an iterative, recursive look at the architecture and design of a new service/system.</div>"
+        "html": "<div class=\"tip\">The AppSec team will reach you out for the initial security discussion. This is basically a\n            Threat Modeling and Security Architecture Review session. The main purpose of the meeting is for us to take\n an iterative, recursive look at the architecture and design of a new service/system.</div>"
        },
        {
         "type": "html",
         "name": "Alert-Sourceclear",
         "visibleIf": "{Security tools} notcontains \"dependency_scan\"",
-        "html": "<div class=\"highs\">You must use SourceClear or similar tools for downstream dependency/3rd\n            party component management. Ask AppSec team to add your repo.</div>"
+        "html": "<div class=\"highs\">You must use SourceClear for downstream dependency/3rd\n party component management. Ask AppSec team to add your repo.</div>"
        },
        {
         "type": "html",
         "name": "Alert-Trivy",
         "visibleIf": "{Security tools} notcontains \"Image_scan\"",
-        "html": "<div class=\"highs\">You must use Trivy or security tools to scan your Docker images. Ask AppSec team to help you setup this tool.</div>"
+        "html": "<div class=\"highs\">You must use Trivy to scan your Docker images. Ask AppSec team to help you setup this tool.</div>"
        },
        {
         "type": "html",
@@ -372,19 +427,13 @@
         "type": "html",
         "name": "Alert-vault",
         "visibleIf": "{Security tools} notcontains 'Secret_management'",
-        "html": "<div class=\"highs\">You should only store secrets in\n Vault , Google Secret Manager or similar tools. </div>  "
+        "html": "<div class=\"highs\">You should only store secrets in\n Vault, Google Secret Manager to store the secrets. Reach out to AppSec and DevOps team to help you with setup. </div>  "
        },
        {
         "type": "html",
         "name": "Alert-codacy",
         "visibleIf": "{Security tools} notcontains \"SAST\"",
         "html": "<div class=\"highs\">You should use\n  Codacy, SonarCloud or similar tools for security static code analysis.\n  Reach out to Appsec team to set it up for your repository.\n</div>"
-       },
-       {
-        "type": "html",
-        "name": "Alert-database",
-        "visibleIf": "{Applicable} contains \"managed-sql\"",
-        "html": "<div class=\"highs\">Please make sure your database is using a private IP or is behind a proxy.</div>"
        }
       ],
       "title": "Alerts"
@@ -395,5 +444,3 @@
     "questionErrorLocation": "bottom",
     "showProgressBar": "top"
    }
-
-   
