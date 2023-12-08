@@ -113,25 +113,30 @@
         "otherText": "Other"
        },
        {
-        "type": "radiogroup",
-        "name": "question1",
+        "type": "checkbox",
+        "name": "cloud_component",
+        "visibleIf": "{Cloud} notempty",
         "title": "Your service must be based on one of the following",
         "choices": [
          {
           "value": "GAE",
-          "text": "Based in GAE (Google App Engine)"
+          "text": "Based in GAE (Google App Engine)",
+          "visibleIf": "{Cloud} contains 'GCP'"
          },
          {
           "value": "GCF",
-          "text": "Based in GCF (Google Cloud Functions)"
+          "text": "Based in GCF (Google Cloud Functions)",
+          "visibleIf": "{Cloud} contains 'GCP'"
          },
          {
           "value": "GKE",
-          "text": "Based in GKE (Google Kubernetes Engine)"
+          "text": "Based in GKE (Google Kubernetes Engine)",
+          "visibleIf": "{Cloud} contains 'GCP'"
          },
          {
           "value": "AKS",
-          "text": "Based in AKS (Azure Kubernetes Service)"
+          "text": "Based in AKS (Azure Kubernetes Service)",
+          "visibleIf": "{Cloud} contains 'Azure'"
          }
         ],
         "showOtherItem": true,
@@ -140,26 +145,32 @@
        {
         "type": "text",
         "name": "Cluster",
-        "visibleIf": "{Architecture} = 'GKE'",
+        "visibleIf": "{Cloud} anyof ['Azure', 'GCP'] and {cloud_component} anyof ['AKS', 'GKE']",
         "title": "Cluster name"
        },
        {
         "type": "text",
         "name": "Function Name",
-        "visibleIf": "{Architecture} = 'GCF'",
+        "visibleIf": "{Cloud} contains 'GCP' and {cloud_component} contains ['GCF']",
         "title": "Function name"
        },
        {
         "type": "text",
         "name": "GAE Service",
-        "visibleIf": "{Architecture} = 'GAE'",
+        "visibleIf": "{Cloud} contains 'GCP' and {cloud_component} contains 'GAE'",
         "title": "Service name"
        },
        {
         "type": "text",
         "name": "project_id",
-        "visibleIf": "{Architecture} = 'GKE' or {Architecture} = 'GCF' or {Architecture} = 'GAE'",
+        "visibleIf": "{Cloud} contains 'GCP' or {cloud_component} anyof ['GAE', 'GCF', 'GKE']",
         "title": "Google project name"
+       },
+       {
+        "type": "text",
+        "name": "azure_subscription",
+        "visibleIf": "{Cloud} contains 'Azure'",
+        "title": "Azure subscription"
        }
       ],
       "title": "Architecture"
