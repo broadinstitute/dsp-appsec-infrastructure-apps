@@ -217,6 +217,7 @@ def main():
     # parse inputs
     target_project_id = os.environ['TARGET_PROJECT_ID']  # required
     dataset_id = os.environ['BQ_DATASET']  # required
+    appsec_slack_channel = os.environ['SLACK_CHANNEL_WEEKLY_REPORT']  # required
     # Slack settings, if provided by the user
     slack_token = os.getenv('SLACK_TOKEN')
     slack_channel = os.getenv('SLACK_CHANNEL')
@@ -244,14 +245,14 @@ def main():
             slacknotifications.slack_notify(target_project_id, slack_token,
                          slack_channel, slack_results_url)
             find_highs(rows, slack_channel, slack_token, target_project_id)
+       
         # create Firestore document, if specified
-
         if fs_collection:
             doc_ref.set({})
 
     # writes an error in Firestore document if an exception occurs and sends a Slack notification
     except (Exception) as error:
-        slacknotifications.slack_error(slack_token, slack_channel, error, target_project_id)
+        slacknotifications.slack_error(slack_token, appsec_slack_channel, error, target_project_id)
         if fs_collection:
             doc_ref.set({'Error': '{}'.format(error)})
         raise error

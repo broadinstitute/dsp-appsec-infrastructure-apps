@@ -127,7 +127,7 @@ metadata:
   name: ${BACKEND_CONFIG}
   namespace: ${NAMESPACE}
 spec:
-  timeoutSec: 300
+  timeoutSec: 900
   connectionDraining:
     drainingTimeoutSec: 600
   securityPolicy:

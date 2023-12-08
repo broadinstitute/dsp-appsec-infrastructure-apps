@@ -33,6 +33,11 @@ data:
               secretKeyRef:
                  name: ${JOB_SECRET}
                  key: SLACK_TOKEN
+          - name: SLACK_CHANNEL_WEEKLY_REPORT
+            valueFrom:
+              secretKeyRef:
+                  name: ${JOB_SECRET}
+                  key: SLACK_CHANNEL_WEEKLY_REPORT
           - name: TARGET_PROJECT_ID
             valueFrom:
               fieldRef:
