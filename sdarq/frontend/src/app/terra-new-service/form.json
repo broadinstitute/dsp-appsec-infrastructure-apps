@@ -10,6 +10,7 @@
         "type": "text",
         "name": "Service",
         "title": "Service name",
+        "description": "Please provide the service name (for example: Sam, Leonardo, Rawls)",
         "isRequired": true,
         "requiredErrorText": "Required field",
         "validators": [
@@ -24,6 +25,7 @@
         "type": "text",
         "name": "Product",
         "title": "Product name",
+        "description": "Please provide the product name (for example: Terra, Rawls, Duos)",
         "isRequired": true,
         "requiredErrorText": "Required field",
         "validators": [
@@ -197,7 +199,7 @@
          },
          {
           "value": "new_functionality",
-          "text": "Introduces WHOLLY NEW functionality to Terra (this functionality is not a logical expansion of existing functionality)"
+          "text": "Introduces NEW functionality to Terra (this functionality is not a logical expansion of existing functionality)"
          },
          {
           "value": "infra_migration",
@@ -389,6 +391,18 @@
          {
           "value": "Please make sure your service is using Tcell Rapid functionalities or is behind the orchestration layer to add some runtime protection in your stack. RASP in the app is preferred over WAF/Apache proxy. Ask appsec team if you need more clarification on this.",
           "visibleIf": "{Security tools} notcontains \"RASP\""
+         },
+         {
+          "value": "Only collect the minimum-necessary PII from users. Document where such PII is stored.",
+          "visibleIf": "{Process/Store_userdata} allof ['store_PHI']"
+         },
+         {
+          "value": "Have a documented process for deleting PII if/when required.",
+          "visibleIf": "{process_data_deletion} equals \"False\""
+         },
+         {
+          "value": "Allow users to view all PII about them that is stored by the system. Allow users to edit/modify such PII at will or by request.",
+          "visibleIf": "{View_edit_data_user_option} equals \"False\""
          }
         ],
         "showSelectAllItem": true
@@ -445,6 +459,24 @@
         "name": "Alert-codacy",
         "visibleIf": "{Security tools} notcontains \"SAST\"",
         "html": "<div class=\"highs\">You should use\n  Codacy, SonarCloud or similar tools for security static code analysis.\n  Reach out to Appsec team to set it up for your repository.\n</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert-pii",
+        "visibleIf": "{Process/Store_userdata} allof ['store_PHI']",
+        "html": "<div class=\"highs\">Only collect the minimum-necessary PII from users. Document where such PII is stored.</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert-coprocess_data_deletiondacy",
+        "visibleIf": "{process_data_deletion} equals \"False\"",
+        "html": "<div class=\"highs\">Have a documented process for deleting PII if/when required.</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert-View_edit_data_user_option",
+        "visibleIf": "{View_edit_data_user_option} equals \"False\"",
+        "html": "<div class=\"highs\">Allow users to view all PII about them that is stored by the system. Allow users to edit/modify such PII at will or by request.</div>"
        }
       ],
       "title": "Alerts"
