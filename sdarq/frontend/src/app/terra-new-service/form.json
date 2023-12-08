@@ -59,8 +59,8 @@
         "validators": [
          {
           "type": "regex",
-          "text": "Please include numbers, a-z characters, _,- (1-20).",
-          "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{1,20}[a-zA-Z0-9]$"
+          "text": "Please include numbers, a-z characters, _,- (1-50).",
+          "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{1,50}[a-zA-Z0-9]$"
          }
         ]
        },

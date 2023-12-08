@@ -17,7 +17,7 @@ new_service_schema = {
         },
         "Security champion": {
             "type": "string",
-            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{1,20}[a-zA-Z0-9]$"
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{1,50}[a-zA-Z0-9]$"
         },
         "Github URL": {
             "type": "string",
