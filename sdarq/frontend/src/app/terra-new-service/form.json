@@ -10,7 +10,6 @@
         "type": "text",
         "name": "Service",
         "title": "Service name",
-        "description": "Please fill this field with the name of the microservice, for example some microservices are Sam, Rawls, Leonardo, etc",
         "isRequired": true,
         "requiredErrorText": "Required field",
         "validators": [
@@ -25,7 +24,6 @@
         "type": "text",
         "name": "Product",
         "title": "Product name",
-        "description": "Please fill this field with the product name to which the microservice belongs, for example Terra, DUOS, Jade",
         "isRequired": true,
         "requiredErrorText": "Required field",
         "validators": [
@@ -39,7 +37,7 @@
        {
         "type": "comment",
         "name": "Description",
-        "title": "A brief description of the service (provide a link to the external doc if it is easier)",
+        "title": "A brief description of the application/service (provide link to external doc if easier)",
         "isRequired": true,
         "requiredErrorText": "Required field",
         "validators": [
@@ -67,7 +65,7 @@
        {
         "type": "text",
         "name": "Github URL",
-        "title": "Github repository link",
+        "title": "Github URL (N/A if you have not written a line of code yet)",
         "isRequired": true,
         "requiredErrorText": "Required field",
         "validators": [
@@ -116,29 +114,24 @@
        },
        {
         "type": "radiogroup",
-        "name": "Service_Architecture",
-        "visibleIf": "{Cloud} anyof ['Azure', 'GCP']",
+        "name": "question1",
         "title": "Your service must be based on one of the following",
         "choices": [
          {
           "value": "GAE",
-          "text": "Based in GAE (Google App Engine)",
-          "visibleIf": "{Cloud} allof ['GCP']"
+          "text": "Based in GAE (Google App Engine)"
          },
          {
           "value": "GCF",
-          "text": "Based in GCF (Google Cloud Functions)",
-          "visibleIf": "{Cloud} allof ['GCP']"
+          "text": "Based in GCF (Google Cloud Functions)"
          },
          {
           "value": "GKE",
-          "text": "Based in GKE (Google Kubernetes Engine)",
-          "visibleIf": "{Cloud} allof ['GCP']"
+          "text": "Based in GKE (Google Kubernetes Engine)"
          },
          {
           "value": "AKS",
-          "text": "Based in AKS (Azure Kubernetes Service)",
-          "visibleIf": "{Cloud} allof ['Azure']"
+          "text": "Based in AKS (Azure Kubernetes Service)"
          }
         ],
         "showOtherItem": true,
@@ -147,35 +140,75 @@
        {
         "type": "text",
         "name": "Cluster",
-        "visibleIf": "{Service_Architecture} = 'GKE' and {Cloud} contains 'GCP'",
+        "visibleIf": "{Architecture} = 'GKE'",
         "title": "Cluster name"
        },
        {
         "type": "text",
         "name": "Function Name",
-        "visibleIf": "{Service_Architecture} = 'GCF' and {Cloud} contains 'GCP'",
+        "visibleIf": "{Architecture} = 'GCF'",
         "title": "Function name"
        },
        {
         "type": "text",
         "name": "GAE Service",
-        "visibleIf": "{Service_Architecture} = 'GAE' and {Cloud} contains 'GCP'",
+        "visibleIf": "{Architecture} = 'GAE'",
         "title": "Service name"
        },
        {
         "type": "text",
         "name": "project_id",
-        "visibleIf": "{Service_Architecture} = 'GKE' and {Cloud} contains 'GCP'",
+        "visibleIf": "{Architecture} = 'GKE' or {Architecture} = 'GCF' or {Architecture} = 'GAE'",
         "title": "Google project name"
-       },
-       {
-        "type": "text",
-        "name": "azure_subscription",
-        "visibleIf": "{Cloud} contains 'Azure'",
-        "title": "Azure subscription"
        }
       ],
       "title": "Architecture"
+     },
+     {
+      "name": "Compliance",
+      "elements": [
+       {
+        "type": "checkbox",
+        "name": "terra_compliance",
+        "title": "We need to determine if the addition of your service to the Terra system boundary constitutes a Significant Change. Select all of the below that apply. Please note that not all of these things immediately identify your service as requiring a Significant Change, but may prompt us to do a deeper dive with you to make that determination. Your service…",
+        "choices": [
+         {
+          "value": "uses_new_third_party",
+          "text": "Uses a new third-party application (communicates or shares data with in any way)"
+         },
+         {
+          "value": "uses_existing_thirs_party",
+          "text": "Uses an existing, already-approved third-party application but in a new way that sends research data or user PII to it"
+         },
+         {
+          "value": "new_cloud_infra",
+          "text": "Is hosted on a cloud infrastructure type that has never been used in Terra"
+         },
+         {
+          "value": "new_functionality",
+          "text": "Introduces WHOLLY NEW functionality to Terra (this functionality is not a logical expansion of existing functionality)"
+         },
+         {
+          "value": "infra_migration",
+          "text": "Is being migrated from being hosted on one type of infrastructure to another (e.g., GAE to GKE)"
+         },
+         {
+          "value": "new_user_interface",
+          "text": "Introduces a new User Interface"
+         },
+         {
+          "value": "auth_change",
+          "text": "Changes the way that Terra does authentication or authorization"
+         },
+         {
+          "value": "deviation_from_NSPRC",
+          "text": "Has an impactful deviation from the New Service Production Readiness Checklist"
+         }
+        ]
+       }
+      ],
+      "title": "Compliance",
+      "description": "You are submitting this questionnaire for a service that needs to be part of the Terra system boundary. Terra is compliant with HIPAA and the NIST 800-53 Rev 5 information security control framework as a Moderate impact system. Your service must uphold all of these requirements, which can be done by following the New Service Production Readiness Checklist."
      },
      {
       "name": "Security",
@@ -187,7 +220,7 @@
         "choices": [
          {
           "value": "dependency_scan",
-          "text": "We are currently using SourceClear or similar tools for downstream dependency/3rd party component management"
+          "text": "We are currently using SourceClear or similar tools for downstream dependency/3rd party component management "
          },
          {
           "value": "Git-secrets",
@@ -210,59 +243,28 @@
           "text": "Our service is currently scanned weekly/monthly via ZAP or similar tools"
          },
          {
-          "value": "blessed_image",
-          "text": "We are using an AppSec \"blessed\" docker image"
+          "value": "RASP",
+          "text": "We are using Tcell Rapid or a similar tool to enable RASP (Runtime application self-protection) mode"
+         }
+        ]
+       },
+       {
+        "type": "checkbox",
+        "name": "Applicable",
+        "title": "Check what's applicable",
+        "choices": [
+         {
+          "value": "managed-sql",
+          "text": "I am using a managed SQL database"
+         },
+         {
+          "value": "in-cluster-sql",
+          "text": "I am using an in-cluster SQL database"
          }
         ]
        }
       ],
-      "title": "Security tools"
-     },
-     {
-      "name": "page1",
-      "elements": [
-       {
-        "type": "checkbox",
-        "name": "Applicable",
-        "title": "Check what's applicable for the database",
-        "choices": [
-         {
-          "value": "managed-sql",
-          "text": "We are using a managed SQL database"
-         },
-         {
-          "value": "in-cluster-sql",
-          "text": "We are using an in-cluster SQL database"
-         },
-         {
-          "value": "graphql",
-          "text": "We are using GraphQL"
-         },
-         {
-          "value": "nonSQL",
-          "text": "We are using a noSQL database"
-         }
-        ],
-        "showOtherItem": true
-       },
-       {
-        "type": "boolean",
-        "name": "service_input",
-        "title": "Does this service accepts inputs from users or other services?"
-       },
-       {
-        "type": "boolean",
-        "name": "file_upload",
-        "title": "Does this service process any file?"
-       },
-       {
-        "type": "boolean",
-        "name": "Permissions",
-        "title": "Does this service have more than 1 layer of permissions?",
-        "description": "For example, my service will have separated permissions for admin and non admin users, which means this service has 2 layers of permissions."
-       }
-      ],
-      "title": "Service Security"
+      "title": "Security"
      },
      {
       "name": "Jira Ticket",
@@ -291,12 +293,11 @@
         "choices": [
          {
           "value": "You must use git-secrets to prevent accidental commit of secrets to source code repository.",
-          "text": "AppSec team recommends to use \"blessed image\" for your service, and AppSec team will be responsible for the findings reported by our scanning tools. If you decide not to use the AppSec \"blessed\" image, then the dev team will be responsible to fix the findings reported by our scanning tools.",
-          "visibleIf": "{Security tools} notcontains 'blessed_image'"
+          "text": "Please make sure your service is using Tcell Rapid functionalities or is behind the orchestration layer to add some runtime protection to your stack. RASP in the app is preferred over WAF/Apache proxy. Ask the appsec team if you need more clarification on this.",
+          "visibleIf": "{Security tools} notcontains \"Git-secrets\""
          },
          {
           "value": "You must use SourceClear or similar tools for downstream dependency/3rd  party component management. Ask AppSec team to add your repo.",
-          "text": "You must use SourceClear or similar tools for downstream dependency/3rd party component management. Ask the AppSec team to add your repo.",
           "visibleIf": "{Security tools} notcontains \"dependency_scan\""
          },
          {
@@ -305,42 +306,23 @@
          },
          {
           "value": "Your service must be scanned weekly/mothly via SAST tools. Ask AppSec team to help you setup this tool.",
-          "text": "Your service must be scanned weekly/monthly via DAST tools. Ask the AppSec team to help you set up this scanner for your service.",
           "visibleIf": "{Security tools} notcontains \"DAST\""
          },
          {
           "value": "You should only store secrets in Vault, Secret Manager or similar tools.",
-          "text": "You should only store secrets in Vault, Secret Manager, or similar tools.",
           "visibleIf": "{Security tools} notcontains 'Secret_management'"
          },
          {
           "value": "You should use Codacy, SonarCloud or similar tools for security static code analysis. Ask AppSec team to help you setup this tool.",
-          "text": "You should use Codacy, SonarCloud, or similar tools for security static code analysis. Ask the AppSec team to help you set up this tool.",
           "visibleIf": "{Security tools} notcontains \"SAST\""
          },
          {
-          "value": "Please make sure your database is using a private IP or is behind a Cloud SQL Auth Proxy..",
+          "value": "Please make sure your service is using Tcell Rapid functionalities or is behind the orchestration layer to add some runtime protection in your stack. RASP in the app is preferred over WAF/Apache proxy. Ask appsec team if you need more clarification on this.",
+          "visibleIf": "{Security tools} notcontains \"RASP\""
+         },
+         {
+          "value": "Please make sure your database is using a private IP or is behind a proxy.",
           "visibleIf": "{Applicable} contains \"managed-sql\""
-         },
-         {
-          "value": "Please make sure to disable introspection query in GraphQL",
-          "visibleIf": "{Applicable} contains 'graphql'"
-         },
-         {
-          "value": "Please make sure to use prepared statements to prevent any SQL injection.",
-          "visibleIf": "{Applicable} contains 'in-cluster-sql' or {Applicable} contains 'managed-sql'"
-         },
-         {
-          "value": "Please make sure to build a matrix for your service permissions and prevent any horizontal and vertical privilege escalations.",
-          "visibleIf": "{Permissions} = true"
-         },
-         {
-          "value": "Please make sure you sanitize and validate all user-supplied input data or input from other systems. If there is user input , validation should be done both in frontend and backend.",
-          "visibleIf": "{service_input} = true"
-         },
-         {
-          "value": "Validate the file type, don't trust the Content-Type header as it can be spoofed. Change the filename to something generated by the application. Set a filename length limit. Restrict the allowed characters if possible. Set a file size limit .Run the file through an antivirus or a sandbox if available to validate that it doesn't contain malicious data.",
-          "visibleIf": "{file_upload} = true"
          }
         ],
         "showSelectAllItem": true
@@ -377,8 +359,8 @@
        {
         "type": "html",
         "name": "Alert",
-        "visibleIf": "{Security tools} notcontains 'blessed_image'",
-        "html": "<div class=\"highs\">AppSec team recommends to use \"blessed image\" for your service, and AppSec team will be responsible for the findings reported by our scanning tools. If you decide not to use the AppSec \"blessed\" image, then the dev team will be responsible for fixing the findings reported by our scanning tools.</div>"
+        "visibleIf": "{Security tools} notcontains \"RASP\"",
+        "html": "<div class=\"highs\">Please make sure your service is using Tcell Rapid functionalities or is behind the orchestration layer to add some runtime protection to your stack. RASP in the app is preferred over WAF/Apache proxy. Ask the appsec team if you need more clarification on this.</div>"
        },
        {
         "type": "html",
@@ -402,37 +384,7 @@
         "type": "html",
         "name": "Alert-database",
         "visibleIf": "{Applicable} contains \"managed-sql\"",
-        "html": "<div class=\"highs\">Please make sure your database is using a private IP or is behind a Cloud SQL Auth Proxy.</div>"
-       },
-       {
-        "type": "html",
-        "name": "alert-graphql",
-        "visibleIf": "{Applicable} contains 'graphql'",
-        "html": "<div class=\"highs\">Please make sure to disable introspection query in GraphQL.</div>"
-       },
-       {
-        "type": "html",
-        "name": "alert-prepraredstatements",
-        "visibleIf": "{Applicable} contains 'in-cluster-sql' or {Applicable} contains 'managed-sql'",
-        "html": "<div class=\"highs\">Please make sure to use prepared statements to prevent any SQL injection.</div>"
-       },
-       {
-        "type": "html",
-        "name": "alert-permissions",
-        "visibleIf": "{Permissions} = true",
-        "html": "<div class=\"highs\">Please make sure to build a matrix for your service permissions and prevent any horizontal and vertical privilege escalations.</div>"
-       },
-       {
-        "type": "html",
-        "name": "alert_service_input",
-        "visibleIf": "{service_input} = true",
-        "html": "<div class=\"highs\">Please make sure you sanitize and validate all user-supplied input data or input from other systems. If there is user input , validation should be done both in frontend and backend.</div>"
-       },
-       {
-        "type": "html",
-        "name": "question1",
-        "visibleIf": "{file_upload} = true",
-        "html": "<div class=\"highs\">Validate the file type, don't trust the Content-Type header as it can be spoofed. Change the filename to something generated by the application. Set a filename length limit. Restrict the allowed characters if possible. Set a file size limit .Run the file through an antivirus or a sandbox if available to validate that it doesn't contain malicious data.</div>"
+        "html": "<div class=\"highs\">Please make sure your database is using a private IP or is behind a proxy.</div>"
        }
       ],
       "title": "Alerts"
@@ -443,4 +395,5 @@
     "questionErrorLocation": "bottom",
     "showProgressBar": "top"
    }
+
    
