@@ -36,9 +36,9 @@ metadata:
   name: ${BACKEND_CONFIG}
   namespace: ${NAMESPACE}
 spec:
-  timeoutSec: 300
+  timeoutSec: 600
   connectionDraining:
-    drainingTimeoutSec: 600
+    drainingTimeoutSec: 800
   securityPolicy:
     name: ${BROAD_INGRESS_CSP}
   iap:
