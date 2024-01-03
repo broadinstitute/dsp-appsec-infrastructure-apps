@@ -52,4 +52,4 @@ export TARGET_PORT="http"
 
 ./kube-apply.py \
   "${iap_secret_yaml}" \
-  "ingress.yaml"
+  "${CWD}/ingress.yaml"
