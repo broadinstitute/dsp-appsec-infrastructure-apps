@@ -18,7 +18,7 @@ export PSP_BINDING="${PSP_ROLE}"
 #   "https://raw.githubusercontent.com/kubernetes/website/main/content/en/examples/policy/${PSP_NAME}-psp.yaml"
 
 kubectl apply -f \
-  "https://raw.githubusercontent.com/broadinstitute/dsp-appsec-infrastructure-apps/b1598ae84c18644f6831a34f823fbbc98c1726b2/shared/psa.yaml"
+  "https://raw.githubusercontent.com/broadinstitute/dsp-appsec-infrastructure-apps/eb1c7d0e2f40080cf3448dafef69f979bf37641c/shared/psa.yaml"
 
 ./kube-apply.py \
   "configconnector.yaml" \
