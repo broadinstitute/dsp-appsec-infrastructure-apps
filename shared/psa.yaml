@@ -1,4 +1,4 @@
-apiVersion: apiserver.config.k8s.io/v1beta1
+apiVersion: apiserver.config.k8s.io/v1
 kind: AdmissionConfiguration
 plugins:
 - name: PodSecurity
@@ -17,11 +17,11 @@ plugins:
     # - specific version like "v1.24"
     defaults:
       enforce: "restricted"
-      enforce-version: "v1.24"
+      enforce-version: "latest"
       audit: "restricted"
-      audit-version: "v1.24"
+      audit-version: "latest"
       warn: "restricted"
-      warn-version: "v1.24"
+      warn-version: "latest"
     exemptions:
       # Array of authenticated usernames to exempt.
       usernames: []
