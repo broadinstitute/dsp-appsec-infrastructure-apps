@@ -232,7 +232,7 @@
         "choices": [
          {
           "value": "PHI",
-          "text": "Protected Health Information (PHI-) - data that is protected by HIPAA and governed by a Business Associates Agreement"
+          "text": "Protected Health Information (PHI) - data that is protected by HIPAA and governed by a Business Associates Agreement"
          },
          {
           "value": "PII",
