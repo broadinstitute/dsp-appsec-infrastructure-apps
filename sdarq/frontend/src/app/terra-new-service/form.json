@@ -232,11 +232,11 @@
         "choices": [
          {
           "value": "PHI",
-          "text": "Protected Health Information - data that is protected by HIPAA and governed by a Business Associates Agreement"
+          "text": "Protected Health Information (PHI-) - data that is protected by HIPAA and governed by a Business Associates Agreement"
          },
          {
           "value": "PII",
-          "text": "Personally Identifiable Information - data that contains direct identifiers or one or more indirect identifiers"
+          "text": "Personally Identifiable Information (PII) - data that contains direct identifiers or one or more indirect identifiers"
          },
          {
           "value": "PD",
@@ -295,7 +295,7 @@
        }
       ],
       "title": "Privacy",
-      "description": "Terra is compliant with HIPAA and the NIST 800-53 Rev 5 information security control framework, both of which require privacy controls. Please answer the following questions about your service to help us determine its privacy impact."
+      "description": "Terra is compliant with HIPAA and the NIST 800-53 Rev 5 information security control framework, both of which require privacy controls. Broad wears two hats when it comes to data privacy. For data that we collect directly from the Terra user about the Terra user, we are a “Data Controller.” For data that Terra users bring to the system of their own accord, e.g., research data, we are a “Data Processor.” Our responsibilities for each role are different. The below questions are focused on our role as a Data Controller, so we are asking them in scope of data that we directly collect from Terra users about the Terra user. We are not asking about research data."
      },
      {
       "name": "Security",
