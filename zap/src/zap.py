@@ -27,7 +27,7 @@ def zap_connect():
     """
     Connect to the Zap instance
     """
-    zap = ZAPv2(proxies={"http": proxy, "https": proxy})
+    zap = ZAPv2(proxies={"http": proxy, "https": proxy}, apikey=(os.getenv("ZAP_API_KEY", "")))
     wait_for_zap_start(zap, timeout_in_secs=TIMEOUT_MINS * 60)
     return zap
 
@@ -201,10 +201,23 @@ def zap_report(zap: ZAPv2, project: str, scan_type: ScanType):
     """
     zap.core.set_option_merge_related_alerts(True)
 
+    # This will export all findings independent of scope. 
+    # The more advanced zap report api calls require a directory local to zap
+    # But you can download known files from /home/zap/.ZAP if you use an API key
+
     filename = f"{project}_{scan_type}-scan_report.xml"
     filename = filename.replace("-", "_").replace(" ", "")
-    write_report(filename, zap.core.xmlreport())
+    # write_report(filename, zap.core.xmlreport())
 
+    template = "traditional-xml"
+    reportDir = "/home/zap/.ZAP"
+    # logging.info("Pulling report with following arguements: title : "+site+", template : "+template+", contexts : "+context+", sites : "+url)
+    returnmessage = zap.reports.generate(title=project, reportfilename=filename, template=template, contexts=project, reportdir= reportDir)
+    # If successful we now have a report sitting in the transfer directory of the zap container
+    report_data = zap.core.file_download(filename)
+    report_file = open(filename, "w")
+    report_file.write(report_data)
+    report_file.close()
     return filename
 
 
@@ -280,6 +293,8 @@ def zap_compliance_scan(
 
     if scan_type != ScanType.BASELINE:
         zap.ascan.scan(target_url, contextid=context_id, recurse=True)
+
+    reportFile = zapscan.localPullReport(zap, project, "https://" + domain, site_name, os.getenv("REPORT_DIR"))
 
     filename = zap_report(zap, project, scan_type)
     session_file = zap_save_session(zap, project, scan_type)

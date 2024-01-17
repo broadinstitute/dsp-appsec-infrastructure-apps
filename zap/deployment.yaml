@@ -28,12 +28,19 @@ data:
             '-daemon',
             '-host', '127.0.0.1',
             '-port', '${ZAP_PORT}',
-            '-config', 'api.disablekey=true',
+            '-config', 'api.key=$ZAP_API_KEY',
+            '-config', 'api.filexfer=true',
             '-Xmx10g',
           ]
           resources:
             requests:
               memory: 10Gi
+          env:
+          - name: ZAP_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: ${JOB_SECRET}
+                key: ZAP_API_KEY
 
         - name: zap-scan
           image: ${ZAP_IMAGE}
@@ -70,6 +77,11 @@ data:
               secretKeyRef:
                 name: ${JOB_SECRET}
                 key: DEFECT_DOJO_USER
+          - name: ZAP_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: ${JOB_SECRET}
+                key: ZAP_API_KEY
           - name: DEFECT_DOJO
             valueFrom:
               secretKeyRef:
