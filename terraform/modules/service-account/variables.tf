@@ -2,7 +2,7 @@ variable "project" {
   type        = string
   description = "GCP project ID"
 }
-
+ 
 variable "account_id" {
   type        = string
   description = "Service Account ID"
