@@ -195,7 +195,7 @@ def get_gcp_token() -> str:
 
 
 
-def zap_report(zap: ZAPv2, project: str, scan_type: ScanType):
+def zap_report(zap: ZAPv2, project: str, scan_type: ScanType, sites: str):
     """
     Generate ZAP scan XML report.
     """
@@ -212,7 +212,9 @@ def zap_report(zap: ZAPv2, project: str, scan_type: ScanType):
     template = "traditional-xml"
     reportDir = "/home/zap/.ZAP"
     # logging.info("Pulling report with following arguements: title : "+site+", template : "+template+", contexts : "+context+", sites : "+url)
-    returnmessage = zap.reports.generate(title=project, reportfilename=filename, template=template, contexts=project, reportdir= reportDir)
+    # The sites parameter can take several urls separated with '|'.
+    # Adding further sites to scope could be done by concatenating them before passing them to this function.
+    returnmessage = zap.reports.generate(title=project, reportfilename=filename, template=template, contexts=project, sites=sites, reportdir= reportDir)
     # If successful we now have a report sitting in the transfer directory of the zap container
     report_data = zap.core.file_download(filename)
     report_file = open(filename, "w")
@@ -296,7 +298,7 @@ def zap_compliance_scan(
 
     reportFile = zapscan.localPullReport(zap, project, "https://" + domain, site_name, os.getenv("REPORT_DIR"))
 
-    filename = zap_report(zap, project, scan_type)
+    filename = zap_report(zap, project, scan_type, f"https://{host}")
     session_file = zap_save_session(zap, project, scan_type)
 
     return (filename, session_file)
