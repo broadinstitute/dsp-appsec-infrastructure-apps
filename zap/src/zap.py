@@ -209,7 +209,7 @@ def zap_report(zap: ZAPv2, project: str, scan_type: ScanType, sites: str):
     filename = filename.replace("-", "_").replace(" ", "")
 
     template = "traditional-xml"
-    report_dir = "/home/zap/.ZAP"
+    report_dir = "/home/zap/.ZAP/transfer"
     # logging.info("Pulling report with following arguements: title : "+site+", template : "+template+", contexts : "+context+", sites : "+url)
     # The sites parameter can take several urls separated with '|'.
     # Adding further sites to scope could be done by concatenating them before passing them to this function.
