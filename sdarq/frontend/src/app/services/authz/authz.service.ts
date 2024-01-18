@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class AuthzService {
 
   private URL = location.origin + '/api/user-details/';
-
+  private userGroups: string[] = [];
   private userDetails: any;
 
   constructor(private http: HttpClient) {}
@@ -20,6 +20,10 @@ export class AuthzService {
     return this.http.get(this.URL,options);
   }
 
+  setUserGroups(groups: string[]): void {
+    this.userGroups = groups;
+  }
+
   setUserDetails(details: any): void {
     this.userDetails = details;
   }
@@ -27,4 +31,11 @@ export class AuthzService {
   getUserDetails(): any {
     return this.userDetails;
   }
+
+  isAuthorized(): boolean {
+    // include full group name
+    const isInGroup = this.userGroups.includes('appsec');
+
+    return isInGroup;
+}
 }

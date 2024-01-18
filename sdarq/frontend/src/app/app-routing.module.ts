@@ -23,6 +23,8 @@ import { AppsMainpageComponent } from './apps-mainpage/apps-mainpage.component';
 import { ServiceSecurityControlsComponent } from './service-security-controls/service-security-controls.component';
 import { SearchServiceSecurityControlsComponent } from './search-service-security-controls/search-service-security-controls.component';
 import { DeleteServiceSecurityControlsComponent } from './delete-service-security-controls/delete-service-security-controls.component';
+import { AuthzGuard } from './authz.guard';
+
 
 
 const routes: Routes = [
@@ -41,13 +43,13 @@ const routes: Routes = [
   { path: 'scan-service', component: ServiceScanComponent },
   { path: 'security-requests', component: SecurityRequestsComponent },
   { path: 'security-controls', component: SecurityControlsComponent },
-  { path: 'security-control/create', component: SecurityControlsFormComponent },
+  { path: 'security-control/create', component: SecurityControlsFormComponent, canActivate: [AuthzGuard] },
   { path: 'security-control/view', component: SecurityControlsListComponent },
-  { path: 'security-control/edit', component: EditSecurityControlsFormComponent },
+  { path: 'security-control/edit', component: EditSecurityControlsFormComponent, canActivate: [AuthzGuard] },
   { path: 'security-pentest/request', component: SecurityPentestComponent },
   { path: 'service-security-controls/results', component: ServiceSecurityControlsComponent },
   { path: 'search-service-security-controls', component: SearchServiceSecurityControlsComponent },
-  { path: 'security-control/delete-service', component: DeleteServiceSecurityControlsComponent },
+  { path: 'security-control/delete-service', component: DeleteServiceSecurityControlsComponent, canActivate: [AuthzGuard] },
   { path: '404', component: NotfoundComponent },
   { path: '**', redirectTo: '/404' }
 ];
