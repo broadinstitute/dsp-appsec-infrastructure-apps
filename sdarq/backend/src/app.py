@@ -48,6 +48,7 @@ from schemas.threat_model_request_schema import tm_schema
 from schemas.zap_scan_schema import zap_scan_schema
 from security_headers import security_headers
 from trigger import parse_tags
+from authz_decorator import iap_group_authz
 
 dojo_host = os.getenv('dojo_host')
 dojo_api_key = os.getenv('dojo_api_key')
@@ -694,6 +695,7 @@ def edit_sec_controls():
 
 
 @app.route('/delete_service_sec_controls/', methods=['POST'])
+@iap_group_authz(['appsec@broadinstitute.org'])
 @cross_origin(origins=sdarq_host)
 def delete_service_sec_controls():
     """
