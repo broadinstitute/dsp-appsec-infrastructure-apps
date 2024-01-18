@@ -50,6 +50,7 @@ import { SearchServiceSecurityControlsComponent } from './search-service-securit
 import { DeleteServiceSecurityControlsComponent } from './delete-service-security-controls/delete-service-security-controls.component';
 import { DeleteServiceSecurityControlsService } from './services/delete-service-security-controls/delete-service-security-controls.service';
 import { SortableHeaderDirective } from './cis-results/cis-results.component';
+import { AuthzService } from './services/authz/authz.service';
 
 
 @NgModule({
@@ -109,7 +110,8 @@ import { SortableHeaderDirective } from './cis-results/cis-results.component';
     RequestSecurityPentestService,
     JiraTicketRiskAssessmentService,
     SendAppFormDataService,
-    DeleteServiceSecurityControlsService
+    DeleteServiceSecurityControlsService,
+    AuthzService
     ],
   bootstrap: [
     AppComponent
