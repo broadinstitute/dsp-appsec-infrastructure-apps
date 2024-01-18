@@ -207,14 +207,14 @@ def zap_report(zap: ZAPv2, project: str, scan_type: ScanType, sites: str):
 
     filename = f"{project}_{scan_type}-scan_report.xml"
     filename = filename.replace("-", "_").replace(" ", "")
-    # write_report(filename, zap.core.xmlreport())
 
     template = "traditional-xml"
     report_dir = "/home/zap/.ZAP"
     # logging.info("Pulling report with following arguements: title : "+site+", template : "+template+", contexts : "+context+", sites : "+url)
     # The sites parameter can take several urls separated with '|'.
     # Adding further sites to scope could be done by concatenating them before passing them to this function.
-    zap.reports.generate(title=project, reportfilename=filename, template=template, contexts=project, sites=sites, reportdir= report_dir)
+    return_message = zap.reports.generate(title=project, reportfilename=filename, template=template, contexts=project, sites=sites, reportdir= report_dir)
+    logging.info(return_message)
     # If successful we now have a report sitting in the transfer directory of the zap container
     report_data = zap.core.file_download(filename)
     report_file = open(filename, "w")
