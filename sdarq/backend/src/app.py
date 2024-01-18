@@ -88,7 +88,6 @@ def add_security_headers(response):
     """
     for header, value in security_headers.items():
         response.headers[header] = value
-
     return response
 
 
@@ -104,7 +103,12 @@ def health():
     status = {'statusText': 'Service is healthy'}
     return jsonify(status), 200
 
-
+@app.route('/api/user-details')
+@cross_origin(origins=sdarq_host)
+def user_details():
+    user_email = request.headers.get('X-Goog-Authenticated-User-Email')
+    user_groups = request.headers.get('X-Your-Custom-Group-Header')  
+    return jsonify({'email': user_email, 'groups': user_groups})
 
 @app.route('/submit/', methods=['POST'])
 @cross_origin(origins=sdarq_host)
