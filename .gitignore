@@ -1,6 +1,5 @@
 .DS_Store
 *.bak
+
 *cache*/
 zap/.python-version
-.vscode/
-.vscode/settings.json

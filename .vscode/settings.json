@@ -4,7 +4,7 @@
   "python.analysis.extraPaths": ["zap/src"],
   "[python]": {
     "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit"
+      "source.organizeImports": true
     }
   }
 }

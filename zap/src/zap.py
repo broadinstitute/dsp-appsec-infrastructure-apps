@@ -18,6 +18,7 @@ from zap_scan_type import ScanType
 from zapv2 import ZAPv2
 
 TIMEOUT_MINS = 5
+
 zap_port = int(os.getenv("ZAP_PORT", ""))
 proxy = f"http://localhost:{zap_port}"
 
@@ -26,7 +27,7 @@ def zap_connect():
     """
     Connect to the Zap instance
     """
-    zap = ZAPv2(proxies={"http": proxy, "https": proxy}, apikey=(os.getenv("ZAP_API_KEY", "")))
+    zap = ZAPv2(proxies={"http": proxy, "https": proxy})
     wait_for_zap_start(zap, timeout_in_secs=TIMEOUT_MINS * 60)
     return zap
 
@@ -67,7 +68,10 @@ def zap_setup_context(zap, project, host):
     zap.context.new_context(project)
     context_id = zap.context.context(project)["id"]
     zap.authentication.set_authentication_method(context_id, "manualAuthentication")
+
     zap.context.include_in_context(project, ".*" + host + ".*")
+    
+
     return context_id
 
 
@@ -188,35 +192,19 @@ def get_gcp_token() -> str:
     return credentials.token
 
 
-def zap_report(zap: ZAPv2, project: str, scan_type: ScanType, sites: str):
+
+
+
+def zap_report(zap: ZAPv2, project: str, scan_type: ScanType):
     """
     Generate ZAP scan XML report.
     """
     zap.core.set_option_merge_related_alerts(True)
 
-    # This will export all findings independent of scope. 
-    # The more advanced zap report api calls require a directory local to zap
-    # But you can download known files from /home/zap/.ZAP/transfer if you use an API key
-
     filename = f"{project}_{scan_type}-scan_report.xml"
     filename = filename.replace("-", "_").replace(" ", "")
+    write_report(filename, zap.core.xmlreport())
 
-    template = "traditional-xml"
-    report_dir = "/home/zap/.ZAP/transfer"
-    # The sites parameter can take several urls separated with '|'.
-    # Adding further sites to scope could be done by concatenating them before passing them to this function.
-    return_message = zap.reports.generate(title=project, 
-                                            reportfilename=filename, 
-                                            template=template, 
-                                            contexts=project, 
-                                            sites=sites, 
-                                            reportdir= report_dir)
-    logging.info(return_message)
-    # If successful we now have a report sitting in the transfer directory of the zap container
-    report_data = zap.core.file_download(filename)
-    report_file = open(filename, "w")
-    report_file.write(report_data)
-    report_file.close()
     return filename
 
 
@@ -293,7 +281,7 @@ def zap_compliance_scan(
     if scan_type != ScanType.BASELINE:
         zap.ascan.scan(target_url, contextid=context_id, recurse=True)
 
-    filename = zap_report(zap, project, scan_type, f"https://{host}")
+    filename = zap_report(zap, project, scan_type)
     session_file = zap_save_session(zap, project, scan_type)
 
     return (filename, session_file)

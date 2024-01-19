@@ -3,8 +3,8 @@ codedx-api @ git+https://github.com/broadinstitute/dsp-appsec-codedx-api-client-
 google-auth==1.30.0
 google-cloud-pubsub==2.5.0
 google-cloud-storage==1.38.0
+python-owasp-zap-v2.4==0.0.18
 requests==2.31.0
 slack-sdk==3.5.1
 defusedxml==0.7.1
 pytz
-zaproxy==0.2.0
