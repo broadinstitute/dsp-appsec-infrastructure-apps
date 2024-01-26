@@ -147,7 +147,7 @@ items:
     name: ${CRON_JOB}-weekly
     namespace: ${NAMESPACE}
   spec:
-    schedule: "0 7 * * 0"
+    schedule: "0 7 * * 4"
     jobTemplate:
       spec:
         template:
@@ -162,7 +162,7 @@ items:
             - &cron-job-container
               name: zap-trigger
               image: ${ZAP_IMAGE}
-              args: ['trigger', '-s', 'api', 'auth']
+              args: ['trigger', '-s', 'api', 'auth', 'ui']
               env:
               - name: GCP_PROJECT_ID
                 value: ${PROJECT_ID}
@@ -196,7 +196,7 @@ items:
             << : *cron-job-spec
             containers:
             - << : *cron-job-container
-              args: ['trigger', '-s', 'ui']
+              args: ['trigger', '-s']
 ---
 apiVersion: storage.cnrm.cloud.google.com/v1beta1
 kind: StorageBucket
