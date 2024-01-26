@@ -30,7 +30,7 @@ spec:
           timeoutSeconds: 10
         resources:
           requests:
-            memory: 75M
+            memory: 150M
 
       - name: backend
         image: ${SDARQ_BACKEND_IMAGE}
@@ -60,7 +60,7 @@ spec:
           timeoutSeconds: 10
         resources:
           requests:
-            memory: 75M
+            memory: 150M
 ---
 apiVersion: v1
 kind: ConfigMap
