@@ -171,6 +171,7 @@ def main():
         type=str,
         choices=[s.name.lower() for s in list(ScanType)],
     )
+    #ToDo this will crash if no scan type is passed.
     args = parser.parse_args()
     scan_types = set(ScanType[s.upper()] for s in args.scans)
     logging.info(f"Scan types: { args.scans }")
