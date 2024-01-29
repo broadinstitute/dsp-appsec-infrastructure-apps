@@ -161,7 +161,6 @@ def main():
     zap_topic = getenv("ZAP_TOPIC_NAME")
     gcp_project = getenv("GCP_PROJECT_ID")
     logging.info(f"Cron job running. Dojo {defectdojo_url} Topic {zap_topic} Project {gcp_project}")
-
     parser = argparse.ArgumentParser(description="Get scan types to run")
     parser.add_argument(
         "-s",
@@ -171,9 +170,11 @@ def main():
         type=str,
         choices=[s.name.lower() for s in list(ScanType)],
     )
+    
     args = parser.parse_args()
     scan_types = set(ScanType[s.upper()] for s in args.scans)
     logging.info(f"Scan types: { args.scans }")
+
 
     endpoints = get_defect_dojo_endpoints(defectdojo_url, defect_dojo_key)
     logging.info(f"Defect Dojo {len(endpoints) if endpoints else 'no'} endpoints fetched.")
