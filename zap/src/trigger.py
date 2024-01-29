@@ -175,6 +175,7 @@ def main():
         args = parser.parse_args()
     except Exception:
         logging.info("Failed to parse arguments, no scan will be run.")
+        return
     scan_types = set(ScanType[s.upper()] for s in args.scans)
     logging.info(f"Scan types: { args.scans }")
 
