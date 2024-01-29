@@ -161,17 +161,17 @@ def main():
     zap_topic = getenv("ZAP_TOPIC_NAME")
     gcp_project = getenv("GCP_PROJECT_ID")
     logging.info(f"Cron job running. Dojo {defectdojo_url} Topic {zap_topic} Project {gcp_project}")
-
-    parser = argparse.ArgumentParser(description="Get scan types to run")
-    parser.add_argument(
-        "-s",
-        "--scans",
-        nargs="+",
-        default=[],
-        type=str,
-        choices=[s.name.lower() for s in list(ScanType)],
-    )
     try:
+        parser = argparse.ArgumentParser(description="Get scan types to run")
+        parser.add_argument(
+            "-s",
+            "--scans",
+            nargs="+",
+            default=[],
+            type=str,
+            choices=[s.name.lower() for s in list(ScanType)],
+        )
+        
         args = parser.parse_args()
     except Exception:
         logging.info("Failed to parse arguments, no scan will be run.")
