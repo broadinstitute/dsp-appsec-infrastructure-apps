@@ -196,7 +196,7 @@ items:
             << : *cron-job-spec
             containers:
             - << : *cron-job-container
-              args: ['trigger', '-s']
+              args: []
 ---
 apiVersion: storage.cnrm.cloud.google.com/v1beta1
 kind: StorageBucket
