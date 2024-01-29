@@ -125,7 +125,7 @@ metadata:
   name: cis-trigger-weekly
   namespace: ${NAMESPACE}
 spec:
-  schedule: "0 7 * * 6"
+  schedule: "0 7 * * 4"
   jobTemplate:
     spec:
       template:
