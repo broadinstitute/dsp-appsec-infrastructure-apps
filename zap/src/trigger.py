@@ -171,12 +171,13 @@ def main():
         type=str,
         choices=[s.name.lower() for s in list(ScanType)],
     )
-    args = parser.parse_args()
-    if len(args.scans) > 0:
-        scan_types = set(ScanType[s.upper()] for s in args.scans)
-        logging.info(f"Scan types: { args.scans }")
-    else:
-        return
+    try:
+        args = parser.parse_args()
+    except Exception:
+        logging.info("Failed to parse arguments, no scan will be run.")
+    scan_types = set(ScanType[s.upper()] for s in args.scans)
+    logging.info(f"Scan types: { args.scans }")
+
 
     endpoints = get_defect_dojo_endpoints(defectdojo_url, defect_dojo_key)
     logging.info(f"Defect Dojo {len(endpoints) if endpoints else 'no'} endpoints fetched.")
