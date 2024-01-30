@@ -455,10 +455,9 @@ def main(): # pylint: disable=too-many-locals
                 drive_service = drivehelper.get_drive_service()
                 # Hard coded ID is just for testing. Will remove.
                 root_id = os.getenv('DRIVE_ROOT_ID','1R5ukLWuTof-JtYuHx1pe6Z1gwXeeLgPK')
-                folder_structure = drivehelper.get_folders_with_structure(root_id)
+                folder_structure = drivehelper.get_folders_with_structure(root_id, drive_service)
                 date = datetime.date.today()
 
-                # month_folder_id = find_this_months_folder(date, folder_structure)
                 year_folder_dict = drivehelper.find_subfolder(folder_structure, datetime.date.today().year)
                 month_folder_dict = drivehelper.find_subfolder(year_folder_dict, date.strftime('%Y-%m'))
                 xml_folder_dict = drivehelper.find_subfolder(month_folder_dict, 'XML')
