@@ -15,6 +15,7 @@ from typing import List
 from urllib.parse import urlparse, urlunparse
 
 import defectdojo_apiv2 as defectdojo
+import drive_upload as drivehelper
 import defusedxml.ElementTree as ET
 from codedx_api.CodeDxAPI import CodeDx  # pylint: disable=import-error
 from google.cloud import storage
@@ -185,6 +186,33 @@ def get_codedx_report_by_alert_severity(
         details_mode="with-source",
         include_result_details=True,
         include_comments=True,
+        include_request_response=False,
+        file_name=report_file,
+        filters=filters,
+    )
+
+    return report_file
+
+def get_codedx_initial_report(
+        cdx: CodeDx, project: str
+):
+    """
+    Generate a PDF report showing all findings that haven't been closed.
+    """
+    logging.info("Getting PDF report from Codedx project: %s", project)
+    report_date = datetime.now()
+    report_file = f'{project.replace("-", "_")}_report_{report_date:%Y%m%d}.pdf'
+    filters = {
+        "status": [3, 4, 5, 6, 10, 9, 1]
+    }
+    if not cdx.get_project_id(project):
+        cdx.create_project(project)
+    cdx.get_pdf(
+        project,
+        summary_mode="detailed",
+        details_mode="simple",
+        include_result_details=True,
+        include_comments=False,
         include_request_response=False,
         file_name=report_file,
         filters=filters,
@@ -418,7 +446,28 @@ def main(): # pylint: disable=too-many-locals
                     scan_type,
                 )
 
-
+            # Upload UI scan XMLs and CodeDx reports to Google Drive.
+            if scan_type == ScanType.UI or scan_type == ScanType.LEOAPP:
+                logging.info('Setting up the google drive API service for uploading reports.')
+                
+                drive_service = get_drive_service()
+                # Hard coded ID is just for testing. Will remove.
+                root_id = os.getenv('DRIVE_ROOT_ID','1R5ukLWuTof-JtYuHx1pe6Z1gwXeeLgPK')
+                folder_structure = drivehelper.get_folders_with_structure(root_id)
+                date = datetime.date.today()
+                
+                # month_folder_id = find_this_months_folder(date, folder_structure)
+                year_folder_dict = drivehelper.find_subfolder(folder_structure, datetime.date.today().year)
+                month_folder_dict = drivehelper.find_subfolder(year_folder_dict, date.strftime('%Y-%m'))
+                xml_folder_dict = drivehelper.find_subfolder(month_folder_dict, 'XML')
+                zap_raw_folder_id = drivehelper.find_subfolder(month_folder_dict, 'Raw Reports')
+            
+                drivehelper.upload_file_to_drive(zap_filename, xml_folder_id, drive_service)
+                
+                report_file = get_codedx_initial_report(cdx, codedx_project)
+                file_id = drivehelper.upload_file_to_drive(report_file, zap_raw_folder, drive_service)
+                logging.info(f'The report {report_file} has been uploaded.')
+            
             zap = zap_connect()
             zap.core.shutdown()
         except Exception as error: # pylint: disable=broad-except
