@@ -456,9 +456,9 @@ def main(): # pylint: disable=too-many-locals
                 # Hard coded ID is just for testing. Will remove.
                 root_id = os.getenv('DRIVE_ROOT_ID','1R5ukLWuTof-JtYuHx1pe6Z1gwXeeLgPK')
                 folder_structure = drivehelper.get_folders_with_structure(root_id, drive_service)
-                date = datetime.date.today()
+                date = datetime.today()
 
-                year_folder_dict = drivehelper.find_subfolder(folder_structure, datetime.date.today().year)
+                year_folder_dict = drivehelper.find_subfolder(folder_structure, date.year)
                 month_folder_dict = drivehelper.find_subfolder(year_folder_dict, date.strftime('%Y-%m'))
                 xml_folder_dict = drivehelper.find_subfolder(month_folder_dict, 'XML')
                 zap_raw_folder = drivehelper.find_subfolder(month_folder_dict, 'Raw Reports')
