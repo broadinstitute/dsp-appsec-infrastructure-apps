@@ -308,13 +308,15 @@ def slack_alert_without_report(  # pylint: disable=too-many-arguments
 
     if xml_report_url:
         gcs_slack_text = (
-            f"New vulnerability report uploaded to GCS bucket: {xml_report_url}\n and DefectDojo product: {dd}product/{product_id}"
+            "New vulnerability report uploaded to GCS bucket: " +
+                f"{xml_report_url}\n and DefectDojo product: {dd}product/{product_id}"
         )
         slack.chat_postMessage(channel=channel, text=gcs_slack_text)
         logging.info("Alert sent to Slack channel for GCS bucket and DefectDojo upload report")
     else:
         gcs_slack_text = (
-            f"New vulnerability report uploaded to DefectDojo for {target_url}: {dd}product/{product_id}"
+            "New vulnerability report uploaded to DefectDojo for " +
+                f"{target_url}: {dd}product/{product_id}"
         )
         slack.chat_postMessage(channel=channel, text=gcs_slack_text)
         logging.info("Alert sent to Slack channel for DefectDojo upload report")
@@ -449,25 +451,25 @@ def main(): # pylint: disable=too-many-locals
             # Upload UI scan XMLs and CodeDx reports to Google Drive.
             if scan_type == ScanType.UI or scan_type == ScanType.LEOAPP:
                 logging.info('Setting up the google drive API service for uploading reports.')
-                
-                drive_service = get_drive_service()
+
+                drive_service = drivehelper.get_drive_service()
                 # Hard coded ID is just for testing. Will remove.
                 root_id = os.getenv('DRIVE_ROOT_ID','1R5ukLWuTof-JtYuHx1pe6Z1gwXeeLgPK')
                 folder_structure = drivehelper.get_folders_with_structure(root_id)
                 date = datetime.date.today()
-                
+
                 # month_folder_id = find_this_months_folder(date, folder_structure)
                 year_folder_dict = drivehelper.find_subfolder(folder_structure, datetime.date.today().year)
                 month_folder_dict = drivehelper.find_subfolder(year_folder_dict, date.strftime('%Y-%m'))
                 xml_folder_dict = drivehelper.find_subfolder(month_folder_dict, 'XML')
-                zap_raw_folder_id = drivehelper.find_subfolder(month_folder_dict, 'Raw Reports')
-            
-                drivehelper.upload_file_to_drive(zap_filename, xml_folder_id, drive_service)
-                
+                zap_raw_folder = drivehelper.find_subfolder(month_folder_dict, 'Raw Reports')
+
+                drivehelper.upload_file_to_drive(zap_filename, xml_folder_dict, drive_service)
+
                 report_file = get_codedx_initial_report(cdx, codedx_project)
-                file_id = drivehelper.upload_file_to_drive(report_file, zap_raw_folder, drive_service)
+                drivehelper.upload_file_to_drive(report_file, zap_raw_folder, drive_service)
                 logging.info(f'The report {report_file} has been uploaded.')
-            
+
             zap = zap_connect()
             zap.core.shutdown()
         except Exception as error: # pylint: disable=broad-except
