@@ -116,7 +116,7 @@ def upload_file_to_drive(filename, folder_id, drive):
     parents = []
     parents.append(folder_id)
     file_metadata = {
-            'name': 'notarealscan.xml',
+            'name': filename,
             'parents': parents
         }
     file = drive.files().create(body=file_metadata, media_body=media,

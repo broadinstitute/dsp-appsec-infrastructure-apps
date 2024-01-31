@@ -469,7 +469,7 @@ def main(): # pylint: disable=too-many-locals
                     logging.info("The returned file id for {dojo_product_name} XML is {file}")
                     if not file:
                         raise Exception("A file was not uploaded.")
-
+                    cdx = CodeDx(codedx_url, codedx_api_key)
                     report_file = get_codedx_initial_report(cdx, codedx_project)
                     file = drivehelper.upload_file_to_drive(report_file, zap_raw_folder['id'], drive_service)
                     
