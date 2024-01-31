@@ -465,10 +465,10 @@ def main(): # pylint: disable=too-many-locals
                     zap_raw_folder = drivehelper.find_subfolder(month_folder_dict, 'Raw Reports')
 
                     logging.info("Uploading report and XML for this month's scans to Google Drive")
-                    drivehelper.upload_file_to_drive(zap_filename, xml_folder_dict, drive_service)
+                    drivehelper.upload_file_to_drive(zap_filename, xml_folder_dict['id'], drive_service)
 
                     report_file = get_codedx_initial_report(cdx, codedx_project)
-                    drivehelper.upload_file_to_drive(report_file, zap_raw_folder, drive_service)
+                    drivehelper.upload_file_to_drive(report_file, zap_raw_folder['id'], drive_service)
                     logging.info(f'The report {report_file} has been uploaded.')
                 except Exception:
                     error_message = f'Failed to complete uploading files to Google Drive for {dojo_product_name}'
