@@ -14,14 +14,14 @@ from time import sleep
 from typing import List
 from urllib.parse import urlparse, urlunparse
 
-import defectdojo_apiv2 as defectdojo
-import drive_upload as drivehelper
 import defusedxml.ElementTree as ET
 from codedx_api.CodeDxAPI import CodeDx  # pylint: disable=import-error
 from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
 
 from zap import ScanType, zap_compliance_scan, zap_connect
+import defectdojo_apiv2 as defectdojo
+import drive_upload as drivehelper
 
 
 def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, product_id):
@@ -84,7 +84,7 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
 
     try:
         lead_id = dojo.list_users(defect_dojo_user).data["results"][0]["id"]
-    except Exception:
+    except Exception: # pylint: disable=broad-except
         logging.error("Did not retrieve dojo user ID, upload failed.")
         return
 
@@ -374,7 +374,10 @@ def main(): # pylint: disable=too-many-locals
             dd = getenv("DEFECT_DOJO")
 
             # fetch dd poject name
-            dojo_product_name = fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, product_id)
+            dojo_product_name = fetch_dojo_product_name(defect_dojo, 
+                                                            defect_dojo_user, 
+                                                            defect_dojo_key, 
+                                                            product_id)
 
 
             # configure logging
@@ -467,11 +470,11 @@ def main(): # pylint: disable=too-many-locals
                     file = drivehelper.upload_file_to_drive(zap_filename, xml_folder_dict.get('id'), drive_service)
                     logging.info(f"The returned file id for {dojo_product_name} XML is {file}")
                     if not file:
-                        raise Exception(f"The XML file for {dojo_product_name} was not uploaded.")
+                        raise Exception(f"The XML file for {dojo_product_name} was not uploaded.") 
                     cdx = CodeDx(codedx_url, codedx_api_key)
                     report_file = get_codedx_initial_report(cdx, codedx_project)
                     file = drivehelper.upload_file_to_drive(report_file, zap_raw_folder.get('id'), drive_service)
-                    
+
                     if not file:
                         raise Exception(f"The CodeDx report for {dojo_product_name} was not uploaded.")
                     logging.info(f'The report {report_file} has been uploaded.')

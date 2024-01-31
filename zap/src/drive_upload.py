@@ -1,10 +1,10 @@
+#!/usr/bin/env python3
+"""
+Helper functions for connecting to, navigating, and uploading to Google Drive.
+"""
 import logging
 
-
 import google.auth
-import datetime
-import json
-from google.oauth2 import service_account
 from google.auth.transport.requests import Request as GoogleAuthRequest
 from googleapiclient.http import MediaFileUpload
 from googleapiclient.discovery import build
@@ -65,7 +65,7 @@ def get_folders(drive_service, page_token = None):
               pageToken=page_token,
           )
           .execute()
-      )   
+      )
     return response.get("files"), response.get("nextPageToken")
 
 
