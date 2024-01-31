@@ -88,6 +88,11 @@ data:
               secretKeyRef:
                 name: ${JOB_SECRET}
                 key: DEFECT_DOJO
+          - name: DRIVE_ROOT_ID
+            valueFrom:
+              secretKeyRef:
+                name: ${JOB_SECRET}
+                key: DRIVE_ROOT_ID
           - name: SLACK_TOKEN
             valueFrom:
               secretKeyRef:
