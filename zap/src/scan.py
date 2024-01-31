@@ -450,24 +450,31 @@ def main(): # pylint: disable=too-many-locals
 
             # Upload UI scan XMLs and CodeDx reports to Google Drive.
             if scan_type == ScanType.UI or scan_type == ScanType.LEOAPP:
-                logging.info('Setting up the google drive API service for uploading reports.')
+                try:
+                    logging.info('Setting up the google drive API service for uploading reports.')
 
-                drive_service = drivehelper.get_drive_service()
-                # Hard coded ID is just for testing. Will remove.
-                root_id = os.getenv('DRIVE_ROOT_ID','1R5ukLWuTof-JtYuHx1pe6Z1gwXeeLgPK')
-                folder_structure = drivehelper.get_folders_with_structure(root_id, drive_service)
-                date = datetime.today()
+                    drive_service = drivehelper.get_drive_service()
+                    # Hard coded ID is just for testing. Will remove.
+                    root_id = os.getenv('DRIVE_ROOT_ID','1R5ukLWuTof-JtYuHx1pe6Z1gwXeeLgPK')
+                    folder_structure = drivehelper.get_folders_with_structure(root_id, drive_service)
+                    date = datetime.today()
+                    logging.info("Finding the folders for this month's scans in Google Drive")
+                    year_folder_dict = drivehelper.find_subfolder(folder_structure, date.year)
+                    month_folder_dict = drivehelper.find_subfolder(year_folder_dict, date.strftime('%Y-%m'))
+                    xml_folder_dict = drivehelper.find_subfolder(month_folder_dict, 'XML')
+                    zap_raw_folder = drivehelper.find_subfolder(month_folder_dict, 'Raw Reports')
 
-                year_folder_dict = drivehelper.find_subfolder(folder_structure, date.year)
-                month_folder_dict = drivehelper.find_subfolder(year_folder_dict, date.strftime('%Y-%m'))
-                xml_folder_dict = drivehelper.find_subfolder(month_folder_dict, 'XML')
-                zap_raw_folder = drivehelper.find_subfolder(month_folder_dict, 'Raw Reports')
+                    logging.info("Uploading report and XML for this month's scans to Google Drive")
+                    drivehelper.upload_file_to_drive(zap_filename, xml_folder_dict, drive_service)
 
-                drivehelper.upload_file_to_drive(zap_filename, xml_folder_dict, drive_service)
-
-                report_file = get_codedx_initial_report(cdx, codedx_project)
-                drivehelper.upload_file_to_drive(report_file, zap_raw_folder, drive_service)
-                logging.info(f'The report {report_file} has been uploaded.')
+                    report_file = get_codedx_initial_report(cdx, codedx_project)
+                    drivehelper.upload_file_to_drive(report_file, zap_raw_folder, drive_service)
+                    logging.info(f'The report {report_file} has been uploaded.')
+                except Exception:
+                    error_message = f'Failed to complete uploading files to Google Drive for {dojo_product_name}'
+                    logging.info(error_message)
+                    error_slack_alert(
+                        error_message, slack_token, slack_channel)
 
             zap = zap_connect()
             zap.core.shutdown()

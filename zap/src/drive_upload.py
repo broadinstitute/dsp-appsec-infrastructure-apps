@@ -15,12 +15,10 @@ def find_children(parent_id, files):
     Helper function for building out the directory tree of
     google drive folders.
     """
-    print('recurse!')
     children = []
     for file in files:
         # In Drive API Parents is always a list with up to one member
         working_id = file.get('parents')[0] if (file.get('parents') is not None) else ""
-        print(working_id)
         if working_id == parent_id:
             # build child dict
             child = {'id':file.get('id'),
