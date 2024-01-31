@@ -454,8 +454,7 @@ def main(): # pylint: disable=too-many-locals
                     logging.info('Setting up the google drive API service for uploading reports.')
 
                     drive_service = drivehelper.get_drive_service()
-                    # Hard coded ID is just for testing. Will remove.
-                    root_id = os.getenv('DRIVE_ROOT_ID','1R5ukLWuTof-JtYuHx1pe6Z1gwXeeLgPK')
+                    root_id = os.getenv('DRIVE_ROOT_ID', None)
                     folder_structure = drivehelper.get_folders_with_structure(root_id, drive_service)
                     date = datetime.today()
                     logging.info("Finding the folders for this month's scans in Google Drive")
