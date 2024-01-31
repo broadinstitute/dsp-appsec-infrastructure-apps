@@ -465,16 +465,16 @@ def main(): # pylint: disable=too-many-locals
                     zap_raw_folder = drivehelper.find_subfolder(month_folder_dict, 'Raw Reports')
 
                     logging.info("Uploading report and XML for this month's scans to Google Drive")
-                    file = drivehelper.upload_file_to_drive(zap_filename, xml_folder_dict['id'], drive_service)
-                    logging.info("The returned file id for {dojo_product_name} XML is {file}")
+                    file = drivehelper.upload_file_to_drive(zap_filename, xml_folder_dict.get('id'), drive_service)
+                    logging.info(f"The returned file id for {dojo_product_name} XML is {file}")
                     if not file:
-                        raise Exception("A file was not uploaded.")
+                        raise Exception(f"The XML file for {dojo_product_name} was not uploaded.")
                     cdx = CodeDx(codedx_url, codedx_api_key)
                     report_file = get_codedx_initial_report(cdx, codedx_project)
-                    file = drivehelper.upload_file_to_drive(report_file, zap_raw_folder['id'], drive_service)
+                    file = drivehelper.upload_file_to_drive(report_file, zap_raw_folder.get('id'), drive_service)
                     
                     if not file:
-                        raise Exception("A file was not uploaded.")
+                        raise Exception(f"The CodeDx report for {dojo_product_name} was not uploaded.")
                     logging.info(f'The report {report_file} has been uploaded.')
                 except Exception as e: # pylint: disable=broad-except
                     error_message = f'Failed to complete uploading files to Google Drive for {dojo_product_name}. Last known error {e}'
