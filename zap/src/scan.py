@@ -459,7 +459,7 @@ def main(): # pylint: disable=too-many-locals
                     folder_structure = drivehelper.get_folders_with_structure(root_id, drive_service)
                     date = datetime.today()
                     logging.info("Finding the folders for this month's scans in Google Drive")
-                    year_folder_dict = drivehelper.find_subfolder(folder_structure, date.year)
+                    year_folder_dict = drivehelper.find_subfolder(folder_structure, str(date.year))
                     month_folder_dict = drivehelper.find_subfolder(year_folder_dict, date.strftime('%Y-%m'))
                     xml_folder_dict = drivehelper.find_subfolder(month_folder_dict, 'XML')
                     zap_raw_folder = drivehelper.find_subfolder(month_folder_dict, 'Raw Reports')
