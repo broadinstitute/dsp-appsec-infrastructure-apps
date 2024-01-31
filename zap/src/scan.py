@@ -14,13 +14,14 @@ from time import sleep
 from typing import List
 from urllib.parse import urlparse, urlunparse
 
-import defectdojo_apiv2 as defectdojo
 import defusedxml.ElementTree as ET
 from codedx_api.CodeDxAPI import CodeDx  # pylint: disable=import-error
 from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
 
 from zap import ScanType, zap_compliance_scan, zap_connect
+import defectdojo_apiv2 as defectdojo
+import drive_upload as drivehelper
 
 
 def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, product_id):
@@ -83,7 +84,7 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
 
     try:
         lead_id = dojo.list_users(defect_dojo_user).data["results"][0]["id"]
-    except Exception:
+    except Exception: # pylint: disable=broad-except
         logging.error("Did not retrieve dojo user ID, upload failed.")
         return
 
@@ -192,6 +193,33 @@ def get_codedx_report_by_alert_severity(
 
     return report_file
 
+def get_codedx_initial_report(
+        cdx: CodeDx, project: str
+):
+    """
+    Generate a PDF report showing all findings that haven't been closed.
+    """
+    logging.info("Getting PDF report from Codedx project: %s", project)
+    report_date = datetime.now()
+    report_file = f'{project.replace("-", "_")}_report_{report_date:%Y%m%d}.pdf'
+    filters = {
+        "status": [3, 4, 5, 6, 10, 9, 1]
+    }
+    if not cdx.get_project_id(project):
+        cdx.create_project(project)
+    cdx.get_pdf(
+        project,
+        summary_mode="detailed",
+        details_mode="simple",
+        include_result_details=True,
+        include_comments=False,
+        include_request_response=False,
+        file_name=report_file,
+        filters=filters,
+    )
+
+    return report_file
+
 
 SEVERITY_DELIM = "|"
 
@@ -280,13 +308,15 @@ def slack_alert_without_report(  # pylint: disable=too-many-arguments
 
     if xml_report_url:
         gcs_slack_text = (
-            f"New vulnerability report uploaded to GCS bucket: {xml_report_url}\n and DefectDojo product: {dd}product/{product_id}"
+            "New vulnerability report uploaded to GCS bucket: " +
+                f"{xml_report_url}\n and DefectDojo product: {dd}product/{product_id}"
         )
         slack.chat_postMessage(channel=channel, text=gcs_slack_text)
         logging.info("Alert sent to Slack channel for GCS bucket and DefectDojo upload report")
     else:
         gcs_slack_text = (
-            f"New vulnerability report uploaded to DefectDojo for {target_url}: {dd}product/{product_id}"
+            "New vulnerability report uploaded to DefectDojo for " +
+                f"{target_url}: {dd}product/{product_id}"
         )
         slack.chat_postMessage(channel=channel, text=gcs_slack_text)
         logging.info("Alert sent to Slack channel for DefectDojo upload report")
@@ -344,7 +374,10 @@ def main(): # pylint: disable=too-many-locals
             dd = getenv("DEFECT_DOJO")
 
             # fetch dd poject name
-            dojo_product_name = fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, product_id)
+            dojo_product_name = fetch_dojo_product_name(defect_dojo, 
+                                                            defect_dojo_user, 
+                                                            defect_dojo_key, 
+                                                            product_id)
 
 
             # configure logging
@@ -418,6 +451,38 @@ def main(): # pylint: disable=too-many-locals
                     scan_type,
                 )
 
+            # Upload UI scan XMLs and CodeDx reports to Google Drive.
+            if scan_type == ScanType.UI or scan_type == ScanType.LEOAPP:
+                try:
+                    logging.info('Setting up the google drive API service for uploading reports.')
+
+                    drive_service = drivehelper.get_drive_service()
+                    root_id = os.getenv('DRIVE_ROOT_ID', None)
+                    folder_structure = drivehelper.get_folders_with_structure(root_id, drive_service)
+                    date = datetime.today()
+                    logging.info("Finding the folders for this month's scans in Google Drive")
+                    year_folder_dict = drivehelper.find_subfolder(folder_structure, str(date.year))
+                    month_folder_dict = drivehelper.find_subfolder(year_folder_dict, date.strftime('%Y-%m'))
+                    xml_folder_dict = drivehelper.find_subfolder(month_folder_dict, 'XML')
+                    zap_raw_folder = drivehelper.find_subfolder(month_folder_dict, 'Raw Reports')
+
+                    logging.info("Uploading report and XML for this month's scans to Google Drive")
+                    file = drivehelper.upload_file_to_drive(zap_filename, xml_folder_dict.get('id'), drive_service)
+                    logging.info(f"The returned file id for {dojo_product_name} XML is {file}")
+                    if not file:
+                        raise Exception(f"The XML file for {dojo_product_name} was not uploaded.") 
+                    cdx = CodeDx(codedx_url, codedx_api_key)
+                    report_file = get_codedx_initial_report(cdx, codedx_project)
+                    file = drivehelper.upload_file_to_drive(report_file, zap_raw_folder.get('id'), drive_service)
+
+                    if not file:
+                        raise Exception(f"The CodeDx report for {dojo_product_name} was not uploaded.")
+                    logging.info(f'The report {report_file} has been uploaded.')
+                except Exception as e: # pylint: disable=broad-except
+                    error_message = f'Failed to complete uploading files to Google Drive for {dojo_product_name}. Last known error {e}'
+                    logging.info(error_message)
+                    error_slack_alert(
+                        error_message, slack_token, slack_channel)
 
             zap = zap_connect()
             zap.core.shutdown()
