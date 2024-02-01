@@ -12,7 +12,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.authzService.fetchUserDetails().subscribe(details => {
-      this.authzService.setUserDetails(details);
+      // this.authzService.setUserDetails(details);
       console.log(details)
     });
   }

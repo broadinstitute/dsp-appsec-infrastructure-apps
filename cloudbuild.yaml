@@ -72,54 +72,54 @@ steps:
       --destination=$${BATCH_DISPATCHER_IMAGE}
       --cache
 
-# build CIS Docker image
-- id: cis-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/cis
-      --destination=$${CIS_IMAGE}
-      --cache
+# # build CIS Docker image
+# - id: cis-image
+#   name: *kaniko
+#   waitFor: ['kaniko']
+#   entrypoint: sh
+#   args:
+#   - -c
+#   - executor
+#       --context=dir:///workspace/cis
+#       --destination=$${CIS_IMAGE}
+#       --cache
 
-# build SDARQ-security-controls Docker image
-- id: sdarq-security-controls-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/security-controls
-      --destination=$${SDARQ_SECURITY_CONTROLS}
-      --cache
+# # build SDARQ-security-controls Docker image
+# - id: sdarq-security-controls-image
+#   name: *kaniko
+#   waitFor: ['kaniko']
+#   entrypoint: sh
+#   args:
+#   - -c
+#   - executor
+#       --context=dir:///workspace/security-controls
+#       --destination=$${SDARQ_SECURITY_CONTROLS}
+#       --cache
 
-# build patched CodeDx image
-- id: codedx-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/codedx
-      --destination=$${CODEDX_IMAGE}
-      --cache
+# # build patched CodeDx image
+# - id: codedx-image
+#   name: *kaniko
+#   waitFor: ['kaniko']
+#   entrypoint: sh
+#   args:
+#   - -c
+#   - executor
+#       --context=dir:///workspace/codedx
+#       --destination=$${CODEDX_IMAGE}
+#       --cache
 
-# build patched DefectDojo Django image,
-- id: defectdojo-django-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/defectdojo
-      --dockerfile=Dockerfile.django
-      --destination=$${DD_DJANGO_IMAGE}
-      --cache
+# # build patched DefectDojo Django image,
+# - id: defectdojo-django-image
+#   name: *kaniko
+#   waitFor: ['kaniko']
+#   entrypoint: sh
+#   args:
+#   - -c
+#   - executor
+#       --context=dir:///workspace/defectdojo
+#       --dockerfile=Dockerfile.django
+#       --destination=$${DD_DJANGO_IMAGE}
+#       --cache
 
 # build SDARQ frontend Docker image
 - id: sdarq-frontend-image
@@ -146,17 +146,17 @@ steps:
       --destination=$${SDARQ_BACKEND_IMAGE}
       --cache
 
-# build ZAP Docker image
-- id: zap-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/zap
-      --destination=$${ZAP_IMAGE}
-      --cache
+# # build ZAP Docker image
+# - id: zap-image
+#   name: *kaniko
+#   waitFor: ['kaniko']
+#   entrypoint: sh
+#   args:
+#   - -c
+#   - executor
+#       --context=dir:///workspace/zap
+#       --destination=$${ZAP_IMAGE}
+#       --cache
 
 ### Terraform
 
@@ -198,40 +198,40 @@ steps:
   entrypoint: ./global.sh
   dir: shared
 
-# deploy SDARQ security controls to GKE cluster
-- id: security-controls
-  name: *kubectl
-  waitFor: ['shared', 'sdarq-security-controls-image']
-  entrypoint: ./deploy.sh
-  dir: security-controls
-  env:
-  - SECURITY_CONTROLS_IGNORE=${_SECURITY_CONTROLS_IGNORE}
-  - CODACY_ORGS=${_CODACY_ORGS}
-  - SONAR_ORGS=${_SONAR_ORGS}
+# # deploy SDARQ security controls to GKE cluster
+# - id: security-controls
+#   name: *kubectl
+#   waitFor: ['shared', 'sdarq-security-controls-image']
+#   entrypoint: ./deploy.sh
+#   dir: security-controls
+#   env:
+#   - SECURITY_CONTROLS_IGNORE=${_SECURITY_CONTROLS_IGNORE}
+#   - CODACY_ORGS=${_CODACY_ORGS}
+#   - SONAR_ORGS=${_SONAR_ORGS}
 
 # deploy CIS scanner resources
-- id: cis
-  name: *kubectl
-  waitFor: ['shared', 'batch-dispatcher-image', 'cis-image']
-  entrypoint: ./deploy.sh
-  dir: cis
-  env:
-  - CIS_CONTROLS_IGNORE=${_CIS_CONTROLS_IGNORE}
-  - CIS_PROD_PROJECTS=${_CIS_PROD_PROJECTS}
+# - id: cis
+#   name: *kubectl
+#   waitFor: ['shared', 'batch-dispatcher-image', 'cis-image']
+#   entrypoint: ./deploy.sh
+#   dir: cis
+#   env:
+#   - CIS_CONTROLS_IGNORE=${_CIS_CONTROLS_IGNORE}
+#   - CIS_PROD_PROJECTS=${_CIS_PROD_PROJECTS}
 
-# deploy CodeDx to GKE cluster
-- id: codedx
-  name: *kubectl
-  waitFor: ['shared', 'codedx-image']
-  entrypoint: ./deploy.sh
-  dir: codedx
+# # deploy CodeDx to GKE cluster
+# - id: codedx
+#   name: *kubectl
+#   waitFor: ['shared', 'codedx-image']
+#   entrypoint: ./deploy.sh
+#   dir: codedx
 
-# deploy DefectDojo to GKE cluster
-- id: defectdojo
-  name: *kubectl
-  waitFor: ['shared', 'defectdojo-django-image']
-  entrypoint: ./deploy.sh
-  dir: defectdojo
+# # deploy DefectDojo to GKE cluster
+# - id: defectdojo
+#   name: *kubectl
+#   waitFor: ['shared', 'defectdojo-django-image']
+#   entrypoint: ./deploy.sh
+#   dir: defectdojo
 
 # deploy SDARQ to GKE cluster
 - id: sdarq
@@ -240,11 +240,11 @@ steps:
   entrypoint: ./deploy.sh
   dir: sdarq
 
-# deploy Zap to GKE cluster
-- id: zap
-  name: *kubectl
-  waitFor: ['shared', 'batch-dispatcher-image']
-  entrypoint: ./deploy.sh
-  dir: zap
+# # deploy Zap to GKE cluster
+# - id: zap
+#   name: *kubectl
+#   waitFor: ['shared', 'batch-dispatcher-image']
+#   entrypoint: ./deploy.sh
+#   dir: zap
 
 timeout: 7200s
