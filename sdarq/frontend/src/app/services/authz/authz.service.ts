@@ -17,6 +17,7 @@ export class AuthzService {
     const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
+    console.log(this.http.get(this.URL,options))
     return this.http.get(this.URL,options);
   }
 
@@ -29,6 +30,7 @@ export class AuthzService {
   }
 
   getUserDetails(): any {
+    console.log(this.userDetails)
     return this.userDetails;
   }
 

@@ -111,7 +111,8 @@ def user_details():
     Returns the email and group from IAP
     """
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
-    user_groups = request.headers.get('X-Your-Custom-Group-Header')  
+    user_groups = request.headers.get('X-Your-Custom-Group-Header')
+    logging.warning(jsonify({'email': user_email, 'groups': user_groups}))
     return jsonify({'email': user_email, 'groups': user_groups})
 
 
