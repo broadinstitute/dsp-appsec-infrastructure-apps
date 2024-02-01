@@ -34,7 +34,7 @@ export class AuthzService {
 
   isAuthorized(): boolean {
     // include full group name
-    const isInGroup = this.userGroups.includes('appsec');
+    const isInGroup = this.userGroups.includes('appsec@broadinstitute.org');
 
     return isInGroup;
 }
