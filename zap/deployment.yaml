@@ -88,6 +88,11 @@ data:
               secretKeyRef:
                 name: ${JOB_SECRET}
                 key: DEFECT_DOJO
+          - name: DRIVE_ROOT_ID
+            valueFrom:
+              secretKeyRef:
+                name: ${JOB_SECRET}
+                key: DRIVE_ROOT_ID
           - name: SLACK_TOKEN
             valueFrom:
               secretKeyRef:
@@ -147,7 +152,7 @@ items:
     name: ${CRON_JOB}-weekly
     namespace: ${NAMESPACE}
   spec:
-    schedule: "0 7 * * 0"
+    schedule: "0 7 * * 4"
     jobTemplate:
       spec:
         template:
@@ -162,7 +167,7 @@ items:
             - &cron-job-container
               name: zap-trigger
               image: ${ZAP_IMAGE}
-              args: ['trigger', '-s', 'api', 'auth']
+              args: ['trigger', '-s', 'api', 'auth', 'ui']
               env:
               - name: GCP_PROJECT_ID
                 value: ${PROJECT_ID}
@@ -183,20 +188,7 @@ items:
               resources:
                 requests:
                   memory: 50Mi
-- << : *cron-job
-  metadata:
-    name: ${CRON_JOB}-monthly
-    namespace: ${NAMESPACE}
-  spec:
-    schedule: "0 0 1 * *"
-    jobTemplate:
-      spec:
-        template:
-          spec:
-            << : *cron-job-spec
-            containers:
-            - << : *cron-job-container
-              args: ['trigger', '-s', 'ui']
+
 ---
 apiVersion: storage.cnrm.cloud.google.com/v1beta1
 kind: StorageBucket
