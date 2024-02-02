@@ -458,7 +458,10 @@ def main(): # pylint: disable=too-many-locals
 
                     drive_service = drivehelper.get_drive_service()
                     root_id = os.getenv('DRIVE_ROOT_ID', None)
-                    folder_structure = drivehelper.get_folders_with_structure(root_id, drive_service)
+                    drive_id = os.getenv('DRIVE_ID')
+                    folder_structure = drivehelper.get_folders_with_structure(root_id, drive_id, drive_service)
+                    if not folder_structure:
+                        raise Exception(f"The provided gdrive folder ID was not found.") 
                     date = datetime.today()
                     logging.info("Finding the folders for this month's scans in Google Drive")
                     year_folder_dict = drivehelper.find_subfolder(folder_structure, str(date.year))

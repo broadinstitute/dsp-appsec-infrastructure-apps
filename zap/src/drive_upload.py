@@ -51,9 +51,9 @@ def get_drive_service():
     service = build('drive', 'v3', credentials=credentials)
     return service
 
-def get_folders(drive_service, page_token = None):
+def get_folders(drive_service, drive_id, page_token = None):
     """
-    Returns all available folders in a user's drive.
+    Returns all available folders in a specified shared drive.
     """
     logging.info("Pulling folder names from Google Drive.")
     response = (
@@ -62,6 +62,10 @@ def get_folders(drive_service, page_token = None):
               q="mimeType='application/vnd.google-apps.folder'",
               spaces="drive",
               fields="nextPageToken, files(id, name, parents)",
+              includeItemsFromAllDrives=True,
+              supportsAllDrives=True,
+              driveId=drive_id,
+              corpora="drive",
               pageToken=page_token,
           )
           .execute()
@@ -88,6 +92,8 @@ def get_folders_with_structure(root_id, drive_service):
             folder_structure["children"] = []
             files.remove(file)
             break
+    if len(folder_structure) < 1:
+        return None
 
     offspring = find_children(folder_structure['id'], files)
     for grandchild in offspring:
