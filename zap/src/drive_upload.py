@@ -73,14 +73,14 @@ def get_folders(drive_service, drive_id, page_token = None):
     return response.get("files"), response.get("nextPageToken")
 
 
-def get_folders_with_structure(root_id, drive_service):
+def get_folders_with_structure(root_id, drive_id, drive_service):
     """
     Takes in a list of files and returns a dict that mimics
     the directory structure in google drive.
     """
-    files, next_page_token = get_folders(drive_service)
+    files, next_page_token = get_folders(drive_service, drive_id)
     while next_page_token:
-        page, next_page_token = get_folders(drive_service, next_page_token)
+        page, next_page_token = get_folders(drive_service, drive_id, next_page_token)
         files.extend(page)
 
     folder_structure = {}
