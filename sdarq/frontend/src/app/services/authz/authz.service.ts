@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders ,HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 
 
 @Injectable({
@@ -19,9 +19,14 @@ export class AuthzService {
     const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
-    console.log(this.http.get(this.URL,options))
     return this.http.get(this.URL,options).pipe(
-      catchError(this.handleError)
+      catchError(this.handleError),
+      tap(response => {
+        if (response && response.groups) {
+          this.setUserGroups(response.groups);
+          console.log(this.setUserGroups(response.groups))
+        }
+      })
     );
   }
 

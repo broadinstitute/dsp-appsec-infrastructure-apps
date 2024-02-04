@@ -108,11 +108,16 @@ def health():
 @cross_origin(origins=sdarq_host)
 def user_details():
     """
-    Returns the email and group from IAP
+    Returns the email and group from IAP.
     """
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
     user_groups = request.headers.get('X-Your-Custom-Group-Header')
-    logging.warning(jsonify({'email': user_email, 'groups': user_groups}))
+
+    if user_email is None or user_groups is None:
+        logging.warning('Missing email or groups in the request headers')
+        return jsonify({'error': 'Missing information'}), 400
+
+    logging.info({'email': user_email, 'groups': user_groups})
     return jsonify({'email': user_email, 'groups': user_groups})
 
 
