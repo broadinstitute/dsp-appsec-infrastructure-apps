@@ -8,6 +8,7 @@ substitutions:
   _SECURITY_CONTROLS_IGNORE: '' # Security controls set to false ignore for some services
   _SONAR_ORGS: '' # in-scope SonarCloud organizations
   _CODACY_ORGS: '' # in-scope Codacy organizations
+  _IAP_ALLOWLIST: '' # list of emails with more privileges
 
 options:
   machineType: N1_HIGHCPU_8
@@ -239,6 +240,8 @@ steps:
   waitFor: ['shared', 'sdarq-backend-image', 'sdarq-frontend-image']
   entrypoint: ./deploy.sh
   dir: sdarq
+  env:
+  - _IAP_allowlist=${_IAP_ALLOWLIST}
 
 # # deploy Zap to GKE cluster
 # - id: zap

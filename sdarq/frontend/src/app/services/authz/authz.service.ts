@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpHeaders ,HttpClient } from '@angular/common/http';
+import { HttpHeaders, HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 
 @Injectable({
@@ -10,8 +10,6 @@ import { catchError, tap } from 'rxjs/operators';
 export class AuthzService {
 
   private URL = location.origin + '/api/user-details/';
-  private userGroups: string[] = [];
-  private userDetails: any;
 
   constructor(private http: HttpClient) {}
 
@@ -21,32 +19,19 @@ export class AuthzService {
     };
     return this.http.get(this.URL,options).pipe(
       catchError(this.handleError),
-      tap(response => {
-        if (response && response.groups) {
-          this.setUserGroups(response.groups);
-          console.log(this.setUserGroups(response.groups))
+      map((response: HttpResponse<any>) => {
+        if (response.status === 200) {
+          return this.isAuthorized(true);
+        } else if (response.status === 403) {
+          return this.isAuthorized(false);
         }
       })
     );
   }
 
-  setUserGroups(groups: string[]): void {
-    this.userGroups = groups;
-  }
-
-  setUserDetails(details: any): void {
-    this.userDetails = details;
-  }
-
-  getUserDetails(): any {
-    console.log(this.userDetails)
-    return this.userDetails;
-  }
-
-  isAuthorized(): boolean {
-    const isInGroup = this.userGroups.includes('appsec@broadinstitute.org');
-    console.log(isInGroup)
-    return isInGroup;
+  isAuthorized(statusreturned) {
+    console.log(statusreturned)
+    return statusreturned;
 }
 
 handleError(error) {

@@ -64,6 +64,8 @@ cis_topic_name = os.environ['CIS_JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
 zap_topic_name = os.environ['ZAP_JOB_TOPIC']
 security_controls_firestore_collection = os.environ['SC_FIRESTORE_COLLECTION']
+iap_allowlist = os.getenv('_IAP_ALLOWLIST', '')
+iap_allowlist_final = iap_allowlist.split(",")
 
 
 headers = {
@@ -111,14 +113,19 @@ def user_details():
     Returns the email and group from IAP.
     """
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
-    user_groups = request.headers.get('X-Your-Custom-Group-Header')
 
-    if user_email is None or user_groups is None:
-        logging.warning('Missing email or groups in the request headers')
+    if user_email is None:
+        logging.warning('Missing email in the request headers')
         return jsonify({'error': 'Missing information'}), 400
+    
+    if parse_json_data.parse_user_email(user_email) in iap_allowlist_final:
+        logging.warning('User has the right permission')
+        return jsonify({'statusText': 'User has the right permission'}), 200
+    else:
+        logging.warning('User is forbidden')
+        return jsonify({'statusText': 'User is forbidden'}), 403
 
-    logging.info({'email': user_email, 'groups': user_groups})
-    return jsonify({'email': user_email, 'groups': user_groups})
+
 
 
 @app.route('/submit/', methods=['POST'])
