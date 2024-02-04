@@ -21,18 +21,15 @@ export class AuthzService {
       catchError(this.handleError),
       map((response: HttpResponse<any>) => {
         if (response.status === 200) {
-          return this.isAuthorized(true);
+          console.log("True")
+          return true;
         } else if (response.status === 403) {
-          return this.isAuthorized(false);
+          console.log("False")
+          return false;
         }
       })
     );
   }
-
-  isAuthorized(statusreturned) {
-    console.log(statusreturned)
-    return statusreturned;
-}
 
 handleError(error) {
 

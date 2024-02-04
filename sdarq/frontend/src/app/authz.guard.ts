@@ -9,10 +9,12 @@ import { AuthzService } from './services/authz/authz.service';
 export class AuthzGuard implements CanActivate {
   constructor(private authzService: AuthzService, private router: Router) {}
   
+  statusreturned: boolean;
+
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-      if (!this.authzService.isAuthorized()) {
+      if (this.authzService.fetchUserDetails()) {
         this.router.navigate(['/']);
         return false;
       }
