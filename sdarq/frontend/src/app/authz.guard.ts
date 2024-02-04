@@ -16,8 +16,10 @@ export class AuthzGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
       if (this.authzService.fetchUserDetails()) {
         this.router.navigate(['/']);
+        console.log("false :)")
         return false;
       }
+      console.log("true :)")
       return true;
   }
 }
