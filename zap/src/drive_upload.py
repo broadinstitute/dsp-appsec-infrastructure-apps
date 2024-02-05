@@ -25,8 +25,6 @@ def find_children(parent_id, files):
                         'name':file.get('name'),
                         'parents':file.get('parents'),
                         'children':[]}
-            # A file can only have one parent, so we can remove it from our search list.
-            files.remove(file)
 
             offspring = find_children(child['id'], files)
             for grandchild in offspring:
