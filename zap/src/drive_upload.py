@@ -125,8 +125,8 @@ def upload_file_to_drive(filename, folder_id, drive_id, drive):
             'parents': parents,
             'driveId': drive_id
         }
-    file = drive.files().create(body=file_metadata, 
+    file = drive.files().create(body=file_metadata,
                                     media_body=media,
-                                    fields='id', 
+                                    fields='id',
                                     supportsAllDrives=True).execute()
     return file
