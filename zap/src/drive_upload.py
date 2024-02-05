@@ -113,7 +113,7 @@ def find_subfolder(folder_structure, target_name, target_folder=None):
     return target_folder
 
 
-def upload_file_to_drive(filename, folder_id, drive):
+def upload_file_to_drive(filename, folder_id, drive_id, drive):
     """
     Uploads a specific file to a specific folder in google drive.
     """
@@ -122,8 +122,11 @@ def upload_file_to_drive(filename, folder_id, drive):
     parents.append(folder_id)
     file_metadata = {
             'name': filename,
-            'parents': parents
+            'parents': parents,
+            'driveId': drive_id
         }
-    file = drive.files().create(body=file_metadata, media_body=media,
-                                     fields='id').execute()
+    file = drive.files().create(body=file_metadata, 
+                                    media_body=media,
+                                    fields='id', 
+                                    supportsAllDrives=True).execute()
     return file
