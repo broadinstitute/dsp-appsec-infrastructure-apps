@@ -82,7 +82,7 @@ def get_folders_with_structure(root_id, drive_id, drive_service):
     while next_page_token:
         page, next_page_token = get_folders(drive_service, drive_id, next_page_token)
         files.extend(page)
-    logging.info(files)
+
     folder_structure = {}
     for file in files:
         if file["id"] == root_id:
@@ -98,6 +98,7 @@ def get_folders_with_structure(root_id, drive_id, drive_service):
     offspring = find_children(folder_structure['id'], files)
     for grandchild in offspring:
         folder_structure['children'].append(grandchild)
+    logging.info(f"The target folder has the following structure: {folder_structure}")
     return folder_structure
 
 
