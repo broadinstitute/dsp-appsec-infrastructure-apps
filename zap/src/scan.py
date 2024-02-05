@@ -475,6 +475,7 @@ def main(): # pylint: disable=too-many-locals
                         logging.info("Uploading report and XML for this month's scans to Google Drive")
                         file = drivehelper.upload_file_to_drive(zap_filename,
                                                                     xml_folder_dict.get('id'),
+                                                                    drive_id,
                                                                     drive_service)
                         logging.info(f"The returned file id for {dojo_product_name} XML is {file}")
                     if not file:
