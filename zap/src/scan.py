@@ -465,13 +465,15 @@ def main(): # pylint: disable=too-many-locals
                     date = datetime.today()
                     logging.info("Finding the folders for this month's scans in Google Drive")
                     year_folder_dict = drivehelper.find_subfolder(folder_structure, str(date.year))
-                    month_folder_dict = drivehelper.find_subfolder(year_folder_dict, date.strftime('%Y-%m'))
-                    xml_folder_dict = drivehelper.find_subfolder(month_folder_dict, 'XML')
-                    zap_raw_folder = drivehelper.find_subfolder(month_folder_dict, 'Raw Reports')
+                    if len(year_folder_dict) > 0:
+                        month_folder_dict = drivehelper.find_subfolder(year_folder_dict, date.strftime('%Y-%m'))
+                        
+                        xml_folder_dict = drivehelper.find_subfolder(month_folder_dict, 'XML')
+                        zap_raw_folder = drivehelper.find_subfolder(month_folder_dict, 'Raw Reports')
 
-                    logging.info("Uploading report and XML for this month's scans to Google Drive")
-                    file = drivehelper.upload_file_to_drive(zap_filename, xml_folder_dict.get('id'), drive_service)
-                    logging.info(f"The returned file id for {dojo_product_name} XML is {file}")
+                        logging.info("Uploading report and XML for this month's scans to Google Drive")
+                        file = drivehelper.upload_file_to_drive(zap_filename, xml_folder_dict.get('id'), drive_service)
+                        logging.info(f"The returned file id for {dojo_product_name} XML is {file}")
                     if not file:
                         raise Exception(f"The XML file for {dojo_product_name} was not uploaded.") 
                     cdx = CodeDx(codedx_url, codedx_api_key)
