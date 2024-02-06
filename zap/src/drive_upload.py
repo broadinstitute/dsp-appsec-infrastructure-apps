@@ -96,7 +96,6 @@ def get_folders_with_structure(root_id, drive_id, drive_service):
     offspring = find_children(folder_structure['id'], files)
     for grandchild in offspring:
         folder_structure['children'].append(grandchild)
-    logging.info(f"The target folder has the following structure: {folder_structure}")
     return folder_structure
 
 
