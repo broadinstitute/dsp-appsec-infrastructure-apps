@@ -7,15 +7,16 @@ import os
 import shutil
 from enum import Enum
 from urllib.parse import urlparse
+from datetime import datetime
 
 import google.auth
 import requests
-import terra_auth
 from google.auth.transport.requests import Request as GoogleAuthRequest
-from zap_common import (wait_for_zap_start, write_report, zap_access_target,
+from zap_common import (wait_for_zap_start, zap_access_target,
                         zap_wait_for_passive_scan)
-from zap_scan_type import ScanType
 from zapv2 import ZAPv2
+from zap_scan_type import ScanType
+import terra_auth
 
 TIMEOUT_MINS = 5
 zap_port = int(os.getenv("ZAP_PORT", ""))
@@ -26,7 +27,7 @@ def zap_connect():
     """
     Connect to the Zap instance
     """
-    zap = ZAPv2(proxies={"http": proxy, "https": proxy}, apikey=(os.getenv("ZAP_API_KEY", "")))
+    zap = ZAPv2(proxies={"http": proxy, "https": proxy}, apikey=os.getenv("ZAP_API_KEY", ""))
     wait_for_zap_start(zap, timeout_in_secs=TIMEOUT_MINS * 60)
     return zap
 
@@ -194,11 +195,11 @@ def zap_report(zap: ZAPv2, project: str, scan_type: ScanType, sites: str):
     """
     zap.core.set_option_merge_related_alerts(True)
 
-    # This will export all findings independent of scope. 
+    # This will export all findings independent of scope.
     # The more advanced zap report api calls require a directory local to zap
     # But you can download known files from /home/zap/.ZAP/transfer if you use an API key
-
-    filename = f"{project}_{scan_type}-scan_report.xml"
+    date = datetime.today()
+    filename = f"{project}_{scan_type}-scan_report-{date.strftime('%Y-%m')}.xml"
     filename = filename.replace("-", "_").replace(" ", "")
 
     template = "traditional-xml"

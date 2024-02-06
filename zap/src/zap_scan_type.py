@@ -22,3 +22,4 @@ class ScanType(str, Enum):
     def label(self):
         """"Get user-friendly name of the scan type"""
         return str(self.value)
+        
