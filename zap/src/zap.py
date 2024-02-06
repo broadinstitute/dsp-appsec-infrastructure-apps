@@ -7,6 +7,7 @@ import os
 import shutil
 from enum import Enum
 from urllib.parse import urlparse
+from datetime import datetime
 
 import google.auth
 import requests
@@ -198,9 +199,9 @@ def zap_report(zap: ZAPv2, project: str, scan_type: ScanType, sites: str):
     # The more advanced zap report api calls require a directory local to zap
     # But you can download known files from /home/zap/.ZAP/transfer if you use an API key
 
-    filename = f"{project}_{scan_type}-scan_report.xml"
+    filename = f"{project}_{scan_type}-scan_report-{date.strftime('%Y-%m')}.xml"
     filename = filename.replace("-", "_").replace(" ", "")
-
+    date = datetime.today()
     template = "traditional-xml"
     report_dir = "/home/zap/.ZAP/transfer"
     # The sites parameter can take several urls separated with '|'.
