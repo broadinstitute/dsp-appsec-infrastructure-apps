@@ -113,7 +113,9 @@ def user_details():
     Returns the email and group from IAP.
     """
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
-
+    logging.info(user_email)
+    logging.info(parse_json_data.parse_user_email(user_email))
+    logging.info(iap_allowlist_final)
     if user_email is None:
         logging.info('Missing email in the request headers')
         return jsonify({'error': 'Missing information'}), 400
