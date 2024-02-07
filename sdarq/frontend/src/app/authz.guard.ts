@@ -3,6 +3,7 @@ import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree, Rout
 import { Observable } from 'rxjs';
 import { AuthzService } from './services/authz/authz.service';
 import { map } from 'rxjs/operators';
+import { HttpResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -16,14 +17,15 @@ export class AuthzGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this.authzService.fetchUserDetails().pipe(
-      map(isAuthorized => {
-        if (!isAuthorized) {
+      map((response: HttpResponse<any>) => {
+        if (response.status === 200) {
+          console.log("True")
+          return true;
+        } else if (response.status === 403) {
+          console.log("False")
           this.router.navigate(['/']);
-          console.log("false :)");
           return false;
         }
-        console.log("true :)");
-        return true;
       })
     );
   }

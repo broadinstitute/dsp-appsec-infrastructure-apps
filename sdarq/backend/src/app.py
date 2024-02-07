@@ -126,8 +126,6 @@ def user_details():
         return jsonify({'statusText': 'User is forbidden'}), 403
 
 
-
-
 @app.route('/submit/', methods=['POST'])
 @cross_origin(origins=sdarq_host)
 def submit():

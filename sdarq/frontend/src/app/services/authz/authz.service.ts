@@ -18,16 +18,7 @@ export class AuthzService {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
     return this.http.get(this.URL,options).pipe(
-      catchError(this.handleError),
-      map((response: HttpResponse<any>) => {
-        if (response.status === 200) {
-          console.log("True")
-          return true;
-        } else if (response.status === 403) {
-          console.log("False")
-          return false;
-        }
-      })
+      catchError(this.handleError)
     );
   }
 
