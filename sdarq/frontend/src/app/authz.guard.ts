@@ -32,9 +32,10 @@ export class AuthzGuard implements CanActivate {
       catchError((error) => {
         if (error.status === 403) {
           console.log(error)
-          console.log(error.statu)
+          console.log(error.status)
           this.router.navigate(['/']);
         }
+        console.log('test')
         return of(false);
       })
     );
