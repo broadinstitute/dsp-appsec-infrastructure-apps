@@ -125,7 +125,7 @@ def user_details():
         return jsonify({'statusText': 'User has the right permission', 'verified': True}), 200
     else:
         logging.info('User is forbidden')
-        return jsonify({'statusText': 'User is forbidden', 'verified': False}), 403
+        return jsonify({'statusText': 'Access is denied, this user is not authorized', 'verified': False}), 403
 
 
 @app.route('/submit/', methods=['POST'])
@@ -605,6 +605,7 @@ def zap_scan():
 
 
 @app.route('/create_sec_control_template/', methods=['POST'])
+@iap_group_authz([iap_allowlist_final])
 @cross_origin(origins=sdarq_host)
 def create_sec_control_template():
     """
@@ -659,6 +660,7 @@ def create_sec_control_template():
 
 
 @app.route('/edit_sec_controls/', methods=['PUT'])
+@iap_group_authz([iap_allowlist_final])
 @cross_origin(origins=sdarq_host)
 def edit_sec_controls():
     """
@@ -717,7 +719,7 @@ def edit_sec_controls():
 
 
 @app.route('/delete_service_sec_controls/', methods=['POST'])
-@iap_group_authz(['appsec@broadinstitute.org'])
+@iap_group_authz([iap_allowlist_final])
 @cross_origin(origins=sdarq_host)
 def delete_service_sec_controls():
     """
