@@ -17,14 +17,22 @@ export class AuthzGuard implements CanActivate {
     return this.authzService.fetchUserDetails().pipe(
       map(response => {
         if (response.status === 200) {
+          console.log(response)
+          console.log(response.status)
+          console.log('true')
           return true;
         } else {
+          console.log(response)
+          console.log(response.status)
+          console.log('false')
           this.router.navigate(['/']); 
           return false;
         }
       }),
       catchError((error) => {
         if (error.status === 403) {
+          console.log(error)
+          console.log(error.statu)
           this.router.navigate(['/']);
         }
         return of(false);
