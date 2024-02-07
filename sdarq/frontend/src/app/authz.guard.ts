@@ -36,6 +36,8 @@ export class AuthzGuard implements CanActivate {
           this.router.navigate(['/']);
         }
         console.log('test')
+        console.log(error)
+        console.log(error.status)
         return of(false);
       })
     );
