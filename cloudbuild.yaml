@@ -241,7 +241,7 @@ steps:
   entrypoint: ./deploy.sh
   dir: sdarq
   env:
-  - _IAP_allowlist=${_IAP_ALLOWLIST}
+  - IAP_ALLOWLIST=${_IAP_ALLOWLIST}
 
 # # deploy Zap to GKE cluster
 # - id: zap

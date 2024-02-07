@@ -64,7 +64,7 @@ cis_topic_name = os.environ['CIS_JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
 zap_topic_name = os.environ['ZAP_JOB_TOPIC']
 security_controls_firestore_collection = os.environ['SC_FIRESTORE_COLLECTION']
-iap_allowlist = os.getenv('_IAP_ALLOWLIST', '')
+iap_allowlist = os.getenv('IAP_ALLOWLIST', '')
 iap_allowlist_final = iap_allowlist.split(",")
 
 
