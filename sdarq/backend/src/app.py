@@ -122,10 +122,10 @@ def user_details():
     
     if parse_json_data.parse_user_email(user_email) in iap_allowlist_final:
         logging.info('User has the right permission')
-        return jsonify({'statusText': 'User has the right permission'}), 200
+        return jsonify({'statusText': 'User has the right permission', 'verified': True}), 200
     else:
         logging.info('User is forbidden')
-        return jsonify({'statusText': 'User is forbidden'}), 403
+        return jsonify({'statusText': 'User is forbidden', 'verified': False}), 403
 
 
 @app.route('/submit/', methods=['POST'])
