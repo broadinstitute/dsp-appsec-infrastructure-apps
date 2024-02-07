@@ -9,7 +9,7 @@ import { catchError, map } from 'rxjs/operators';
 })
 export class AuthzService {
 
-  private URL = location.origin + '/api/user-details/';
+  private URL = location.origin + '/user-details/';
 
   constructor(private http: HttpClient) {}
 
