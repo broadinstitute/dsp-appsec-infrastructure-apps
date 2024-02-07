@@ -106,7 +106,7 @@ def health():
     return jsonify(status), 200
 
 
-@app.route('/api/user-details')
+@app.route('/api/user-details/')
 @cross_origin(origins=sdarq_host)
 def user_details():
     """
