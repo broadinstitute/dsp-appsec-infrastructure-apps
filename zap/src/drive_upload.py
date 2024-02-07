@@ -25,8 +25,6 @@ def find_children(parent_id, files):
                         'name':file.get('name'),
                         'parents':file.get('parents'),
                         'children':[]}
-            # A file can only have one parent, so we can remove it from our search list.
-            files.remove(file)
 
             offspring = find_children(child['id'], files)
             for grandchild in offspring:
@@ -51,9 +49,9 @@ def get_drive_service():
     service = build('drive', 'v3', credentials=credentials)
     return service
 
-def get_folders(drive_service, page_token = None):
+def get_folders(drive_service, drive_id, page_token = None):
     """
-    Returns all available folders in a user's drive.
+    Returns all available folders in a specified shared drive.
     """
     logging.info("Pulling folder names from Google Drive.")
     response = (
@@ -62,6 +60,10 @@ def get_folders(drive_service, page_token = None):
               q="mimeType='application/vnd.google-apps.folder'",
               spaces="drive",
               fields="nextPageToken, files(id, name, parents)",
+              includeItemsFromAllDrives=True,
+              supportsAllDrives=True,
+              driveId=drive_id,
+              corpora="drive",
               pageToken=page_token,
           )
           .execute()
@@ -69,14 +71,14 @@ def get_folders(drive_service, page_token = None):
     return response.get("files"), response.get("nextPageToken")
 
 
-def get_folders_with_structure(root_id, drive_service):
+def get_folders_with_structure(root_id, drive_id, drive_service):
     """
     Takes in a list of files and returns a dict that mimics
     the directory structure in google drive.
     """
-    files, next_page_token = get_folders(drive_service)
+    files, next_page_token = get_folders(drive_service, drive_id)
     while next_page_token:
-        page, next_page_token = get_folders(drive_service, next_page_token)
+        page, next_page_token = get_folders(drive_service, drive_id, next_page_token)
         files.extend(page)
 
     folder_structure = {}
@@ -88,6 +90,8 @@ def get_folders_with_structure(root_id, drive_service):
             folder_structure["children"] = []
             files.remove(file)
             break
+    if len(folder_structure) < 1:
+        return None
 
     offspring = find_children(folder_structure['id'], files)
     for grandchild in offspring:
@@ -108,7 +112,7 @@ def find_subfolder(folder_structure, target_name, target_folder=None):
     return target_folder
 
 
-def upload_file_to_drive(filename, folder_id, drive):
+def upload_file_to_drive(filename, folder_id, drive_id, drive):
     """
     Uploads a specific file to a specific folder in google drive.
     """
@@ -117,8 +121,11 @@ def upload_file_to_drive(filename, folder_id, drive):
     parents.append(folder_id)
     file_metadata = {
             'name': filename,
-            'parents': parents
+            'parents': parents,
+            'driveId': drive_id
         }
-    file = drive.files().create(body=file_metadata, media_body=media,
-                                     fields='id').execute()
+    file = drive.files().create(body=file_metadata,
+                                    media_body=media,
+                                    fields='id',
+                                    supportsAllDrives=True).execute()
     return file
