@@ -17,7 +17,7 @@ new_service_schema = {
         },
         "Security champion": {
             "type": "string",
-            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{1,20}[a-zA-Z0-9]$"
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{1,50}[a-zA-Z0-9]$"
         },
         "Github URL": {
             "type": "string",
@@ -27,14 +27,10 @@ new_service_schema = {
             "type": "string",
             "pattern": url_pattern
         },
-        "Compliance": {
-            "type": "string",
-            "pattern": "[a-zA-Z0-9-_,. ]{1,100}"
-        },
         "JiraProject": {
             "type": "string",
             "pattern": "([A-Z][A-Z0-9]+)"
         }
     },
-    "required": ["Service", "Product", "Description", "Security champion", "Github URL", "Architecture Diagram", "Federal compliance oversight", "JiraProject"]
+    "required": ["Service", "Product", "Description", "Security champion", "Github URL", "Architecture Diagram", "JiraProject"]
 }

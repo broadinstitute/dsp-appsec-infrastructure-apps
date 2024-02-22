@@ -1,0 +1,488 @@
+{
+    "description": "Welcome to the New Service Questionnaire",
+    "logoPosition": "right",
+    "completedHtml": "<p><h3>Thank you!</h3></p>",
+    "pages": [
+     {
+      "name": "Metadata",
+      "elements": [
+       {
+        "type": "text",
+        "name": "Service",
+        "title": "Service name",
+        "description": "Please provide the service name (for example: Sam, Leonardo, Rawls)",
+        "isRequired": true,
+        "requiredErrorText": "Required field",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please include numbers, a-z characters, _,- and spaces.",
+          "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,40}[a-zA-Z0-9]$"
+         }
+        ]
+       },
+       {
+        "type": "text",
+        "name": "Product",
+        "title": "Product name",
+        "description": "Please provide the product name (for example: Terra, Jade, DUOS)",
+        "isRequired": true,
+        "requiredErrorText": "Required field",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please include numbers, a-z characters, _,- (3-20).",
+          "regex": "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,28}[a-zA-Z0-9]$"
+         }
+        ]
+       },
+       {
+        "type": "comment",
+        "name": "Description",
+        "title": "A brief description of the application/service (provide link to external doc if easier)",
+        "isRequired": true,
+        "requiredErrorText": "Required field",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please include numbers, a-z characters, _,- . ? !(4-200).",
+          "regex": "[[a-zA-Z0-9-_/ .?!]{4,200}"
+         }
+        ]
+       },
+       {
+        "type": "text",
+        "name": "Security champion",
+        "title": "Please enter the development team responsible for this service",
+        "isRequired": true,
+        "requiredErrorText": "Required field",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please include numbers, a-z characters, _,- (1-50).",
+          "regex": "^[a-zA-Z0-9][a-zA-Z0-9-._\\s]{1,50}[a-zA-Z0-9]$"
+         }
+        ]
+       },
+       {
+        "type": "text",
+        "name": "Github URL",
+        "title": "Github URL (N/A if you have not written a line of code yet)",
+        "isRequired": true,
+        "requiredErrorText": "Required field",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please enter a valid link",
+          "regex": "^(https://github\\.com/[a-zA-Z0-9-]+/[a-zA-Z0-9-]+|(N/A))$"
+         }
+        ]
+       },
+       {
+        "type": "text",
+        "name": "Architecture Diagram",
+        "title": "Link to Architecture Diagram, ideally a Lucidchart diagram.",
+        "isRequired": true,
+        "requiredErrorText": "Required field",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "Please enter a valid link.",
+          "regex": "^((http|https)://)[-a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)$"
+         }
+        ]
+       }
+      ],
+      "title": "Metadata"
+     },
+     {
+      "name": "Architecture",
+      "elements": [
+       {
+        "type": "checkbox",
+        "name": "Cloud",
+        "title": "Which Cloud Plaform are you using to deploy your service?",
+        "choices": [
+         {
+          "value": "Azure",
+          "text": "Microsoft Azure"
+         },
+         {
+          "value": "GCP",
+          "text": "Google Cloud Platform"
+         }
+        ],
+        "otherText": "Other"
+       },
+       {
+        "type": "checkbox",
+        "name": "cloud_component",
+        "visibleIf": "{Cloud} notempty",
+        "title": "Your service must be based on one of the following",
+        "choices": [
+         {
+          "value": "GAE",
+          "text": "Based in GAE (Google App Engine)",
+          "visibleIf": "{Cloud} contains 'GCP'"
+         },
+         {
+          "value": "GCF",
+          "text": "Based in GCF (Google Cloud Functions)",
+          "visibleIf": "{Cloud} contains 'GCP'"
+         },
+         {
+          "value": "GKE",
+          "text": "Based in GKE (Google Kubernetes Engine)",
+          "visibleIf": "{Cloud} contains 'GCP'"
+         },
+         {
+          "value": "AKS",
+          "text": "Based in AKS (Azure Kubernetes Service)",
+          "visibleIf": "{Cloud} contains 'Azure'"
+         }
+        ],
+        "otherText": "Other"
+       },
+       {
+        "type": "text",
+        "name": "Cluster",
+        "visibleIf": "{Cloud} anyof ['Azure', 'GCP'] and {cloud_component} anyof ['AKS', 'GKE']",
+        "title": "Cluster name"
+       },
+       {
+        "type": "text",
+        "name": "Function Name",
+        "visibleIf": "{Cloud} contains 'GCP' and {cloud_component} contains ['GCF']",
+        "title": "Function name"
+       },
+       {
+        "type": "text",
+        "name": "GAE Service",
+        "visibleIf": "{Cloud} contains 'GCP' and {cloud_component} contains 'GAE'",
+        "title": "Service name"
+       },
+       {
+        "type": "text",
+        "name": "project_id",
+        "visibleIf": "{Cloud} contains 'GCP' or {cloud_component} anyof ['GAE', 'GCF', 'GKE']",
+        "title": "Google project name"
+       },
+       {
+        "type": "text",
+        "name": "azure_subscription",
+        "visibleIf": "{Cloud} contains 'Azure'",
+        "title": "Azure subscription"
+       }
+      ],
+      "title": "Architecture"
+     },
+     {
+      "name": "Compliance",
+      "elements": [
+       {
+        "type": "checkbox",
+        "name": "terra_compliance",
+        "title": "We need to determine if the addition of your service to the Terra system boundary constitutes a Significant Change. Select all of the below that apply. Please note that not all of these things immediately identify your service as requiring a Significant Change, but may prompt us to do a deeper dive with you to make that determination. Your service…",
+        "choices": [
+         {
+          "value": "uses_new_third_party",
+          "text": "Uses a new third-party application (communicates or shares data with in any way)"
+         },
+         {
+          "value": "uses_existing_thirs_party",
+          "text": "Uses an existing, already-approved third-party application but in a new way that sends research data or user PII to it"
+         },
+         {
+          "value": "new_cloud_infra",
+          "text": "Is hosted on a cloud infrastructure type that has never been used in Terra"
+         },
+         {
+          "value": "new_functionality",
+          "text": "Introduces NEW functionality to Terra (this functionality is not a logical expansion of existing functionality)"
+         },
+         {
+          "value": "infra_migration",
+          "text": "Is being migrated from being hosted on one type of infrastructure to another (e.g., GAE to GKE)"
+         },
+         {
+          "value": "new_user_interface",
+          "text": "Introduces a new User Interface"
+         },
+         {
+          "value": "auth_change",
+          "text": "Changes the way that Terra does authentication or authorization"
+         },
+         {
+          "value": "deviation_from_NSPRC",
+          "text": "Has an impactful deviation from the New Service Production Readiness Checklist"
+         }
+        ]
+       }
+      ],
+      "title": "Compliance",
+      "description": "You are submitting this questionnaire for a service that needs to be part of the Terra system boundary. Terra is compliant with HIPAA and the NIST 800-53 Rev 5 information security control framework as a Moderate impact system. Your service must uphold all of these requirements, which can be done by following the New Service Production Readiness Checklist."
+     },
+     {
+      "name": "Privacy",
+      "elements": [
+       {
+        "type": "checkbox",
+        "name": "data_collection",
+        "title": "Does your service collect any of the following data about a Terra user (select all that apply):",
+        "choices": [
+         {
+          "value": "PHI",
+          "text": "Protected Health Information (PHI) - data that is protected by HIPAA and governed by a Business Associates Agreement"
+         },
+         {
+          "value": "PII",
+          "text": "Personally Identifiable Information (PII) - data that contains direct identifiers or one or more indirect identifiers"
+         },
+         {
+          "value": "PD",
+          "text": "Personal Data - any information which are related to an identified or identifiable natural person"
+         }
+        ]
+       },
+       {
+        "type": "text",
+        "name": "data_collected",
+        "visibleIf": "{data_collection} contains 'PHI'",
+        "title": "What data is collected?"
+       },
+       {
+        "type": "checkbox",
+        "name": "Process/Store_userdata",
+        "title": "Does your service process or store any of the following data about a Terra user, even if that data is collected by a different service (select all that apply):",
+        "choices": [
+         {
+          "value": "store_PHI",
+          "text": "Protected Health Information - data that is protected by HIPAA and governed by a Business Associates Agreement"
+         },
+         {
+          "value": "store_PII",
+          "text": "Personally Identifiable Information - data that contains direct identifiers or one or more indirect identifiers"
+         },
+         {
+          "value": "store_PD",
+          "text": "Personal Data - any information which are related to an identified or identifiable natural person"
+         }
+        ]
+       },
+       {
+        "type": "text",
+        "name": "data_processed/stored",
+        "visibleIf": "{Process/Store_userdata} contains 'store_PD'",
+        "title": "What data is processed or stored?"
+       },
+       {
+        "type": "boolean",
+        "name": "identify_dataThatCollectsProcessesStores",
+        "visibleIf": "{Process/Store_userdata} anyof ['store_PHI', 'store_PD']",
+        "title": "Does your service clearly flag or otherwise identify the data that is identified above that it collects, processes, or stores?"
+       },
+       {
+        "type": "boolean",
+        "name": "process_data_deletion",
+        "visibleIf": "{Process/Store_userdata} anyof ['store_PHI', 'store_PD']",
+        "title": "Does your service have a process for fully deleting the data that is identified above if we are required to do so?"
+       },
+       {
+        "type": "boolean",
+        "name": "View_edit_data_user_option",
+        "visibleIf": "{Process/Store_userdata} allof ['store_PHI']",
+        "title": "Does your service have a methodology for allowing users to view the data your service has collected about them and to modify it, if needed?"
+       }
+      ],
+      "title": "Privacy",
+      "description": "Terra is compliant with HIPAA and the NIST 800-53 Rev 5 information security control framework, both of which require privacy controls. Broad wears two hats when it comes to data privacy. For data that we collect directly from the Terra user about the Terra user, we are a “Data Controller.” For data that Terra users bring to the system of their own accord, e.g., research data, we are a “Data Processor.” Our responsibilities for each role are different. The below questions are focused on our role as a Data Controller, so we are asking them in scope of data that we directly collect from Terra users about the Terra user. We are not asking about research data."
+     },
+     {
+      "name": "Security",
+      "elements": [
+       {
+        "type": "checkbox",
+        "name": "Security tools",
+        "title": "Please select applicable items",
+        "choices": [
+         {
+          "value": "dependency_scan",
+          "text": "We are currently using SourceClear or similar tools for downstream dependency/3rd party component management "
+         },
+         {
+          "value": "Git-secrets",
+          "text": "We are currently using git-secrets in our repository"
+         },
+         {
+          "value": "Secret_management",
+          "text": "We are currently using Vault/Secret Manager to store our secrets"
+         },
+         {
+          "value": "SAST",
+          "text": "We are currently using Codacy, SonarCloud or similar tools for security static code analysis"
+         },
+         {
+          "value": "Image_scan",
+          "text": "We are currently using Trivy or similar tools to scan our Docker images"
+         },
+         {
+          "value": "DAST",
+          "text": "Our service is currently scanned weekly/monthly via ZAP or similar tools"
+         },
+         {
+          "value": "RASP",
+          "text": "We are using Tcell Rapid or a similar tool to enable RASP (Runtime application self-protection) mode"
+         }
+        ]
+       }
+      ],
+      "title": "Security"
+     },
+     {
+      "name": "Jira Ticket",
+      "elements": [
+       {
+        "type": "text",
+        "name": "JiraProject",
+        "title": "Track all security actions by creating a Jira ticket in your board.",
+        "description": "Please add the KEY of your Jira project. For example: ATP",
+        "isRequired": true,
+        "requiredErrorText": "Please add the KEY of your JIRA project. It should contain characters and numbers.",
+        "validators": [
+         {
+          "type": "regex",
+          "text": "It should contain characters and numbers.",
+          "regex": "([A-Z][A-Z0-9]+)"
+         }
+        ]
+       },
+       {
+        "type": "checkbox",
+        "name": "Ticket_Description",
+        "title": "Add actions to your ticket:",
+        "enableIf": "{JiraProject} notempty",
+        "isRequired": true,
+        "choices": [
+         {
+          "value": "You must use git-secrets to prevent accidental commit of secrets to source code repository.",
+          "visibleIf": "{Security tools} notcontains \"Git-secrets\""
+         },
+         {
+          "value": "You must use SourceClear or similar tools for downstream dependency/3rd  party component management. Ask AppSec team to add your repo.",
+          "visibleIf": "{Security tools} notcontains \"dependency_scan\""
+         },
+         {
+          "value": "You must use security tools to scan your Docker images. Ask AppSec team to help you setup this tool.",
+          "visibleIf": "{Security tools} notcontains \"Image_scan\""
+         },
+         {
+          "value": "Your service must be scanned weekly/mothly via SAST tools. Ask AppSec team to help you setup this tool.",
+          "visibleIf": "{Security tools} notcontains \"DAST\""
+         },
+         {
+          "value": "You should only store secrets in Vault, Google Secret Manager to store the secrets. Reach out to AppSec and DevOps team to help you with setup. ",
+          "visibleIf": "{Security tools} notcontains 'Secret_management'"
+         },
+         {
+          "value": "You should use Codacy, SonarCloud or similar tools for security static code analysis. Ask AppSec team to help you setup this tool.",
+          "visibleIf": "{Security tools} notcontains \"SAST\""
+         },
+         {
+          "value": "Please make sure your service is using Tcell Rapid functionalities or is behind the orchestration layer to add some runtime protection in your stack. RASP in the app is preferred over WAF/Apache proxy. Ask appsec team if you need more clarification on this.",
+          "visibleIf": "{Security tools} notcontains \"RASP\""
+         },
+         {
+          "value": "Only collect the minimum-necessary PII from users. Document where such PII is stored.",
+          "visibleIf": "{Process/Store_userdata} allof ['store_PHI']"
+         },
+         {
+          "value": "Have a documented process for deleting PII if/when required.",
+          "visibleIf": "{process_data_deletion} equals \"False\""
+         },
+         {
+          "value": "Allow users to view all PII about them that is stored by the system. Allow users to edit/modify such PII at will or by request.",
+          "visibleIf": "{View_edit_data_user_option} equals \"False\""
+         }
+        ],
+        "showSelectAllItem": true
+       }
+      ],
+      "title": "Jira Ticket"
+     },
+     {
+      "name": "Alerts",
+      "elements": [
+       {
+        "type": "html",
+        "name": "Alert-general",
+        "html": "<div class=\"tip\">The AppSec team will reach you out for the initial security discussion. This is basically a\n            Threat Modeling and Security Architecture Review session. The main purpose of the meeting is for us to take\n an iterative, recursive look at the architecture and design of a new service/system.</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert-Sourceclear",
+        "visibleIf": "{Security tools} notcontains \"dependency_scan\"",
+        "html": "<div class=\"highs\">You must use SourceClear for downstream dependency/3rd\n party component management. Ask AppSec team to add your repo.</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert-Trivy",
+        "visibleIf": "{Security tools} notcontains \"Image_scan\"",
+        "html": "<div class=\"highs\">You must use Trivy to scan your Docker images. Ask AppSec team to help you setup this tool.</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert-ZAP",
+        "visibleIf": "{Security tools} notcontains \"DAST\"",
+        "html": "<div class=\"highs\">Your service must be scanned weekly/mothly via SAST tools. Ask AppSec team to help you setup this tool.</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert",
+        "visibleIf": "{Security tools} notcontains \"RASP\"",
+        "html": "<div class=\"highs\">Please make sure your service is using Tcell Rapid functionalities or is behind the orchestration layer to add some runtime protection to your stack. RASP in the app is preferred over WAF/Apache proxy. Ask the appsec team if you need more clarification on this.</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert-gitsecrets",
+        "visibleIf": "{Security tools} notcontains \"Git-secrets\"",
+        "html": "<div class=\"highs\">You must use <a href=\"https://github.com/awslabs/git-secrets\">git-secrets</a>\n            to prevent accidental commit of secrets to source code repository.</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert-vault",
+        "visibleIf": "{Security tools} notcontains 'Secret_management'",
+        "html": "<div class=\"highs\">You should only store secrets in\n Vault, Google Secret Manager to store the secrets. Reach out to AppSec and DevOps team to help you with setup. </div>  "
+       },
+       {
+        "type": "html",
+        "name": "Alert-codacy",
+        "visibleIf": "{Security tools} notcontains \"SAST\"",
+        "html": "<div class=\"highs\">You should use\n  Codacy, SonarCloud or similar tools for security static code analysis.\n  Reach out to Appsec team to set it up for your repository.\n</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert-pii",
+        "visibleIf": "{Process/Store_userdata} allof ['store_PHI']",
+        "html": "<div class=\"highs\">Only collect the minimum-necessary PII from users. Document where such PII is stored.</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert-coprocess_data_deletiondacy",
+        "visibleIf": "{process_data_deletion} equals \"False\"",
+        "html": "<div class=\"highs\">Have a documented process for deleting PII if/when required.</div>"
+       },
+       {
+        "type": "html",
+        "name": "Alert-View_edit_data_user_option",
+        "visibleIf": "{View_edit_data_user_option} equals \"False\"",
+        "html": "<div class=\"highs\">Allow users to view all PII about them that is stored by the system. Allow users to edit/modify such PII at will or by request.</div>"
+       }
+      ],
+      "title": "Alerts"
+     }
+    ],
+    "showNavigationButtons": "top",
+    "showQuestionNumbers": "off",
+    "questionErrorLocation": "bottom",
+    "showProgressBar": "top"
+   }
