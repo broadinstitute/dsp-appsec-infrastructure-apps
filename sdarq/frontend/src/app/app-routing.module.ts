@@ -23,13 +23,14 @@ import { AppsMainpageComponent } from './apps-mainpage/apps-mainpage.component';
 import { ServiceSecurityControlsComponent } from './service-security-controls/service-security-controls.component';
 import { SearchServiceSecurityControlsComponent } from './search-service-security-controls/search-service-security-controls.component';
 import { DeleteServiceSecurityControlsComponent } from './delete-service-security-controls/delete-service-security-controls.component';
-
+import { TerraNewServiceComponent } from './terra-new-service/terra-new-service.component';
 
 const routes: Routes = [
   { path: '', component: HomepageComponent },
   { path: 'about', component: AboutPageComponent },
-  { path: 'newservice', component: MainpageComponent },
-  { path: 'questionnaire', component: FormComponent },
+  { path: 'TerraNewService', component: MainpageComponent },
+  { path: 'questionnaire', component: TerraNewServiceComponent },
+  { path: 'generalServiceQuestionnaire', component: FormComponent },
   { path: '3rd-party-app-questionnaire', component: AppFormComponent },
   { path: 'new-3rd-party-app', component: AppsMainpageComponent },
   { path: 'gcp-project-security-posture/latest', component: CisComponent },

@@ -49,7 +49,9 @@ import { ServiceSecurityControlsComponent } from './service-security-controls/se
 import { SearchServiceSecurityControlsComponent } from './search-service-security-controls/search-service-security-controls.component';
 import { DeleteServiceSecurityControlsComponent } from './delete-service-security-controls/delete-service-security-controls.component';
 import { DeleteServiceSecurityControlsService } from './services/delete-service-security-controls/delete-service-security-controls.service';
+import { TerraNewServiceComponent } from './terra-new-service/terra-new-service.component';
 import { SortableHeaderDirective } from './cis-results/cis-results.component';
+
 
 
 @NgModule({
@@ -84,7 +86,8 @@ import { SortableHeaderDirective } from './cis-results/cis-results.component';
     AppsMainpageComponent,
     ServiceSecurityControlsComponent,
     SearchServiceSecurityControlsComponent,
-    DeleteServiceSecurityControlsComponent
+    DeleteServiceSecurityControlsComponent,
+    TerraNewServiceComponent
     ],
   imports: [
     BrowserModule, 

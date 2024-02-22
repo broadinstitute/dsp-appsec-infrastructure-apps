@@ -44,6 +44,8 @@ export class ServiceSecurityControlsComponent implements OnInit {
   sourceclear_results: boolean;
   dev_link: boolean;
   product_value: boolean;
+  description: any;
+  team: any;
 
   constructor(private getSecurityControls: GetServiceSecurityControlsService,
     private ngZone: NgZone,
@@ -170,6 +172,8 @@ export class ServiceSecurityControlsComponent implements OnInit {
         this.cis_scanner = serviceSecurityControl.cis_scanner;
         this.burp = serviceSecurityControl.burp;
         this.security_pentest_link = serviceSecurityControl.security_pentest_link;
+        this.description = serviceSecurityControl.description;
+        this.team = serviceSecurityControl.team;
       },
       (serviceSecurityControl) => {
         this.ngZone.run(() => {
