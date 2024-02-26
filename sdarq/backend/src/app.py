@@ -114,14 +114,11 @@ def user_details():
     """
     user_email = request.headers.get('X-Goog-Authenticated-User-Email')
     if user_email is None:
-        logging.info('Missing email in the request headers')
-        return jsonify({'error': 'Missing information'}), 400
+        return jsonify({'error': 'Missing email in the request headers'}), 400
     
     if parse_json_data.parse_user_email(user_email) in iap_allowlist_final:
-        logging.info('User has the right permission')
         return jsonify({'statusText': 'User has the right permission', 'verified': True}), 200
     else:
-        logging.info('User is forbidden')
         return jsonify({'statusText': 'Access is denied, this user is not authorized', 'verified': False}), 403
 
 

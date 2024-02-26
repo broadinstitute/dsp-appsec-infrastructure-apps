@@ -1,12 +1,11 @@
 from flask import request, abort
 from functools import wraps
 import parse_data as parse_json_data
-import logging
-
 
 def iap_group_authz(iap_allowlist_final):
     """
-    Authorization decorator to be called in every API that needs authorization
+    Authorization decorator to be called in every API 
+    that needs authorization to be enforced
     """
     def decorator(f):
         @wraps(f)

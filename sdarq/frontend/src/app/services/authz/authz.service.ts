@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-
 
 @Injectable({
   providedIn: 'root'
@@ -17,26 +15,6 @@ export class AuthzService {
     const options = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
     };
-    return this.http.get(this.URL,options).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.get(this.URL,options)
   }
-
-handleError(error) {
-
-  let errorMessage = '';
-
-  if (error.error instanceof ErrorEvent) {
-    // client-side error
-    errorMessage = `${error.error.message}`;
-  } else {
-    // server-side error
-    if (error.error.statusText) {
-      errorMessage = `${error.error.statusText}`;
-    } else {
-      errorMessage = `${error.message}`;
-    }
-  }
-  return throwError(errorMessage);
-}
 }
