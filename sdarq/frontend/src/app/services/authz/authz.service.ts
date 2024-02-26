@@ -28,15 +28,12 @@ handleError(error) {
 
   if (error.error instanceof ErrorEvent) {
     // client-side error
-    console.log(errorMessage)
     errorMessage = `${error.error.message}`;
   } else {
     // server-side error
     if (error.error.statusText) {
-      console.log(errorMessage)
       errorMessage = `${error.error.statusText}`;
     } else {
-      console.log(errorMessage)
       errorMessage = `${error.message}`;
     }
   }

@@ -17,27 +17,17 @@ export class AuthzGuard implements CanActivate {
     return this.authzService.fetchUserDetails().pipe(
       map(response => {
         if (response.verified === true) {
-          console.log(response)
-          console.log(response.verified)
-          console.log('true')
+
           return true;
         } else {
-          console.log(response)
-          console.log(response.verified)
-          console.log('false')
           this.router.navigate(['/']); 
           return false;
         }
       }),
       catchError((error) => {
         if (error.verified == false) {
-          console.log(error)
-          console.log(error.verified)
           this.router.navigate(['/']);
         }
-        console.log('test')
-        console.log(error)
-        console.log(error.verified)
         return of(false);
       })
     );
