@@ -210,7 +210,7 @@ steps:
   - CODACY_ORGS=${_CODACY_ORGS}
   - SONAR_ORGS=${_SONAR_ORGS}
 
-deploy CIS scanner resources
+# deploy CIS scanner resources
 - id: cis
   name: *kubectl
   waitFor: ['shared', 'batch-dispatcher-image', 'cis-image']
