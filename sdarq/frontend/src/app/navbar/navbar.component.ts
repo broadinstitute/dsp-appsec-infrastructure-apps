@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthzService } from '../services/authz/authz.service'
+import {  map } from 'rxjs/operators';
+
+
 
 @Component({
   selector: 'app-navbar',
@@ -7,12 +11,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavbarComponent implements OnInit {
 
-  constructor() {
+showMenuItem: boolean;
+
+  constructor(private authzService: AuthzService) {
     // This is intentional
    }
 
   ngOnInit(): void {
-    // This is intentional
+    this.showMenuItem = false;
+    this.getResults()
   }
 
+  private getResults(){ this.authzService.fetchUserDetails().pipe(
+    map(response => {
+      if (response.verified === true) {
+        this.showMenuItem = true;
+      } else {
+        this.showMenuItem = false;
+      }
+    }))
+}
 }

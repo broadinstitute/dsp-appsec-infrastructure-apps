@@ -39,9 +39,9 @@
         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
           <li><a class="dropdown-item" href="/search-service-security-controls">Search your service</a></li>
           <li><a class="dropdown-item" href="/security-control/view">List security controls</a></li>
-          <li><a class="dropdown-item" href="/security-control/create">Add new security controls</a></li>
-          <li><a class="dropdown-item" href="/security-control/edit">Edit security controls</a></li>
-          <li><a class="dropdown-item" href="security-control/delete-service">Remove service security controls</a></li>
+          <li><a class="dropdown-item" *ngIf="showMenuItem" href="/security-control/create">Add new security controls</a></li>
+          <li><a class="dropdown-item" *ngIf="showMenuItem" href="/security-control/edit">Edit security controls</a></li>
+          <li><a class="dropdown-item" *ngIf="showMenuItem" href="security-control/delete-service">Remove service security controls</a></li>
         </ul>
       </li>
       <li class="nav-item dropdown">
