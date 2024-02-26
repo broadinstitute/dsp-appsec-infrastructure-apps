@@ -22,9 +22,10 @@ showMenuItem: boolean;
     this.getResults()
   }
 
-  private getResults(){ this.authzService.fetchUserDetails().pipe(
+  private getResults(){ 
+    this.authzService.fetchUserDetails().pipe(
     map(response => {
-      if (response.verified === true) {
+      if (response.verified = true) {
         console.log(response.verified)
         this.showMenuItem = true;
       } else {
