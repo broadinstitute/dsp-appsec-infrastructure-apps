@@ -28,18 +28,18 @@ export class AuthzGuard implements CanActivate {
           this.router.navigate(['/']); 
           return false;
         }
-      }),
-      catchError((error) => {
-        if (error.verified == false) {
-          console.log(error)
-          console.log(error.verified)
-          this.router.navigate(['/']);
-        }
-        console.log('test')
-        console.log(error)
-        console.log(error.verified)
-        return of(false);
       })
+      // catchError((error) => {
+      //   if (error.verified == false) {
+      //     console.log(error)
+      //     console.log(error.verified)
+      //     this.router.navigate(['/']);
+      //   }
+      //   console.log('test')
+      //   console.log(error)
+      //   console.log(error.verified)
+      //   return of(false);
+      // })
     );
   }
 }
