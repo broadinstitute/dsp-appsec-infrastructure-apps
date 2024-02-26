@@ -17,7 +17,8 @@ showMenuItem: boolean;
     // This is intentional
    }
 
-  ngOnInit(): void {
+  ngOnInit() {
+    console.log(this.showMenuItem)
     this.getResults()
   }
 
