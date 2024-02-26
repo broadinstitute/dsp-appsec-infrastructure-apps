@@ -657,7 +657,7 @@ def create_sec_control_template():
 
 
 @app.route('/edit_sec_controls/', methods=['PUT'])
-@iap_group_authz([iap_allowlist_final])
+@iap_group_authz(iap_allowlist_final)
 @cross_origin(origins=sdarq_host)
 def edit_sec_controls():
     """
@@ -716,7 +716,7 @@ def edit_sec_controls():
 
 
 @app.route('/delete_service_sec_controls/', methods=['POST'])
-@iap_group_authz([iap_allowlist_final])
+@iap_group_authz(iap_allowlist_final)
 @cross_origin(origins=sdarq_host)
 def delete_service_sec_controls():
     """

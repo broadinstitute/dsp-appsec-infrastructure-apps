@@ -17,7 +17,6 @@ export class AuthzGuard implements CanActivate {
     return this.authzService.fetchUserDetails().pipe(
       map(response => {
         if (response.verified === true) {
-
           return true;
         } else {
           this.router.navigate(['/']); 

@@ -13,10 +13,6 @@ def iap_group_authz(iap_allowlist_final):
         def decorated_function(*args, **kwargs):
             user_email = request.headers.get('X-Goog-Authenticated-User-Email')
 
-            logging.info(user_email)
-            logging.info(parse_json_data.parse_user_email(user_email))
-            logging.info(iap_allowlist_final)
-            
             if parse_json_data.parse_user_email(user_email) in iap_allowlist_final:
                 return f(*args, **kwargs)
             else:
