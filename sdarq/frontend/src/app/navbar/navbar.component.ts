@@ -18,15 +18,16 @@ showMenuItem: boolean;
    }
 
   ngOnInit(): void {
-    this.showMenuItem = false;
     this.getResults()
   }
 
   private getResults(){ this.authzService.fetchUserDetails().pipe(
     map(response => {
       if (response.verified === true) {
+        console.log(response.verified)
         this.showMenuItem = true;
       } else {
+        console.log(response.verified)
         this.showMenuItem = false;
       }
     }))
