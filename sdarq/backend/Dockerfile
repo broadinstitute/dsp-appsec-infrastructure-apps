@@ -31,7 +31,6 @@ ENTRYPOINT [ \
   "--worker-connections", "1000", \
   "--timeout", "7200", \
   "--graceful-timeout", "360", \
-  "--limit-request-fields", "30", \
   "--limit-request-line", "8190", \
   "-b", "0.0.0.0:8080", \
   "app:app" \
