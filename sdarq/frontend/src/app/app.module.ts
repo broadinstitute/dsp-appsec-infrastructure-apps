@@ -51,6 +51,7 @@ import { DeleteServiceSecurityControlsComponent } from './delete-service-securit
 import { DeleteServiceSecurityControlsService } from './services/delete-service-security-controls/delete-service-security-controls.service';
 import { TerraNewServiceComponent } from './terra-new-service/terra-new-service.component';
 import { SortableHeaderDirective } from './cis-results/cis-results.component';
+import { AuthzService } from './services/authz/authz.service';
 
 
 
@@ -112,7 +113,8 @@ import { SortableHeaderDirective } from './cis-results/cis-results.component';
     RequestSecurityPentestService,
     JiraTicketRiskAssessmentService,
     SendAppFormDataService,
-    DeleteServiceSecurityControlsService
+    DeleteServiceSecurityControlsService,
+    AuthzService
     ],
   bootstrap: [
     AppComponent

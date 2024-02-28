@@ -48,6 +48,8 @@ from schemas.threat_model_request_schema import tm_schema
 from schemas.zap_scan_schema import zap_scan_schema
 from security_headers import security_headers
 from trigger import parse_tags
+from authz_decorator import iap_group_authz
+from iap_userinfo import validate_iap_jwt
 
 dojo_host = os.getenv('dojo_host')
 dojo_api_key = os.getenv('dojo_api_key')
@@ -63,6 +65,8 @@ cis_topic_name = os.environ['CIS_JOB_TOPIC']
 pubsub_project_id = os.environ['PUBSUB_PROJECT_ID']
 zap_topic_name = os.environ['ZAP_JOB_TOPIC']
 security_controls_firestore_collection = os.environ['SC_FIRESTORE_COLLECTION']
+iap_allowlist = os.getenv('IAP_ALLOWLIST', '')
+iap_allowlist_final = iap_allowlist.split(",")
 
 
 headers = {
@@ -87,7 +91,6 @@ def add_security_headers(response):
     """
     for header, value in security_headers.items():
         response.headers[header] = value
-
     return response
 
 
@@ -103,6 +106,21 @@ def health():
     status = {'statusText': 'Service is healthy'}
     return jsonify(status), 200
 
+
+@app.route('/user-details/', methods=['GET'])
+@cross_origin(origins=sdarq_host)
+def user_details():
+    """
+    Returns the email and group from IAP.
+    """
+    user_id, user_email, error_str = validate_iap_jwt()
+    if user_email is None:
+        return jsonify({'error': 'Missing email in the request headers'}), 400
+    
+    if parse_json_data.parse_user_email(user_email) in iap_allowlist_final:
+        return jsonify({'statusText': 'User has the right permission', 'verified': True}), 200
+    else:
+        return jsonify({'statusText': 'Access is denied, this user is not authorized', 'verified': False}), 403
 
 
 @app.route('/submit/', methods=['POST'])
@@ -582,6 +600,7 @@ def zap_scan():
 
 
 @app.route('/create_sec_control_template/', methods=['POST'])
+@iap_group_authz(iap_allowlist_final)
 @cross_origin(origins=sdarq_host)
 def create_sec_control_template():
     """
@@ -636,6 +655,7 @@ def create_sec_control_template():
 
 
 @app.route('/edit_sec_controls/', methods=['PUT'])
+@iap_group_authz(iap_allowlist_final)
 @cross_origin(origins=sdarq_host)
 def edit_sec_controls():
     """
@@ -694,6 +714,7 @@ def edit_sec_controls():
 
 
 @app.route('/delete_service_sec_controls/', methods=['POST'])
+@iap_group_authz(iap_allowlist_final)
 @cross_origin(origins=sdarq_host)
 def delete_service_sec_controls():
     """
