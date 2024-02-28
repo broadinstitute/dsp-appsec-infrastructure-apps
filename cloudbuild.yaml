@@ -9,6 +9,7 @@ substitutions:
   _SONAR_ORGS: '' # in-scope SonarCloud organizations
   _CODACY_ORGS: '' # in-scope Codacy organizations
   _IAP_ALLOWLIST: '' # list of emails with more privileges
+  _IAP_AUDIENCE: '' #IAP audience for SDARQ
 
 options:
   machineType: N1_HIGHCPU_8
@@ -242,6 +243,7 @@ steps:
   dir: sdarq
   env:
   - IAP_ALLOWLIST=${_IAP_ALLOWLIST}
+  - IAP_AUDIENCE=${_IAP_AUDIENCE}
 
 # deploy Zap to GKE cluster
 - id: zap

@@ -1,8 +1,10 @@
 from google.auth.transport import requests
 from google.oauth2 import id_token
+from flask import request
+import os
 
 
-def validate_iap_jwt(iap_jwt, expected_audience):
+def validate_iap_jwt():
     """Validate an IAP JWT.
 
     Args:
@@ -15,6 +17,10 @@ def validate_iap_jwt(iap_jwt, expected_audience):
       (user_id, user_email, error_str).
     """
 
+    iap_audience = os.getenv('IAP_AUDIENCE')
+
+    iap_jwt = request.headers.get('X-Goog-IAP-JWT-Assertion')
+    expected_audience = iap_audience
     try:
         decoded_jwt = id_token.verify_token(
             iap_jwt,

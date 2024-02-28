@@ -51,6 +51,8 @@ spec:
             value: ${ZAP_JOB_TOPIC}
           - name: IAP_ALLOWLIST
             value: ${IAP_ALLOWLIST}
+          - name: IAP_AUDIENCE
+            value: ${IAP_AUDIENCE}
           - name: SC_FIRESTORE_COLLECTION
             value: ${SC_FIRESTORE_COLLECTION}
           - name: CIS_FIRESTORE_COLLECTION
