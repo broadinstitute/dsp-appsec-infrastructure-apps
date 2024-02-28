@@ -13,7 +13,7 @@ def iap_group_authz(iap_allowlist_final):
         @wraps(f)
         def decorated_function(*args, **kwargs):
             iap_jwt = request.headers.get('X-Goog-IAP-JWT-Assertion')
-            expected_audience = '/projects/497778860653/global/backendServices/3920654242172492946'
+            expected_audience = '/projects/497778860653/global/backendServices/456958800953465934'
             user_id, user_email, error_str = validate_iap_jwt(iap_jwt, expected_audience)
 
             logging.info(user_id, user_email, error_str)
