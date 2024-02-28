@@ -1,6 +1,8 @@
 from flask import request, abort
 from functools import wraps
 import parse_data as parse_json_data
+from iap_userinfo import validate_iap_jwt
+import logging
 
 def iap_group_authz(iap_allowlist_final):
     """
@@ -10,7 +12,11 @@ def iap_group_authz(iap_allowlist_final):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            user_email = request.headers.get('X-Goog-Authenticated-User-Email')
+            iap_jwt = request.headers.get('X-Goog-IAP-JWT-Assertion')
+            expected_audience = '/projects/497778860653/global/backendServices/3920654242172492946'
+            user_id, user_email, error_str = validate_iap_jwt(iap_jwt, expected_audience)
+
+            logging.info(user_id, user_email, error_str)
 
             if parse_json_data.parse_user_email(user_email) in iap_allowlist_final:
                 return f(*args, **kwargs)

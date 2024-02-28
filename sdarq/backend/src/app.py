@@ -49,6 +49,7 @@ from schemas.zap_scan_schema import zap_scan_schema
 from security_headers import security_headers
 from trigger import parse_tags
 from authz_decorator import iap_group_authz
+from iap_userinfo import validate_iap_jwt
 
 dojo_host = os.getenv('dojo_host')
 dojo_api_key = os.getenv('dojo_api_key')
@@ -112,7 +113,10 @@ def user_details():
     """
     Returns the email and group from IAP.
     """
-    user_email = request.headers.get('X-Goog-Authenticated-User-Email')
+    iap_jwt = request.headers.get('X-Goog-IAP-JWT-Assertion')
+    expected_audience = '/projects/497778860653/global/backendServices/3920654242172492946'
+    user_id, user_email, error_str = validate_iap_jwt(iap_jwt, expected_audience)
+    logging.info(user_id, user_email, error_str)
     if user_email is None:
         return jsonify({'error': 'Missing email in the request headers'}), 400
     
