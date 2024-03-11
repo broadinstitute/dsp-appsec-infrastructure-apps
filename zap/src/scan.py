@@ -467,12 +467,16 @@ def main(): # pylint: disable=too-many-locals
                     date = datetime.today()
                     logging.info("Finding the folders for this month's scans in Google Drive")
                     year_folder_dict = drivehelper.find_subfolder(folder_structure, str(date.year))
+                    logging.info(year_folder_dict)
                     if len(year_folder_dict) > 0:
-                        month_folder_dict = drivehelper.find_subfolder(year_folder_dict, date.strftime('%Y-%m'))
-                        xml_folder_dict = drivehelper.find_subfolder(month_folder_dict, 'XML')
-                        zap_raw_folder = drivehelper.find_subfolder(month_folder_dict, 'Raw Reports')
+                        month_folder_dict = drivehelper.find_subfolder(year_folder_dict, date.strftime('%Y-%m')) if year_folder_dict is not None else None
+                        xml_folder_dict = drivehelper.find_subfolder(month_folder_dict, 'XML') if month_folder_dict is not None else None
+                        zap_raw_folder = drivehelper.find_subfolder(month_folder_dict, 'Raw Reports') if month_folder_dict is not None else None
 
-                        logging.info(f"Uploading report and XML for this month's scans to {xml_folder_dict}")
+                        if month_folder_dict and xml_folder_dict and zap_raw_folder:
+                            logging.info(f"Uploading report and XML for this month's scans to {xml_folder_dict}")
+                        else:
+                            raise Exception("Unable to find the proper folders for uploading reports.")
                         file = drivehelper.upload_file_to_drive(zap_filename,
                                                                     xml_folder_dict.get('id'),
                                                                     drive_id,
