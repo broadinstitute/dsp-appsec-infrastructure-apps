@@ -472,7 +472,7 @@ def main(): # pylint: disable=too-many-locals
                         xml_folder_dict = drivehelper.find_subfolder(month_folder_dict, 'XML')
                         zap_raw_folder = drivehelper.find_subfolder(month_folder_dict, 'Raw Reports')
 
-                        logging.info("Uploading report and XML for this month's scans to Google Drive")
+                        logging.info(f"Uploading report and XML for this month's scans to {xml_folder_dict}")
                         file = drivehelper.upload_file_to_drive(zap_filename,
                                                                     xml_folder_dict.get('id'),
                                                                     drive_id,
