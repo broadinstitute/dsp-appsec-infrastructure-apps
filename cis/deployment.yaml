@@ -143,8 +143,6 @@ spec:
             env:
               - name: DATASET_PROJECT_ID
                 value: ${PROJECT_ID}
-              - name: BQ_DATASET
-                value: ${CIS_DATASET}
               - name: CIS_PROD_PROJECTS
                 value: ${CIS_PROD_PROJECTS}
               - name: JOB_TOPIC
