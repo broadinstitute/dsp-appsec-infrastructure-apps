@@ -8,8 +8,6 @@ This module
 """
 import concurrent
 import os
-from typing import Any, List
-
 from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.publisher.futures import Future
 
