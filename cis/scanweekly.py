@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
 This module
-- lists all projects from BigQuery
-- trigger PubSub to scan all projects listed from BigQuery
+- trigger PubSub to scan all projects in a list with prod projects
 - finds all high vulnerabilities
 - reports all high vulnerabilities to a Slack channel
 """
