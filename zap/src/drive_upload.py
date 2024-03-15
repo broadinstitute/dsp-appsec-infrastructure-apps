@@ -107,8 +107,9 @@ def find_subfolder(folder_structure, target_name, target_folder=None):
         if child['name'] == target_name:
             target_folder = child
             return target_folder
-
         target_folder = find_subfolder(child, target_name)
+        if target_folder:
+            break
     return target_folder
 
 
