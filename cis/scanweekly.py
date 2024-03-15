@@ -50,17 +50,16 @@ def scan_projects(
 
     futures = []
     for prod_project in cis_prod_projects_list_final_list:
-        gcp_project_id = prod_project.table_id.replace("_", "-")
-        results_url = f"{sdarq_host}/gcp-project-security-posture/results?project_id={gcp_project_id}"
+        results_url = f"{sdarq_host}/gcp-project-security-posture/results?project_id={prod_project}"
         future = publisher.publish(
             topic_path,
             data=message,
-            GCP_PROJECT_ID=gcp_project_id,
+            GCP_PROJECT_ID=prod_project,
             SLACK_RESULTS_URL=results_url,
             SLACK_CHANNEL=formatted_slack_channel,
         )
         # Publish failures shall be handled in the callback function.
-        future.add_done_callback(get_callback(gcp_project_id))
+        future.add_done_callback(get_callback(prod_project))
         futures.append(future)
     concurrent.futures.wait(futures)
 
