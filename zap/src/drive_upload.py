@@ -130,3 +130,28 @@ def upload_file_to_drive(filename, folder_id, drive_id, drive):
                                     fields='id',
                                     supportsAllDrives=True).execute()
     return file
+
+def afterFinalWednesday(today):
+    """
+    Returns true if is the last Wednesday of the month or later.
+    The exception is when the last day of the month falls on a Wedensday,
+    in that case it returns true if it is on or after the second to last
+    Wednesday of the month.
+    """
+    starting_weekday,day_count = calendar.monthrange(date.year, date.month)
+    working_weekday = today.weekday()
+    working_day = today.day
+    offset = (working_weekday - WEDNESDAY) % 7
+    last_wednesday = today - timedelta(days=offset)
+    diff = day_count - working_day
+    # If it's not the last week of the month, return False.
+    if diff > 7:
+        return False
+    diff = day_count - last_wednesday.day
+    # If the last day of the month is wednesday, add a week to the check.
+    if diff == 0:
+        diff = 6
+    print(diff)
+    if diff <= 7:
+        return True
+    return False

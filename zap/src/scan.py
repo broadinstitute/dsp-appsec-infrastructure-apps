@@ -465,6 +465,9 @@ def main(): # pylint: disable=too-many-locals
                     if not folder_structure:
                         raise Exception(f"The provided gdrive folder ID was not found.")
                     date = datetime.today()
+                    if drivehelper.afterFinalWednesday(date):
+                        date = date + timedelta(days=10)
+
                     logging.info("Finding the folders for this month's scans in Google Drive")
                     year_folder_dict = drivehelper.find_subfolder(folder_structure, str(date.year))
                     logging.info(year_folder_dict)
