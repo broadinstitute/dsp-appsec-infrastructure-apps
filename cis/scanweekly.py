@@ -1,33 +1,15 @@
 #!/usr/bin/env python3
 """
 This module
-- lists all projects from BigQuery
-- trigger PubSub to scan all projects listed from BigQuery
+- trigger PubSub to scan all projects in a list with prod projects
 - finds all high vulnerabilities
 - reports all high vulnerabilities to a Slack channel
 """
 import concurrent
 import os
-from typing import Any, List
-
-from google.cloud import bigquery, pubsub_v1
+from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.publisher.futures import Future
 
-
-def list_projects(dataset_project_id: str, bq_dataset: str):
-    """
-    Fetch all tables in a BigQuery dataset using BQ API
-    Args:
-       Google Project ID, Dataset
-    Returns:
-        List of table names in BigQuery
-    """
-    client = bigquery.Client()
-
-    dataset_id = f'{dataset_project_id}.{bq_dataset}'
-    tables = list(client.list_tables(dataset_id))
-
-    return tables
 
 
 def get_callback(data):
@@ -44,7 +26,6 @@ def get_callback(data):
 
 
 def scan_projects(
-    tables: List[Any],
     dataset_project_id: str,
     topic_name: str,
     slack_channel_weekly_report: str,
@@ -68,22 +49,18 @@ def scan_projects(
     formatted_slack_channel = f"#{slack_channel_weekly_report}"
 
     futures = []
-    for table in tables:
-        gcp_project_id = table.table_id.replace("_", "-")
-        results_url = f"{sdarq_host}/gcp-project-security-posture/results?project_id={gcp_project_id}"
-        #Check if the project is prod projects list to scan
-        if gcp_project_id in cis_prod_projects_list_final_list:
-             # When a message is published, the client returns a future.
-            future = publisher.publish(
-                topic_path,
-                data=message,
-                GCP_PROJECT_ID=gcp_project_id,
-                SLACK_RESULTS_URL=results_url,
-                SLACK_CHANNEL=formatted_slack_channel,
-            )
-            # Publish failures shall be handled in the callback function.
-            future.add_done_callback(get_callback(gcp_project_id))
-            futures.append(future)
+    for prod_project in cis_prod_projects_list_final_list:
+        results_url = f"{sdarq_host}/gcp-project-security-posture/results?project_id={prod_project}"
+        future = publisher.publish(
+            topic_path,
+            data=message,
+            GCP_PROJECT_ID=prod_project,
+            SLACK_RESULTS_URL=results_url,
+            SLACK_CHANNEL=formatted_slack_channel,
+        )
+        # Publish failures shall be handled in the callback function.
+        future.add_done_callback(get_callback(prod_project))
+        futures.append(future)
     concurrent.futures.wait(futures)
 
 
@@ -92,7 +69,6 @@ def main():
     Implements the scanweekly.py
     """
 
-    bq_dataset = os.environ["BQ_DATASET"]
     slack_channel_weekly_report = os.environ["SLACK_CHANNEL_WEEKLY_REPORT"]
     dataset_project_id = os.environ["DATASET_PROJECT_ID"]
     topic_name = os.environ["JOB_TOPIC"]
@@ -101,11 +77,7 @@ def main():
     cis_prod_projects_list_final_list = cis_prod_projects_list.split(",")
 
 
-    tables = list_projects(dataset_project_id, bq_dataset)
-
-    scan_projects(
-        tables, dataset_project_id, topic_name, slack_channel_weekly_report, sdarq_host, cis_prod_projects_list_final_list
-    )
+    scan_projects(dataset_project_id, topic_name, slack_channel_weekly_report, sdarq_host, cis_prod_projects_list_final_list)
 
 
 if __name__ == "__main__":
