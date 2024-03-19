@@ -142,10 +142,10 @@ def after_final_wednesday(date):
     Wednesday of the month.
     """
     _,day_count = calendar.monthrange(date.year, date.month)
-    working_weekday = today.weekday()
-    working_day = today.day
+    working_weekday = date.weekday()
+    working_day = date.day
     offset = (working_weekday - WEDNESDAY) % 7
-    last_wednesday = today - timedelta(days=offset)
+    last_wednesday = date - timedelta(days=offset)
     diff = day_count - working_day
     # If it's not the last week of the month, return False.
     if diff > 7:
