@@ -470,7 +470,6 @@ def main(): # pylint: disable=too-many-locals
 
                     logging.info("Finding the folders for this month's scans in Google Drive")
                     year_folder_dict = drivehelper.find_subfolder(folder_structure, str(date.year))
-                    logging.info(year_folder_dict)
                     if len(year_folder_dict) > 0:
                         month_folder_dict = drivehelper.find_subfolder(year_folder_dict, date.strftime('%Y-%m')) if year_folder_dict is not None else None
                         xml_folder_dict = drivehelper.find_subfolder(month_folder_dict, 'XML') if month_folder_dict is not None else None
