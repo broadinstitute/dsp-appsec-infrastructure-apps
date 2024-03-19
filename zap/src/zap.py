@@ -199,7 +199,7 @@ def zap_report(zap: ZAPv2, project: str, scan_type: ScanType, sites: str):
     # The more advanced zap report api calls require a directory local to zap
     # But you can download known files from /home/zap/.ZAP/transfer if you use an API key
     date = datetime.today()
-    filename = f"{project}_{scan_type}-scan_report-{date.strftime('%Y-%m')}.xml"
+    filename = f"{project}_{scan_type}-scan_report-{date.strftime('%Y-%m-%d')}.xml"
     filename = filename.replace("-", "_").replace(" ", "")
 
     template = "traditional-xml"
