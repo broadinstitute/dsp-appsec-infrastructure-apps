@@ -108,7 +108,7 @@ def parse_tags(endpoint: Endpoint):
         if tag_key == "scan":
             try:
                 scan_type = ScanType[tag_val.upper()]
-            except Exception:
+            except RuntimeError:
                 scan_type = ""
         if tag_key == "slack":
             slack_channel = tag_val

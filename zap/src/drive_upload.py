@@ -5,9 +5,12 @@ Helper functions for connecting to, navigating, and uploading to Google Drive.
 import logging
 
 import google.auth
+import calendar
+from calendar import WEDNESDAY
 from google.auth.transport.requests import Request as GoogleAuthRequest
 from googleapiclient.http import MediaFileUpload
 from googleapiclient.discovery import build
+from datetime import datetime, timedelta
 
 
 def find_children(parent_id, files):
@@ -131,14 +134,14 @@ def upload_file_to_drive(filename, folder_id, drive_id, drive):
                                     supportsAllDrives=True).execute()
     return file
 
-def afterFinalWednesday(today):
+def after_final_wednesday(date):
     """
     Returns true if is the last Wednesday of the month or later.
     The exception is when the last day of the month falls on a Wedensday,
     in that case it returns true if it is on or after the second to last
     Wednesday of the month.
     """
-    starting_weekday,day_count = calendar.monthrange(date.year, date.month)
+    _,day_count = calendar.monthrange(date.year, date.month)
     working_weekday = today.weekday()
     working_day = today.day
     offset = (working_weekday - WEDNESDAY) % 7
@@ -151,7 +154,6 @@ def afterFinalWednesday(today):
     # If the last day of the month is wednesday, add a week to the check.
     if diff == 0:
         diff = 6
-    print(diff)
     if diff <= 7:
         return True
     return False

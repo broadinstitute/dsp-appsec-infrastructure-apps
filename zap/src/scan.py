@@ -6,7 +6,7 @@ Runs ZAP scan, uploads results to Code Dx and GCS, and alerts Slack.
 import logging
 import os
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from enum import Enum
 from os import getenv
 from sys import exit  # pylint: disable=redefined-builtin
@@ -393,7 +393,7 @@ def main(): # pylint: disable=too-many-locals
 
             # optionally, upload them to GCS
             xml_report_url = ""
-            if scan_type == ScanType.UI or scan_type == ScanType.LEOAPP:
+            if scan_type in (ScanType.UI, ScanType.LEOAPP):
                 xml_report_url = upload_gcs(
                     bucket_name,
                     scan_type,
@@ -411,7 +411,7 @@ def main(): # pylint: disable=too-many-locals
             clean_uri_path(zap_filename)
 
             #upload scrubbed results in case we need to do a manual upload
-            if scan_type == ScanType.UI or scan_type == ScanType.LEOAPP:
+            if scan_type in (ScanType.UI, ScanType.LEOAPP):
                 xml_report_url = upload_gcs(
                     bucket_name,
                     scan_type,
@@ -452,7 +452,7 @@ def main(): # pylint: disable=too-many-locals
                 )
 
             # Upload UI scan XMLs and CodeDx reports to Google Drive.
-            if scan_type == ScanType.UI or scan_type == ScanType.LEOAPP:
+            if scan_type in (ScanType.UI, ScanType.LEOAPP):
                 try:
                     logging.info('Setting up the google drive API service for uploading reports.')
 
@@ -463,9 +463,9 @@ def main(): # pylint: disable=too-many-locals
                                                                                 drive_id,
                                                                                 drive_service)
                     if not folder_structure:
-                        raise Exception(f"The provided gdrive folder ID was not found.")
+                        raise RuntimeError("The provided gdrive folder ID was not found.")
                     date = datetime.today()
-                    if drivehelper.afterFinalWednesday(date):
+                    if drivehelper.after_final_wednesday(date):
                         date = date + timedelta(days=10)
 
                     logging.info("Finding the folders for this month's scans in Google Drive")
@@ -479,7 +479,7 @@ def main(): # pylint: disable=too-many-locals
                         if month_folder_dict and xml_folder_dict and zap_raw_folder:
                             logging.info(f"Uploading report and XML for this month's scans to {xml_folder_dict}")
                         else:
-                            raise Exception("Unable to find the proper folders for uploading reports.")
+                            raise RuntimeError("Unable to find the proper folders for uploading reports.")
                         file = drivehelper.upload_file_to_drive(zap_filename,
                                                                     xml_folder_dict.get('id'),
                                                                     drive_id,
@@ -495,10 +495,11 @@ def main(): # pylint: disable=too-many-locals
                                                                 drive_service)
 
                     if not file:
-                        raise Exception(f"The CodeDx report for {dojo_product_name} was not uploaded.")
+                        raise Exception(
+                                    f"The CodeDx report for {dojo_product_name} was not uploaded.")
                     logging.info(f'The report {report_file} has been uploaded.')
                 except Exception as e: # pylint: disable=broad-except
-                    error_message = f'Failed to complete uploading files to Google Drive for {dojo_product_name}. Last known error {e}'
+                    error_message = f'Failed to complete uploading files to GDrive for {dojo_product_name}. Last error {e}'
                     logging.info(error_message)
                     error_slack_alert(
                         error_message, slack_token, slack_channel)
@@ -509,7 +510,7 @@ def main(): # pylint: disable=too-many-locals
             error_message = f"[RETRY-{ attempt }] Exception running Zap Scans: { error }"
             logging.warning(error_message)
             if attempt == max_retries - 1:
-                error_message = f"Error running Zap Scans for { target_url }. Last known error: { error }"
+                error_message = f"Error running Zap Scans for { target_url }. Last error: { error }"
                 error_slack_alert(error_message, slack_token, slack_channel)
                 try:
                     zap = zap_connect()
