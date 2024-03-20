@@ -5,16 +5,15 @@ Provides high-level methods to interface with ZAP.
 import logging
 import os
 import shutil
-from enum import Enum
 from urllib.parse import urlparse
 from datetime import datetime
 
 import google.auth
 import requests
 from google.auth.transport.requests import Request as GoogleAuthRequest
+from zapv2 import ZAPv2
 from zap_common import (wait_for_zap_start, zap_access_target,
                         zap_wait_for_passive_scan)
-from zapv2 import ZAPv2
 from zap_scan_type import ScanType
 import terra_auth
 
@@ -199,18 +198,19 @@ def zap_report(zap: ZAPv2, project: str, scan_type: ScanType, sites: str):
     # The more advanced zap report api calls require a directory local to zap
     # But you can download known files from /home/zap/.ZAP/transfer if you use an API key
     date = datetime.today()
-    filename = f"{project}_{scan_type}-scan_report-{date.strftime('%Y-%m')}.xml"
+    filename = f"{project}_{scan_type}-scan_report-{date.strftime('%Y-%m-%d')}.xml"
     filename = filename.replace("-", "_").replace(" ", "")
 
     template = "traditional-xml"
     report_dir = "/home/zap/.ZAP/transfer"
     # The sites parameter can take several urls separated with '|'.
-    # Adding further sites to scope could be done by concatenating them before passing them to this function.
-    return_message = zap.reports.generate(title=project, 
-                                            reportfilename=filename, 
-                                            template=template, 
-                                            contexts=project, 
-                                            sites=sites, 
+    # Adding further sites to scope could be done by concatenating
+    # them before passing them to this function.
+    return_message = zap.reports.generate(title=project,
+                                            reportfilename=filename,
+                                            template=template,
+                                            contexts=project,
+                                            sites=sites,
                                             reportdir= report_dir)
     logging.info(return_message)
     # If successful we now have a report sitting in the transfer directory of the zap container
@@ -286,7 +286,7 @@ def zap_compliance_scan(
 
     zap.spider.scan(contextname=project, url=target_url)
 
-    if scan_type == ScanType.UI or scan_type == ScanType.LEOAPP:
+    if scan_type in (ScanType.UI, ScanType.LEOAPP):
         zap.ajaxSpider.scan(target_url, contextname=project)
 
     zap_wait_for_passive_scan(zap, timeout_in_secs=TIMEOUT_MINS * 60)
