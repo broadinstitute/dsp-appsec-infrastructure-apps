@@ -328,10 +328,6 @@
          {
           "value": "DAST",
           "text": "Our service is currently scanned weekly/monthly via ZAP or similar tools"
-         },
-         {
-          "value": "RASP",
-          "text": "We are using Tcell Rapid or a similar tool to enable RASP (Runtime application self-protection) mode"
          }
         ]
        }
@@ -388,10 +384,6 @@
           "visibleIf": "{Security tools} notcontains \"SAST\""
          },
          {
-          "value": "Please make sure your service is using Tcell Rapid functionalities or is behind the orchestration layer to add some runtime protection in your stack. RASP in the app is preferred over WAF/Apache proxy. Ask appsec team if you need more clarification on this.",
-          "visibleIf": "{Security tools} notcontains \"RASP\""
-         },
-         {
           "value": "Only collect the minimum-necessary PII from users. Document where such PII is stored.",
           "visibleIf": "{Process/Store_userdata} allof ['store_PHI']"
          },
@@ -434,12 +426,6 @@
         "name": "Alert-ZAP",
         "visibleIf": "{Security tools} notcontains \"DAST\"",
         "html": "<div class=\"highs\">Your service must be scanned weekly/mothly via SAST tools. Ask AppSec team to help you setup this tool.</div>"
-       },
-       {
-        "type": "html",
-        "name": "Alert",
-        "visibleIf": "{Security tools} notcontains \"RASP\"",
-        "html": "<div class=\"highs\">Please make sure your service is using Tcell Rapid functionalities or is behind the orchestration layer to add some runtime protection to your stack. RASP in the app is preferred over WAF/Apache proxy. Ask the appsec team if you need more clarification on this.</div>"
        },
        {
         "type": "html",
