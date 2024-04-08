@@ -4,3 +4,4 @@
 zap/.python-version
 .vscode/
 .vscode/settings.json
+.env
