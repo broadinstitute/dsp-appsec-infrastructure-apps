@@ -2,7 +2,7 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ "master", "tc-DSEC-803-codeql" ]
+    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
   schedule:
