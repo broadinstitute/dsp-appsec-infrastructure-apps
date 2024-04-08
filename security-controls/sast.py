@@ -17,6 +17,7 @@ SAST_LINK = "sast_link"
 
 fs = firestore.Client()
 
+
 CODACY_BASE = "https://app.codacy.com/api/v3"
 CODACY_API_KEY=os.getenv("CODACY_API_KEY").strip()
 CODACY_URL = "https://app.codacy.com/gh/{org}/{repo}/dashboard"
