@@ -357,7 +357,6 @@
         "name": "Ticket_Description",
         "title": "Add actions to your ticket:",
         "enableIf": "{JiraProject} notempty",
-        "isRequired": true,
         "choices": [
          {
           "value": "You must use git-secrets to prevent accidental commit of secrets to source code repository.",
