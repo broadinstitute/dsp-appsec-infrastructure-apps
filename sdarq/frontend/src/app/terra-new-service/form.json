@@ -357,6 +357,7 @@
         "name": "Ticket_Description",
         "title": "Add actions to your ticket:",
         "enableIf": "{JiraProject} notempty",
+        "isRequired": true,
         "choices": [
         {
             "value": "Get started with all documentations needed, update/build the Design Specification document, update/build the Network Diagram and Architecture, build a user flow of your component, make sure to show how it connects to rest of product. Build a data flow diagram of your component, make sure to show how it connects to rest of product. Please contact Compliance team if you have any questions related to documentation."
