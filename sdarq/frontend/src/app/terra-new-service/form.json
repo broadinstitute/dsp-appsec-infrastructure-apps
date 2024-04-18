@@ -359,6 +359,9 @@
         "enableIf": "{JiraProject} notempty",
         "isRequired": true,
         "choices": [
+        {
+            "value": "Get started with all documentations needed, update/build the Design Specification document, update/build the Network Diagram and Architecture, build a user flow of your component, make sure to show how it connects to rest of product. Build a data flow diagram of your component, make sure to show how it connects to rest of product. Please contact Compliance team if you have any questions related to documentation."
+        },
          {
           "value": "You must use git-secrets to prevent accidental commit of secrets to source code repository.",
           "visibleIf": "{Security tools} notcontains \"Git-secrets\""
@@ -409,6 +412,11 @@
         "name": "Alert-general",
         "html": "<div class=\"tip\">The AppSec team will reach you out for the initial security discussion. This is basically a\n            Threat Modeling and Security Architecture Review session. The main purpose of the meeting is for us to take\n an iterative, recursive look at the architecture and design of a new service/system.</div>"
        },
+       {    
+        "type": "html",
+        "name": "Alert-general-doc",
+        "html": "<div class=\"tip\">Get started with all documentations needed, update/build the Design Specification document, update/build the Network Diagram and Architecture, build a user flow of your component, make sure to show how it connects to rest of product. Build a data flow diagram of your component, make sure to show how it connects to rest of product. Please contact Compliance team if you have any questions related to documentation.</div>"
+        },
        {
         "type": "html",
         "name": "Alert-Sourceclear",
