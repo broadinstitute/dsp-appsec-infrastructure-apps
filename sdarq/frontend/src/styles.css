@@ -91,6 +91,10 @@
   background-color: rgb(255 255 255) !important;;
 }
 
+.sv_main.sv_default_css .sv_progress {
+  background-color: #ffffff !important;
+}
+
 .sv_p_root,
 .sv_row {
   -webkit-animation: fadein 0.6s;
