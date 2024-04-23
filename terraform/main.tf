@@ -131,6 +131,7 @@ module "node_sa" {
     "roles/logging.logWriter",
     "roles/monitoring.metricWriter",
     "roles/monitoring.viewer",
+    "roles/artifactregistry.reader"
   ]
 }
 
