@@ -35,7 +35,6 @@ export class SurveyComponent implements OnInit {
   showPDFButton: false;
   surveyModel: any;
   arrRequired: object;
-  data: any;
 
 
   ngOnInit() {
@@ -66,7 +65,7 @@ export class SurveyComponent implements OnInit {
     Survey.SurveyNG.render('surveyElement', { model: surveyModel });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  OnChanges(changes: SimpleChanges) {
     for (const propName in changes) {
       if (propName ==  "answers")
       {
