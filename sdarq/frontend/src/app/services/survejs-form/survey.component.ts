@@ -35,6 +35,7 @@ export class SurveyComponent implements OnInit {
   showPDFButton: false;
   surveyModel: any;
   arrRequired: object;
+  data: any;
 
 
   ngOnInit() {
