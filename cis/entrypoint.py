@@ -188,7 +188,7 @@ def validate_project(target_project_id: str):
 
 def find_highs(rows: List[Any], slack_channel: str, slack_token: str, target_project_id: str):
     """
-    Find high vulnerabilities from GCP project scan.
+    Find high vulnerabilities level 1 from GCP project scan.
     Args:
        List of project findings, slack channel, slack token
     Returns:
@@ -196,7 +196,7 @@ def find_highs(rows: List[Any], slack_channel: str, slack_token: str, target_pro
     """
     records = []
     for row in rows:
-        if row['failures'] and float(row['impact']) > 0.6:
+        if row['failures'] and float(row['impact']) > 0.6 and row['level'] == 1:
             records.append({
                 'impact': row['impact'],
                 'title': row['title'],
