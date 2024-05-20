@@ -134,26 +134,22 @@ def upload_file_to_drive(filename, folder_id, drive_id, drive):
                                     supportsAllDrives=True).execute()
     return file
 
-def after_final_wednesday(date):
+def after_fourth_wednesday(date):
     """
-    Returns true if is the last Wednesday of the month or later.
-    The exception is when the last day of the month falls on a Wedensday,
-    in that case it returns true if it is on or after the second to last
-    Wednesday of the month.
+    Returns true if is the fourth Wednesday of the month or later.
     """
     _,day_count = calendar.monthrange(date.year, date.month)
-    working_weekday = date.weekday()
-    working_day = date.day
-    offset = (working_weekday - WEDNESDAY) % 7
-    last_wednesday = date - timedelta(days=offset)
-    diff = day_count - working_day
-    # If it's not the last week of the month, return False.
-    if diff > 7:
+    current_weekday = date.weekday()
+    current_day = date.day
+    offset = (current_weekday - WEDNESDAY) % 7
+    previous_wednesday = date - timedelta(days=offset)
+    # How far from the end of the month are we.
+    diff = day_count - current_day
+    # If it's not the last ten days of the month, return False.
+    if diff > (day_count-21):
         return False
-    diff = day_count - last_wednesday.day
-    # If the last day of the month is wednesday, add a week to the check.
-    if diff == 0:
-        diff = 6
-    if diff <= 7:
+    # The earliest day the 4th wednesday can be is the 22nd.    
+    diff = previous_wednesday.day - 21
+    if diff > 0:
         return True
     return False
