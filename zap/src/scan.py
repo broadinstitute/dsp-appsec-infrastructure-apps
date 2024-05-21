@@ -465,7 +465,7 @@ def main(): # pylint: disable=too-many-locals
                     if not folder_structure:
                         raise RuntimeError("The provided gdrive folder ID was not found.")
                     date = datetime.today()
-                    if drivehelper.after_final_wednesday(date):
+                    if drivehelper.after_fourth_wednesday(date):
                         date = date + timedelta(days=10)
 
                     logging.info("Finding the folders for this month's scans in Google Drive")
