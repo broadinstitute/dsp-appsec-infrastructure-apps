@@ -20,104 +20,22 @@ data:
           effect: NoSchedule
 
         containers:
-        - name: cis-scan
-          image: ${CIS_IMAGE}
+        - name: cis-azure-scans
+          image: ${CIS_AZURE_SCANS}
           imagePullPolicy: Always
           env:
-          - name: BQ_DATASET
-            value: ${CIS_DATASET}
-          - name: CIS_CONTROLS_IGNORE
-            value: ${CIS_CONTROLS_IGNORE}
           - name: SLACK_TOKEN
             valueFrom:
               secretKeyRef:
                  name: ${JOB_SECRET}
                  key: SLACK_TOKEN
-          - name: SLACK_CHANNEL_WEEKLY_REPORT
-            valueFrom:
-              secretKeyRef:
-                  name: ${JOB_SECRET}
-                  key: SLACK_CHANNEL_WEEKLY_REPORT
-          - name: TARGET_PROJECT_ID
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.annotations['GCP_PROJECT_ID']
-          - name: FIRESTORE_COLLECTION
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.annotations['FIRESTORE_COLLECTION']
           - name: SLACK_CHANNEL
             valueFrom:
               fieldRef:
                 fieldPath: metadata.annotations['SLACK_CHANNEL']
-          - name: SLACK_RESULTS_URL
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.annotations['SLACK_RESULTS_URL']
           resources:
             requests:
               memory: 2Gi
----
-apiVersion: bigquery.cnrm.cloud.google.com/v1beta1
-kind: BigQueryDataset
-metadata:
-  name: ${CIS_DATASET}
-  namespace: ${NAMESPACE}
-  annotations:
-    cnrm.cloud.google.com/deletion-policy: abandon
-spec:
-  description: "CIS scan results"
-  access:
-  - role: OWNER
-    specialGroup: projectOwners
-  - role: READER
-    userByEmail: ${CRON_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
-  - role: WRITER
-    userByEmail: ${JOB_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
-  - role: WRITER
-    userByEmail: ${SDARQ_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
----
-apiVersion: iam.cnrm.cloud.google.com/v1beta1
-kind: IAMPolicyMember
-metadata:
-  name: ${JOB_SERVICE_ACCOUNT}-sa-bq-policy
-  namespace: ${NAMESPACE}
-spec:
-  member: serviceAccount:${JOB_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
-  role: roles/bigquery.jobUser
-  resourceRef:
-    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
-    kind: Project
-    external: projects/${PROJECT_ID}
----
-apiVersion: iam.cnrm.cloud.google.com/v1beta1
-kind: IAMPolicyMember
-metadata:
-  name: ${JOB_SERVICE_ACCOUNT}-sa-firestore-policy
-  namespace: ${NAMESPACE}
-spec:
-  member: serviceAccount:${JOB_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
-  role: roles/datastore.user
-  resourceRef:
-    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
-    kind: Project
-    external: projects/${PROJECT_ID}
----
-apiVersion: iam.cnrm.cloud.google.com/v1beta1
-kind: IAMPolicy
-metadata:
-  name: ${JOB_TOPIC}-policy
-  namespace: ${NAMESPACE}
-spec:
-  resourceRef:
-    apiVersion: pubsub.cnrm.cloud.google.com/v1beta1
-    kind: PubSubTopic
-    name: ${JOB_TOPIC}
-  bindings:
-  - role: roles/pubsub.publisher
-    members:
-    - serviceAccount:${CRON_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
-    - serviceAccount:${SDARQ_SERVICE_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -137,23 +55,13 @@ spec:
           restartPolicy: OnFailure
 
           containers:
-          - name: cis-scan
-            image: ${CIS_IMAGE}
-            command: ['python3', '/scanweekly.py']
+          - name: cis-azure-scans
+            image: ${CIS_AZURE_SCANS}
+            command: ['python3', '/entrypoint.py']
             env:
-              - name: DATASET_PROJECT_ID
-                value: ${PROJECT_ID}
-              - name: CIS_PROD_PROJECTS
-                value: ${CIS_PROD_PROJECTS}
-              - name: JOB_TOPIC
-                value: ${JOB_TOPIC}
-              - name: SLACK_CHANNEL_WEEKLY_REPORT
+              - name: SLACK_CHANNEL
                 valueFrom:
                   secretKeyRef:
                     name: ${JOB_SECRET}
-                    key: SLACK_CHANNEL_WEEKLY_REPORT
-              - name: SDARQ_HOST
-                valueFrom:
-                  secretKeyRef:
-                    name: ${JOB_SECRET}
-                    key: SDARQ_HOST
+                    key: SLACK_CHANNEL
+
