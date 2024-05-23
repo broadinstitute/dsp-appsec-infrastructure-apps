@@ -40,7 +40,7 @@ data:
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: cis-trigger-weekly
+  name: cis-azure-trigger-weekly
   namespace: ${NAMESPACE}
 spec:
   schedule: "0 7 * * 4"

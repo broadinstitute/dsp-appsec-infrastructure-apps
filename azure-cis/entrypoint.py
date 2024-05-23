@@ -34,11 +34,11 @@ def get_cis_benchmark_data(subscription_id, access_token):
 
 def main():
     subscription_id = 'your_subscription_id'
-    TENANT_ID = 'your_tenant_id'
+    tenant_id = 'your_tenant_id'
     client_id = 'your_client_id'
     client_secret = 'your_client_secret'
     resource = 'https://management.azure.com/'
-    token_url = f'https://login.microsoftonline.com/{TENANT_ID}/oauth2/token'
+    token_url = f'https://login.microsoftonline.com/{tenant_id}/oauth2/token'
     
     # Get access token
     access_token = get_access_token(client_id, client_secret, resource, token_url)
