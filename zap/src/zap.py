@@ -11,6 +11,7 @@ from datetime import datetime
 import google.auth
 import requests
 from google.auth.transport.requests import Request as GoogleAuthRequest
+from google.oauth2 import id_token
 from zapv2 import ZAPv2
 from zap_common import (wait_for_zap_start, zap_access_target,
                         zap_wait_for_passive_scan)
@@ -139,7 +140,7 @@ def leo_auth(host, path, token):
     return False
 
 
-def zap_setup_cookie(zap, domain, context_id):
+def zap_setup_cookie(zap, domain, context_id, cookie_name=None):
     """
     Zap needs to be told to use cookies while scanning.
     This can be done within a context.
@@ -149,6 +150,9 @@ def zap_setup_cookie(zap, domain, context_id):
     username = "testuser"
     zap.users.new_user(context_id, username)
     userid = zap.users.users_list(context_id)[0]["id"]
+    if cookie_name:
+        zap.httpsessions.add_default_session_token(cookie_name)
+        zap_access_target(zap, "https://{domain}")
     # This is the secret sauce for using cookies.
     # The user above is now associated with the active cookie.
     # It should always choose the newest one.
@@ -186,6 +190,33 @@ def get_gcp_token() -> str:
     )
     credentials.refresh(GoogleAuthRequest())
     return credentials.token
+
+def zap_set_iap_token(client_id):
+    """
+    Generate a Google id token for a oath client for the default identity.
+    """
+    # client ID needs to come from somewhere. thelma puts it in source code.
+    # need to get google creds first.
+    
+    open_id_connect_token = id_token.fetch_id_token( GoogleAuthRequest(), client_id,)
+    bearer = f"Bearer {open_id_connect_token}"
+    zap.replacer.add_rule(
+        description="auth",
+        enabled=True,
+        matchtype="REQ_HEADER",
+        matchregex=False,
+        matchstring="Authorization",
+        replacement=bearer
+    )
+    zap.replacer.add_rule(
+        description="beehive",
+        enabled=True,
+        matchtype="REQ_HEADER",
+        matchregex=False,
+        matchstring="X-Beehive-Ignore-Github",
+        replacement="True"
+    )
+    return open_id_connect_token
 
 
 def zap_report(zap: ZAPv2, project: str, scan_type: ScanType, sites: str):
@@ -266,12 +297,20 @@ def zap_compliance_scan(
     # UI - authenticated with SA, active scan and ajax spider is performed.
     # AUTH - authenticated with SA, active scan is performed.
     # LEOAPP - authenticated with SA and registered cookie, active scan and ajax spider is performed
+    # IAPUI - authenticated with iap bearer token and cookie.
+    #IAPAPI - authenticated with iap bearer token, api spec.
 
     # Set up context for scan
     context_id = zap_setup_context(zap, project, host)
 
     if scan_type != ScanType.BASELINE:
-        token = zap_sa_auth(zap, env)
+        if scan_type == ScanType.IAPUI or scan_type == ScanType.IAPAPI:
+            client_id = os.getenv('IAP_CLIENT_ID')
+            token = zap_set_iap_token(client_id)
+            if scan_type == ScanType.IAPUI:
+                zap_setup_cookie(zap, host, context_id, cookie_name)
+        else:
+            token = zap_sa_auth(zap, env)
         if scan_type == ScanType.LEOAPP:
             success = leo_auth(host, path, token)
             if success:
@@ -280,13 +319,14 @@ def zap_compliance_scan(
                 zap_setup_cookie(zap, host, context_id)
             else:
                 logging.info("Leo authentication was unsuccessful")
+        
 
-    if scan_type == ScanType.API:
+    if scan_type == ScanType.API or scan_type == ScanType.IAPAPI:
         zap_api_import(zap, target_url)
 
     zap.spider.scan(contextname=project, url=target_url)
 
-    if scan_type in (ScanType.UI, ScanType.LEOAPP):
+    if scan_type in (ScanType.UI, ScanType.LEOAPP, ScanType.IAPUI):
         zap.ajaxSpider.scan(target_url, contextname=project)
 
     zap_wait_for_passive_scan(zap, timeout_in_secs=TIMEOUT_MINS * 60)

@@ -103,6 +103,11 @@ data:
               secretKeyRef:
                 name: ${JOB_SECRET}
                 key: SLACK_TOKEN
+          - name: IAP_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: ${JOB_SECRET}
+                key: IAP_CLIENT_ID
           - name: CODEDX_PROJECT
             valueFrom:
               fieldRef:
