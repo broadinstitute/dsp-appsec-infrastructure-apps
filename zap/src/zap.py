@@ -311,6 +311,7 @@ def zap_compliance_scan(
             client_id = os.getenv('IAP_CLIENT_ID')
             token = zap_set_iap_token(client_id)
             if scan_type == ScanType.IAPUI:
+                cookie_name = "__host-beehive_session"
                 zap_setup_cookie(zap, host, context_id, cookie_name)
         else:
             token = zap_sa_auth(zap, env)
