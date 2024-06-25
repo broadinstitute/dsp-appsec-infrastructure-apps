@@ -199,7 +199,7 @@ def zap_set_iap_token(client_id):
     """
     Generate a Google id token for a oath client for the default identity.
     """
-    
+    zap = zap_connect()
     open_id_connect_token = id_token.fetch_id_token( GoogleAuthRequest(), 
                                                         client_id)
     bearer = f"Bearer {open_id_connect_token}"
