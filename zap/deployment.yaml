@@ -177,7 +177,7 @@ items:
             - &cron-job-container
               name: zap-trigger
               image: ${ZAP_IMAGE}
-              args: ['trigger', '-s', 'ui']
+              args: ['trigger', '-s', 'ui', 'iapui']
               env:
               - name: GCP_PROJECT_ID
                 value: ${PROJECT_ID}
@@ -211,7 +211,7 @@ items:
             << : *cron-job-spec
             containers:
             - << : *cron-job-container
-              args: ['trigger', '-s', 'auth', 'api']
+              args: ['trigger', '-s', 'auth', 'api', 'iapapi']
 
 ---
 apiVersion: storage.cnrm.cloud.google.com/v1beta1
