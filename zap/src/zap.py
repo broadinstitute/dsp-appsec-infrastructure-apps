@@ -114,9 +114,11 @@ def leo_auth(host, path, token):
     zap.httpsessions.add_default_session_token("LeoToken")
     logging.info("Authenticating to Leo...")
     # Leo apps if already launched have a separate domain from Leo.
-    # And there's a workspace id after the host. https://custom.host/workspaceId/apiEndPoints
+    # And there's a workspace id after the host. 
+    # https://custom.host/workspaceId/apiEndPoints
 
-    # Make a request to host/first part of path//setCookie with bearer token header
+    # Make a request to host/first part of path//setCookie 
+    # with bearer token header
     path_parts = path.split('/')
     if len(path_parts) > 1:
         target_dir = path_parts[1]
@@ -158,7 +160,9 @@ def zap_setup_cookie(zap, domain, context_id, cookie_name=None):
     # It should always choose the newest one.
     sessions = zap.httpsessions.sessions(site=domain+":443")
     session_name = sessions[-1]["session"][0]
-    zap.users.set_authentication_credentials(context_id, userid, "sessionName=" + session_name)
+    zap.users.set_authentication_credentials(context_id, 
+                                                userid, 
+                                                "sessionName=" + session_name)
 
     zap.users.set_user_enabled(context_id, userid, True)
     zap.forcedUser.set_forced_user(context_id, userid)
@@ -195,10 +199,9 @@ def zap_set_iap_token(client_id):
     """
     Generate a Google id token for a oath client for the default identity.
     """
-    # client ID needs to come from somewhere. thelma puts it in source code.
-    # need to get google creds first.
     
-    open_id_connect_token = id_token.fetch_id_token( GoogleAuthRequest(), client_id,)
+    open_id_connect_token = id_token.fetch_id_token( GoogleAuthRequest(), 
+                                                        client_id)
     bearer = f"Bearer {open_id_connect_token}"
     zap.replacer.add_rule(
         description="auth",
