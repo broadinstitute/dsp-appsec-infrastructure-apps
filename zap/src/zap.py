@@ -147,28 +147,31 @@ def zap_setup_cookie(zap, domain, context_id, cookie_name=None):
     Zap needs to be told to use cookies while scanning.
     This can be done within a context.
     """
-    # Copied from dsp-appsec-zap-automation
-    logging.info("Set up test user in context: " + context_id)
-    username = "testuser"
-    zap.users.new_user(context_id, username)
-    userid = zap.users.users_list(context_id)[0]["id"]
-    if cookie_name:
-        zap.httpsessions.add_default_session_token(cookie_name)
-        zap_access_target(zap, "https://{domain}")
-    # This is the secret sauce for using cookies.
-    # The user above is now associated with the active cookie.
-    # It should always choose the newest one.
-    sessions = zap.httpsessions.sessions(site=domain+":443")
-    session_name = sessions[-1]["session"][0]
-    zap.users.set_authentication_credentials(context_id, 
-                                                userid, 
-                                                "sessionName=" + session_name)
+    try:
+        # Copied from dsp-appsec-zap-automation
+        logging.info("Set up test user in context: " + context_id)
+        username = "testuser"
+        zap.users.new_user(context_id, username)
+        userid = zap.users.users_list(context_id)[0]["id"]
+        if cookie_name:
+            zap.httpsessions.add_default_session_token(cookie_name)
+            zap_access_target(zap, "https://{domain}")
+        # This is the secret sauce for using cookies.
+        # The user above is now associated with the active cookie.
+        # It should always choose the newest one.
+        sessions = zap.httpsessions.sessions(site=domain+":443")
+        session_name = sessions[-1]["session"][0]
+        zap.users.set_authentication_credentials(context_id, 
+                                                    userid, 
+                                                    "sessionName=" + session_name)
 
-    zap.users.set_user_enabled(context_id, userid, True)
-    zap.forcedUser.set_forced_user(context_id, userid)
-    zap.forcedUser.set_forced_user_mode_enabled(True)
-    return username, userid
-
+        zap.users.set_user_enabled(context_id, userid, True)
+        zap.forcedUser.set_forced_user(context_id, userid)
+        zap.forcedUser.set_forced_user_mode_enabled(True)
+        return username, userid
+    except Exception:
+        logging.info("Cookie authenication setup failed.")
+        return None,None
 
 def zap_api_import(zap: ZAPv2, target_url: str):
     """
