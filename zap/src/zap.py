@@ -155,7 +155,7 @@ def zap_setup_cookie(zap, domain, context_id, cookie_name=None):
         userid = zap.users.users_list(context_id)[0]["id"]
         if cookie_name:
             zap.httpsessions.add_default_session_token(cookie_name)
-            zap_access_target(zap, "https://{domain}")
+            zap_access_target(zap, f"https://{domain}")
         # This is the secret sauce for using cookies.
         # The user above is now associated with the active cookie.
         # It should always choose the newest one.
@@ -202,6 +202,7 @@ def zap_set_iap_token(client_id):
     """
     Generate a Google id token for a oath client for the default identity.
     """
+    logging.info("Fetching id token from google.")
     zap = zap_connect()
     open_id_connect_token = id_token.fetch_id_token( GoogleAuthRequest(), 
                                                         client_id)
@@ -314,6 +315,7 @@ def zap_compliance_scan(
             client_id = os.getenv('IAP_CLIENT_ID')
             token = zap_set_iap_token(client_id)
             if scan_type == ScanType.IAPUI:
+                logging.info("Setting beehive session cookie.")
                 cookie_name = "__host-beehive_session"
                 zap_setup_cookie(zap, host, context_id, cookie_name)
         else:
