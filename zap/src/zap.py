@@ -168,6 +168,7 @@ def zap_setup_cookie(zap, domain, context_id, cookie_name=None):
         zap.users.set_user_enabled(context_id, userid, True)
         zap.forcedUser.set_forced_user(context_id, userid)
         zap.forcedUser.set_forced_user_mode_enabled(True)
+        zap_access_target(zap, f"https://{domain}")
         return username, userid
     except Exception:
         logging.info("Cookie authenication setup failed.")
