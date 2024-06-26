@@ -172,7 +172,8 @@ def zap_setup_cookie(zap, domain, context_id, cookie_name=None):
         return username, userid
     except Exception:
         logging.info("Cookie authenication setup failed.")
-        return None,None
+        raise RuntimeError("Failed to set the provided cookie as the default session in Zap.")
+
 
 def zap_api_import(zap: ZAPv2, target_url: str):
     """
