@@ -543,11 +543,11 @@ def zap_scan():
     try:
         validate(instance=json_data, schema=zap_scan_schema)
         user_supplied_url = json_data['URL']
-        dev_slack_channel = f"#{json_data['slack_channel']}"
+        channel_name = json_data['slack_channel']
+        dev_slack_channel = f"#{channel_name}" if channel_name != "" else "#appsec_zap_testing"
         publisher = pubsub_v1.PublisherClient()
         zap_topic_path = publisher.topic_path(
             pubsub_project_id, zap_topic_name)
-
         res = requests.get(endpoint, headers=headers, timeout=30)
         res.raise_for_status()
         endpoints = res.json()["results"]
@@ -571,14 +571,15 @@ def zap_scan():
                             "User %s requested to scan via ZAP a service that does not exist in DefectDojo endpoint list",
                             user_email)
                         return jsonify( {'statusText': text_message}), 404
-                severities = parse_json_data.parse_severities(
-                    json_data['severities'])
+
+                # Adds job to pubsub to be picked up by the zap scan code.
+                # CodeDx project is set to an empty string to prevent overwriting reports
+                # The severities field was only used to generate CodeDx reports.
                 publisher.publish(zap_topic_path,
                                   data=message,
                                   URL=service_full_endpoint,
-                                  CODEDX_PROJECT=service_codex_project,
+                                  CODEDX_PROJECT="",
                                   SCAN_TYPE=service_scan_type.name,
-                                  SEVERITIES=severities,
                                   SLACK_CHANNEL=dev_slack_channel,
                                   PRODUCT_ID=product_id)
                 logging.info("User %s requested to scan via ZAP %s service",

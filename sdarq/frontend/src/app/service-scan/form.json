@@ -24,35 +24,6 @@
         ]
        },
        {
-        "type": "checkbox",
-        "name": "severities",
-        "title": "Mark which severities you want to be included in the results",
-        "isRequired": true,
-        "choices": [
-         {
-          "value": "Critical",
-          "text": "Critical"
-         },
-         {
-          "value": "High",
-          "text": "High"
-         },
-         {
-          "value": "Medium",
-          "text": "Medium"
-         },
-         {
-          "value": "Low",
-          "text": "Low"
-         },
-         {
-          "value": "Info",
-          "text": "Info"
-         }
-        ],
-        "colCount": 5
-       },
-       {
         "type": "text",
         "name": "slack_channel",
         "title": "Enter slack channel to get scan results ",
