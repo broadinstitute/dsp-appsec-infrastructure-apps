@@ -543,8 +543,7 @@ def zap_scan():
     try:
         validate(instance=json_data, schema=zap_scan_schema)
         user_supplied_url = json_data['URL']
-        channel_name = json_data['slack_channel']
-        dev_slack_channel = f"#{channel_name}" if channel_name != "" else "#appsec_zap_testing"
+        dev_slack_channel = f"#{json_data['slack_channel']}"
         publisher = pubsub_v1.PublisherClient()
         zap_topic_path = publisher.topic_path(
             pubsub_project_id, zap_topic_name)
