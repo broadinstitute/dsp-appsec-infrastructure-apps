@@ -68,13 +68,3 @@ variable "global_namespace" {
   type        = string
   description = "Global namespace for GKE"
 }
-
-variable "bastion_image" {
-  type        = string
-  description = "Docker image name for bastion proxy"
-}
-
-variable "bastion_port" {
-  type        = number
-  description = "Port for bastion proxy"
-}
