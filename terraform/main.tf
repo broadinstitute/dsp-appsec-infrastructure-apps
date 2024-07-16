@@ -227,7 +227,8 @@ module "system_node_pool" {
   cluster         = google_container_cluster.cluster.name
   service_account = module.node_sa.email
 
-  initial_node_count = 2
+  initial_node_count = 1
+  max_node_count     = var.max_system_node_count
   machine_type       = "e2-medium"
 }
 
