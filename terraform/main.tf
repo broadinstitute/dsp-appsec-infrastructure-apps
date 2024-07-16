@@ -224,7 +224,7 @@ module "system_node_pool" {
   service_account = module.node_sa.email
 
   initial_node_count = 2
-  machine_type       = "e2-standard-2"
+  machine_type       = "e2-medium"
 }
 
 # This pool will be used for the application Pods,
@@ -238,7 +238,7 @@ module "apps_node_pool" {
   cluster         = google_container_cluster.cluster.name
   service_account = module.node_sa.email
 
-  machine_type   = "n1-highmem-4"
+  machine_type   = "n1-highmem-2"
   max_node_count = var.max_app_node_count
   enable_sandbox = true
 }
