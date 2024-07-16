@@ -188,6 +188,10 @@ resource "google_container_cluster" "cluster" {
   #   enabled = true
   # }
 
+  cluster_autoscaling {
+    autoscaling_profile = "OPTIMIZE_UTILIZATION"
+  }
+
   cost_management_config {
     enabled = true
   }
