@@ -16,11 +16,6 @@ spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
       nodeSelector:
         cloud.google.com/gke-nodepool: apps
-      tolerations:
-      - key: sandbox.gke.io/runtime
-        operator: Equal
-        value: gvisor
-        effect: NoSchedule
 
       volumes:
       - name: ${SERVICE_VOLUME}
@@ -90,7 +85,7 @@ spec:
             secretKeyRef:
               name: googleoauth2
               key: oauth2_secret
-              optional: false  
+              optional: false
         volumeMounts:
         - name: ${SERVICE_VOLUME}
           mountPath: /app/media

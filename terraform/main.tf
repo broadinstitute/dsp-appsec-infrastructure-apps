@@ -247,25 +247,8 @@ resource "google_container_cluster" "cluster" {
   ]
 }
 
-# This pool will be used for kube-system, Knative and
-# Config Connector Pods, in place of the default one
-# (such that any changes to it will not require
-# re-creation of the cluster)
-
-module "system_node_pool" {
-  source = "./modules/node-pool"
-
-  name            = "system"
-  location        = var.region
-  cluster         = google_container_cluster.cluster.name
-  service_account = module.node_sa.email
-
-  initial_node_count = 2
-  machine_type       = "e2-standard-2"
-}
-
-# This pool will be used for the application Pods,
-# with GKE Sandbox and Cluster Autoscaler enabled
+# This pool will be used for the system and application Pods,
+# with Cluster Autoscaler enabled
 
 module "apps_node_pool" {
   source = "./modules/node-pool"
@@ -275,9 +258,8 @@ module "apps_node_pool" {
   cluster         = google_container_cluster.cluster.name
   service_account = module.node_sa.email
 
-  machine_type   = "n1-highmem-4"
+  machine_type   = "e2-custom-10240"
   max_node_count = var.max_app_node_count
-  enable_sandbox = true
 }
 
 # This preemptible node pool will be used for batch workloads,

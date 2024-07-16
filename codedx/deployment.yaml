@@ -13,7 +13,6 @@ spec:
       labels:
         service: ${SERVICE}
     spec:
-      runtimeClassName: gvisor
       nodeSelector:
         cloud.google.com/gke-nodepool: apps
 

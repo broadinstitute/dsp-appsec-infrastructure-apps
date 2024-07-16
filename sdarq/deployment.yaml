@@ -13,7 +13,6 @@ spec:
         service: ${SERVICE}
     spec:
       serviceAccountName: ${SERVICE_ACCOUNT}
-      runtimeClassName: gvisor
       nodeSelector:
         cloud.google.com/gke-nodepool: apps
 
