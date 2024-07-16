@@ -158,7 +158,6 @@ resource "google_container_registry" "us_gcr" {
 resource "google_storage_bucket_iam_member" "us_gcr_viewers" {
   for_each = {
     node_sa         = "serviceAccount:${module.node_sa.email}"
-    bastion_host_sa = "serviceAccount:${module.bastion_host_sa.email}"
   }
   bucket = google_container_registry.us_gcr.id
   role   = "roles/storage.objectViewer"

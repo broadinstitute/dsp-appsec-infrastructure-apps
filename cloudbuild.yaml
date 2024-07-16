@@ -16,8 +16,6 @@ options:
   env:
   - PROJECT_ID=${PROJECT_ID}
   - BATCH_DISPATCHER_IMAGE=us.gcr.io/${PROJECT_ID}/batch-dispatcher:${SHORT_SHA}
-  - BASTION_IMAGE=us.gcr.io/${PROJECT_ID}/bastion
-  - BASTION_PORT=1080
   - CIS_IMAGE=us.gcr.io/${PROJECT_ID}/cis
   - ZAP_IMAGE=us.gcr.io/${PROJECT_ID}/zap:${SHORT_SHA}
   - DD_DJANGO_IMAGE=us.gcr.io/${PROJECT_ID}/defectdojo-django
@@ -49,18 +47,6 @@ steps:
 - id: kaniko
   name: &kaniko gcr.io/kaniko-project/executor:v1.6.0-debug
   entrypoint: 'true'
-
-# build bastion proxy Docker image
-- id: bastion-image
-  name: *kaniko
-  waitFor: ['kaniko']
-  entrypoint: sh
-  args:
-  - -c
-  - executor
-      --context=dir:///workspace/bastion
-      --destination=$${BASTION_IMAGE}
-      --cache
 
 # build Batch dispatcher image
 - id: batch-dispatcher-image
@@ -175,7 +161,7 @@ steps:
 # deploy GKE cluster and associated GCP resources
 - id: terraform
   name: hashicorp/terraform
-  waitFor: ['terraform-bucket', 'bastion-image']
+  waitFor: ['terraform-bucket']
   entrypoint: sh
   dir: terraform
   args:
@@ -186,9 +172,7 @@ steps:
       -var "project=${PROJECT_ID}"
       -var "region=$${REGION}"
       -var "zones=[\"$${ZONE_1}\",\"$${ZONE_2}\"]"
-      -var "global_namespace=$${GLOBAL_NAMESPACE}"
-      -var "bastion_image=$${BASTION_IMAGE}"
-      -var "bastion_port=$${BASTION_PORT}" &&
+      -var "global_namespace=$${GLOBAL_NAMESPACE}" &&
     terraform apply plan.out &&
     terraform output | tr -d " " > ../shared/.env
 
