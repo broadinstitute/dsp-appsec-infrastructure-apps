@@ -201,7 +201,7 @@ resource "google_container_cluster" "cluster" {
       disabled = false
     }
     config_connector_config {
-      enabled = true
+      enabled = false
     }
     istio_config {
       disabled = true
