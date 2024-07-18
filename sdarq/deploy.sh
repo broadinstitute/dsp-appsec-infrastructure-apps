@@ -31,7 +31,6 @@ export BACKEND_PORT="backend"
 
 ./kube-apply.py \
   "namespace.yaml" \
-  "configconnectorcontext.yaml" \
   "service-account.yaml" \
   "${CWD}/deployment.yaml"
 

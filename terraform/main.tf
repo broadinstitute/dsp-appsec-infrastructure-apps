@@ -360,7 +360,7 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
 resource "google_service_account_iam_member" "cnrm_sa_ksa_binding" {
   service_account_id = module.cnrm_sa.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "serviceAccount:${var.project}.svc.id.goog[cnrm-system/cnrm-controller-manager-${var.global_namespace}]"
+  member             = "serviceAccount:${var.project}.svc.id.goog[cnrm-system/cnrm-controller-manager]"
 }
 
 ### IAP

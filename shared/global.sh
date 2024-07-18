@@ -22,7 +22,6 @@ kubectl apply -f operator-system/configconnector-operator.yaml
 ./kube-apply.py \
   "configconnector.yaml" \
   "namespace.yaml" \
-  "configconnectorcontext.yaml" \
   "global.yaml"
 
 kubectl wait -n cnrm-system --for=condition=Ready pod \
