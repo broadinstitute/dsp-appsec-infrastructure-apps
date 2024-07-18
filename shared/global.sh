@@ -14,7 +14,6 @@ export NAMESPACE="${GLOBAL_NAMESPACE}"
 export PSP_ROLE="${NAMESPACE}-psp"
 export PSP_BINDING="${PSP_ROLE}"
 
-
 # install config connector
 gcloud storage cp gs://configconnector-operator/latest/release-bundle.tar.gz release-bundle.tar.gz
 tar zxvf release-bundle.tar.gz
@@ -25,3 +24,6 @@ kubectl apply -f operator-system/configconnector-operator.yaml
   "namespace.yaml" \
   "configconnectorcontext.yaml" \
   "global.yaml"
+
+kubectl wait -n cnrm-system --for=condition=Ready pod \
+    -l cnrm.cloud.google.com/component=cnrm-controller-manager
