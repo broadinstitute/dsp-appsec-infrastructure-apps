@@ -226,7 +226,7 @@ module "system_node_pool" {
 
   initial_node_count = 1
   max_node_count     = var.max_system_node_count
-  machine_type       = "e2-small"
+  machine_type       = "e2-medium"
 }
 
 # This pool will be used for the application Pods,
