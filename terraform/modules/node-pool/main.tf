@@ -37,6 +37,16 @@ resource "google_container_node_pool" "pool" {
         }
       }
 
+      dynamic "taint" {
+        for_each = var.enable_sandbox ? [1] : []
+
+        content {
+          key    = "sandbox.gke.io/runtime"
+          value  = "gvisor"
+          effect = "NO_SCHEDULE"
+        }
+      }
+
       shielded_instance_config {
         enable_secure_boot = true
       }

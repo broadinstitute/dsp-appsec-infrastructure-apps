@@ -11,8 +11,7 @@ export $(xargs < .env)
 export NAMESPACE="${DOJO_NAMESPACE}"
 
 ./kube-apply.py \
-  "namespace.yaml" \
-  "configconnectorcontext.yaml"
+  "namespace.yaml"
 
 # Generate secrets
 

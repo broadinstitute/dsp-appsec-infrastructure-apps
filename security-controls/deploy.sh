@@ -19,6 +19,5 @@ export GITHUB_GQL_ENDPOINT="https://api.github.com/graphql"
 
 ./kube-apply.py \
   "namespace.yaml" \
-  "configconnectorcontext.yaml" \
   "service-account.yaml" \
   "${CWD}/deployment.yaml"

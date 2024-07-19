@@ -15,8 +15,7 @@ export CRON_JOB="${NAMESPACE}-trigger-weekly"
 export CRON_SERVICE_ACCOUNT="${CRON_JOB}"
 
 ./kube-apply.py \
-  "namespace.yaml" \
-  "configconnectorcontext.yaml"
+  "namespace.yaml"
 
 export SERVICE="${JOB_CONFIG_MAP}"
 export SERVICE_ACCOUNT="${JOB_SERVICE_ACCOUNT}"

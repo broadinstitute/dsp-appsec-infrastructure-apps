@@ -1,5 +1,59 @@
 apiVersion: core.cnrm.cloud.google.com/v1beta1
 kind: ConfigConnector
 metadata:
-  # the name is restricted to ensure that there is only ConfigConnector instance installed in your cluster
+  # the name is restricted to ensure that there is only one
+  # ConfigConnector resource installed in your cluster
   name: configconnector.core.cnrm.cloud.google.com
+spec:
+  mode: cluster
+  googleServiceAccount: ${cnrm_sa}
+  # Setting `stateIntoSpec` to `Absent` is recommended. It means setting `cnrm.cloud.google.com/state-into-spec`
+  # annotation to `absent` for all Config Connector resources created in the cluster in the future.
+  # It prevents Config Connector from populating unspecified fields into the spec.
+  stateIntoSpec: Absent
+---
+apiVersion: customize.core.cnrm.cloud.google.com/v1beta1
+kind: ControllerResource
+metadata:
+  name: cnrm-controller-manager
+spec:
+  replicas: 1
+  containers:
+    - name: manager
+      resources:
+        limits:
+          cpu: 200m
+          memory: 512Mi
+        requests:
+          cpu: 30m
+          memory: 200Mi
+---
+apiVersion: customize.core.cnrm.cloud.google.com/v1beta1
+kind: ControllerResource
+metadata:
+  name: cnrm-webhook-manager
+spec:
+  replicas: 1
+  containers:
+    - name: webhook
+      resources:
+        limits:
+          memory: 128Mi
+        requests:
+          cpu: 10m
+          memory: 128Mi
+---
+apiVersion: customize.core.cnrm.cloud.google.com/v1beta1
+kind: ControllerResource
+metadata:
+  name: cnrm-deletiondefender
+spec:
+  replicas: 1
+  containers:
+    - name: deletiondefender
+      resources:
+        limits:
+          memory: 256Mi
+        requests:
+          cpu: 30m
+          memory: 128Mi

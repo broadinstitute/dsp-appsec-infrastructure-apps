@@ -1,19 +1,3 @@
-terraform {
-  backend "gcs" {
-    prefix = "appsec-apps"
-  }
-}
-
-provider "google" {
-  project = var.project
-  region  = var.region
-}
-
-provider "google-beta" {
-  project = var.project
-  region  = var.region
-}
-
 resource "google_project_service" "firestore" {
   service            = "firestore.googleapis.com"
   disable_on_destroy = false
@@ -33,7 +17,7 @@ data "http" "cloudbuild-ip" {
 
 locals {
   cloudbuild_sa   = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
-  cloudbuild_cidr = "${data.http.cloudbuild-ip.body}/32"
+  cloudbuild_cidr = "${data.http.cloudbuild-ip.response_body}/32"
 }
 
 ### VPC
@@ -149,31 +133,6 @@ resource "google_service_account_iam_member" "compute_sa_cloudbuild" {
   member             = local.cloudbuild_sa
 }
 
-### Google Container Registry
-
-resource "google_container_registry" "us_gcr" {
-  location = "US"
-}
-
-resource "google_storage_bucket_iam_member" "us_gcr_viewers" {
-  for_each = {
-    node_sa         = "serviceAccount:${module.node_sa.email}"
-  }
-  bucket = google_container_registry.us_gcr.id
-  role   = "roles/storage.objectViewer"
-  member = each.value
-}
-
-# needed for CIS GKE 5.1.3
-
-resource "google_container_registry" "gcr" {}
-
-resource "google_storage_bucket_iam_member" "gcr_viewer" {
-  bucket = google_container_registry.gcr.id
-  role   = "roles/storage.objectViewer"
-  member = "serviceAccount:${module.node_sa.email}"
-}
-
 ### GKE cluster
 
 resource "google_container_cluster" "cluster" {
@@ -229,12 +188,17 @@ resource "google_container_cluster" "cluster" {
   #   enabled = true
   # }
 
+  cluster_autoscaling {
+    autoscaling_profile = "OPTIMIZE_UTILIZATION"
+  }
+
+  cost_management_config {
+    enabled = true
+  }
+
   addons_config {
     network_policy_config {
       disabled = false
-    }
-    config_connector_config {
-      enabled = true
     }
     istio_config {
       disabled = true
@@ -260,8 +224,9 @@ module "system_node_pool" {
   cluster         = google_container_cluster.cluster.name
   service_account = module.node_sa.email
 
-  initial_node_count = 2
-  machine_type       = "e2-standard-2"
+  initial_node_count = 1
+  max_node_count     = var.max_system_node_count
+  machine_type       = "e2-medium"
 }
 
 # This pool will be used for the application Pods,
@@ -275,7 +240,7 @@ module "apps_node_pool" {
   cluster         = google_container_cluster.cluster.name
   service_account = module.node_sa.email
 
-  machine_type   = "n1-highmem-4"
+  machine_type   = "n1-highmem-2"
   max_node_count = var.max_app_node_count
   enable_sandbox = true
 }
@@ -395,7 +360,7 @@ resource "google_project_iam_custom_role" "cnrm_sa" {
 resource "google_service_account_iam_member" "cnrm_sa_ksa_binding" {
   service_account_id = module.cnrm_sa.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "serviceAccount:${var.project}.svc.id.goog[cnrm-system/cnrm-controller-manager-${var.global_namespace}]"
+  member             = "serviceAccount:${var.project}.svc.id.goog[cnrm-system/cnrm-controller-manager]"
 }
 
 ### IAP
@@ -418,13 +383,13 @@ resource "google_project_iam_member" "oauth_cloudbuild" {
 
 resource "google_iap_client" "iap" {
   display_name = var.cluster_name
-  brand        = jsondecode(data.http.iap_brand.body).brands[0].name
+  brand        = jsondecode(data.http.iap_brand.response_body).brands[0].name
 }
 
-resource "local_file" "iap_secret" {
+resource "local_sensitive_file" "iap_secret" {
   filename        = "${path.cwd}/.iap-secret.yaml"
   file_permission = "0600"
-  sensitive_content = yamlencode({
+  content = yamlencode({
     apiVersion = "v1"
     kind       = "Secret"
     type       = "Opaque"
@@ -470,7 +435,7 @@ output "nat_cidr" {
 }
 
 output "iap_secret_yaml" {
-  value = local_file.iap_secret.filename
+  value = local_sensitive_file.iap_secret.filename
 }
 
 output "iap_secret_name" {
