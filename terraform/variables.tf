@@ -20,9 +20,15 @@ variable "cluster_name" {
   default = "appsec-apps"
 }
 
+variable "max_system_node_count" {
+  type        = number
+  default     = 2
+  description = "Max number of system nodes per zone"
+}
+
 variable "max_app_node_count" {
   type        = number
-  default     = 5
+  default     = 2
   description = "Max number of app nodes per zone"
 }
 
@@ -62,9 +68,4 @@ variable "node_cidr" {
   type        = string
   default     = "10.2.0.0/16"
   description = "CIDR for the cluster nodes"
-}
-
-variable "global_namespace" {
-  type        = string
-  description = "Global namespace for GKE"
 }

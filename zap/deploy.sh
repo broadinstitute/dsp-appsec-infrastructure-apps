@@ -21,8 +21,7 @@ export SESSION_BUCKET="${PROJECT_ID}-zap-sessions"
 export VOLUME_SHARE="/tmp/share"
 
 ./kube-apply.py \
-  "namespace.yaml" \
-  "configconnectorcontext.yaml"
+  "namespace.yaml"
 
 export SERVICE="${JOB_CONFIG_MAP}"
 export SERVICE_ACCOUNT="${JOB_SERVICE_ACCOUNT}"

@@ -11,8 +11,7 @@ export $(xargs < .env)
 export NAMESPACE="${CODEDX_NAMESPACE}"
 
 ./kube-apply.py \
-  "namespace.yaml" \
-  "configconnectorcontext.yaml"
+  "namespace.yaml"
 
 # Generate secrets
 
