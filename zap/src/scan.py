@@ -31,8 +31,10 @@ def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, prod
     dojo = defectdojo.DefectDojoAPIv2(
         defect_dojo, defect_dojo_key, defect_dojo_user, debug=False, timeout=120)
     product = dojo.get_product(product_id=product_id)
-    return product.data["name"]
-
+    try:
+        return product.data["name"]
+    except Exception:
+        raise RuntimeError(f"No product was found for the provided product ID: {product_id}")
 
 def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str, subfoldername=None):
     """
