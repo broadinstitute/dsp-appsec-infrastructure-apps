@@ -52,6 +52,8 @@ export class EditSecurityControlsFormComponent implements OnInit {
     this.getSecurityControls.getServiceSecurityControls(serviceName).subscribe((serviceSecurityControl) => {
         this.answers = serviceSecurityControl;
         this.service = serviceSecurityControl.service;
+        console.log(this.answers)
+        console.log(this.service)
       },
       (serviceSecurityControl) => {
         this.ngZone.run(() => {
