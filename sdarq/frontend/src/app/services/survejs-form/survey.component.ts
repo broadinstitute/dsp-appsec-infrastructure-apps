@@ -65,7 +65,7 @@ export class SurveyComponent implements OnInit {
     Survey.SurveyNG.render('surveyElement', { model: surveyModel });
   }
 
-  OnChanges(changes: SimpleChanges) {
+  ngOnChange(changes: SimpleChanges) {
     for (const propName in changes) {
       if (propName ==  "answers")
       {
