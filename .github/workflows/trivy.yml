@@ -3,12 +3,17 @@ on:
   pull_request:
   # schedule:
   # - cron: '0 14 * * 1' # each Monday at 9am EST
+  workflow_dispatch:
+
 
 jobs:
   appsec-trivy:
     # Parse Dockerfile and build, scan image if a "blessed" base image is not used
     name: DSP AppSec Trivy check
     runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     strategy:
       fail-fast: false
       matrix:
@@ -24,6 +29,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - uses: google-github-actions/auth@v2
+      with:
+        project_id: 'dsp-appsec-dev'
+        workload_identity_provider: 'projects/497778860653/locations/global/workloadIdentityPools/my-workload-identity-pool/providers/test-github-multi-repos'
 
     - uses: broadinstitute/dsp-appsec-trivy-action@v1
       with:
