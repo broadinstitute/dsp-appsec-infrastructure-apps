@@ -39,7 +39,6 @@
     "json2csv": "^5.0.6",
     "rxjs": "^6.6.3",
     "survey-angular": "^1.8.2",
-    "survey-core": "^1.10.3",
     "survey-creator": "^1.8.2",
     "survey-knockout": "^1.8.2",
     "survey-pdf": "^1.8.2",
