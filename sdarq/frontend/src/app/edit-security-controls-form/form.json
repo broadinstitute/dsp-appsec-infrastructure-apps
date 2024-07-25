@@ -78,7 +78,7 @@
        }
       ],
       "questionTitleLocation": "top",
-      "title": "{service} security controls:"
+      "title": "{{service}} security controls:"
      }
     ]
    }
