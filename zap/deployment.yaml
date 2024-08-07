@@ -177,7 +177,7 @@ items:
             - &cron-job-container
               name: zap-trigger
               image: ${ZAP_IMAGE}
-              args: ['trigger', '-s', 'ui', 'iapui']
+              args: ['trigger', '-s', 'ui', 'beehive']
               env:
               - name: GCP_PROJECT_ID
                 value: ${PROJECT_ID}
