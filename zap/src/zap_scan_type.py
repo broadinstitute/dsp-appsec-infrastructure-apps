@@ -16,7 +16,7 @@ class ScanType(str, Enum):
     UI = "UI"
     LEOAPP = "LeoApp"
     IAPUI = "iapui"
-    IAPAPI ="IAPAPI"
+    IAPAUTH ="IAPAUTH"
 
     def __str__(self):
         return str(self.name).lower()
