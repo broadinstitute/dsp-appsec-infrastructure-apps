@@ -319,7 +319,10 @@ def zap_compliance_scan(
             if scan_type == ScanType.IAPUI:
                 logging.info("Setting beehive session cookie.")
                 cookie_name = "__host-beehive_session"
-                zap_setup_cookie(zap, host, context_id, cookie_name)
+                try:
+                    zap_setup_cookie(zap, host, context_id, cookie_name)
+                except Exception:
+                    logging.info("Zap failed to find and set the beehive cookie.")
         else:
             token = zap_sa_auth(zap, env)
         if scan_type == ScanType.LEOAPP:
