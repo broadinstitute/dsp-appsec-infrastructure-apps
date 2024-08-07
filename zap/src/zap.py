@@ -306,17 +306,17 @@ def zap_compliance_scan(
     # UI - authenticated with SA, active scan and ajax spider is performed.
     # AUTH - authenticated with SA, active scan is performed.
     # LEOAPP - authenticated with SA and registered cookie, active scan and ajax spider is performed
-    # IAPUI - authenticated with iap bearer token and cookie.
-    #IAPAPI - authenticated with iap bearer token, api spec.
+    # BEEHIVE - authenticated with iap bearer token and cookie.
+    #IAPAUTH - authenticated with iap bearer token, api spec.
 
     # Set up context for scan
     context_id = zap_setup_context(zap, project, host)
 
     if scan_type != ScanType.BASELINE:
-        if scan_type == ScanType.IAPUI or scan_type == ScanType.IAPAPI:
+        if scan_type == ScanType.BEEHIVE or scan_type == ScanType.IAPAUTH:
             client_id = os.getenv('IAP_CLIENT_ID')
             token = zap_set_iap_token(client_id)
-            if scan_type == ScanType.IAPUI:
+            if scan_type == ScanType.BEEHIVE:
                 logging.info("Setting beehive session cookie.")
                 cookie_name = "__host-beehive_session"
                 zap_setup_cookie(zap, host, context_id, cookie_name)
@@ -332,12 +332,12 @@ def zap_compliance_scan(
                 logging.info("Leo authentication was unsuccessful")
         
 
-    if scan_type == ScanType.API or scan_type == ScanType.IAPAPI:
+    if scan_type == ScanType.API:
         zap_api_import(zap, target_url)
 
     zap.spider.scan(contextname=project, url=target_url)
 
-    if scan_type in (ScanType.UI, ScanType.LEOAPP, ScanType.IAPUI):
+    if scan_type in (ScanType.UI, ScanType.LEOAPP, ScanType.BEEHIVE):
         zap.ajaxSpider.scan(target_url, contextname=project)
 
     zap_wait_for_passive_scan(zap, timeout_in_secs=TIMEOUT_MINS * 60)

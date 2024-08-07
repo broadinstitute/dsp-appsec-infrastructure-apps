@@ -105,7 +105,17 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
                      scan_date=str(datetime.today().strftime('%Y-%m-%d')),
                      tags="Zap_scan")
     logging.info("Dojo file upload: %s", dojo_upload)
-    dojo._request('POST','engagements/'+str(engagement_id)+'/close/')
+    
+    max_retries = int(getenv("MAX_RETRIES", '3'))
+    retry_delay = 2
+    for attempt in range(max_retries):
+        try:
+            dojo._request('POST','engagements/'+str(engagement_id)+'/close/')
+            return
+        except Exception:
+            time.sleep(retry_delay)
+            retry_delay *= 2  # Double the delay for the next attempt
+        raise Exception("Maximum retry attempts reached")
 
 class Severity(str, Enum):
     """
@@ -345,7 +355,7 @@ def main(): # pylint: disable=too-many-locals
     - Upload ZAP XML report to GCS, if needed
     - Send a Slack alert with Code Dx report, if needed.
     """
-    max_retries = int(getenv("MAX_RETRIES", '1'))
+    max_retries = int(getenv("MAX_RETRIES", '2'))
 
     for attempt in range(max_retries):
         # run Zap scan
@@ -393,7 +403,7 @@ def main(): # pylint: disable=too-many-locals
 
             # optionally, upload them to GCS
             xml_report_url = ""
-            if scan_type in (ScanType.UI, ScanType.LEOAPP, ScanType.IAPUI):
+            if scan_type in (ScanType.UI, ScanType.LEOAPP, ScanType.BEEHIVE):
                 xml_report_url = upload_gcs(
                     bucket_name,
                     scan_type,
@@ -411,7 +421,7 @@ def main(): # pylint: disable=too-many-locals
             clean_uri_path(zap_filename)
 
             #upload scrubbed results in case we need to do a manual upload
-            if scan_type in (ScanType.UI, ScanType.LEOAPP, ScanType.IAPUI):
+            if scan_type in (ScanType.UI, ScanType.LEOAPP, ScanType.BEEHIVE):
                 xml_report_url = upload_gcs(
                     bucket_name,
                     scan_type,
@@ -452,7 +462,7 @@ def main(): # pylint: disable=too-many-locals
                 )
 
             # Upload UI scan XMLs and CodeDx reports to Google Drive.
-            if scan_type in (ScanType.UI, ScanType.LEOAPP, ScanType.IAPUI):
+            if scan_type in (ScanType.UI, ScanType.LEOAPP, ScanType.BEEHIVE):
                 try:
                     logging.info('Setting up the google drive API service for uploading reports.')
 
