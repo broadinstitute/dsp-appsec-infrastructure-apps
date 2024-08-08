@@ -355,8 +355,8 @@ def main(): # pylint: disable=too-many-locals
     - Upload ZAP XML report to GCS, if needed
     - Send a Slack alert with Code Dx report, if needed.
     """
-    max_retries = int(getenv("MAX_RETRIES", '2'))
-
+    max_retries = int(getenv("MAX_RETRIES", '3'))
+    sleep_time = 10
     for attempt in range(max_retries):
         # run Zap scan
         try:
@@ -384,6 +384,7 @@ def main(): # pylint: disable=too-many-locals
             dd = getenv("DEFECT_DOJO")
 
             # fetch dd poject name
+            logging.info("Fetching the dojo product name.")
             dojo_product_name = fetch_dojo_product_name(defect_dojo,
                                                             defect_dojo_user,
                                                             defect_dojo_key,
@@ -531,7 +532,8 @@ def main(): # pylint: disable=too-many-locals
                     logging.exception("Error shutting down zap.")
                 logging.exception("Max retries exceeded.")
                 exit(0)
-            sleep(5)
+            sleep(sleep_time)
+            sleep_time *= 2
         else:
             break
 
