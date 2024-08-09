@@ -27,11 +27,20 @@ import drive_upload as drivehelper
 def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, product_id):
     """
     Fetch dojo product name using product_id
+    Includes retries as dojo sometimes does not respond.
     """
     dojo = defectdojo.DefectDojoAPIv2(
-        defect_dojo, defect_dojo_key, defect_dojo_user, debug=False, timeout=120)
-    product = dojo.get_product(product_id=product_id)
-    return product.data["name"]
+    defect_dojo, defect_dojo_key, defect_dojo_user, debug=False, timeout=120)
+    max_retries = int(getenv("MAX_RETRIES", '4'))
+    retry_delay = 5
+    for attempt in range(max_retries):
+        try:
+            product = dojo.get_product(product_id=product_id)
+            return product.data["name"]
+        except Exception: # pylint: disable=broad-except
+            sleep(retry_delay)
+            retry_delay *= 2  # Double the delay for the next attempt
+        raise RuntimeError("Maximum retry attempts reached")
 
 
 def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str, subfoldername=None):
@@ -82,9 +91,17 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
     absolute_path = os.path.abspath(zap_filename)
     date = datetime.today().strftime("%Y%m%d%H:%M")
 
-    try:
-        lead_id = dojo.list_users(defect_dojo_user).data["results"][0]["id"]
-    except Exception: # pylint: disable=broad-except
+    #Doing these as individual retries to avoid uploading the same report twice.
+    max_retries = int(getenv("MAX_RETRIES", '3'))
+    retry_delay = 2
+    for attempt in range(max_retries):
+        try:
+            lead_id = dojo.list_users(defect_dojo_user).data["results"][0]["id"]
+            break
+        except Exception: # pylint: disable=broad-except
+            sleep(retry_delay)
+            max_retries -= 1
+            retry_delay *= 2
         logging.error("Did not retrieve dojo user ID, upload failed.")
         return
 
@@ -105,17 +122,16 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
                      scan_date=str(datetime.today().strftime('%Y-%m-%d')),
                      tags="Zap_scan")
     logging.info("Dojo file upload: %s", dojo_upload)
-    
     max_retries = int(getenv("MAX_RETRIES", '3'))
     retry_delay = 2
     for attempt in range(max_retries):
         try:
             dojo._request('POST','engagements/'+str(engagement_id)+'/close/')
             return
-        except Exception:
-            time.sleep(retry_delay)
+        except Exception: # pylint: disable=broad-except
+            sleep(retry_delay)
             retry_delay *= 2  # Double the delay for the next attempt
-        raise Exception("Maximum retry attempts reached")
+        raise RuntimeError("Maximum retry attempts reached for closing engagement")
 
 class Severity(str, Enum):
     """
@@ -340,7 +356,8 @@ def clean_uri_path(xml_report):
     """
     tree = ET.parse(xml_report)
     root = tree.getroot()
-    #There's a hash in bundled files that is causing flaws to not match, this should remove the hash.
+    #There's a hash in bundled files that is causing flaws to not match
+    # this should remove the hash.
     for uri in root.iter('uri'):
         r=urlparse(uri.text)
         r=r._replace(path=URI_HASH_REGEX.sub('', r.path))
@@ -355,8 +372,9 @@ def main(): # pylint: disable=too-many-locals
     - Upload ZAP XML report to GCS, if needed
     - Send a Slack alert with Code Dx report, if needed.
     """
-    max_retries = int(getenv("MAX_RETRIES", '2'))
-
+    
+    max_retries = int(getenv("MAX_RETRIES", '1'))
+    sleep_time = 10
     for attempt in range(max_retries):
         # run Zap scan
         try:
@@ -382,18 +400,15 @@ def main(): # pylint: disable=too-many-locals
             defect_dojo_user = getenv("DEFECT_DOJO_USER")
             defect_dojo = getenv("DEFECT_DOJO_URL")
             dd = getenv("DEFECT_DOJO")
-
+            # configure logging
+            logging.basicConfig(level=logging.INFO,
+                format=f"%(levelname)-8s [{codedx_project} {scan_type}-scan] %(message)s",
+                )
             # fetch dd poject name
             dojo_product_name = fetch_dojo_product_name(defect_dojo,
                                                             defect_dojo_user,
                                                             defect_dojo_key,
                                                             product_id)
-
-
-            # configure logging
-            logging.basicConfig(level=logging.INFO,
-                format=f"%(levelname)-8s [{codedx_project} {scan_type}-scan] %(message)s",
-                )
 
             logging.info("Severities: %s", ", ".join(
                 s.value for s in severities))
@@ -495,7 +510,7 @@ def main(): # pylint: disable=too-many-locals
                                                                     drive_service)
                         logging.info(f"The returned file id for {dojo_product_name} XML is {file}")
                     if not file:
-                        raise Exception(f"The XML file for {dojo_product_name} was not uploaded.")
+                        raise RuntimeError(f"The XML file for {dojo_product_name} was not uploaded.")
                     cdx = CodeDx(codedx_url, codedx_api_key)
                     report_file = get_codedx_initial_report(cdx, codedx_project)
                     file = drivehelper.upload_file_to_drive(report_file,
@@ -504,7 +519,7 @@ def main(): # pylint: disable=too-many-locals
                                                                 drive_service)
 
                     if not file:
-                        raise Exception(
+                        raise RuntimeError(
                                     f"The CodeDx report for {dojo_product_name} was not uploaded.")
                     logging.info(f'The report {report_file} has been uploaded.')
                 except Exception as e: # pylint: disable=broad-except
@@ -531,7 +546,8 @@ def main(): # pylint: disable=too-many-locals
                     logging.exception("Error shutting down zap.")
                 logging.exception("Max retries exceeded.")
                 exit(0)
-            sleep(5)
+            sleep(sleep_time)
+            sleep_time *= 2
         else:
             break
 

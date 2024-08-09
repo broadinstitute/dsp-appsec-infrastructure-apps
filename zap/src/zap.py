@@ -307,7 +307,7 @@ def zap_compliance_scan(
     # AUTH - authenticated with SA, active scan is performed.
     # LEOAPP - authenticated with SA and registered cookie, active scan and ajax spider is performed
     # BEEHIVE - authenticated with iap bearer token and cookie.
-    #IAPAUTH - authenticated with iap bearer token, api spec.
+    # IAPAUTH - authenticated with iap bearer token, api spec.
 
     # Set up context for scan
     context_id = zap_setup_context(zap, project, host)

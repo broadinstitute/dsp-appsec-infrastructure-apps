@@ -3,14 +3,14 @@
 Helper functions for connecting to, navigating, and uploading to Google Drive.
 """
 import logging
-
-import google.auth
 import calendar
 from calendar import WEDNESDAY
+from datetime import timedelta
+import google.auth
 from google.auth.transport.requests import Request as GoogleAuthRequest
 from googleapiclient.http import MediaFileUpload
 from googleapiclient.discovery import build
-from datetime import datetime, timedelta
+
 
 
 def find_children(parent_id, files):
@@ -148,7 +148,7 @@ def after_fourth_wednesday(date):
     # If it's not the last ten days of the month, return False.
     if diff > (day_count-21):
         return False
-    # The earliest day the 4th wednesday can be is the 22nd.    
+    # The earliest day the 4th wednesday can be is the 22nd.
     diff = previous_wednesday.day - 21
     if diff > 0:
         return True
