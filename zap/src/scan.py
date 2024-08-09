@@ -27,11 +27,21 @@ import drive_upload as drivehelper
 def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, product_id):
     """
     Fetch dojo product name using product_id
+    Includes retries as dojo sometimes does not respond.
     """
     dojo = defectdojo.DefectDojoAPIv2(
-        defect_dojo, defect_dojo_key, defect_dojo_user, debug=False, timeout=120)
-    product = dojo.get_product(product_id=product_id)
-    return product.data["name"]
+    defect_dojo, defect_dojo_key, defect_dojo_user, debug=False, timeout=120)
+    max_retries = int(getenv("MAX_RETRIES", '4'))
+    retry_delay = 5
+    for attempt in range(max_retries):
+        try:
+            product = dojo.get_product(product_id=product_id)
+            return product.data["name"]
+        except Exception:
+            time.sleep(retry_delay)
+            retry_delay *= 2  # Double the delay for the next attempt
+        raise Exception("Maximum retry attempts reached")
+    
 
 
 def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str, subfoldername=None):
@@ -82,11 +92,20 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
     absolute_path = os.path.abspath(zap_filename)
     date = datetime.today().strftime("%Y%m%d%H:%M")
 
-    try:
-        lead_id = dojo.list_users(defect_dojo_user).data["results"][0]["id"]
-    except Exception: # pylint: disable=broad-except
+    #Doing these as individual retries to avoid uploading the same report twice.
+    max_retries = int(getenv("MAX_RETRIES", '3'))
+    retry_delay = 2
+    for attempt in range(max_retries):
+        try:
+            lead_id = dojo.list_users(defect_dojo_user).data["results"][0]["id"]
+            break
+        except Exception: # pylint: disable=broad-except
+            time.sleep(retry_delay)
+            max_retries -= 1
+            retry_delay *= 2
         logging.error("Did not retrieve dojo user ID, upload failed.")
         return
+        
 
     engagement=dojo.create_engagement( name=date, product_id=product_id, lead_id=lead_id,
         target_start=datetime.today().strftime("%Y-%m-%d"),
@@ -115,7 +134,7 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
         except Exception:
             time.sleep(retry_delay)
             retry_delay *= 2  # Double the delay for the next attempt
-        raise Exception("Maximum retry attempts reached")
+        raise Exception("Maximum retry attempts reached for closing engagement")
 
 class Severity(str, Enum):
     """
@@ -355,7 +374,11 @@ def main(): # pylint: disable=too-many-locals
     - Upload ZAP XML report to GCS, if needed
     - Send a Slack alert with Code Dx report, if needed.
     """
-    max_retries = int(getenv("MAX_RETRIES", '3'))
+     # configure logging
+    logging.basicConfig(level=logging.INFO,
+        format=f"%(levelname)-8s [{codedx_project} {scan_type}-scan] %(message)s",
+        )
+    max_retries = int(getenv("MAX_RETRIES", '1'))
     sleep_time = 10
     for attempt in range(max_retries):
         # run Zap scan
@@ -388,13 +411,7 @@ def main(): # pylint: disable=too-many-locals
             dojo_product_name = fetch_dojo_product_name(defect_dojo,
                                                             defect_dojo_user,
                                                             defect_dojo_key,
-                                                            product_id)
-
-
-            # configure logging
-            logging.basicConfig(level=logging.INFO,
-                format=f"%(levelname)-8s [{codedx_project} {scan_type}-scan] %(message)s",
-                )
+                                                            product_id) 
 
             logging.info("Severities: %s", ", ".join(
                 s.value for s in severities))
