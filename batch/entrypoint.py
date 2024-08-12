@@ -72,8 +72,6 @@ def get_pubsub_callback(
             new_job = get_job(job, job_name, job_inputs)
             batch_api.create_namespaced_job(namespace, new_job)
             log.info("Submitted job %s", job_name)
-            # Delay returning to listening to pub sub to reduce concurrent scans.
-            sleep(30)
 
         except (BaseException, ApiException) as err:  # pylint: disable=broad-except
             if isinstance(err, ApiException) and err.status == HTTPStatus.CONFLICT:
