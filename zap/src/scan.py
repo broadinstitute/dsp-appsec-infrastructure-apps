@@ -38,6 +38,7 @@ def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, prod
             product = dojo.get_product(product_id=product_id)
             return product.data["name"]
         except Exception: # pylint: disable=broad-except
+            logging.warn(product.message)
             sleep(retry_delay)
         raise RuntimeError("Maximum retry attempts reached")
 
@@ -309,7 +310,7 @@ def slack_alert_with_report(  # pylint: disable=too-many-arguments
         slack.chat_postMessage(channel=channel, text=gcs_slack_text)
     else:
         msg = f"The {scan_type.label()} scan of endpoint {target_url} is complete"
-        slack.chat_postMessage(channel=channel, text=gcs_slack_text)
+        slack.chat_postMessage(channel=channel, text=msg)
         logging.warning("No findings for alert to Slack")
         return
     logging.info("Alert sent to Slack channel")
