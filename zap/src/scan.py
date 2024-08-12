@@ -38,9 +38,9 @@ def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, prod
             product = dojo.get_product(product_id=product_id)
             return product.data["name"]
         except Exception: # pylint: disable=broad-except
-            logging.warn(product.message)
+            logging.info(product.message)
             sleep(retry_delay)
-        raise RuntimeError("Maximum retry attempts reached")
+    raise RuntimeError("Maximum retry attempts reached")
 
 
 def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str, subfoldername=None):
@@ -537,7 +537,10 @@ def main(): # pylint: disable=too-many-locals
             logging.warning(error_message)
             if attempt == max_retries - 1:
                 error_message = f"Error running Zap Scans for { target_url }. Last error: { error }"
-                error_slack_alert(error_message, slack_token, slack_channel)
+                try:
+                    error_slack_alert(error_message, slack_token, slack_channel)
+                except:
+                    logging(f"Slack could not post to {slack_channel}")
                 try:
                     zap = zap_connect()
                     zap.core.shutdown()
