@@ -6,7 +6,6 @@ and submits a Kubernetes Job for each message.
 
 import logging as log
 import os
-from time import sleep
 from copy import deepcopy
 from hashlib import sha256
 from http import HTTPStatus
