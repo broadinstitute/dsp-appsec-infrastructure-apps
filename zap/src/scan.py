@@ -31,15 +31,14 @@ def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, prod
     """
     dojo = defectdojo.DefectDojoAPIv2(
     defect_dojo, defect_dojo_key, defect_dojo_user, debug=False, timeout=120)
-    max_retries = int(getenv("MAX_RETRIES", '4'))
-    retry_delay = 5
+    max_retries = int(getenv("MAX_RETRIES", '5'))
+    retry_delay = 20
     for attempt in range(max_retries):
         try:
             product = dojo.get_product(product_id=product_id)
             return product.data["name"]
         except Exception: # pylint: disable=broad-except
             sleep(retry_delay)
-            retry_delay *= 2  # Double the delay for the next attempt
         raise RuntimeError("Maximum retry attempts reached")
 
 
@@ -309,6 +308,8 @@ def slack_alert_with_report(  # pylint: disable=too-many-arguments
         # mention only XML report, if it was requested
         slack.chat_postMessage(channel=channel, text=gcs_slack_text)
     else:
+        msg = f"The {scan_type.label()} scan of endpoint {target_url} is complete"
+        slack.chat_postMessage(channel=channel, text=gcs_slack_text)
         logging.warning("No findings for alert to Slack")
         return
     logging.info("Alert sent to Slack channel")

@@ -6,6 +6,7 @@ and submits a Kubernetes Job for each message.
 
 import logging as log
 import os
+from time import sleep
 from copy import deepcopy
 from hashlib import sha256
 from http import HTTPStatus
@@ -103,6 +104,8 @@ def listen_pubsub(
         log.info("Listening to subscription %s", subscription)
         try:
             streaming_pull.result()
+            # Delay returning to listening to pub sub to reduce concurrent scans.
+            sleep(30)
         except (BaseException, TimeoutError) as err:
             streaming_pull.cancel()
             raise err
