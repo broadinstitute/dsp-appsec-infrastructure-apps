@@ -31,16 +31,16 @@ def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, prod
     """
     dojo = defectdojo.DefectDojoAPIv2(
     defect_dojo, defect_dojo_key, defect_dojo_user, debug=False, timeout=120)
-    max_retries = int(getenv("MAX_RETRIES", '4'))
-    retry_delay = 5
+    max_retries = int(getenv("MAX_RETRIES", '6'))
+    retry_delay = 30
     for attempt in range(max_retries):
         try:
             product = dojo.get_product(product_id=product_id)
             return product.data["name"]
         except Exception: # pylint: disable=broad-except
+            logging.info(product.message)
             sleep(retry_delay)
-            retry_delay *= 2  # Double the delay for the next attempt
-        raise RuntimeError("Maximum retry attempts reached")
+    raise RuntimeError("Maximum retry attempts reached")
 
 
 def upload_gcs(bucket_name: str, scan_type: ScanType, filename: str, subfoldername=None):
@@ -92,18 +92,16 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
     date = datetime.today().strftime("%Y%m%d%H:%M")
 
     #Doing these as individual retries to avoid uploading the same report twice.
-    max_retries = int(getenv("MAX_RETRIES", '3'))
-    retry_delay = 2
+    max_retries = int(getenv("MAX_RETRIES", '5'))
+    retry_delay = 30
     for attempt in range(max_retries):
         try:
             lead_id = dojo.list_users(defect_dojo_user).data["results"][0]["id"]
             break
         except Exception: # pylint: disable=broad-except
             sleep(retry_delay)
-            max_retries -= 1
-            retry_delay *= 2
         logging.error("Did not retrieve dojo user ID, upload failed.")
-        return
+    return
 
     engagement=dojo.create_engagement( name=date, product_id=product_id, lead_id=lead_id,
         target_start=datetime.today().strftime("%Y-%m-%d"),
@@ -123,15 +121,14 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
                      tags="Zap_scan")
     logging.info("Dojo file upload: %s", dojo_upload)
     max_retries = int(getenv("MAX_RETRIES", '3'))
-    retry_delay = 2
+    retry_delay = 20
     for attempt in range(max_retries):
         try:
             dojo._request('POST','engagements/'+str(engagement_id)+'/close/')
             return
         except Exception: # pylint: disable=broad-except
             sleep(retry_delay)
-            retry_delay *= 2  # Double the delay for the next attempt
-        raise RuntimeError("Maximum retry attempts reached for closing engagement")
+    raise RuntimeError("Maximum retry attempts reached for closing engagement")
 
 class Severity(str, Enum):
     """
@@ -309,6 +306,8 @@ def slack_alert_with_report(  # pylint: disable=too-many-arguments
         # mention only XML report, if it was requested
         slack.chat_postMessage(channel=channel, text=gcs_slack_text)
     else:
+        msg = f"The {scan_type.label()} scan of endpoint {target_url} is complete"
+        slack.chat_postMessage(channel=channel, text=msg)
         logging.warning("No findings for alert to Slack")
         return
     logging.info("Alert sent to Slack channel")
@@ -535,7 +534,10 @@ def main(): # pylint: disable=too-many-locals
             logging.warning(error_message)
             if attempt == max_retries - 1:
                 error_message = f"Error running Zap Scans for { target_url }. Last error: { error }"
-                error_slack_alert(error_message, slack_token, slack_channel)
+                try:
+                    error_slack_alert(error_message, slack_token, slack_channel)
+                except:
+                    logging(f"Slack could not post to {slack_channel}")
                 try:
                     zap = zap_connect()
                     zap.core.shutdown()

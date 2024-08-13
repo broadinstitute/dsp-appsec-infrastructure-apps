@@ -56,7 +56,6 @@ def get_folders(drive_service, drive_id, page_token = None):
     """
     Returns all available folders in a specified shared drive.
     """
-    logging.info("Pulling folder names from Google Drive.")
     response = (
           drive_service.files()
           .list(
