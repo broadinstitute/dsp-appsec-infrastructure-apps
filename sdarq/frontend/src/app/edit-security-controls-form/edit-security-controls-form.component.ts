@@ -50,7 +50,7 @@ export class EditSecurityControlsFormComponent implements OnInit {
 
   loadSecurityControls(serviceName) {
     this.getSecurityControls.getServiceSecurityControls(serviceName).subscribe((serviceSecurityControl) => {
-        this.answers = serviceSecurityControl
+        this.answers = serviceSecurityControl;
         this.service = serviceSecurityControl.service;
       },
       (serviceSecurityControl) => {
