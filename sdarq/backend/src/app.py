@@ -184,10 +184,11 @@ def submit():
             (appsec_jira_ticket_summury_srcl, appsec_jira_ticket_description),
             (appsec_jira_ticket_summury_sast, appsec_jira_ticket_description),
             (appsec_jira_ticket_summury_dast, appsec_jira_ticket_description)
+        ]
             
             
         for summary, description in ticket_data:
-            jiranotify.create_board_ticket(appsec_jira_project_key, summary, description)]
+            jiranotify.create_board_ticket(appsec_jira_project_key, summary, description)
 
         jiranotify.create_board_ticket(
             project_key_id,
@@ -270,10 +271,10 @@ def submit_app():
             (appsec_jira_ticket_summury_srcl, appsec_jira_ticket_description),
             (appsec_jira_ticket_summury_sast, appsec_jira_ticket_description),
             (appsec_jira_ticket_summury_dast, appsec_jira_ticket_description)
-            
+        ]
             
         for summary, description in ticket_data:
-            jiranotify.create_board_ticket(appsec_jira_project_key, summary, description)]
+            jiranotify.create_board_ticket(appsec_jira_project_key, summary, description)
 
         jiranotify.create_board_ticket(
             project_key_id,
