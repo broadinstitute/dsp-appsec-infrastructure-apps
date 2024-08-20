@@ -178,30 +178,17 @@ def submit():
                 u'defect_dojo': '{0}/product/{1}'.format(dojo_host_url, str(product_id))
             }, merge=True)
 
-        jiranotify.create_board_ticket(
-            appsec_jira_project_key,
-            app_jira_ticket_summury_alerts,
-            formatted_jira_description)
-
-        jiranotify.create_board_ticket(
-            appsec_jira_project_key,
-            appsec_jira_ticket_summury_tm,
-            appsec_jira_ticket_description)
-
-        jiranotify.create_board_ticket(
-            appsec_jira_project_key,
-            appsec_jira_ticket_summury_srcl,
-            appsec_jira_ticket_description)
-
-        jiranotify.create_board_ticket(
-            appsec_jira_project_key,
-            appsec_jira_ticket_summury_sast,
-            appsec_jira_ticket_description)
-
-        jiranotify.create_board_ticket(
-            appsec_jira_project_key,
-            appsec_jira_ticket_summury_dast,
-            appsec_jira_ticket_description)
+        ticket_data = [
+            (app_jira_ticket_summury_alerts, formatted_jira_description),
+            (appsec_jira_ticket_summury_tm, appsec_jira_ticket_description),
+            (appsec_jira_ticket_summury_srcl, appsec_jira_ticket_description),
+            (appsec_jira_ticket_summury_sast, appsec_jira_ticket_description),
+            (appsec_jira_ticket_summury_dast, appsec_jira_ticket_description)
+        ]
+            
+            
+        for summary, description in ticket_data:
+            jiranotify.create_board_ticket(appsec_jira_project_key, summary, description)
 
         jiranotify.create_board_ticket(
             project_key_id,
@@ -248,6 +235,7 @@ def submit_app():
         github_url = json_data['Github URL']
         appsec_jira_ticket_description = github_url + '\n' + architecture_diagram
         appsec_jira_ticket_summury_tm = 'Threat Model request ' + dojo_name
+        appsec_jira_ticket_summury_dast = 'Add ' + dojo_name + ' to DAST tool'
         appsec_jira_ticket_summury_srcl = 'Add ' + \
             dojo_name + ' to 3rd party dependencies scan tool'
         appsec_jira_ticket_summury_sast = 'Add ' + dojo_name + ' to a SAST tool'
@@ -276,25 +264,17 @@ def submit_app():
                 u'defect_dojo': '{0}/product/{1}'.format(dojo_host_url, str(product_id))
             }, merge=True)
 
-        jiranotify.create_board_ticket(
-            appsec_jira_project_key,
-            appsec_jira_ticket_summury_alerts,
-            formatted_jira_description)
 
-        jiranotify.create_board_ticket(
-            appsec_jira_project_key,
-            appsec_jira_ticket_summury_tm,
-            appsec_jira_ticket_description)
-
-        jiranotify.create_board_ticket(
-            appsec_jira_project_key,
-            appsec_jira_ticket_summury_srcl,
-            appsec_jira_ticket_description)
-
-        jiranotify.create_board_ticket(
-            appsec_jira_project_key,
-            appsec_jira_ticket_summury_sast,
-            appsec_jira_ticket_description)
+        ticket_data = [
+            (appsec_jira_ticket_summury_alerts, formatted_jira_description),
+            (appsec_jira_ticket_summury_tm, appsec_jira_ticket_description),
+            (appsec_jira_ticket_summury_srcl, appsec_jira_ticket_description),
+            (appsec_jira_ticket_summury_sast, appsec_jira_ticket_description),
+            (appsec_jira_ticket_summury_dast, appsec_jira_ticket_description)
+        ]
+            
+        for summary, description in ticket_data:
+            jiranotify.create_board_ticket(appsec_jira_project_key, summary, description)
 
         jiranotify.create_board_ticket(
             project_key_id,
