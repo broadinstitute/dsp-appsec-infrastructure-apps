@@ -235,7 +235,7 @@ def submit_app():
         github_url = json_data['Github URL']
         appsec_jira_ticket_description = github_url + '\n' + architecture_diagram
         appsec_jira_ticket_summury_tm = 'Threat Model request ' + dojo_name
-        appsec_jira_ticket_summury_dast = = 'Add ' + dojo_name + ' to DAST tool'
+        appsec_jira_ticket_summury_dast = 'Add ' + dojo_name + ' to DAST tool'
         appsec_jira_ticket_summury_srcl = 'Add ' + \
             dojo_name + ' to 3rd party dependencies scan tool'
         appsec_jira_ticket_summury_sast = 'Add ' + dojo_name + ' to a SAST tool'
