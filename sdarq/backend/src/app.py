@@ -154,6 +154,7 @@ def submit():
         appsec_jira_ticket_summury_srcl = 'Add ' + \
             dojo_name + ' to 3rd party dependencies scan tool'
         appsec_jira_ticket_summury_sast = 'Add ' + dojo_name + ' to a SAST tool'
+        appsec_jira_ticket_summury_dast = 'Add ' + dojo_name + ' to DAST tool'
         project_key_id = json_data['JiraProject']
         dev_jira_ticket_summury_alerts = dojo_name + ' security related requirements'
         app_jira_ticket_summury_alerts = 'Track ' + \
@@ -195,6 +196,11 @@ def submit():
         jiranotify.create_board_ticket(
             appsec_jira_project_key,
             appsec_jira_ticket_summury_sast,
+            appsec_jira_ticket_description)
+
+        jiranotify.create_board_ticket(
+            appsec_jira_project_key,
+            appsec_jira_ticket_summury_dast,
             appsec_jira_ticket_description)
 
         jiranotify.create_board_ticket(
