@@ -45,7 +45,6 @@ import { FiltersctPipe } from './pipes/filtersct.pipe';
 import { AppRoutingModule } from './app-routing.module';
 import { AppFormComponent } from './app-form/app-form.component';
 import { AppsMainpageComponent } from './apps-mainpage/apps-mainpage.component';
-import { ServiceSecurityControlsComponent } from './service-security-controls/service-security-controls.component';
 import { SearchServiceSecurityControlsComponent } from './search-service-security-controls/search-service-security-controls.component';
 import { DeleteServiceSecurityControlsComponent } from './delete-service-security-controls/delete-service-security-controls.component';
 import { DeleteServiceSecurityControlsService } from './services/delete-service-security-controls/delete-service-security-controls.service';
@@ -85,7 +84,6 @@ import { AuthzService } from './services/authz/authz.service';
     SecurityControlsComponent,
     AppFormComponent,
     AppsMainpageComponent,
-    ServiceSecurityControlsComponent,
     SearchServiceSecurityControlsComponent,
     DeleteServiceSecurityControlsComponent,
     TerraNewServiceComponent
