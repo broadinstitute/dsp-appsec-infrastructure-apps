@@ -417,7 +417,7 @@ def main(): # pylint: disable=too-many-locals
 
             # optionally, upload them to GCS
             xml_report_url = ""
-            if scan_type in (ScanType.UI, ScanType.LEOAPP, ScanType.BEEHIVE):
+            if scan_type is not ScanType.BASELINE:
                 xml_report_url = upload_gcs(
                     bucket_name,
                     scan_type,
@@ -476,7 +476,7 @@ def main(): # pylint: disable=too-many-locals
                 )
 
             # Upload UI scan XMLs and CodeDx reports to Google Drive.
-            if scan_type in (ScanType.UI, ScanType.LEOAPP, ScanType.BEEHIVE):
+            if scan_type is not ScanType.BASELINE:
                 try:
                     logging.info('Setting up the google drive API service for uploading reports.')
 
