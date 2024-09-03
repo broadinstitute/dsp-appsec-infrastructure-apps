@@ -1,4 +1,4 @@
-FROM us.gcr.io/broad-dsp-gcr-public/base/nodejs:16-alpine AS node
+FROM us.gcr.io/broad-dsp-gcr-public/base/nodejs:20-alpine AS node
 
 WORKDIR /app
 
