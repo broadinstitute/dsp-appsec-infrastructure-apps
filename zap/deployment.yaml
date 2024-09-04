@@ -200,10 +200,10 @@ items:
                   memory: 50Mi
 - << : *cron-job
   metadata:
-    name: ${CRON_JOB}-monthly
+    name: ${CRON_JOB}-api-and-auth
     namespace: ${NAMESPACE}
   spec:
-    schedule: "0 0 1 * *"
+    schedule: "0 8 * * 4"
     jobTemplate:
       spec:
         template:
