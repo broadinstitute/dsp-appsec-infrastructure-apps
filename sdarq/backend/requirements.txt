@@ -9,11 +9,11 @@ virtualenv==16.0.0
 jira
 gunicorn[gevent]>= 1.4
 slack_sdk
-google-cloud-bigquery
-google-cloud-firestore
-google-cloud-pubsub
-google-cloud-logging
-google-cloud-resource-manager
+google-cloud-bigquery==3.25.0
+google-cloud-firestore==2.18.0
+google-cloud-pubsub==2.23.0
+google-cloud-logging==3.11.2
+google-cloud-resource-manager==1.12.5
 google-api-core[grpc]>=1.14.0
 python-owasp-zap-v2.4
 werkzeug
