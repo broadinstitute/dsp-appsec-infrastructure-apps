@@ -1,4 +1,4 @@
-Flask == 2.2.5
+Flask
 Flask-Limiter
 requests
 requests-oauthlib==1.0.0
@@ -16,6 +16,6 @@ google-cloud-logging
 google-cloud-resource-manager
 google-api-core[grpc]>=1.14.0
 python-owasp-zap-v2.4
-Werkzeug == 3.0.3
+werkzeug
 jsonschema
-setuptools == 70.0.0
+markupsafe==2.0.1
