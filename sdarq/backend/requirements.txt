@@ -6,7 +6,7 @@ urllib3==1.26.19
 flask-api==3.1
 flask-cors==4.0.1
 virtualenv==16.0.0
-jira==3.8.0
+jira==2.0.0
 gunicorn[gevent]>= 1.4
 slack_sdk==3.31.0
 google-cloud-bigquery==3.25.0
