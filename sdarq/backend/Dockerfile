@@ -1,4 +1,4 @@
-FROM us.gcr.io/broad-dsp-gcr-public/base/python:debian
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:3.11-debian
 
 WORKDIR /app
 COPY sdarq/backend/requirements.txt requirements.txt
