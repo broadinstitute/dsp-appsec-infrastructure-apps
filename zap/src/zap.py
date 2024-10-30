@@ -2,7 +2,7 @@
 Provides high-level methods to interface with ZAP.
 """
 
-from google.cloud import logging
+import logging
 import os
 import shutil
 from urllib.parse import urlparse
