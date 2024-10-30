@@ -2,7 +2,7 @@
 """
 Helper functions for connecting to, navigating, and uploading to Google Drive.
 """
-from google.cloud import logging
+import logging
 import calendar
 from calendar import WEDNESDAY
 from datetime import timedelta
