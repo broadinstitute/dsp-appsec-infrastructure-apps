@@ -5,7 +5,8 @@ Triggers ZAP scans for endpoints from DefectDojo.
 
 import argparse
 import concurrent
-from google.cloud import logging
+import logging
+import google.cloud.logging
 import re
 import traceback
 from asyncio import Future
@@ -152,7 +153,7 @@ def main():
     - Fetch the list of endpoints from DefectDojo
     - Trigger the scans for all endpoints
     """
-    client = logging.Client()
+    client = google.cloud.logging.Client()
     client.setup_logging()
     
     defectdojo_url = getenv("DEFECT_DOJO_URL")
