@@ -1,6 +1,7 @@
 aiohttp==3.10.2
 codedx-api @ git+https://github.com/broadinstitute/dsp-appsec-codedx-api-client-python.git@cf0de6fcdd0a4db98f2c2a35bd9d2ae7e8056d6b
 google-auth==1.30.0
+google-cloud-logging==3.11.3
 google-cloud-pubsub==2.5.0
 google-cloud-storage==1.38.0
 requests==2.32.0
