@@ -2,7 +2,7 @@
 Provides high-level methods to interface with ZAP.
 """
 
-import logging
+from google.cloud import logging
 import os
 import shutil
 from urllib.parse import urlparse
@@ -11,6 +11,7 @@ from datetime import datetime
 import google.auth
 import requests
 from google.auth.transport.requests import Request as GoogleAuthRequest
+from google.auth import exceptions as auth_exceptions
 from google.oauth2 import id_token
 from zapv2 import ZAPv2
 from zap_common import (wait_for_zap_start, zap_access_target,
@@ -138,7 +139,7 @@ def leo_auth(host, path, token):
     if response.status_code == 204:
         logging.info("Set cookie was successful")
         return True
-    logging.info("Set cookie did not succeed")
+    logging.error("Set cookie did not succeed")
     return False
 
 
@@ -171,7 +172,7 @@ def zap_setup_cookie(zap, domain, context_id, cookie_name=None):
         zap_access_target(zap, f"https://{domain}")
         return username, userid
     except Exception:
-        logging.info("Cookie authenication setup failed.")
+        logging.error("Cookie authenication setup failed.")
         raise RuntimeError("Failed to set the provided cookie as the default session in Zap.")
 
 
@@ -189,16 +190,26 @@ def get_gcp_token() -> str:
     """
     Generate a Google access token with custom scopes for the default identity.
     """
-    credentials, _ = google.auth.default(
-        scopes=[
-            "profile",
-            "email",
-            "openid",
-            "https://www.googleapis.com/auth/cloud-billing",
-        ]
-    )
-    credentials.refresh(GoogleAuthRequest())
-    return credentials.token
+    try:
+        logging.info("get_gcp_token fetching access token for the default identity")
+        credentials, _ = google.auth.default(
+            scopes=[
+                "profile",
+                "email",
+                "openid",
+                "https://www.googleapis.com/auth/cloud-billing",
+            ]
+        )
+        credentials.refresh(GoogleAuthRequest())
+        return credentials.token
+    except auth_exceptions.DefaultCredentialsError as e:
+        logging.error("Failed to obtain default credentials: %s", e)
+
+    except auth_exceptions.RefreshError as e:
+        logging.exception("Failed to refresh default credentials: %s", e)
+
+    except Exception as e:
+        logging.exception("An unexpected error occurred: %s", e)
 
 def zap_set_iap_token(client_id):
     """
@@ -209,6 +220,7 @@ def zap_set_iap_token(client_id):
     open_id_connect_token = id_token.fetch_id_token( GoogleAuthRequest(), 
                                                         client_id)
     bearer = f"Bearer {open_id_connect_token}"
+    logging.info("zap replacer auth id token (IAP)")
     zap.replacer.add_rule(
         description="auth",
         enabled=True,
@@ -217,6 +229,7 @@ def zap_set_iap_token(client_id):
         matchstring="Authorization",
         replacement=bearer
     )
+    logging.info("zap replacer beehive")
     zap.replacer.add_rule(
         description="beehive",
         enabled=True,
@@ -290,6 +303,7 @@ def zap_compliance_scan(
     """
     Run a ZAP compliance scan of a given type against the target URL.
     """
+    logging.info("=====  %s  %s  %s  =====", scan_type.name, project, target_url)
 
     host, _, path = parse_url(target_url)
 
@@ -329,12 +343,13 @@ def zap_compliance_scan(
                 # and forces all Zap requests to use that cookie
                 zap_setup_cookie(zap, host, context_id)
             else:
-                logging.info("Leo authentication was unsuccessful")
+                logging.error("Leo authentication was unsuccessful")
         
 
     if scan_type == ScanType.API:
         zap_api_import(zap, target_url)
 
+    logging.info("zap spider scan %s", target_url)
     zap.spider.scan(contextname=project, url=target_url)
 
     if scan_type in (ScanType.UI, ScanType.LEOAPP, ScanType.BEEHIVE):
@@ -343,8 +358,10 @@ def zap_compliance_scan(
     zap_wait_for_passive_scan(zap, timeout_in_secs=TIMEOUT_MINS * 60)
 
     if scan_type != ScanType.BASELINE:
+        logging.info("zap ajax spider scan %s", target_url)
         zap.ascan.scan(target_url, contextid=context_id, recurse=True)
 
+    logging.info("Scan complete. Cumulative alerts: %s", zap.alert.alerts_summary())
     filename = zap_report(zap, project, scan_type, f"https://{host}")
     session_file = zap_save_session(zap, project, scan_type)
 

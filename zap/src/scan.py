@@ -3,7 +3,7 @@
 Runs ZAP scan, uploads results to Code Dx and GCS, and alerts Slack.
 """
 
-import logging
+from google.cloud import logging
 import os
 import re
 from datetime import datetime, timedelta
@@ -371,6 +371,8 @@ def main(): # pylint: disable=too-many-locals
     - Upload ZAP XML report to GCS, if needed
     - Send a Slack alert with Code Dx report, if needed.
     """
+    client = logging.Client()
+    client.setup_logging()
     
     max_retries = int(getenv("MAX_RETRIES", '1'))
     sleep_time = 10
