@@ -4,7 +4,6 @@ Runs ZAP scan, uploads results to Code Dx and GCS, and alerts Slack.
 """
 
 import logging
-import google.cloud.logging
 import os
 import re
 from datetime import datetime, timedelta
@@ -15,14 +14,15 @@ from time import sleep
 from typing import List
 from urllib.parse import urlparse, urlunparse
 
+import defectdojo_apiv2 as defectdojo
 import defusedxml.ElementTree as ET
+import drive_upload as drivehelper
+import google.cloud.logging
 from codedx_api.CodeDxAPI import CodeDx  # pylint: disable=import-error
 from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
 
 from zap import ScanType, zap_compliance_scan, zap_connect
-import defectdojo_apiv2 as defectdojo
-import drive_upload as drivehelper
 
 
 def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, product_id):
@@ -38,7 +38,7 @@ def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, prod
         try:
             product = dojo.get_product(product_id=product_id)
             return product.data["name"]
-        except Exception:
+        except Exception: # pylint: disable=broad-except
             logging.info(product.message)
             sleep(retry_delay)
     raise RuntimeError("Maximum retry attempts reached")
