@@ -14,14 +14,15 @@ from time import sleep
 from typing import List
 from urllib.parse import urlparse, urlunparse
 
+import defectdojo_apiv2 as defectdojo
 import defusedxml.ElementTree as ET
+import drive_upload as drivehelper
+import google.cloud.logging
 from codedx_api.CodeDxAPI import CodeDx  # pylint: disable=import-error
 from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
 
 from zap import ScanType, zap_compliance_scan, zap_connect
-import defectdojo_apiv2 as defectdojo
-import drive_upload as drivehelper
 
 
 def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, product_id):
@@ -371,6 +372,8 @@ def main(): # pylint: disable=too-many-locals
     - Upload ZAP XML report to GCS, if needed
     - Send a Slack alert with Code Dx report, if needed.
     """
+    client = google.cloud.logging.Client()
+    client.setup_logging()
     
     max_retries = int(getenv("MAX_RETRIES", '1'))
     sleep_time = 10
@@ -537,7 +540,7 @@ def main(): # pylint: disable=too-many-locals
                 try:
                     error_slack_alert(error_message, slack_token, slack_channel)
                 except:
-                    logging(f"Slack could not post to {slack_channel}")
+                    logging.error(f"Slack could not post to {slack_channel}")
                 try:
                     zap = zap_connect()
                     zap.core.shutdown()

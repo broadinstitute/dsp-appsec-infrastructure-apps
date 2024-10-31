@@ -6,6 +6,7 @@ Triggers ZAP scans for endpoints from DefectDojo.
 import argparse
 import concurrent
 import logging
+import google.cloud.logging
 import re
 import traceback
 from asyncio import Future
@@ -152,10 +153,9 @@ def main():
     - Fetch the list of endpoints from DefectDojo
     - Trigger the scans for all endpoints
     """
-    logging.basicConfig(
-        level=logging.INFO,
-        format=f"%(levelname)-8s [zap-trigger] %(message)s",
-    )
+    client = google.cloud.logging.Client()
+    client.setup_logging()
+    
     defectdojo_url = getenv("DEFECT_DOJO_URL")
     defect_dojo_key = getenv("DEFECT_DOJO_KEY")
     zap_topic = getenv("ZAP_TOPIC_NAME")

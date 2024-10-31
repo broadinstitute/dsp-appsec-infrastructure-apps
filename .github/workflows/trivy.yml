@@ -1,8 +1,10 @@
 name: dsp-appsec-trivy
 on:
-  pull_request:
-  # schedule:
-  # - cron: '0 14 * * 1' # each Monday at 9am EST
+  # This workflow fails if run too frequently, due to rate limiting.
+  #pull_request:
+  schedule:
+  - cron: '0 14 * * 1' # each Monday at 9am EST
+  workflow_dispatch:
 
 jobs:
   appsec-trivy:
