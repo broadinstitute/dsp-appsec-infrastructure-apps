@@ -5,19 +5,18 @@ Provides high-level methods to interface with ZAP.
 import logging
 import os
 import shutil
-from urllib.parse import urlparse
 from datetime import datetime
+from urllib.parse import urlparse
 
 import google.auth
 import requests
+import terra_auth
 from google.auth.transport.requests import Request as GoogleAuthRequest
-from google.auth import exceptions as auth_exceptions
 from google.oauth2 import id_token
-from zapv2 import ZAPv2
 from zap_common import (wait_for_zap_start, zap_access_target,
                         zap_wait_for_passive_scan)
 from zap_scan_type import ScanType
-import terra_auth
+from zapv2 import ZAPv2
 
 TIMEOUT_MINS = 5
 zap_port = int(os.getenv("ZAP_PORT", ""))
@@ -98,7 +97,7 @@ def zap_sa_auth(zap: ZAPv2, env):
         if tos:
             logging.info("SA has accepted the TOS.")
     else:
-        logging.info("ZAP Service Account failed to register with Terra.")
+        logging.error("ZAP Service Account failed to register with Terra.")
     return token
 
 
@@ -171,9 +170,10 @@ def zap_setup_cookie(zap, domain, context_id, cookie_name=None):
         zap.forcedUser.set_forced_user_mode_enabled(True)
         zap_access_target(zap, f"https://{domain}")
         return username, userid
-    except Exception:
-        logging.error("Cookie authenication setup failed.")
-        raise RuntimeError("Failed to set the provided cookie as the default session in Zap.")
+    except Exception as e:
+        logging.error("Cookie authentication setup failed.")
+        raise RuntimeError("Failed to set the provided cookie" +
+                           " as the default session in Zap.") from e
 
 
 def zap_api_import(zap: ZAPv2, target_url: str):
@@ -190,26 +190,17 @@ def get_gcp_token() -> str:
     """
     Generate a Google access token with custom scopes for the default identity.
     """
-    try:
-        logging.info("get_gcp_token fetching access token for the default identity")
-        credentials, _ = google.auth.default(
-            scopes=[
-                "profile",
-                "email",
-                "openid",
-                "https://www.googleapis.com/auth/cloud-billing",
-            ]
-        )
-        credentials.refresh(GoogleAuthRequest())
-        return credentials.token
-    except auth_exceptions.DefaultCredentialsError as e:
-        logging.error("Failed to obtain default credentials: %s", e)
-
-    except auth_exceptions.RefreshError as e:
-        logging.exception("Failed to refresh default credentials: %s", e)
-
-    except Exception as e:
-        logging.exception("An unexpected error occurred: %s", e)
+    logging.info("get_gcp_token fetching access token for the default identity")
+    credentials, _ = google.auth.default(
+        scopes=[
+            "profile",
+            "email",
+            "openid",
+            "https://www.googleapis.com/auth/cloud-billing",
+        ]
+    )
+    credentials.refresh(GoogleAuthRequest())
+    return credentials.token
 
 def zap_set_iap_token(client_id):
     """
