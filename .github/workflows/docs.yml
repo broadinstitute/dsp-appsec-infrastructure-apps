@@ -4,13 +4,14 @@
 name: Deploy docs to Github Pages
 
 on:
-  push:
-   branches:
-     - master
-  pull_request:
+  # push:
+  #  branches:
+  #    - master
+  # pull_request:
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  deploy-docs:
     runs-on: ubuntu-20.04
     defaults:
       run:
