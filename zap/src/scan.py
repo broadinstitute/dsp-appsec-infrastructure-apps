@@ -38,7 +38,7 @@ def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, prod
         try:
             product = dojo.get_product(product_id=product_id)
             return product.data["name"]
-        except Exception: # pylint: disable=broad-except
+        except Exception:
             logging.info(product.message)
             sleep(retry_delay)
     raise RuntimeError("Maximum retry attempts reached")
@@ -540,7 +540,7 @@ def main(): # pylint: disable=too-many-locals
                 try:
                     error_slack_alert(error_message, slack_token, slack_channel)
                 except:
-                    logging(f"Slack could not post to {slack_channel}")
+                    logging.error(f"Slack could not post to {slack_channel}")
                 try:
                     zap = zap_connect()
                     zap.core.shutdown()
