@@ -348,7 +348,7 @@ def slack_alert_without_report(  # pylint: disable=too-many-arguments
         logging.info("Alert sent to Slack channel for DefectDojo upload report")
 
 # match a hash after a hyphen or dot, and only match 8 or 9 characters of hex
-URI_HASH_REGEX = re.compile(r"[-\.][a-fA-F0-9]{8,9}(?![a-fA-F0-9])")
+URI_HASH_REGEX = re.compile(r"[-\.][a-zA-Z0-9]{8,9}(?![a-fA-F0-9])")
 
 def clean_uri_path(xml_report):
     """
