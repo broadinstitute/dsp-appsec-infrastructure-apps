@@ -4,7 +4,7 @@ requests>=2.32.3
 requests-oauthlib>=1.0.0
 urllib3==1.26.19
 flask-api==3.1
-flask-cors==4.0.1
+flask-cors==4.0.2
 virtualenv==16.0.0
 jira==2.0.0
 gunicorn[gevent]>= 1.4
