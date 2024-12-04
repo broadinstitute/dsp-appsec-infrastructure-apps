@@ -78,6 +78,8 @@ loggingclient = google.cloud.logging.Client()
 loggingclient.setup_logging()
 
 app = Flask(__name__)
+csrf = CSRFProtect()
+csrf.init_app(app)
 
 client = bigquery.Client()
 
