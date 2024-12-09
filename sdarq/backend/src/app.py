@@ -34,7 +34,6 @@ import parse_data as parse_json_data
 import requests
 import slacknotify
 from flask import Flask, Response, jsonify, request
-#from flask_api import FlaskAPI
 from flask_cors import cross_origin
 from google.cloud import bigquery, firestore, pubsub_v1
 from jsonschema import validate
