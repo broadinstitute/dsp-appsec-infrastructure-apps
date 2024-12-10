@@ -1,5 +1,6 @@
 Flask>=3.0.0
 Flask-Limiter==3.8.0
+Flask-WTF==1.2.2
 requests>=2.32.3
 requests-oauthlib>=1.0.0
 urllib3==1.26.19

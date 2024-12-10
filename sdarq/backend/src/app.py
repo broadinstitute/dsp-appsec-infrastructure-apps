@@ -35,6 +35,7 @@ import requests
 import slacknotify
 from flask import Flask, Response, jsonify, request
 from flask_cors import cross_origin
+from flask_wtf.csrf import CSRFProtect
 from google.cloud import bigquery, firestore, pubsub_v1
 from jsonschema import validate
 from schemas.cis_scan_schema import cis_scan_schema
