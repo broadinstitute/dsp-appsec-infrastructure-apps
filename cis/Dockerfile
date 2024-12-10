@@ -1,6 +1,6 @@
 ARG USER="inspec"
 
-FROM us.gcr.io/broad-dsp-gcr-public/base/python:debian AS base
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:3.11-debian AS base
 
 ARG USER
 
