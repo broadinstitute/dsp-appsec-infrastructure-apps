@@ -230,7 +230,7 @@ def submit_app():
         dojo_name = json_data['Service']
         regex = "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,40}[a-zA-Z0-9]$"
         if not (re.search(regex,dojo_name)):
-            raise ValueError("The provided project name was not well formated.")
+            raise ValueError("The provided project name was not well formatted.")
         security_champion = json_data['Security champion']
         product_type = 1
         user_email = request.headers.get('X-Goog-Authenticated-User-Email')
