@@ -168,7 +168,10 @@ def submit():
         del json_data['Ticket_Description']
 
         product_id = dojo_helper.dojo_create_or_update(dojo_name, parse_json_data.prepare_dojo_input(json_data), product_type, user_email, appsec_slack_channel, security_champion, dojo_host_url)
-
+        if not product_id:
+            logging.error('DefectDojo did not respond correctly when attempting to update the product')
+            return jsonify({'statusText': 'An error was encountered while attempting to update'+
+                        ' the product in DefectDojo'}), 500
         setSecConDDlink = db.collection(security_controls_firestore_collection).document(
             dojo_name.lower())
         doc = setSecConDDlink.get()
@@ -226,6 +229,9 @@ def submit_app():
     try:
         json_data = request.get_json()
         dojo_name = json_data['Service']
+        regex = "^[a-zA-Z0-9][a-zA-Z0-9-_ ]{1,40}[a-zA-Z0-9]$"
+        if not (re.search(regex,dojo_name)):
+            raise ValueError("The provided project name was not well formated.")
         security_champion = json_data['Security champion']
         product_type = 1
         user_email = request.headers.get('X-Goog-Authenticated-User-Email')
