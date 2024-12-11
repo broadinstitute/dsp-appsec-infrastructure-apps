@@ -170,8 +170,7 @@ def submit():
         product_id = dojo_helper.dojo_create_or_update(dojo_name, parse_json_data.prepare_dojo_input(json_data), product_type, user_email, appsec_slack_channel, security_champion, dojo_host_url)
         if not product_id:
             logging.error('DefectDojo did not respond correctly when attempting to update the product')
-            return jsonify({'statusText': 'An error was encountered while attempting to update'+
-                        ' the product in DefectDojo'}), 500
+            raise ValueError("DefectDojo did not respond correctly when attempting to update the product.")
         setSecConDDlink = db.collection(security_controls_firestore_collection).document(
             dojo_name.lower())
         doc = setSecConDDlink.get()
