@@ -39,7 +39,15 @@ def zap_init(target_url: str):
     zap = zap_connect()
     zap.core.new_session(name='zap_session', overwrite=True)
     logging.info("Accessing target %s", target_url)
-    # replace with api call to core.accessUrl
+    # Rate limit scan to avoid overwhleming sites
+    description = "max_requests"
+    enabled = True
+    matchregex = True
+    matchstring = ".*"
+    requestspersecond = 5
+    groupby = "host"
+    zap.network.add_rate_limit_rule(description, enabled, matchregex, matchstring, requestspersecond, groupby)
+    
     zap_access_target(zap, target_url)
 
     return zap
