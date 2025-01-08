@@ -200,7 +200,7 @@ def get_codedx_report_by_alert_severity(
     report_file = f'{project.replace("-", "_")}_report_{report_date:%Y%m%d}.pdf'
     filters = {
         "severity": [s.value for s in severities],
-        "status": ["new", "unresolved", "reopened"],
+        "status": ["new", "unresolved", "reopened", "escalated"],
     }
     if not cdx.get_project_id(project):
         cdx.create_project(project)
@@ -227,7 +227,7 @@ def get_codedx_initial_report(
     report_date = datetime.now()
     report_file = f'{project.replace("-", "_")}_report_{report_date:%Y%m%d}.pdf'
     filters = {
-        "status": [3, 4, 5, 6, 10, 9, 1]
+        "status": [2, 3, 4, 5, 6, 10, 9, 1]
     }
     if not cdx.get_project_id(project):
         cdx.create_project(project)
