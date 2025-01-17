@@ -2,11 +2,15 @@
 Provides high-level methods to interface with ZAP.
 """
 
+import base64
+import json
 import logging
 import os
 import shutil
 from datetime import datetime
-from urllib.parse import urlparse
+import time
+import jwt
+from urllib.parse import urlparse, urlencode
 
 import google.auth
 import requests
@@ -294,6 +298,56 @@ def zap_save_session(zap: ZAPv2,
     return session_filename + ".zip"
 
 
+def get_hail_token(credentials_path):
+    credentials = base64.b64decode(os.getenv("HAIL_KEY")).decode("utf-8")
+    default_scopes = [
+            'openid',
+            'https://www.googleapis.com/auth/userinfo.email',
+            'https://www.googleapis.com/auth/cloud-platform',
+            'https://www.googleapis.com/auth/appengine.admin',
+            'https://www.googleapis.com/auth/compute',
+            ]
+    
+    creds = json.loads(credentials)
+    now = int(time.time())
+    scope = ' '.join(default_scopes)
+    print(creds['client_email'])
+    assertion = {
+        "aud": "https://www.googleapis.com/oauth2/v4/token",
+        "iat": now,
+        "scope": scope,
+        "exp": now + 300,  # 5m
+        "iss": creds['client_email'],
+    }
+    encoded_assertion = jwt.encode(assertion, creds['private_key'], algorithm='RS256')
+    resp = requests.post('https://www.googleapis.com/oauth2/v4/token',
+                                headers={'content-type': 'application/x-www-form-urlencoded'},
+                                data=urlencode({
+                                    'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+                                    'assertion': encoded_assertion,
+                                }
+                            ))
+    return resp.json()['access_token']
+
+def zap_set_hail_token( zap, target_url):
+    token = get_hail_token()
+    if token:
+        bearer = f"Bearer {token}"
+        zap.replacer.add_rule(
+                        description="auth",
+                        enabled=True,
+                        matchtype="REQ_HEADER",
+                        matchregex=False,
+                        matchstring="Authorization",
+                        replacement=bearer
+                    )
+    res = zap.urlopen(target_url)
+    if int(res.split(':')[0]) == 200:
+        return token
+    else:
+        raise RuntimeError("Failed to set token for hail.")
+
+
 def zap_compliance_scan(
     project: str,
     target_url: str,
@@ -321,6 +375,7 @@ def zap_compliance_scan(
     # LEOAPP - authenticated with SA and registered cookie, active scan and ajax spider is performed
     # BEEHIVE - authenticated with iap bearer token and cookie.
     # IAPAUTH - authenticated with iap bearer token, api spec.
+    # HAILAUTH - authenticated as a service account.
 
     # Set up context for scan
     context_id = zap_setup_context(zap, project, host)
@@ -333,8 +388,12 @@ def zap_compliance_scan(
                 logging.info("Setting beehive session cookie.")
                 cookie_name = "__host-beehive_session"
                 zap_setup_cookie(zap, host, context_id, cookie_name)
+        elif scan_type == ScanType.HAILAUTH or scan_type == ScanType.HAILAPI:
+            hail_creds = os.getenv('HAIL_CREDS')
+            token = zap_set_hail_token(hail_creds, zap, target_url)
         else:
             token = zap_sa_auth(zap, env)
+        
         if scan_type == ScanType.LEOAPP:
             success = leo_auth(host, path, token)
             if success:
