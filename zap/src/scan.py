@@ -81,6 +81,18 @@ def codedx_upload(cdx: CodeDx, project: str, filename: str):
 
     cdx.analyze(project, filename)
 
+def fetch_dojo_lead_id(dojo, defect_dojo_user):
+    #Doing these as individual retries to avoid uploading the same report twice.
+    max_retries = int(getenv("MAX_RETRIES", '5'))
+    retry_delay = 30
+    for attempt in range(max_retries):
+        try:
+            lead_id = dojo.list_users(defect_dojo_user).data["results"][0]["id"]
+            return lead_id
+        except Exception: # pylint: disable=broad-except
+            sleep(retry_delay)
+    logging.error("Did not retrieve dojo user ID, upload failed.")
+    raise RuntimeError("Maximum retry attempts reached for requesting lead_id")
 
 def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, defect_dojo_user: str, defect_dojo: str):  # pylint: disable=line-too-long
     """
@@ -91,24 +103,13 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
 
     absolute_path = os.path.abspath(zap_filename)
     date = datetime.today().strftime("%Y%m%d%H:%M")
-
-    #Doing these as individual retries to avoid uploading the same report twice.
-    max_retries = int(getenv("MAX_RETRIES", '5'))
-    retry_delay = 30
-    for attempt in range(max_retries):
-        try:
-            lead_id = dojo.list_users(defect_dojo_user).data["results"][0]["id"]
-            break
-        except Exception: # pylint: disable=broad-except
-            sleep(retry_delay)
-        logging.error("Did not retrieve dojo user ID, upload failed.")
-    return
+    lead_id = fetch_dojo_lead_id(dojo, defect_dojo_user)
+    
 
     engagement=dojo.create_engagement( name=date, product_id=product_id, lead_id=lead_id,
         target_start=datetime.today().strftime("%Y-%m-%d"),
         target_end=datetime.today().strftime("%Y-%m-%d"), status="In Progress",
         active='True',deduplication_on_engagement='False')
-    print(engagement.data)
     engagement_id=engagement.data["id"]
 
     dojo_upload = dojo.upload_scan(engagement_id=engagement_id,
@@ -374,7 +375,7 @@ def main(): # pylint: disable=too-many-locals
     """
     client = google.cloud.logging.Client()
     client.setup_logging()
-    
+
     max_retries = int(getenv("MAX_RETRIES", '1'))
     sleep_time = 10
     for attempt in range(max_retries):
