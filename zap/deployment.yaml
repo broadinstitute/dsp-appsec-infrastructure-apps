@@ -108,6 +108,11 @@ data:
               secretKeyRef:
                 name: ${JOB_SECRET}
                 key: IAP_CLIENT_ID
+          - name: HAIL_KEY
+            valueFrom:
+              secretKeyRef:
+                name: ${JOB_SECRET}
+                key: HAIL_KEY
           - name: CODEDX_PROJECT
             valueFrom:
               fieldRef:
@@ -212,6 +217,20 @@ items:
             containers:
             - << : *cron-job-container
               args: ['trigger', '-s', 'auth', 'api', 'iapauth']
+- << : *cron-job
+  metadata:
+    name: ${CRON_JOB}-hail
+    namespace: ${NAMESPACE}
+  spec:
+    schedule: "0 9 * * 4"
+    jobTemplate:
+      spec:
+        template:
+          spec:
+            << : *cron-job-spec
+            containers:
+            - << : *cron-job-container
+              args: ['trigger', '-s', 'hailauth']
 
 ---
 apiVersion: storage.cnrm.cloud.google.com/v1beta1
