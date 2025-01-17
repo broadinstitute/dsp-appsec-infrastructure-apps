@@ -104,7 +104,6 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
     absolute_path = os.path.abspath(zap_filename)
     date = datetime.today().strftime("%Y%m%d%H:%M")
     lead_id = fetch_dojo_lead_id(dojo, defect_dojo_user)
-    
 
     engagement=dojo.create_engagement( name=date, product_id=product_id, lead_id=lead_id,
         target_start=datetime.today().strftime("%Y-%m-%d"),
