@@ -305,7 +305,7 @@ def get_hail_token():
     """
     Fetches an openid token from google using a Service Account file.
     """
-    credentials = base64.b64decode(os.getenv("HAIL_KEY")).decode("utf-16")
+    credentials = os.getenv("HAIL_KEY")
     default_scopes = [
             'openid',
             'https://www.googleapis.com/auth/userinfo.email',
