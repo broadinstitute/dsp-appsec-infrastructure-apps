@@ -348,7 +348,8 @@ def slack_alert_without_report(  # pylint: disable=too-many-arguments
         logging.info("Alert sent to Slack channel for DefectDojo upload report")
 
 # match a hash after a hyphen or dot, and only match 8 or 9 characters of hex
-URI_HASH_REGEX = re.compile(r"[-\.][a-zA-Z0-9]{8,9}(?![a-fA-F0-9])")
+URI_HASH_REGEX1 = re.compile(r"[-\.][a-zA-Z0-9]{8,9}(?![a-fA-F0-9])")
+URI_HASH_REGEX2 = re.compile(r"index-\w{7}-\.js")  # /assets/index-4au49BA-.js
 
 def clean_uri_path(xml_report):
     """
@@ -360,7 +361,11 @@ def clean_uri_path(xml_report):
     # this should remove the hash.
     for uri in root.iter('uri'):
         r=urlparse(uri.text)
-        r=r._replace(path=URI_HASH_REGEX.sub('', r.path))
+        r_prev = r
+        r=r._replace(path=URI_HASH_REGEX1.sub('', r.path))
+        r=r._replace(path=URI_HASH_REGEX2.sub('index-hash-.js', r.path))
+        if r != r_prev:
+            logging.info("URI %s -> %s", r_prev, r)
         uri.text = urlunparse(r)
     tree.write(xml_report)
 
