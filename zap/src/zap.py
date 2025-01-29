@@ -350,7 +350,7 @@ def zap_set_hail_token( zap, target_url):
                         replacement=bearer
                     )
     res = zap.urlopen(target_url)
-    if res.split(':')[0] != "401":
+    if res.split(':')[0] not in ("401","302"):
         return token
     raise RuntimeError("Failed to set token for hail.")
 
