@@ -409,13 +409,13 @@ def zap_compliance_scan(
             else:
                 logging.error("Leo authentication was unsuccessful")
 
-    if scan_type == ScanType.API:
+    if scan_type == ScanType.API or scan_type == ScanType.HAILAPI:
         zap_api_import(zap, target_url)
 
     logging.info("zap spider scan %s", target_url)
     zap.spider.scan(contextname=project, url=target_url)
 
-    if scan_type in (ScanType.UI, ScanType.LEOAPP, ScanType.BEEHIVE):
+    if scan_type in (ScanType.UI, ScanType.LEOAPP, ScanType.BEEHIVE, ScanType.HAILAUTH):
         zap.ajaxSpider.scan(target_url, contextname=project)
 
     zap_wait_for_passive_scan(zap, timeout_in_secs=TIMEOUT_MINS * 60)

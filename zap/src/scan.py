@@ -478,8 +478,8 @@ def main(): # pylint: disable=too-many-locals
                     scan_type,
                 )
 
-                # Upload UI scan XMLs and CodeDx reports to Google Drive.
-                if scan_type is not ScanType.BASELINE:
+                # Upload Terra scan XMLs and CodeDx reports to Google Drive.
+                if scan_type not in (ScanType.BASELINE, ScanType.HAILAPI, ScanType.HAILAUTH):
                     try:
                         logging.info('Setting up the google drive API service for uploading reports.')
 
