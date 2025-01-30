@@ -155,7 +155,6 @@ def main():
     """
     client = google.cloud.logging.Client()
     client.setup_logging()
-    
     defectdojo_url = getenv("DEFECT_DOJO_URL")
     defect_dojo_key = getenv("DEFECT_DOJO_KEY")
     zap_topic = getenv("ZAP_TOPIC_NAME")
