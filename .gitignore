@@ -5,3 +5,4 @@ zap/.python-version
 .vscode/
 .vscode/settings.json
 .env
+cis/.python-version
