@@ -2,11 +2,15 @@
 Provides high-level methods to interface with ZAP.
 """
 
+import base64
+import json
 import logging
 import os
 import shutil
 from datetime import datetime
-from urllib.parse import urlparse
+import time
+import jwt
+from urllib.parse import urlparse, urlencode
 
 import google.auth
 import requests
@@ -20,14 +24,14 @@ from zapv2 import ZAPv2
 
 TIMEOUT_MINS = 5
 zap_port = int(os.getenv("ZAP_PORT", ""))
-proxy = f"http://localhost:{zap_port}"
+PROXY = f"http://localhost:{zap_port}"
 
 
 def zap_connect():
     """
     Connect to the Zap instance
     """
-    zap = ZAPv2(proxies={"http": proxy, "https": proxy}, apikey=os.getenv("ZAP_API_KEY", ""))
+    zap = ZAPv2(proxies={"http": PROXY, "https": PROXY}, apikey=os.getenv("ZAP_API_KEY", ""))
     wait_for_zap_start(zap, timeout_in_secs=TIMEOUT_MINS * 60)
     return zap
 
@@ -46,8 +50,13 @@ def zap_init(target_url: str):
     matchstring = ".*"
     requestspersecond = 5
     groupby = "host"
-    zap.network.add_rate_limit_rule(description, enabled, matchregex, matchstring, requestspersecond, groupby)
-    
+    zap.network.add_rate_limit_rule(description,
+                                    enabled,
+                                    matchregex,
+                                    matchstring,
+                                    requestspersecond,
+                                    groupby)
+
     zap_access_target(zap, target_url)
 
     return zap
@@ -114,18 +123,17 @@ def leo_auth(host, path, token):
     Set up cookie auth for leo apps.
     """
     proxies = {
-        'http': proxy,
-        'https': proxy,
+        'http': PROXY,
+        'https': PROXY,
         }
 
     zap = zap_connect()
     zap.httpsessions.add_default_session_token("LeoToken")
     logging.info("Authenticating to Leo...")
     # Leo apps if already launched have a separate domain from Leo.
-    # And there's a workspace id after the host. 
+    # And there's a workspace id after the host.
     # https://custom.host/workspaceId/apiEndPoints
-
-    # Make a request to host/first part of path//setCookie 
+    # Make a request to host/first part of path//setCookie
     # with bearer token header
     path_parts = path.split('/')
     if len(path_parts) > 1:
@@ -169,8 +177,8 @@ def zap_setup_cookie(zap, domain, context_id, cookie_name=None):
         # It should always choose the newest one.
         sessions = zap.httpsessions.sessions(site=domain+":443")
         session_name = sessions[-1]["session"][0]
-        zap.users.set_authentication_credentials(context_id, 
-                                                    userid, 
+        zap.users.set_authentication_credentials(context_id,
+                                                    userid,
                                                     "sessionName=" + session_name)
 
         zap.users.set_user_enabled(context_id, userid, True)
@@ -216,7 +224,7 @@ def zap_set_iap_token(client_id):
     """
     logging.info("Fetching id token from google.")
     zap = zap_connect()
-    open_id_connect_token = id_token.fetch_id_token( GoogleAuthRequest(), 
+    open_id_connect_token = id_token.fetch_id_token( GoogleAuthRequest(),
                                                         client_id)
     bearer = f"Bearer {open_id_connect_token}"
     logging.info("zap replacer auth id token (IAP)")
@@ -267,9 +275,8 @@ def zap_report(zap: ZAPv2, project: str, scan_type: ScanType, sites: str):
     logging.info(return_message)
     # If successful we now have a report sitting in the transfer directory of the zap container
     report_data = zap.core.file_download(filename)
-    report_file = open(filename, "w")
-    report_file.write(report_data)
-    report_file.close()
+    with open(filename, "w") as report_file:
+        report_file.write(report_data)
     return filename
 
 
@@ -292,6 +299,60 @@ def zap_save_session(zap: ZAPv2,
         print("Unable to zip session file.")
         raise base_error
     return session_filename + ".zip"
+
+
+def get_hail_token():
+    """
+    Fetches an openid token from google using a Service Account file.
+    """
+    credentials = os.getenv("HAIL_KEY")
+    default_scopes = [
+            'openid',
+            'https://www.googleapis.com/auth/userinfo.email',
+            'https://www.googleapis.com/auth/cloud-platform',
+            'https://www.googleapis.com/auth/appengine.admin',
+            'https://www.googleapis.com/auth/compute',
+            ]
+    creds = json.loads(credentials)
+    now = int(time.time())
+    scope = ' '.join(default_scopes)
+    print(creds['client_email'])
+    assertion = {
+        "aud": "https://www.googleapis.com/oauth2/v4/token",
+        "iat": now,
+        "scope": scope,
+        "exp": now + 300,  # 5m
+        "iss": creds['client_email'],
+    }
+    encoded_assertion = jwt.encode(assertion, creds['private_key'], algorithm='RS256')
+    resp = requests.post('https://www.googleapis.com/oauth2/v4/token',
+                                headers={'content-type': 'application/x-www-form-urlencoded'},
+                                data=urlencode({
+                                    'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+                                    'assertion': encoded_assertion,
+                                }
+                            ))
+    return resp.json()['access_token']
+
+def zap_set_hail_token( zap, target_url):
+    """
+    Sets a google access token in ZAP for a dedicated service account for Hail.
+    """
+    token = get_hail_token()
+    if token:
+        bearer = f"Bearer {token}"
+        zap.replacer.add_rule(
+                        description="auth",
+                        enabled=True,
+                        matchtype="REQ_HEADER",
+                        matchregex=False,
+                        matchstring="Authorization",
+                        replacement=bearer
+                    )
+    res = zap.urlopen(target_url)
+    if res.split(':')[0] not in ("401","302"):
+        return token
+    raise RuntimeError("Failed to set token for hail.")
 
 
 def zap_compliance_scan(
@@ -321,6 +382,7 @@ def zap_compliance_scan(
     # LEOAPP - authenticated with SA and registered cookie, active scan and ajax spider is performed
     # BEEHIVE - authenticated with iap bearer token and cookie.
     # IAPAUTH - authenticated with iap bearer token, api spec.
+    # HAILAUTH - authenticated as a service account.
 
     # Set up context for scan
     context_id = zap_setup_context(zap, project, host)
@@ -333,8 +395,11 @@ def zap_compliance_scan(
                 logging.info("Setting beehive session cookie.")
                 cookie_name = "__host-beehive_session"
                 zap_setup_cookie(zap, host, context_id, cookie_name)
+        elif scan_type == ScanType.HAILAUTH or scan_type == ScanType.HAILAPI:
+            token = zap_set_hail_token(zap, target_url)
         else:
             token = zap_sa_auth(zap, env)
+
         if scan_type == ScanType.LEOAPP:
             success = leo_auth(host, path, token)
             if success:
@@ -343,15 +408,14 @@ def zap_compliance_scan(
                 zap_setup_cookie(zap, host, context_id)
             else:
                 logging.error("Leo authentication was unsuccessful")
-        
 
-    if scan_type == ScanType.API:
+    if scan_type == ScanType.API or scan_type == ScanType.HAILAPI:
         zap_api_import(zap, target_url)
 
     logging.info("zap spider scan %s", target_url)
     zap.spider.scan(contextname=project, url=target_url)
 
-    if scan_type in (ScanType.UI, ScanType.LEOAPP, ScanType.BEEHIVE):
+    if scan_type in (ScanType.UI, ScanType.LEOAPP, ScanType.BEEHIVE, ScanType.HAILAUTH):
         zap.ajaxSpider.scan(target_url, contextname=project)
 
     zap_wait_for_passive_scan(zap, timeout_in_secs=TIMEOUT_MINS * 60)
