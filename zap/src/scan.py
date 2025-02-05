@@ -386,8 +386,8 @@ def clean_uri_path(xml_report):
         path_old = r.path
         r = r._replace(path=URI_HASH_REGEX1.sub(REPLACEMENT1, r.path))
         r = r._replace(path=URI_HASH_REGEX2.sub(REPLACEMENT2, r.path))
-        if r != r_prev:
-            logging.info("URI %s -> %s", r_prev, r)
+        if r.path != path_old:
+            logging.info("URI %s -> %s", path_old, r.path)
             uri.text = urlunparse(r)
     tree.write(xml_report)
 
