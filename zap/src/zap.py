@@ -383,6 +383,7 @@ def zap_compliance_scan(
     # BEEHIVE - authenticated with iap bearer token and cookie.
     # IAPAUTH - authenticated with iap bearer token, api spec.
     # HAILAUTH - authenticated as a service account.
+    # HAILAPI - authenticated as a service account.
 
     # Set up context for scan
     context_id = zap_setup_context(zap, project, host)
