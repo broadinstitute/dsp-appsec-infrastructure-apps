@@ -368,7 +368,7 @@ def clean_uri_path(xml_report):
 def upload_googledrive(scan_type, zap_filename, dojo_product_name, report_file, slack_token, slack_channel):
     root_id = os.getenv('DRIVE_ROOT_ID', None)
     drive_id = os.getenv('DRIVE_ID')
-    if scan_type not in (ScanType.BASELINE, ScanType.HAILAPI, ScanType.HAILAUTH):
+    if scan_type not in (ScanType.BASELINE):
         try:
             logging.info('Setting up the google drive API service for uploading reports.')
             if scan_type in (ScanType.HAILAPI, ScanType.HAILAUTH):
@@ -413,11 +413,13 @@ def upload_googledrive(scan_type, zap_filename, dojo_product_name, report_file, 
                 raise RuntimeError(
                             f"The CodeDx report for {dojo_product_name} was not uploaded.")
             logging.info(f'The report {report_file} has been uploaded.')
+            return
         except Exception as e: # pylint: disable=broad-except
             error_message = f'Failed to complete uploading files to GDrive for {dojo_product_name}. Last error {e}'
             logging.info(error_message)
             error_slack_alert(
                 error_message, slack_token, slack_channel)
+        return
 
 
 def main(): # pylint: disable=too-many-locals
@@ -537,7 +539,7 @@ def main(): # pylint: disable=too-many-locals
             )
 
             # Upload Terra scan XMLs and CodeDx reports to Google Drive.
-            
+            logging.info("ready to upload to google drive")
             upload_googledrive(scan_type, zap_filename, dojo_product_name, cdx_filename, slack_token, slack_channel)
 
             zap = zap_connect()
