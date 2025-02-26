@@ -85,6 +85,8 @@ def get_folders_with_structure(root_id, drive_id, drive_service):
 
     folder_structure = {}
     for file in files:
+        # root_id is the root of the continuous monitoring folder
+        # within the shared drive.
         if file["id"] == root_id:
             logging.info("Root folder has been found.")
             folder_structure["id"] = file["id"]
