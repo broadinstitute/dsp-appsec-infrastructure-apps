@@ -60,7 +60,7 @@ def get_folders(drive_service, drive_id, root_id = None, page_token = None):
         response = (
           drive_service.files()
           .list(
-              q="'{root_id}' in parents and mimeType='application/vnd.google-apps.folder'",
+              q=f"'{root_id}' in parents and mimeType='application/vnd.google-apps.folder'",
               spaces="drive",
               fields="nextPageToken, files(id, name, parents)",
               pageToken=page_token,
