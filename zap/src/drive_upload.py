@@ -52,24 +52,37 @@ def get_drive_service():
     service = build('drive', 'v3', credentials=credentials)
     return service
 
-def get_folders(drive_service, drive_id, page_token = None):
+def get_folders(drive_service, drive_id, root_id = None, page_token = None):
     """
     Returns all available folders in a specified shared drive.
     """
-    response = (
+    if drive_id is None:
+        response = (
           drive_service.files()
           .list(
-              q="mimeType='application/vnd.google-apps.folder'",
+              q="'{root_id}' in parents and mimeType='application/vnd.google-apps.folder'",
               spaces="drive",
               fields="nextPageToken, files(id, name, parents)",
-              includeItemsFromAllDrives=True,
-              supportsAllDrives=True,
-              driveId=drive_id,
-              corpora="drive",
               pageToken=page_token,
+              orderBy="folder"
           )
           .execute()
       )
+    else:
+        response = (
+            drive_service.files()
+            .list(
+                q="mimeType='application/vnd.google-apps.folder'",
+                spaces="drive",
+                fields="nextPageToken, files(id, name, parents)",
+                includeItemsFromAllDrives=True,
+                supportsAllDrives=True,
+                driveId=drive_id,
+                corpora="drive",
+                pageToken=page_token,
+            )
+            .execute()
+        )
     return response.get("files"), response.get("nextPageToken")
 
 
@@ -78,9 +91,9 @@ def get_folders_with_structure(root_id, drive_id, drive_service):
     Takes in a list of files and returns a dict that mimics
     the directory structure in google drive.
     """
-    files, next_page_token = get_folders(drive_service, drive_id)
+    files, next_page_token = get_folders(drive_service, drive_id, root_id)
     while next_page_token:
-        page, next_page_token = get_folders(drive_service, drive_id, next_page_token)
+        page, next_page_token = get_folders(drive_service, drive_id, root_id, next_page_token)
         files.extend(page)
 
     folder_structure = {}
@@ -124,7 +137,13 @@ def upload_file_to_drive(filename, folder_id, drive_id, drive):
     media = MediaFileUpload(filename)
     parents = []
     parents.append(folder_id)
-    file_metadata = {
+    if drive_id is None:
+        file_metadata = {
+            'name': filename,
+            'parents': parents
+        }
+    else:
+        file_metadata = {
             'name': filename,
             'parents': parents,
             'driveId': drive_id

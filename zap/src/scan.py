@@ -367,13 +367,13 @@ def clean_uri_path(xml_report):
 
 def upload_googledrive(scan_type, zap_filename, dojo_product_name, report_file, slack_token, slack_channel):
     root_id = os.getenv('DRIVE_ROOT_ID', None)
-    drive_id = os.getenv('DRIVE_ID')
+    drive_id = os.getenv('DRIVE_ID', None)
     if scan_type not in (ScanType.BASELINE):
         try:
             logging.info('Setting up the google drive API service for uploading reports.')
             if scan_type in (ScanType.HAILAPI, ScanType.HAILAUTH):
                 root_id = os.getenv('HAIL_DRIVE_ID')
-                drive_id = os.getenv('HAIL_DRIVE_ID')
+                drive_id = None
 
             drive_service = drivehelper.get_drive_service()
             folder_structure = drivehelper.get_folders_with_structure(root_id,
