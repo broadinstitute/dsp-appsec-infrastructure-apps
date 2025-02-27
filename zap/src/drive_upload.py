@@ -52,7 +52,7 @@ def get_drive_service():
     service = build('drive', 'v3', credentials=credentials)
     return service
 
-def get_folders(drive_service, drive_id, root_id = None, page_token = None):
+def get_folders(drive_service, drive_id, page_token = None):
     """
     Returns all available folders in a specified shared drive.
     """
@@ -60,8 +60,7 @@ def get_folders(drive_service, drive_id, root_id = None, page_token = None):
         response = (
           drive_service.files()
           .list(
-              q=f"'{root_id}' in parents and mimeType='application/vnd.google-apps.folder'",
-              spaces="drive",
+              q=f"mimeType='application/vnd.google-apps.folder'",
               fields="nextPageToken, files(id, name, parents)",
               pageToken=page_token,
               orderBy="folder"
@@ -91,9 +90,9 @@ def get_folders_with_structure(root_id, drive_id, drive_service):
     Takes in a list of files and returns a dict that mimics
     the directory structure in google drive.
     """
-    files, next_page_token = get_folders(drive_service, drive_id, root_id)
+    files, next_page_token = get_folders(drive_service, drive_id)
     while next_page_token:
-        page, next_page_token = get_folders(drive_service, drive_id, root_id, next_page_token)
+        page, next_page_token = get_folders(drive_service, drive_id, next_page_token)
         files.extend(page)
 
     folder_structure = {}
