@@ -194,5 +194,5 @@ def get_upload_folders(folder_structure, date):
         if month_folder_dict and xml_folder_dict and zap_raw_folder:
             logging.info(f"Uploading report and XML for this month's scans to {xml_folder_dict}")
             return month_folder_dict, xml_folder_dict, zap_raw_folder
-        else:
-            raise RuntimeError("Unable to find the proper folders for uploading reports.")
+        raise RuntimeError("Unable to find the proper folders for uploading reports.")
+    

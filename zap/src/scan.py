@@ -86,7 +86,7 @@ def fetch_dojo_lead_id(dojo, defect_dojo_user):
     #Doing these as individual retries to avoid uploading the same report twice.
     max_retries = int(getenv("MAX_RETRIES", '5'))
     retry_delay = 30
-    for attempt in range(max_retries):
+    for _ in range(max_retries):
         try:
             lead_id = dojo.list_users(defect_dojo_user).data["results"][0]["id"]
             return lead_id
@@ -124,7 +124,7 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
     logging.info("Dojo file upload: %s", dojo_upload)
     max_retries = int(getenv("MAX_RETRIES", '3'))
     retry_delay = 20
-    for attempt in range(max_retries):
+    for _ in range(max_retries):
         try:
             dojo._request('POST','engagements/'+str(engagement_id)+'/close/')
             return
@@ -366,9 +366,14 @@ def clean_uri_path(xml_report):
     tree.write(xml_report)
 
 def upload_googledrive(scan_type, zap_filename, dojo_product_name, report_file, slack_token, slack_channel):
+    """
+    Uploads the xml and initial codedx reports to the appropriate google drive location,
+    according to scan type.
+    """
     root_id = os.getenv('DRIVE_ROOT_ID', None)
     drive_id = os.getenv('DRIVE_ID', None)
-    if scan_type in (ScanType.BASELINE): return
+    if scan_type in (ScanType.BASELINE): 
+        return
     try:
         logging.info('Setting up the google drive API service for uploading reports.')
         if scan_type in (ScanType.HAILAPI, ScanType.HAILAUTH):

@@ -2,7 +2,6 @@
 Provides high-level methods to interface with ZAP.
 """
 
-import base64
 import json
 import logging
 import os
@@ -330,8 +329,9 @@ def get_hail_token():
                                 data=urlencode({
                                     'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer',
                                     'assertion': encoded_assertion,
-                                }
-                            ))
+                                },
+                            ),
+                            timeout=60)
     return resp.json()['access_token']
 
 def zap_set_hail_token( zap, target_url):
@@ -389,14 +389,14 @@ def zap_compliance_scan(
     context_id = zap_setup_context(zap, project, host)
 
     if scan_type != ScanType.BASELINE:
-        if scan_type == ScanType.BEEHIVE or scan_type == ScanType.IAPAUTH:
+        if scan_type in (ScanType.BEEHIVE, ScanType.IAPAUTH):
             client_id = os.getenv('IAP_CLIENT_ID')
             token = zap_set_iap_token(client_id)
             if scan_type == ScanType.BEEHIVE:
                 logging.info("Setting beehive session cookie.")
                 cookie_name = "__host-beehive_session"
                 zap_setup_cookie(zap, host, context_id, cookie_name)
-        elif scan_type == ScanType.HAILAUTH or scan_type == ScanType.HAILAPI:
+        elif scan_type in (ScanType.HAILAUTH, ScanType.HAILAPI):
             token = zap_set_hail_token(zap, target_url)
         else:
             token = zap_sa_auth(zap, env)
@@ -410,7 +410,7 @@ def zap_compliance_scan(
             else:
                 logging.error("Leo authentication was unsuccessful")
 
-    if scan_type == ScanType.API or scan_type == ScanType.HAILAPI:
+    if scan_type in (ScanType.API, ScanType.HAILAPI):
         zap_api_import(zap, target_url)
 
     logging.info("zap spider scan %s", target_url)
