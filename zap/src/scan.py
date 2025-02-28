@@ -383,7 +383,7 @@ def upload_googledrive(scan_type, zap_filename, dojo_product_name, report_file, 
             raise RuntimeError("The provided gdrive folder ID was not found.")
         date = datetime.today()
         date = drivehelper.adjust_date(date)
-        _, xml_folder_dict, zap_raw_folder = drivehelper.get_upload_folders()
+        _, xml_folder_dict, zap_raw_folder = drivehelper.get_upload_folders(folder_structure, date)
         
         file = drivehelper.upload_file_to_drive(zap_filename,
                                                     xml_folder_dict.get('id'),
