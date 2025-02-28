@@ -60,7 +60,7 @@ def get_folders(drive_service, drive_id, page_token = None):
         response = (
           drive_service.files()
           .list(
-              q=f"mimeType='application/vnd.google-apps.folder'",
+              q="mimeType='application/vnd.google-apps.folder'",
               fields="nextPageToken, files(id, name, parents)",
               pageToken=page_token,
               orderBy="folder"
@@ -153,9 +153,13 @@ def upload_file_to_drive(filename, folder_id, drive_id, drive):
                                     supportsAllDrives=True).execute()
     return file
 
-def after_fourth_wednesday(date):
+def adjust_date(date):
     """
-    Returns true if is the fourth Wednesday of the month or later.
+    Our reporting month runs until the 4th Wednesday of a month.
+    This returns the adjusted reporting month based on when the scan ran.
+    If the date is after the fourth wednesday of the month, the date returned
+    is in the next month, otherwise the returned date is unchanged.
+    Only year and month are used for file uploads at this time.
     """
     _,day_count = calendar.monthrange(date.year, date.month)
     current_weekday = date.weekday()
@@ -170,5 +174,25 @@ def after_fourth_wednesday(date):
     # The earliest day the 4th wednesday can be is the 22nd.
     diff = previous_wednesday.day - 21
     if diff > 0:
-        return True
-    return False
+        return date + timedelta(days=10)
+    return date
+
+def get_upload_folders(folder_structure, date):
+    """
+    Searches through the provided folder structure and returns a
+    dict for the correct folders for the reporting month, the raw reports folder,
+    and the XML report folder.
+    Raises an exception if any of the three searches failed.
+    """
+    logging.info("Finding the folders for this month's scans in Google Drive")
+    year_folder_dict = find_subfolder(folder_structure, str(date.year))
+    if len(year_folder_dict) > 0:
+        month_folder_dict = find_subfolder(year_folder_dict, date.strftime('%Y-%m')) if year_folder_dict is not None else None
+        xml_folder_dict = find_subfolder(month_folder_dict, 'XML') if month_folder_dict is not None else None
+        zap_raw_folder = find_subfolder(month_folder_dict, 'Raw Reports') if month_folder_dict is not None else None
+
+        if month_folder_dict and xml_folder_dict and zap_raw_folder:
+            logging.info(f"Uploading report and XML for this month's scans to {xml_folder_dict}")
+            return month_folder_dict, xml_folder_dict, zap_raw_folder
+        else:
+            raise RuntimeError("Unable to find the proper folders for uploading reports.")

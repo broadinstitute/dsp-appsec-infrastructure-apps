@@ -368,58 +368,43 @@ def clean_uri_path(xml_report):
 def upload_googledrive(scan_type, zap_filename, dojo_product_name, report_file, slack_token, slack_channel):
     root_id = os.getenv('DRIVE_ROOT_ID', None)
     drive_id = os.getenv('DRIVE_ID', None)
-    if scan_type not in (ScanType.BASELINE):
-        try:
-            logging.info('Setting up the google drive API service for uploading reports.')
-            if scan_type in (ScanType.HAILAPI, ScanType.HAILAUTH):
-                root_id = os.getenv('HAIL_DRIVE_ID')
-                drive_id = None
+    if scan_type in (ScanType.BASELINE): return
+    try:
+        logging.info('Setting up the google drive API service for uploading reports.')
+        if scan_type in (ScanType.HAILAPI, ScanType.HAILAUTH):
+            root_id = os.getenv('HAIL_DRIVE_ID')
+            drive_id = None
 
-            drive_service = drivehelper.get_drive_service()
-            folder_structure = drivehelper.get_folders_with_structure(root_id,
-                                                                        drive_id,
-                                                                        drive_service)
-            if not folder_structure:
-                raise RuntimeError("The provided gdrive folder ID was not found.")
-            date = datetime.today()
-            if drivehelper.after_fourth_wednesday(date):
-                date = date + timedelta(days=10)
-
-            logging.info("Finding the folders for this month's scans in Google Drive")
-            year_folder_dict = drivehelper.find_subfolder(folder_structure, str(date.year))
-            if len(year_folder_dict) > 0:
-                month_folder_dict = drivehelper.find_subfolder(year_folder_dict, date.strftime('%Y-%m')) if year_folder_dict is not None else None
-                xml_folder_dict = drivehelper.find_subfolder(month_folder_dict, 'XML') if month_folder_dict is not None else None
-                zap_raw_folder = drivehelper.find_subfolder(month_folder_dict, 'Raw Reports') if month_folder_dict is not None else None
-
-                if month_folder_dict and xml_folder_dict and zap_raw_folder:
-                    logging.info(f"Uploading report and XML for this month's scans to {xml_folder_dict}")
-                else:
-                    raise RuntimeError("Unable to find the proper folders for uploading reports.")
-                file = drivehelper.upload_file_to_drive(zap_filename,
-                                                            xml_folder_dict.get('id'),
-                                                            drive_id,
-                                                            drive_service)
-                logging.info(f"The returned file id for {dojo_product_name} XML is {file}")
-            if not file:
-                raise RuntimeError(f"The XML file for {dojo_product_name} was not uploaded.")
-            
-            file = drivehelper.upload_file_to_drive(report_file,
-                                                        zap_raw_folder.get('id'),
-                                                        drive_id,
-                                                        drive_service)
-
-            if not file:
-                raise RuntimeError(
-                            f"The CodeDx report for {dojo_product_name} was not uploaded.")
-            logging.info(f'The report {report_file} has been uploaded.')
-            return
-        except Exception as e: # pylint: disable=broad-except
-            error_message = f'Failed to complete uploading files to GDrive for {dojo_product_name}. Last error {e}'
-            logging.info(error_message)
-            error_slack_alert(
-                error_message, slack_token, slack_channel)
-        return
+        drive_service = drivehelper.get_drive_service()
+        folder_structure = drivehelper.get_folders_with_structure(root_id,
+                                                                    drive_id,
+                                                                    drive_service)
+        if not folder_structure:
+            raise RuntimeError("The provided gdrive folder ID was not found.")
+        date = datetime.today()
+        date = drivehelper.adjust_date(date)
+        _, xml_folder_dict, zap_raw_folder = drivehelper.get_upload_folders()
+        
+        file = drivehelper.upload_file_to_drive(zap_filename,
+                                                    xml_folder_dict.get('id'),
+                                                    drive_id,
+                                                    drive_service)
+        logging.info(f"The returned file id for {dojo_product_name} XML is {file}")
+        if not file:
+            raise RuntimeError(f"The XML file for {dojo_product_name} was not uploaded.")
+        file2 = drivehelper.upload_file_to_drive(report_file,
+                                                    zap_raw_folder.get('id'),
+                                                    drive_id,
+                                                    drive_service)
+        if not file2:
+            raise RuntimeError(
+                        f"The CodeDx report for {dojo_product_name} was not uploaded.")
+        logging.info(f'The report {report_file} has been uploaded.')
+    except Exception as e: # pylint: disable=broad-except
+        error_message = f'Failed to complete uploading files to GDrive for {dojo_product_name}. Last error {e}'
+        logging.info(error_message)
+        error_slack_alert(
+            error_message, slack_token, slack_channel)
 
 
 def main(): # pylint: disable=too-many-locals
