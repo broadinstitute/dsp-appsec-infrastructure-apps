@@ -170,7 +170,7 @@ def adjust_date(date):
     diff = day_count - current_day
     # If it's not the last ten days of the month, return False.
     if diff > (day_count-21):
-        return False
+        return date
     # The earliest day the 4th wednesday can be is the 22nd.
     diff = previous_wednesday.day - 21
     if diff > 0:
