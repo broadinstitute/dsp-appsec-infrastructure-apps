@@ -365,7 +365,7 @@ def clean_uri_path(xml_report):
         uri.text = urlunparse(r)
     tree.write(xml_report)
 
-def upload_googledrive(scan_type, zap_filename, dojo_product_name, report_file, slack_token, slack_channel):
+def upload_googledrive(scan_type, zap_filename, codedx_project, report_file, slack_token, slack_channel):
     """
     Uploads the xml and initial codedx reports to the appropriate google drive location,
     according to scan type.
@@ -394,19 +394,20 @@ def upload_googledrive(scan_type, zap_filename, dojo_product_name, report_file, 
                                                     xml_folder_dict.get('id'),
                                                     drive_id,
                                                     drive_service)
-        logging.info(f"The returned file id for {dojo_product_name} XML is {file}")
+        logging.info(f"The returned file id for {codedx_project} XML is {file}")
         if not file:
-            raise RuntimeError(f"The XML file for {dojo_product_name} was not uploaded.")
+            raise RuntimeError(f"The XML file for {codedx_project} was not uploaded to {xml_folder_dict.get('id')}.")
         file2 = drivehelper.upload_file_to_drive(report_file,
                                                     zap_raw_folder.get('id'),
                                                     drive_id,
                                                     drive_service)
+        logging.info(f"The returned file id for {codedx_project} Raw Report is {file2}")
         if not file2:
             raise RuntimeError(
-                        f"The CodeDx report for {dojo_product_name} was not uploaded.")
+                        f"The CodeDx report for {codedx_project} was not uploaded to {zap_raw_folder.get('id')}.")
         logging.info(f'The report {report_file} has been uploaded.')
     except Exception as e: # pylint: disable=broad-except
-        error_message = f'Failed to complete uploading files to GDrive for {dojo_product_name}. Last error {e}'
+        error_message = f'Failed to complete uploading files to GDrive for {codedx_project}. Last error {e}'
         logging.info(error_message)
         error_slack_alert(
             error_message, slack_token, slack_channel)
@@ -530,7 +531,7 @@ def main(): # pylint: disable=too-many-locals
 
             # Upload Terra scan XMLs and CodeDx reports to Google Drive.
             logging.info("ready to upload to google drive")
-            upload_googledrive(scan_type, zap_filename, dojo_product_name, cdx_filename, slack_token, slack_channel)
+            upload_googledrive(scan_type, zap_filename, codedx_project, cdx_filename, slack_token, slack_channel)
 
             zap = zap_connect()
             zap.core.shutdown()
