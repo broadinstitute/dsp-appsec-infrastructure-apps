@@ -106,11 +106,21 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
     date = datetime.today().strftime("%Y%m%d%H:%M")
     lead_id = fetch_dojo_lead_id(dojo, defect_dojo_user)
 
-    engagement=dojo.create_engagement( name=date, product_id=product_id, lead_id=lead_id,
-        target_start=datetime.today().strftime("%Y-%m-%d"),
-        target_end=datetime.today().strftime("%Y-%m-%d"), status="In Progress",
-        active='True',deduplication_on_engagement='False')
-    engagement_id=engagement.data["id"]
+# The call to create_engagement sometimes fails. 
+    retry_delay = 20
+    max_retries = int(getenv("MAX_RETRIES", '5'))
+    for attempt in range(max_retries):
+        try:
+            engagement=dojo.create_engagement( name=date, product_id=product_id, lead_id=lead_id,
+                target_start=datetime.today().strftime("%Y-%m-%d"),
+                target_end=datetime.today().strftime("%Y-%m-%d"), status="In Progress",
+                active='True',deduplication_on_engagement='False')
+            engagement_id=engagement.data["id"]
+            break
+        except Exception: # pylint: disable=broad-except
+            sleep(retry_delay)
+            if attempt == max_retries-1:
+                raise RuntimeError("Maximum retry attempts reached for closing engagement")
 
     dojo_upload = dojo.upload_scan(engagement_id=engagement_id,
                      scan_type="ZAP Scan",
