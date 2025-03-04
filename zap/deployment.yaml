@@ -98,6 +98,11 @@ data:
               secretKeyRef:
                 name: ${JOB_SECRET}
                 key: DRIVE_ID
+          - name: HAIL_DRIVE_ID
+            valueFrom:
+              secretKeyRef:
+                name: ${JOB_SECRET}
+                key: HAIL_DRIVE_ID
           - name: SLACK_TOKEN
             valueFrom:
               secretKeyRef:
