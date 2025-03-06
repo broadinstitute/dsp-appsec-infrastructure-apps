@@ -21,7 +21,7 @@ from zap_common import (wait_for_zap_start, zap_access_target,
 from zap_scan_type import ScanType
 from zapv2 import ZAPv2
 
-TIMEOUT_MINS = 5
+TIMEOUT_MINS = 6
 zap_port = int(os.getenv("ZAP_PORT", ""))
 PROXY = f"http://localhost:{zap_port}"
 
@@ -320,7 +320,7 @@ def get_hail_token():
         "aud": "https://www.googleapis.com/oauth2/v4/token",
         "iat": now,
         "scope": scope,
-        "exp": now + 300,  # 5m
+        "exp": now + 3000,  # 50m
         "iss": creds['client_email'],
     }
     encoded_assertion = jwt.encode(assertion, creds['private_key'], algorithm='RS256')
