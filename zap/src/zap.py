@@ -47,7 +47,7 @@ def zap_init(target_url: str):
     enabled = True
     matchregex = True
     matchstring = ".*"
-    requestspersecond = 5
+    requestspersecond = 4
     groupby = "host"
     zap.network.add_rate_limit_rule(description,
                                     enabled,
