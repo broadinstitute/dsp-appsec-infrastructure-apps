@@ -60,6 +60,18 @@ def zap_init(target_url: str):
 
     return zap
 
+def zap_shutdown():
+    """
+    Connect to the Zap instance and shut it down.
+    """
+    zap = ZAPv2(proxies={"http": PROXY, "https": PROXY}, apikey=os.getenv("ZAP_API_KEY", ""))
+    try:
+        shutdown_endpoint = zap.base + "core/action/shutdown/"
+        resp = requests.get(shutdown_endpoint, 
+                            timeout=TIMEOUT_MINS*60, verify=False)
+    except:
+        logging.error("failed to shut down zap.")
+    return
 
 def parse_url(url):
     """

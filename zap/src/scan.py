@@ -22,7 +22,7 @@ from codedx_api.CodeDxAPI import CodeDx  # pylint: disable=import-error
 from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
 
-from zap import ScanType, zap_compliance_scan, zap_connect
+from zap import ScanType, zap_compliance_scan, zap_shutdown
 
 
 def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, product_id):
@@ -518,8 +518,7 @@ def main(): # pylint: disable=too-many-locals
                     dd,
                     target_url
                 )
-                zap = zap_connect()
-                zap.core.shutdown()
+                zap_shutdown()
                 return
             
             # upload its results to Code Dx
@@ -543,8 +542,7 @@ def main(): # pylint: disable=too-many-locals
             logging.info("ready to upload to google drive")
             upload_googledrive(scan_type, zap_filename, codedx_project, cdx_filename, slack_token, slack_channel)
 
-            zap = zap_connect()
-            zap.core.shutdown()
+            zap_shutdown()
             return
         except Exception as error: # pylint: disable=broad-except
             error_message = f"[RETRY-{ attempt }] Exception running Zap Scans: { error }"
@@ -556,8 +554,7 @@ def main(): # pylint: disable=too-many-locals
                 except:
                     logging.error(f"Slack could not post to {slack_channel}")
                 try:
-                    zap = zap_connect()
-                    zap.core.shutdown()
+                    zap_shutdown()
                 except Exception as zap_e: # pylint: disable=broad-except
                     error_message = f"Error shutting down zap: { zap_e }"
                     error_slack_alert(
