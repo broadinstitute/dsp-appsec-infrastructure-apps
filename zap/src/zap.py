@@ -68,18 +68,20 @@ def zap_shutdown():
         'http': PROXY,
         'https': PROXY,
         }
+    logging.info("Attempting to shutdown ZAP")
     zap = ZAPv2(proxies={"http": PROXY, "https": PROXY}, apikey=os.getenv("ZAP_API_KEY", ""))
     try:
         sleep_time = 20
         attempts = int((TIMEOUT_MINS*60)/20)
-        for attempt in range(attempts):
+        for _ in range(attempts):
             shutdown_endpoint = zap.base + "core/action/shutdown/"
             resp = requests.get(shutdown_endpoint, proxies=proxies,
                                 timeout=TIMEOUT_MINS*60)
-            logging.info(resp.status_code)
+            logging.info(f"Response code from requesting ZAP shutdown: {resp.status_code}")
             if int(resp.status_code) == 200:
                 break
             time.sleep(sleep_time)
+            
         
     except Exception as e:
         logging.error("failed to shut down zap.")
