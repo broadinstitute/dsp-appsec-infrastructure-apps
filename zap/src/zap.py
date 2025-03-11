@@ -71,23 +71,20 @@ def zap_shutdown():
     logging.info("Attempting to shutdown ZAP")
     apikey = os.getenv("ZAP_API_KEY", "")
     zap = ZAPv2(proxies={"http": PROXY, "https": PROXY}, apikey=apikey)
-    try:
-        sleep_time = 20
-        attempts = int((TIMEOUT_MINS*60)/20)
-        for _ in range(attempts):
+    sleep_time = 20
+    attempts = int((TIMEOUT_MINS*60)/20)
+    for attempt in range(attempts):
+        try:
             shutdown_endpoint = zap.base + "core/action/shutdown/"
             headers = { "X-ZAP-API-Key" : apikey }
             resp = requests.get(shutdown_endpoint, proxies=proxies, headers=headers,
                                 timeout=int(TIMEOUT_MINS*60)/2)
             logging.info(f"Response code from requesting ZAP shutdown: {resp.status_code}")
             if int(resp.status_code) == 200:
-                break
-            time.sleep(sleep_time)
-
-    except Exception as e:
-        logging.error("failed to shut down zap.")
-        logging.error(e)
-
+                return
+        except Exception as e:
+            logging.error(f"An error occured while shutting down zap. Attempt {attempt+1}")
+        time.sleep(sleep_time)
 
 def parse_url(url):
     """
