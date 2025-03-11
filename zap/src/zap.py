@@ -75,7 +75,7 @@ def zap_shutdown():
         attempts = int((TIMEOUT_MINS*60)/20)
         for _ in range(attempts):
             shutdown_endpoint = zap.base + "core/action/shutdown/"
-            resp = requests.get(shutdown_endpoint, proxies=proxies,
+            resp = zap.session.requests("GET",shutdown_endpoint, proxies=proxies,
                                 timeout=TIMEOUT_MINS*60)
             logging.info(f"Response code from requesting ZAP shutdown: {resp.status_code}")
             if int(resp.status_code) == 200:
