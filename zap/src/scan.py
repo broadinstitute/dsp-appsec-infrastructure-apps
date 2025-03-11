@@ -34,7 +34,7 @@ def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, prod
     defect_dojo, defect_dojo_key, defect_dojo_user, debug=False, timeout=120)
     max_retries = int(getenv("MAX_RETRIES", '6'))
     retry_delay = 30
-    for attempt in range(max_retries):
+    for _ in range(max_retries):
         try:
             product = dojo.get_product(product_id=product_id)
             return product.data["name"]
@@ -106,7 +106,7 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
     date = datetime.today().strftime("%Y%m%d%H:%M")
     lead_id = fetch_dojo_lead_id(dojo, defect_dojo_user)
 
-# The call to create_engagement sometimes fails. 
+# The call to create_engagement sometimes fails.
     retry_delay = 20
     max_retries = int(getenv("MAX_RETRIES", '5'))
     for attempt in range(max_retries):
@@ -252,7 +252,6 @@ def get_codedx_initial_report(
         file_name=report_file,
         filters=filters,
     )
-
     return report_file
 
 
@@ -382,7 +381,7 @@ def upload_googledrive(scan_type, zap_filename, codedx_project, report_file, sla
     """
     root_id = os.getenv('DRIVE_ROOT_ID', None)
     drive_id = os.getenv('DRIVE_ID', None)
-    if scan_type in (ScanType.BASELINE): 
+    if scan_type in (ScanType.BASELINE):
         return
     try:
         logging.info('Setting up the google drive API service for uploading reports.')
@@ -399,7 +398,6 @@ def upload_googledrive(scan_type, zap_filename, codedx_project, report_file, sla
         date = datetime.today()
         date = drivehelper.adjust_date(date)
         _, xml_folder_dict, zap_raw_folder = drivehelper.get_upload_folders(folder_structure, date)
-        
         file = drivehelper.upload_file_to_drive(zap_filename,
                                                     xml_folder_dict.get('id'),
                                                     drive_id,
@@ -520,7 +518,7 @@ def main(): # pylint: disable=too-many-locals
                 )
                 zap_shutdown()
                 return
-            
+
             # upload its results to Code Dx
             cdx = CodeDx(codedx_url, codedx_api_key)
 

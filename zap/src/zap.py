@@ -83,12 +83,11 @@ def zap_shutdown():
             if int(resp.status_code) == 200:
                 break
             time.sleep(sleep_time)
-            
-        
+
     except Exception as e:
         logging.error("failed to shut down zap.")
         logging.error(e)
-    return
+
 
 def parse_url(url):
     """
