@@ -21,7 +21,7 @@ from zap_common import (wait_for_zap_start, zap_access_target,
 from zap_scan_type import ScanType
 from zapv2 import ZAPv2
 
-TIMEOUT_MINS = 5
+TIMEOUT_MINS = 6
 zap_port = int(os.getenv("ZAP_PORT", ""))
 PROXY = f"http://localhost:{zap_port}"
 
@@ -47,7 +47,7 @@ def zap_init(target_url: str):
     enabled = True
     matchregex = True
     matchstring = ".*"
-    requestspersecond = 5
+    requestspersecond = 4
     groupby = "host"
     zap.network.add_rate_limit_rule(description,
                                     enabled,
@@ -60,6 +60,31 @@ def zap_init(target_url: str):
 
     return zap
 
+def zap_shutdown():
+    """
+    Connect to the Zap instance and shut it down.
+    """
+    proxies = {
+        'http': PROXY,
+        'https': PROXY,
+        }
+    logging.info("Attempting to shutdown ZAP")
+    apikey = os.getenv("ZAP_API_KEY", "")
+    zap = ZAPv2(proxies={"http": PROXY, "https": PROXY}, apikey=apikey)
+    sleep_time = 20
+    attempts = int((TIMEOUT_MINS*60)/20)
+    for attempt in range(attempts):
+        try:
+            shutdown_endpoint = zap.base + "core/action/shutdown/"
+            headers = { "X-ZAP-API-Key" : apikey }
+            resp = requests.get(shutdown_endpoint, proxies=proxies, headers=headers,
+                                timeout=int(TIMEOUT_MINS*60)/2)
+            logging.info(f"Response code from requesting ZAP shutdown: {resp.status_code}")
+            if int(resp.status_code) == 200:
+                return
+        except Exception as e:
+            logging.error(f"An error occured while shutting down zap. Attempt {attempt+1}")
+        time.sleep(sleep_time)
 
 def parse_url(url):
     """
@@ -320,7 +345,7 @@ def get_hail_token():
         "aud": "https://www.googleapis.com/oauth2/v4/token",
         "iat": now,
         "scope": scope,
-        "exp": now + 300,  # 5m
+        "exp": now + 3000,  # 50m
         "iss": creds['client_email'],
     }
     encoded_assertion = jwt.encode(assertion, creds['private_key'], algorithm='RS256')

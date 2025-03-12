@@ -120,7 +120,7 @@ def find_subfolder(folder_structure, target_name, target_folder=None):
     Finds a specific subfolder by name, returns the dict for that folder.
     """
     for child in folder_structure['children']:
-        if child['name'] == target_name:
+        if target_name in child['name']:
             target_folder = child
             return target_folder
         target_folder = find_subfolder(child, target_name)

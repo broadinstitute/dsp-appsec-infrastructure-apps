@@ -22,7 +22,7 @@ from codedx_api.CodeDxAPI import CodeDx  # pylint: disable=import-error
 from google.cloud import storage
 from slack_sdk.web import WebClient as SlackClient
 
-from zap import ScanType, zap_compliance_scan, zap_connect
+from zap import ScanType, zap_compliance_scan, zap_shutdown
 
 
 def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, product_id):
@@ -34,7 +34,7 @@ def fetch_dojo_product_name(defect_dojo, defect_dojo_user, defect_dojo_key, prod
     defect_dojo, defect_dojo_key, defect_dojo_user, debug=False, timeout=120)
     max_retries = int(getenv("MAX_RETRIES", '6'))
     retry_delay = 30
-    for attempt in range(max_retries):
+    for _ in range(max_retries):
         try:
             product = dojo.get_product(product_id=product_id)
             return product.data["name"]
@@ -106,11 +106,21 @@ def defectdojo_upload(product_id: int, zap_filename: str, defect_dojo_key: str, 
     date = datetime.today().strftime("%Y%m%d%H:%M")
     lead_id = fetch_dojo_lead_id(dojo, defect_dojo_user)
 
-    engagement=dojo.create_engagement( name=date, product_id=product_id, lead_id=lead_id,
-        target_start=datetime.today().strftime("%Y-%m-%d"),
-        target_end=datetime.today().strftime("%Y-%m-%d"), status="In Progress",
-        active='True',deduplication_on_engagement='False')
-    engagement_id=engagement.data["id"]
+# The call to create_engagement sometimes fails.
+    retry_delay = 20
+    max_retries = int(getenv("MAX_RETRIES", '5'))
+    for attempt in range(max_retries):
+        try:
+            engagement=dojo.create_engagement( name=date, product_id=product_id, lead_id=lead_id,
+                target_start=datetime.today().strftime("%Y-%m-%d"),
+                target_end=datetime.today().strftime("%Y-%m-%d"), status="In Progress",
+                active='True',deduplication_on_engagement='False')
+            engagement_id=engagement.data["id"]
+            break
+        except Exception: # pylint: disable=broad-except
+            sleep(retry_delay)
+            if attempt == max_retries-1:
+                raise RuntimeError("Maximum retry attempts reached for closing engagement")
 
     dojo_upload = dojo.upload_scan(engagement_id=engagement_id,
                      scan_type="ZAP Scan",
@@ -242,7 +252,6 @@ def get_codedx_initial_report(
         file_name=report_file,
         filters=filters,
     )
-
     return report_file
 
 
@@ -372,7 +381,7 @@ def upload_googledrive(scan_type, zap_filename, codedx_project, report_file, sla
     """
     root_id = os.getenv('DRIVE_ROOT_ID', None)
     drive_id = os.getenv('DRIVE_ID', None)
-    if scan_type in (ScanType.BASELINE): 
+    if scan_type in (ScanType.BASELINE):
         return
     try:
         logging.info('Setting up the google drive API service for uploading reports.')
@@ -389,7 +398,6 @@ def upload_googledrive(scan_type, zap_filename, codedx_project, report_file, sla
         date = datetime.today()
         date = drivehelper.adjust_date(date)
         _, xml_folder_dict, zap_raw_folder = drivehelper.get_upload_folders(folder_structure, date)
-        
         file = drivehelper.upload_file_to_drive(zap_filename,
                                                     xml_folder_dict.get('id'),
                                                     drive_id,
@@ -508,10 +516,9 @@ def main(): # pylint: disable=too-many-locals
                     dd,
                     target_url
                 )
-                zap = zap_connect()
-                zap.core.shutdown()
+                zap_shutdown()
                 return
-            
+
             # upload its results to Code Dx
             cdx = CodeDx(codedx_url, codedx_api_key)
 
@@ -533,8 +540,7 @@ def main(): # pylint: disable=too-many-locals
             logging.info("ready to upload to google drive")
             upload_googledrive(scan_type, zap_filename, codedx_project, cdx_filename, slack_token, slack_channel)
 
-            zap = zap_connect()
-            zap.core.shutdown()
+            zap_shutdown()
             return
         except Exception as error: # pylint: disable=broad-except
             error_message = f"[RETRY-{ attempt }] Exception running Zap Scans: { error }"
@@ -546,8 +552,7 @@ def main(): # pylint: disable=too-many-locals
                 except:
                     logging.error(f"Slack could not post to {slack_channel}")
                 try:
-                    zap = zap_connect()
-                    zap.core.shutdown()
+                    zap_shutdown()
                 except Exception as zap_e: # pylint: disable=broad-except
                     error_message = f"Error shutting down zap: { zap_e }"
                     error_slack_alert(
