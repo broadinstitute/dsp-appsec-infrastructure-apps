@@ -35,6 +35,7 @@ const routes: Routes = [
   { path: 'generalServiceQuestionnaire', component: FormComponent },
   { path: '3rd-party-app-questionnaire', component: AppFormComponent },
   { path: 'new-3rd-party-app', component: AppsMainpageComponent },
+  { path:  'cis/scan', component: CisScanComponent },
   { path: 'gcp-project-security-posture/latest', component: CisComponent },
   { path: 'gcp-project-security-posture/results', component: CisResultsComponent },
   { path: 'gcp-project-security-posture/scan', component: CisScanComponent },
