@@ -1,4 +1,5 @@
 import json
+import os
 
 import requests
 import requests.exceptions
@@ -686,6 +687,9 @@ class DefectDojoAPIv2(object):
         if self.debug:
             print("filedata:")
             print(filedata)
+        
+        if os.path.splitext(file)[-1].lower() == ".xml":
+             filedata = {'file':('report.xml',filedata,'text/xml')}
 
         data = {
             'file': filedata,
