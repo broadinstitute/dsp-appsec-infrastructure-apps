@@ -689,7 +689,7 @@ class DefectDojoAPIv2(object):
             print(filedata)
         
         if os.path.splitext(file)[-1].lower() == ".xml":
-             filedata = {'file':('report.xml',filedata,'text/xml')}
+             filedata = ('report.xml',filedata,'text/xml')
 
         data = {
             'file': filedata,
