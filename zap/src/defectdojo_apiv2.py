@@ -689,7 +689,7 @@ class DefectDojoAPIv2(object):
             print("filedata:")
             print(filedata)
 
-        filedata = ('report.xml', filedata, mimetypes.guess_file_type(file)[0])
+        filedata = ('report.xml', filedata, mimetypes.guess_type(file)[0])
 
         data = {
             'file': filedata,
