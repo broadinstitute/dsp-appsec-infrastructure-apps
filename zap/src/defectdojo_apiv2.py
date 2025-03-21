@@ -1,4 +1,6 @@
 import json
+import mimetypes
+import os
 
 import requests
 import requests.exceptions
@@ -686,6 +688,8 @@ class DefectDojoAPIv2(object):
         if self.debug:
             print("filedata:")
             print(filedata)
+
+        filedata = ('report.xml', filedata, mimetypes.guess_type(file)[0])
 
         data = {
             'file': filedata,
