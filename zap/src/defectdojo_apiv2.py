@@ -1,4 +1,5 @@
 import json
+import mimetypes
 import os
 
 import requests
@@ -687,9 +688,8 @@ class DefectDojoAPIv2(object):
         if self.debug:
             print("filedata:")
             print(filedata)
-        
-        if os.path.splitext(file)[-1].lower() == ".xml":
-             filedata = ('report.xml',filedata,'text/xml')
+
+        filedata = ('report.xml', filedata, mimetypes.guess_file_type(file)[0])
 
         data = {
             'file': filedata,
