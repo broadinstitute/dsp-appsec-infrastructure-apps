@@ -6,6 +6,7 @@ Runs ZAP scan, uploads results to Code Dx and GCS, and alerts Slack.
 import logging
 import os
 import re
+import csv
 from datetime import datetime, timedelta
 from enum import Enum
 from os import getenv
@@ -374,6 +375,93 @@ def clean_uri_path(xml_report):
         uri.text = urlunparse(r)
     tree.write(xml_report)
 
+def get_codedx_findings_json(cdx,codedx_project):
+    """
+    Raw report findings_json
+    """
+    options = ["descriptor",
+               "issue",
+               "descriptions",
+               "results.active",
+               "results.descriptor",
+               "results.descriptions",
+               "results.metadata",
+               "results.variants.with-body",
+               "last-comment-action",
+               "metadata,"
+               "tags",
+               "aggregations.tool-summary",
+               "triage-time"]
+    config = {
+                "filter": {
+                    "~status": [
+                    7
+                    ],
+                    "globalConfig":{"ignoreArchived":True}
+                },
+                "pagination":{"perPage":500,"page":1}
+                }
+    return cdx.get_finding_table(codedx_project, options, config,  )
+
+def hail_compliance_export(results_json, project_name):
+    """
+    Helper function to create a CSV file in the POAM format of the current raw findings
+    """
+    csv_headers = ["status",
+                   "ids",
+                   "Weakness Name",
+                   "Weakness Description",
+                   "Weakness Detector Source",
+                   "Weakness Source Identifier",
+                   "Asset Identifier",
+                   "Original Detection Date",
+                   "Scheduled Completion Date",
+                   "Original Risk Rating"]
+    # create the csv line based on the columns above.
+    results = {}
+    for result in results_json:
+        result_line = []
+        name = result.get("descriptor").get("name")
+        status = result.get("statusName")
+        result_line.append(status)
+        result_line.append("")
+        result_line.append(name)
+        result_line.append(result.get("descriptions").get("general").get("content"))
+        result_line.append("put file location here")
+        result_line.append(result.get("descriptor").get("hierarchy")[0])
+        result_line.append(result.get("location").get("path").get("path"))
+        result_line.append(result.get("firstSeenOn"))
+        severity = result.get("severity").get("key")
+        due_date = datetime.strptime(result.get("firstSeenOn"), "%m/%d/%Y")
+        if severity == 5:
+            due_date = due_date + timedelta(days=14)
+        elif severity == 4:
+            due_date = due_date + timedelta(days=30)
+        elif severity == 3:
+            due_date = due_date + timedelta(days=60)
+        elif severity == 2:
+            due_date = due_date + timedelta(days=180)
+        else:
+            due_date = None
+        result_line.append(due_date)
+        result_line.append(result.get("severity").get("name"))
+        key = name + status
+        if results.get(key):
+            results[key][1] = results[key][1] + f", {result.get('id')}"
+        else:
+            results[key] = result_line
+            results[key][1] = str(result.get('id'))
+            results[key][6] = results[key][6] + f", \n{result.get("location").get("path").get("path")}"
+    
+    report_date = datetime.now()
+    report_name = f'{project_name.replace("-", "_")}_report_{report_date:%Y%m%d}.csv'
+    with open(report_name, "w", newline='') as csvfile:
+        report_writer = csv.writer(csvfile, delimiter=',')
+        report_writer.writerow(csv_headers)
+        for line in results.values():
+            report_writer.writerow(line)
+    return report_name
+    
 def upload_googledrive(scan_type, zap_filename, codedx_project, report_file, slack_token, slack_channel):
     """
     Uploads the xml and initial codedx reports to the appropriate google drive location,
@@ -409,11 +497,24 @@ def upload_googledrive(scan_type, zap_filename, codedx_project, report_file, sla
                                                     zap_raw_folder.get('id'),
                                                     drive_id,
                                                     drive_service)
-        logging.info(f"The returned file id for {codedx_project} Raw Report is {file2}")
         if not file2:
             raise RuntimeError(
                         f"The CodeDx report for {codedx_project} was not uploaded to {zap_raw_folder.get('id')}.")
+        logging.info(f"The returned file id for {codedx_project} Raw Report is {file2}")
         logging.info(f'The report {report_file} has been uploaded.')
+        if scan_type in (ScanType.HAILAPI, ScanType.HAILAUTH):
+            # export the raw report in a format that can be used to generate POAMs
+            findings_json = get_codedx_findings_json()
+            report_name = hail_compliance_export(findings_json, codedx_project)
+            file3 = drivehelper.upload_file_to_drive(report_name,
+                                                        zap_raw_folder.get('id'),
+                                                        drive_id,
+                                                        drive_service)
+            if not file3:
+                raise RuntimeError(
+                    f"The raw report csv for {codedx_project} was not uploaded to {zap_raw_folder.get('id')}.")
+            logging.info(f"The returned file id for {codedx_project} CSV report is {file3}")
+ 
     except Exception as e: # pylint: disable=broad-except
         error_message = f'Failed to complete uploading files to GDrive for {codedx_project}. Last error {e}'
         logging.info(error_message)
