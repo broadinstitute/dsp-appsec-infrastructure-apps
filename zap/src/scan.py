@@ -462,7 +462,7 @@ def hail_compliance_export(results_json, project_name):
             report_writer.writerow(line)
     return report_name
     
-def upload_googledrive(scan_type, zap_filename, codedx_project, report_file, slack_token, slack_channel):
+def upload_googledrive(scan_type, zap_filename, codedx_project, report_file, slack_token, slack_channel, csv_report_name=None):
     """
     Uploads the xml and initial codedx reports to the appropriate google drive location,
     according to scan type.
@@ -504,9 +504,8 @@ def upload_googledrive(scan_type, zap_filename, codedx_project, report_file, sla
         logging.info(f'The report {report_file} has been uploaded.')
         if scan_type in (ScanType.HAILAPI, ScanType.HAILAUTH):
             # export the raw report in a format that can be used to generate POAMs
-            findings_json = get_codedx_findings_json()
-            report_name = hail_compliance_export(findings_json, codedx_project)
-            file3 = drivehelper.upload_file_to_drive(report_name,
+            
+            file3 = drivehelper.upload_file_to_drive(csv_report_name,
                                                         zap_raw_folder.get('id'),
                                                         drive_id,
                                                         drive_service)
@@ -639,7 +638,12 @@ def main(): # pylint: disable=too-many-locals
 
             # Upload Terra scan XMLs and CodeDx reports to Google Drive.
             logging.info("ready to upload to google drive")
-            upload_googledrive(scan_type, zap_filename, codedx_project, cdx_filename, slack_token, slack_channel)
+            if scan_type in (ScanType.HAILAPI, ScanType.HAILAUTH):
+                findings_json = get_codedx_findings_json(cdx, product_id)
+                report_name = hail_compliance_export(findings_json, codedx_project)
+
+
+            upload_googledrive(scan_type, zap_filename, codedx_project, cdx_filename, slack_token, slack_channel, report_name)
 
             zap_shutdown()
             return
