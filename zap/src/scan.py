@@ -379,6 +379,7 @@ def get_codedx_findings_json(cdx,codedx_project):
     """
     Raw report findings_json
     """
+    project_id = cdx.get_project_id(codedx_project)
     options = ["descriptor",
                "issue",
                "descriptions",
@@ -401,7 +402,7 @@ def get_codedx_findings_json(cdx,codedx_project):
                 },
                 "pagination":{"perPage":500,"page":1}
                 }
-    return cdx.get_finding_table(codedx_project, options, config,  )
+    return cdx.get_finding_table(project_id, options, config,  )
 
 def hail_compliance_export(results_json, project_name):
     """
@@ -641,7 +642,7 @@ def main(): # pylint: disable=too-many-locals
             logging.info("ready to upload to google drive")
             if scan_type in (ScanType.HAILAPI, ScanType.HAILAUTH):
                 logging.info("Pulling findings JSON for hail to build report CSV.")
-                findings_json = get_codedx_findings_json(cdx, product_id)
+                findings_json = get_codedx_findings_json(cdx, codedx_project)
                 report_name = hail_compliance_export(findings_json, codedx_project)
 
 
