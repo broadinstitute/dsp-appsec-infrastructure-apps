@@ -453,6 +453,7 @@ def hail_compliance_export(results_json, project_name):
             results[key][1] = str(result.get('id'))
             results[key][6] = f"{results[key][6]}, \n{result.get('location').get('path').get('path')}"
     
+    logging.info("Writing CSV report")
     report_date = datetime.now()
     report_name = f'{project_name.replace("-", "_")}_report_{report_date:%Y%m%d}.csv'
     with open(report_name, "w", newline='') as csvfile:
@@ -639,6 +640,7 @@ def main(): # pylint: disable=too-many-locals
             # Upload Terra scan XMLs and CodeDx reports to Google Drive.
             logging.info("ready to upload to google drive")
             if scan_type in (ScanType.HAILAPI, ScanType.HAILAUTH):
+                logging.info("Pulling findings JSON for hail to build report CSV.")
                 findings_json = get_codedx_findings_json(cdx, product_id)
                 report_name = hail_compliance_export(findings_json, codedx_project)
 
