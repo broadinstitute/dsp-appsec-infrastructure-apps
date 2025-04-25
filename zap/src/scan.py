@@ -451,7 +451,7 @@ def hail_compliance_export(results_json, project_name):
         else:
             results[key] = result_line
             results[key][1] = str(result.get('id'))
-            results[key][6] = results[key][6] + f", \n{result.get("location").get("path").get("path")}"
+            results[key][6] = f"{results[key][6]}, \n{result.get('location').get('path').get('path')}"
     
     report_date = datetime.now()
     report_name = f'{project_name.replace("-", "_")}_report_{report_date:%Y%m%d}.csv'
