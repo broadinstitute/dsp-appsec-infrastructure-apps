@@ -638,6 +638,7 @@ def main(): # pylint: disable=too-many-locals
                 scan_type,
             )
 
+            report_name = None
             # Upload Terra scan XMLs and CodeDx reports to Google Drive.
             logging.info("ready to upload to google drive")
             if scan_type in (ScanType.HAILAPI, ScanType.HAILAUTH):
