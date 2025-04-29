@@ -404,7 +404,7 @@ def get_codedx_findings_json(cdx,codedx_project):
                 }
     return cdx.get_finding_table(project_id, options, config,  )
 
-def hail_compliance_export(results_json, project_name):
+def hail_compliance_export(results_json, project_name, cdx_report_filename):
     """
     Helper function to create a CSV file in the POAM format of the current raw findings
     """
@@ -428,7 +428,7 @@ def hail_compliance_export(results_json, project_name):
         result_line.append("")
         result_line.append(name)
         result_line.append(result.get("descriptions").get("general").get("content"))
-        result_line.append("put file location here")
+        result_line.append(cdx_report_filename)
         result_line.append(result.get("descriptor").get("hierarchy")[0])
         result_line.append(result.get("location").get("path").get("path"))
         result_line.append(result.get("firstSeenOn"))
@@ -644,7 +644,7 @@ def main(): # pylint: disable=too-many-locals
             if scan_type in (ScanType.HAILAPI, ScanType.HAILAUTH):
                 logging.info("Pulling findings JSON for hail to build report CSV.")
                 findings_json = get_codedx_findings_json(cdx, codedx_project)
-                report_name = hail_compliance_export(findings_json, codedx_project)
+                report_name = hail_compliance_export(findings_json, codedx_project, cdx_filename)
 
 
             upload_googledrive(scan_type, zap_filename, codedx_project, cdx_filename, slack_token, slack_channel, report_name)
