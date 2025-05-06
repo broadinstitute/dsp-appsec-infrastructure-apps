@@ -425,13 +425,14 @@ def hail_compliance_export(results_json, project_name, cdx_report_filename):
         name = result.get("descriptor").get("name")
         status = result.get("statusName")
         result_line.append(status)
-        result_line.append("")
+        result_line.append(result.get('id'))
         result_line.append(name)
         result_line.append(result.get("descriptions").get("general").get("content"))
         result_line.append(cdx_report_filename)
         result_line.append(result.get("descriptor").get("hierarchy")[0])
         result_line.append(result.get("location").get("path").get("path"))
         result_line.append(result.get("firstSeenOn"))
+
         severity = result.get("severity").get("key")
         due_date = datetime.strptime(result.get("firstSeenOn"), "%m/%d/%Y")
         if severity == 5:
@@ -446,14 +447,7 @@ def hail_compliance_export(results_json, project_name, cdx_report_filename):
             due_date = None
         result_line.append(due_date)
         result_line.append(result.get("severity").get("name"))
-        key = name + status
-        if results.get(key):
-            results[key][1] = results[key][1] + f", {result.get('id')}"
-        else:
-            results[key] = result_line
-            results[key][1] = str(result.get('id'))
-            results[key][6] = f"{results[key][6]}, \n{result.get('location').get('path').get('path')}"
-    
+  
     logging.info("Writing CSV report")
     report_date = datetime.now()
     report_name = f'{project_name.replace("-", "_")}_report_{report_date:%Y%m%d}.csv'
