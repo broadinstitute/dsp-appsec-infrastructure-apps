@@ -419,7 +419,7 @@ def hail_compliance_export(results_json, project_name, cdx_report_filename):
                    "Scheduled Completion Date",
                    "Original Risk Rating"]
     # create the csv line based on the columns above.
-    results = {}
+    results = []
     for result in results_json:
         result_line = []
         name = result.get("descriptor").get("name")
@@ -447,14 +447,16 @@ def hail_compliance_export(results_json, project_name, cdx_report_filename):
             due_date = None
         result_line.append(due_date)
         result_line.append(result.get("severity").get("name"))
-  
+
+        results.append(result_line)
+        
     logging.info("Writing CSV report")
     report_date = datetime.now()
     report_name = f'{project_name.replace("-", "_")}_report_{report_date:%Y%m%d}.csv'
     with open(report_name, "w", newline='') as csvfile:
         report_writer = csv.writer(csvfile, delimiter=',')
         report_writer.writerow(csv_headers)
-        for line in results.values():
+        for line in results:
             report_writer.writerow(line)
     return report_name
     
