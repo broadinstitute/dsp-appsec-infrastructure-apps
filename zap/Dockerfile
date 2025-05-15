@@ -1,4 +1,4 @@
-FROM softwaresecurityproject/zap-stable AS zap
+FROM zaproxy/zap-stable AS zap
 
 FROM us.gcr.io/broad-dsp-gcr-public/base/python:3.10-debian AS base
 
