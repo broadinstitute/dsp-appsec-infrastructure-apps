@@ -19,7 +19,7 @@ data:
 
         containers:
         - name: zap
-          image: softwaresecurityproject/zap-stable
+          image: ghcr.io/zaproxy/zaproxy:bare
           volumeMounts:
             - name: shared-data
               mountPath: ${VOLUME_SHARE}
