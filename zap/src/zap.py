@@ -466,7 +466,7 @@ def zap_compliance_scan(
     attempts = TIMEOUT_MINS*3
     wait_in_secs = 20
     for _ in range(attempts):
-        rtc = zap.pscan.records_to_scan
+        rtc = int(zap.pscan.records_to_scan)
         if rtc > 0:
             time.sleep(wait_in_secs)
         else:
