@@ -16,8 +16,6 @@ import requests
 import terra_auth
 from google.auth.transport.requests import Request as GoogleAuthRequest
 from google.oauth2 import id_token
-from zap_common import (wait_for_zap_start, zap_access_target,
-                        zap_wait_for_passive_scan)
 from zap_scan_type import ScanType
 from zapv2 import ZAPv2
 
@@ -30,9 +28,25 @@ def zap_connect():
     """
     Connect to the Zap instance
     """
-    zap = ZAPv2(proxies={"http": PROXY, "https": PROXY}, apikey=os.getenv("ZAP_API_KEY", ""))
-    wait_for_zap_start(zap, timeout_in_secs=TIMEOUT_MINS * 60)
-    return zap
+    apikey=os.getenv("ZAP_API_KEY", "")
+    proxies={"http": PROXY, "https": PROXY}
+    zap = ZAPv2(proxies={"http": PROXY, "https": PROXY}, apikey=apikey)
+    sleep_time = 20
+    attempts = int((TIMEOUT_MINS*60)/20)
+    for attempt in range(attempts):
+        try:
+            version_endpoint = zap.base + "JSON/core/view/version/"
+            headers = { "X-ZAP-API-Key" : apikey }
+            resp = requests.get(version_endpoint, proxies=proxies, headers=headers,
+                                timeout=int(TIMEOUT_MINS*60)/2)
+            logging.info(f"Response code from requesting ZAP shutdown: {resp.status_code}")
+            if int(resp.status_code) == 200:
+                return zap
+        except Exception as e:
+            logging.error(f"An error occured while shutting down zap. Attempt {attempt+1}")
+        time.sleep(sleep_time)
+    
+    raise RuntimeError(f"Zap was not reachable within {TIMEOUT_MINS} minutes") from e
 
 
 def zap_init(target_url: str):
@@ -55,9 +69,7 @@ def zap_init(target_url: str):
                                     matchstring,
                                     requestspersecond,
                                     groupby)
-
-    zap_access_target(zap, target_url)
-
+    zap.urlopen(target_url)
     return zap
 
 def zap_shutdown():
@@ -195,7 +207,7 @@ def zap_setup_cookie(zap, domain, context_id, cookie_name=None):
         userid = zap.users.users_list(context_id)[0]["id"]
         if cookie_name:
             zap.httpsessions.add_default_session_token(cookie_name)
-            zap_access_target(zap, f"https://{domain}")
+            zap.urlopen(f"https://{domain}")
         # This is the secret sauce for using cookies.
         # The user above is now associated with the active cookie.
         # It should always choose the newest one.
@@ -208,7 +220,7 @@ def zap_setup_cookie(zap, domain, context_id, cookie_name=None):
         zap.users.set_user_enabled(context_id, userid, True)
         zap.forcedUser.set_forced_user(context_id, userid)
         zap.forcedUser.set_forced_user_mode_enabled(True)
-        zap_access_target(zap, f"https://{domain}")
+        zap.urlopen(f"https://{domain}")
         return username, userid
     except Exception as e:
         logging.error("Cookie authentication setup failed.")
@@ -444,11 +456,23 @@ def zap_compliance_scan(
     if scan_type in (ScanType.UI, ScanType.LEOAPP, ScanType.BEEHIVE, ScanType.HAILAUTH):
         zap.ajaxSpider.scan(target_url, contextname=project)
 
-    zap_wait_for_passive_scan(zap, timeout_in_secs=TIMEOUT_MINS * 60)
-
+    
     if scan_type != ScanType.BASELINE:
-        logging.info("zap ajax spider scan %s", target_url)
+        logging.info("starting zap active scan for %s", target_url)
         zap.ascan.scan(target_url, contextid=context_id, recurse=True)
+
+    # Check and wait for passive scan to complete. 
+    # Times out after TIMEOUT_MINS and finishes the scan.
+    rtc = zap.pscan.records_to_scan
+    attempts = TIMEOUT_MINS*3
+    wait_in_secs = 20
+    for _ in attempts:
+        rtc = zap.pscan.records_to_scan
+        if rtc > 0:
+            time.sleep(wait_in_secs)
+        else:
+            logging.info("Passive scanning complete")
+            break    
 
     logging.info("Scan complete. Cumulative alerts: %s", zap.alert.alerts_summary())
     filename = zap_report(zap, project, scan_type, f"https://{host}")
