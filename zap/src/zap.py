@@ -43,7 +43,7 @@ def zap_connect():
             if int(resp.status_code) == 200:
                 return zap
         except Exception as e:
-            logging.error(f"An error occured while shutting down zap. Attempt {attempt+1}")
+            logging.error(f"An error occured while starting zap. Attempt {attempt+1}. {e}")
         time.sleep(sleep_time)
     
     raise RuntimeError(f"Zap was not reachable within {TIMEOUT_MINS} minutes")
@@ -465,7 +465,7 @@ def zap_compliance_scan(
     # Times out after TIMEOUT_MINS and finishes the scan.
     attempts = TIMEOUT_MINS*3
     wait_in_secs = 20
-    for _ in attempts:
+    for _ in range(attempts):
         rtc = zap.pscan.records_to_scan
         if rtc > 0:
             time.sleep(wait_in_secs)
