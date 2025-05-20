@@ -35,18 +35,18 @@ def zap_connect():
     attempts = int((TIMEOUT_MINS*60)/20)
     for attempt in range(attempts):
         try:
-            version_endpoint = zap.base + "JSON/core/view/version/"
+            version_endpoint = zap.base + "core/view/version/"
             headers = { "X-ZAP-API-Key" : apikey }
             resp = requests.get(version_endpoint, proxies=proxies, headers=headers,
                                 timeout=int(TIMEOUT_MINS*60)/2)
-            logging.info(f"Response code from requesting ZAP shutdown: {resp.status_code}")
+            logging.info(f"Response code from requesting ZAP versionon startup: {resp.status_code}")
             if int(resp.status_code) == 200:
                 return zap
         except Exception as e:
             logging.error(f"An error occured while shutting down zap. Attempt {attempt+1}")
         time.sleep(sleep_time)
     
-    raise RuntimeError(f"Zap was not reachable within {TIMEOUT_MINS} minutes") from e
+    raise RuntimeError(f"Zap was not reachable within {TIMEOUT_MINS} minutes")
 
 
 def zap_init(target_url: str):
