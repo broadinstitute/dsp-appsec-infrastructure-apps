@@ -23,7 +23,6 @@ RUN /venv/bin/pylint --fail-under=9 --ignore=zap_common.py,defectdojo_apiv2.py  
 
 FROM base
 
-COPY --from=zap /zap/zap_common.py ./
 COPY --from=build /venv /venv
 COPY src/*.py ./
 

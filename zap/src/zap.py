@@ -463,7 +463,6 @@ def zap_compliance_scan(
 
     # Check and wait for passive scan to complete. 
     # Times out after TIMEOUT_MINS and finishes the scan.
-    rtc = zap.pscan.records_to_scan
     attempts = TIMEOUT_MINS*3
     wait_in_secs = 20
     for _ in attempts:
