@@ -18,7 +18,6 @@ jobs:
           - dir: batch
           - dir: bastion
           - dir: cis
-          - dir: defectdojo
           - dir: sdarq/frontend
           - dockerfile: sdarq/backend/Dockerfile
           - dir: security-controls
