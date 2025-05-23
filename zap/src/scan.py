@@ -376,7 +376,6 @@ def clean_uri_path(xml_report):
     # this should remove the hash.
     for uri in root.iter("uri"):
         r = urlparse(uri.text)
-        print(type(r))
         path_old = r.path
         r = r._replace(path=URI_HASH_REGEX1.sub(REPLACEMENT1, r.path))
         r = r._replace(path=URI_HASH_REGEX2.sub(REPLACEMENT2, r.path))
