@@ -1,5 +1,3 @@
-FROM zaproxy/zap-stable AS zap
-
 FROM us.gcr.io/broad-dsp-gcr-public/base/python:3.10-debian AS base
 
 FROM base AS build
@@ -19,14 +17,12 @@ FROM build
 
 RUN /venv/bin/pip3 install -U git+https://github.com/PyCQA/pylint.git
 
-COPY --from=zap /zap/zap_common.py ./
 COPY src/*.py ./
 
 RUN /venv/bin/pylint --fail-under=9 --ignore=zap_common.py,defectdojo_apiv2.py  ./*.py
 
 FROM base
 
-COPY --from=zap /zap/zap_common.py ./
 COPY --from=build /venv /venv
 COPY src/*.py ./
 
