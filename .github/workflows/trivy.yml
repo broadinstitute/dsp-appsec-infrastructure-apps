@@ -36,8 +36,22 @@ jobs:
           severities: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
           sarif: ${{ !github.base_ref && env.SARIF_PATH || '' }}
 
+      - name: Check if SARIF file exists
+        id: sarif_check
+        run: |
+          if [ -f "${{ env.SARIF_PATH }}" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2.21.3
-        if: ${{ !github.base_ref }} # omit upload on PRs
+        if: ${{ steps.sarif_check.outputs.exists == 'true' && !github.base_ref }}
         with:
           sarif_file: ${{ env.SARIF_PATH }}
+
+      - name: Log SARIF upload skipped
+        if: ${{ steps.sarif_check.outputs.exists != 'true' || github.base_ref }}
+        run: |
+          echo "SARIF upload skipped: either SARIF file missing or this is a PR."
