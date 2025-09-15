@@ -16,7 +16,6 @@ RUN apt-get update -q && \
 
 RUN pip3 install -U pytest
 
-COPY --from=softwaresecurityproject/zap-stable /zap/zap_common.py ./
 COPY sdarq/backend/src/schemas/*py ./schemas/
 COPY sdarq/backend/src/*.py zap/src/*.py ./
 COPY sdarq/backend/src/tests/test_app.py ./
