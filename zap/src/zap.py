@@ -412,7 +412,7 @@ def zap_compliance_scan(
     # and can provide more granular authentication controls.
 
     # Scan types:
-    # BASELINE - unauthenticated, no active scan.
+    # BASELINE - unauthenticated.
     # API - authenticated with SA, imports openid config, active scan is performed.
     # UI - authenticated with SA, active scan and ajax spider is performed.
     # AUTH - authenticated with SA, active scan is performed.
@@ -457,7 +457,7 @@ def zap_compliance_scan(
         zap.ajaxSpider.scan(target_url, contextname=project)
 
     
-    if scan_type != ScanType.BASELINE:
+    if scan_type != None:
         logging.info("starting zap active scan for %s", target_url)
         zap.ascan.scan(target_url, contextid=context_id, recurse=True)
 

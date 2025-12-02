@@ -224,6 +224,20 @@ items:
               args: ['trigger', '-s', 'auth', 'api', 'iapauth']
 - << : *cron-job
   metadata:
+    name: ${CRON_JOB}-baseline
+    namespace: ${NAMESPACE}
+  spec:
+    schedule: "1 1 1 1 *"
+    jobTemplate:
+      spec:
+        template:
+          spec:
+            << : *cron-job-spec
+            containers:
+            - << : *cron-job-container
+              args: ['trigger', '-s', 'baseline']
+- << : *cron-job
+  metadata:
     name: ${CRON_JOB}-hail
     namespace: ${NAMESPACE}
   spec:

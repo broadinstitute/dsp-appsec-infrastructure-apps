@@ -467,8 +467,8 @@ def upload_googledrive(scan_type, zap_filename, codedx_project, report_file, sla
     """
     root_id = os.getenv('DRIVE_ROOT_ID', None)
     drive_id = os.getenv('DRIVE_ID', None)
-    if scan_type in (ScanType.BASELINE):
-        return
+    # if scan_type in (ScanType.BASELINE):
+    #     return
     try:
         logging.info('Setting up the google drive API service for uploading reports.')
         if scan_type in (ScanType.HAILAPI, ScanType.HAILAUTH):
@@ -574,7 +574,7 @@ def main(): # pylint: disable=too-many-locals
 
             # optionally, upload them to GCS
             xml_report_url = ""
-            if scan_type is not ScanType.BASELINE:
+            if scan_type is not None:
                 xml_report_url = upload_gcs(
                     bucket_name,
                     scan_type,

@@ -69,6 +69,7 @@ def get_pubsub_callback(
             log.info("Submitting job %s with input(s) %s", job_name, job_inputs)
 
             new_job = get_job(job, job_name, job_inputs)
+            # this returns response.data from the underlying api call.
             batch_api.create_namespaced_job(namespace, new_job)
             log.info("Submitted job %s", job_name)
 
