@@ -294,7 +294,8 @@ def zap_report(zap: ZAPv2, project: str, scan_type: ScanType, sites: str):
     # The more advanced zap report api calls require a directory local to zap
     # But you can download known files from /home/zap/.ZAP/transfer if you use an API key
     date = datetime.today()
-    filename = f"{project}_{scan_type}-scan_report-{date.strftime('%Y-%m-%d')}.xml"
+    project_name = project.replace("-", "_").replace('.','').replace("/","").replace(":","")
+    filename = f"{project_name}_{scan_type}-scan_report-{date.strftime('%Y-%m-%d')}.xml"
     filename = filename.replace("-", "_").replace(" ", "")
 
     template = "traditional-xml"
@@ -324,7 +325,8 @@ def zap_save_session(zap: ZAPv2,
     """
     share_path = os.getenv("VOLUME_SHARE")
     share_path_sess = share_path+"/session/"
-    session_filename = f"{project}_{scan_type}-session"
+    project_name = project.replace("-", "_").replace('.','').replace("/","").replace(":","")
+    session_filename = f"{project_name}_{scan_type}-session"
     session_filename = session_filename.replace("-", "_").replace(" ", "")
     # zap scanner container saves session to shared volume
     zap.core.save_session(share_path_sess+session_filename)
