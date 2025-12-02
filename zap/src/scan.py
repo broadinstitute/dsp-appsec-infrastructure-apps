@@ -209,7 +209,8 @@ def get_codedx_report_by_alert_severity(
     """
     logging.info("Getting PDF report from Codedx project: %s", project)
     report_date = datetime.now()
-    report_file = f'{project.replace("-", "_").replace('.','').replace("/","").replace(":","")}_report_{report_date:%Y%m%d}.pdf'
+    project_name = project.replace("-", "_").replace('.','').replace("/","").replace(":","")
+    report_file = f'{project_name}_report_{report_date:%Y%m%d}.pdf'
     filters = {
         "severity": [s.value for s in severities],
         "status": ["new", "unresolved", "reopened", "escalated"],
