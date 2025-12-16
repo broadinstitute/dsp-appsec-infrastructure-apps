@@ -115,15 +115,20 @@ def get_folders_with_structure(root_id, drive_id, drive_service):
     return folder_structure
 
 
-def find_subfolder(folder_structure, target_name, target_folder=None):
+def find_subfolder(folder_structure, target_name, target_folder=None, strict=False):
     """
     Finds a specific subfolder by name, returns the dict for that folder.
     """
     for child in folder_structure['children']:
         if target_name in child['name']:
-            target_folder = child
-            return target_folder
-        target_folder = find_subfolder(child, target_name)
+            if strict == True:
+                if target_name == child['name']:
+                    target_folder = child
+                    return target_folder
+            else:
+                target_folder = child
+                return target_folder
+        target_folder = find_subfolder(child, target_name, strict=strict)
         if target_folder:
             break
     return target_folder
@@ -185,7 +190,7 @@ def get_upload_folders(folder_structure, date):
     Raises an exception if any of the three searches failed.
     """
     logging.info("Finding the folders for this month's scans in Google Drive")
-    year_folder_dict = find_subfolder(folder_structure, str(date.year))
+    year_folder_dict = find_subfolder(folder_structure, str(date.year), strict=True)
     if len(year_folder_dict) > 0:
         month_folder_dict = find_subfolder(year_folder_dict, date.strftime('%Y-%m')) if year_folder_dict is not None else None
         xml_folder_dict = find_subfolder(month_folder_dict, 'XML') if month_folder_dict is not None else None
