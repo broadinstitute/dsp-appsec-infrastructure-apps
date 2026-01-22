@@ -308,12 +308,15 @@ def slack_alert_with_report(  # pylint: disable=too-many-arguments
             f"{ alerts_string }"
             f"Please see the attached report for details."
         )
-        slack.files_upload(
+        slack.files_upload_v2(
             channels=channel,
             file=report_file,
             title=report_file,
             initial_comment=report_message,
         )
+
+
+
     elif gcs_slack_text:
         # mention only XML report, if it was requested
         slack.chat_postMessage(channel=channel, text=gcs_slack_text)

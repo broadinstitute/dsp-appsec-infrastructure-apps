@@ -5,7 +5,7 @@ google-cloud-logging==2.7.2
 google-cloud-pubsub==2.5.0
 google-cloud-storage==1.38.0
 requests==2.32.4
-slack-sdk==3.5.1
+slack-sdk==3.3.90
 defusedxml==0.7.1
 pytz
 zaproxy==0.2.0
