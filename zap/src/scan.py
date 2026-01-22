@@ -309,7 +309,7 @@ def slack_alert_with_report(  # pylint: disable=too-many-arguments
             f"Please see the attached report for details."
         )
         slack.files_upload_v2(
-            channels=channel,
+            channel=channel,
             file=report_file,
             title=report_file,
             initial_comment=report_message,
