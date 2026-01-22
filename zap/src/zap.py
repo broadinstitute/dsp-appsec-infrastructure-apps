@@ -332,7 +332,6 @@ def zap_save_session(zap: ZAPv2,
     try:
         shutil.make_archive(session_filename, 'zip', share_path_sess)
     except BaseException as base_error:  # pylint: disable=bare-except
-        print("Unable to zip session file.")
         raise base_error
     return session_filename + ".zip"
 
@@ -352,7 +351,6 @@ def get_hail_token():
     creds = json.loads(credentials)
     now = int(time.time())
     scope = ' '.join(default_scopes)
-    print(creds['client_email'])
     assertion = {
         "aud": "https://www.googleapis.com/oauth2/v4/token",
         "iat": now,
