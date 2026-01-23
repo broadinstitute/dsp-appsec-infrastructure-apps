@@ -297,17 +297,13 @@ def slack_alert_with_report(  # pylint: disable=too-many-arguments
         )
 
     if get_codedx_alert_count_by_severity(cdx, codedx_project, severities):
-        # attach a full report, if there are findings
-        report_file = get_codedx_report_by_alert_severity(
-            cdx, codedx_project, severities
-        )
         alerts_string = get_alerts_string(cdx, codedx_project, severities)
         report_message = (
             f"{ gcs_slack_text }"
             f"Results from {scan_type.label()} scan of endpoint { target_url }:\n"
             f"{ alerts_string }"
-            f"Please see the attached report for details."
         )
+        slack.chat_postMessage(channel=channel, text=report_message)
 
     elif gcs_slack_text:
         # mention only XML report, if it was requested
