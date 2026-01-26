@@ -193,8 +193,11 @@ def get_upload_folders(folder_structure, date):
     year_folder_dict = find_subfolder(folder_structure, str(date.year), strict=True)
     if len(year_folder_dict) > 0:
         month_folder_dict = find_subfolder(year_folder_dict, date.strftime('%Y-%m')) if year_folder_dict is not None else None
+        logging.info(month_folder_dict)
         xml_folder_dict = find_subfolder(month_folder_dict, 'XML') if month_folder_dict is not None else None
+        logging.info(xml_folder_dict)
         zap_raw_folder = find_subfolder(month_folder_dict, 'Raw Reports') if month_folder_dict is not None else None
+        logging.info(zap_raw_folder)
 
         if month_folder_dict and xml_folder_dict and zap_raw_folder:
             logging.info(f"Uploading report and XML for this month's scans to {xml_folder_dict}")
