@@ -101,6 +101,7 @@ def get_folders_with_structure(root_id, drive_id, drive_service):
         # within the shared drive.
         if file["id"] == root_id:
             logging.info("Root folder has been found.")
+            logging.info(file)
             folder_structure["id"] = file["id"]
             folder_structure["name"] = file["name"]
             folder_structure["children"] = []
