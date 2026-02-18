@@ -3,7 +3,7 @@ FROM us.gcr.io/broad-dsp-gcr-public/base/nodejs:20-alpine AS node
 WORKDIR /app
 
 COPY package.* .
-RUN npm install --legacy-peer-deps
+RUN npm install
 
 COPY . .
 RUN npm run lint
