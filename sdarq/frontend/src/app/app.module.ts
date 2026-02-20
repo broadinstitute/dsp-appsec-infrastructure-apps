@@ -95,8 +95,7 @@ import { AuthzService } from './services/authz/authz.service';
     HttpClientModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule,
-    MDBBootstrapModule.forRoot()
+    BrowserAnimationsModule
   ],
   providers: [
     SendFormDataService,

@@ -103,7 +103,7 @@
               "src/favicon.ico"
             ],
             "styles": [
-              "src/styles.css",
+              "src/styles.scss",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/survey-angular/survey.css",
               "node_modules/survey-creator/survey-creator.css",
