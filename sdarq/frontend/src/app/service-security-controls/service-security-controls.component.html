@@ -16,17 +16,17 @@
             <div class="col text-center">
                 <div><p>{{description}}</p></div>
                 <div><p>{{team}}</p></div>
-                <table mdbTable #tableEl="mdbTable" hover="true" striped="true" class="z-depth-1"
+                <table hover="true" striped="true" class="table z-depth-1"
                     class="animated fadeIn">
                     <th *ngFor="let head of headElements" class="mdb-color primary-color-dark white-text">
                         {{ head }}
                     </th>
                     <tbody #row>
-                        <tr mdbTableCol>
+                        <tr scope="col">
                             <td>Service</td>
                             <td>{{service}}</td>
                         </tr>
-                        <tr mdbTableCol>
+                        <tr scope="col">
                             <td> Product </td>
                             <td>
                                 <div [innerHTML]="productShowValue(product)"></div>
@@ -35,16 +35,16 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr mdbTableCol>
+                        <tr scope="col">
                             <td> Sourcecode </td>
                             <td>
                                 <div class="text-center"><a href="{{ github  }}" target="_blank"
                                         rel="noreferrer noopener">
-                                        <mdb-icon fab icon="github" size="3x"></mdb-icon>
+                                        <span class="fas fa-gthub fa-3x ml-2"></span>
                                     </a></div>
                             </td>
                         </tr>
-                        <tr mdbTableCol>
+                        <tr scope="col">
                             <td> Dev URL </td>
                             <td>
                                 <div [innerHTML]="devURLShowValue(dev_url)"></div>
@@ -55,7 +55,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr mdbTableCol>
+                        <tr scope="col">
                             <td> DefectDojo </td>
                             <td>
                                 <div class="text-center"><a href="{{ defect_dojo }}" target="_blank"
@@ -63,7 +63,7 @@
                                         <img src="../assets/defectdojo.png" width="23px"></a> </div>
                             </td>
                         </tr>
-                        <tr mdbTableCol>
+                        <tr scope="col">
                             <td> Threat Model </td>
                             <td>
                                 <div
@@ -79,7 +79,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr mdbTableCol>
+                        <tr scope="col">
                             <td> 3rd party dependecies scan </td>
                             <td>
                                 <div [innerHTML]="sourceclearShowValue(sourceclear)"></div>
@@ -88,7 +88,7 @@
                                         <img src="../assets/sourceclear.png" width="30px"></a>
                                 </div>
                         </tr>
-                        <tr mdbTableCol>
+                        <tr scope="col">
                             <td> Security Manual pentest </td>
                             <td>
                                 <div [innerHTML]="burpShowValue(burp)"></div>
@@ -99,13 +99,13 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr mdbTableCol>
+                        <tr scope="col">
                             <td> Container Image Scan </td>
                             <td>
                                 <div [innerHTML]="trivyShowValue(docker_scan)"></div>
                             </td>
                         </tr>
-                        <tr mdbTableCol>
+                        <tr scope="col">
                             <td> SAST </td>
                             <td>
                                 <div [innerHTML]="sastShowValue(sast)"></div>
@@ -115,7 +115,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr mdbTableCol>
+                        <tr scope="col">
                             <td> DAST </td>
                             <td>
                                 <div [innerHTML]="zapShowValue(zap)"></div>
@@ -126,7 +126,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr mdbTableCol>
+                        <tr scope="col">
                             <td> CIS scan </td>
                             <td>
                                 <div [innerHTML]="cisscannerShowValue(cis_scanner)"></div>
