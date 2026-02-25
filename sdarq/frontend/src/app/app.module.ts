@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { SurveyComponent } from './services/survejs-form/survey.component';
@@ -52,6 +51,7 @@ import { DeleteServiceSecurityControlsService } from './services/delete-service-
 import { TerraNewServiceComponent } from './terra-new-service/terra-new-service.component';
 import { SortableHeaderDirective } from './cis-results/cis-results.component';
 import { AuthzService } from './services/authz/authz.service';
+import {MdbDropdownDirective} from 'mdb-angular-ui-kit/dropdown';
 
 
 
@@ -96,8 +96,7 @@ import { AuthzService } from './services/authz/authz.service';
     HttpClientModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule,
-    MDBBootstrapModule.forRoot()
+    BrowserAnimationsModule
   ],
   providers: [
     SendFormDataService,
