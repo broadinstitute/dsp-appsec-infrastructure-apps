@@ -1,26 +1,26 @@
 <nav class="navbar navbar-expand-lg navbar-dark primary-color">
-  <a class="navbar-brand" href="#"><span style="font-weight: bolder;">AppSec</span> Portal</a>
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#"><span style="font-weight: bolder;">AppSec</span> Portal</a>
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link waves-light" href="/about" mdbWavesEffect>About</a>
+        <a class="nav-link waves-light" href="/about">About</a>
       </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-mdb-toggle="dropdown"
-          aria-expanded="false">
+      <li mdbDropdown class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" mbdDropdownToggle aria-expanded="false">
           Questionnaires
         </a>
-        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
           <li><a class="dropdown-item" href="/TerraNewService" >Terra New Service Questionnaire</a></li>
           <li><a class="dropdown-item" href="/generalServiceQuestionnaire" >General New Service Questionnaire</a></li>
           <li><a class="dropdown-item" href="/new-3rd-party-app">New 3rd Party App Questionnaire</a></li>
         </ul>
       </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-mdb-toggle="dropdown"
+      <li mdbDropdown class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" mbdDropdownToggle
           aria-expanded="false">
           Scan
         </a>
-        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
           <li><a class="dropdown-item" href="/scan-service">Scan service</a></li>
           <li><a class="dropdown-item" href="/gcp-project-security-posture/scan">Scan GCP project</a></li>
           <li><a class="dropdown-item" href="/gcp-project-security-posture/latest">Get GCP project scan results</a></li>
@@ -29,8 +29,8 @@
       <li class="nav-item">
         <a class="nav-link waves-light" href="/jira-ticket-risk-assesment" mdbWavesEffect>Jira Ticket Risk Assesment</a>
       </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-mdb-toggle="dropdown"
+      <li mdbDropdown class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" mbdDropdownToggle
           aria-expanded="false">
           Security Controls
         </a>
@@ -43,7 +43,7 @@
         </ul>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-mdb-toggle="dropdown"
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" mbdDropdownToggle
           aria-expanded="false">
           Security Requests
         </a>
@@ -56,8 +56,9 @@
     <ul class="navbar-nav ml-auto nav-flex-icons">
       <li class="nav-item">
         <a class="nav-link" href="https://github.com/broadinstitute/dsp-appsec-infrastructure-apps">
-          <span class="fas fa-github fa-3x ml-2"></span>
+          <span class="fa-brands fa-github fa-3x ml-2"></span>
         </a>
       </li>
     </ul>
+    </div>
 </nav>
