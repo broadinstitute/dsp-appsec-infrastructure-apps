@@ -51,6 +51,7 @@ import { DeleteServiceSecurityControlsService } from './services/delete-service-
 import { TerraNewServiceComponent } from './terra-new-service/terra-new-service.component';
 import { SortableHeaderDirective } from './cis-results/cis-results.component';
 import { AuthzService } from './services/authz/authz.service';
+import {MdbDropdownDirective} from 'mdb-angular-ui-kit/dropdown';
 
 
 
