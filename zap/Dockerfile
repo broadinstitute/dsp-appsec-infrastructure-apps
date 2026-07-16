@@ -1,4 +1,4 @@
-FROM us.gcr.io/broad-dsp-gcr-public/base/python:3.10-debian AS base
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:3.12-debian AS base
 
 FROM base AS build
 
