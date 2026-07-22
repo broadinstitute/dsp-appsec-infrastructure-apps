@@ -14,6 +14,8 @@ export JOB_SERVICE_ACCOUNT="${JOB_CONFIG_MAP}"
 export CRON_JOB="${NAMESPACE}-trigger-weekly"
 export CRON_SERVICE_ACCOUNT="${CRON_JOB}"
 
+echo "CIS projects to be scanned: ${CIS_PROD_PROJECTS}"
+
 ./kube-apply.py \
   "namespace.yaml"
 
