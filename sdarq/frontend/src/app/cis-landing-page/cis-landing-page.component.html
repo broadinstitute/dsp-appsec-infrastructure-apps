@@ -10,46 +10,42 @@
     <div class="row">
       <br><br><br><br><br><br>
       <div class="col-sm">
-        <mdb-card class="animated fadeIn finite">
-          <mdb-card-body>
+        <div class="card animated fadeIn finite">
+          <div class="card-body">
             <br>
             <p>
-              <mdb-icon fas icon="atom" size="3x" class="ml-2" aria-hidden="true"></mdb-icon>
+              <span class="fas fa-atom fa-3x ml-2" aria-hidden="true"></span>
             </p>
             <br>
             <!--Title-->
-            <mdb-card-title>
-              <h4>Scan GCP Project </h4>
-            </mdb-card-title>
+              <h4 class="card-title">Scan GCP Project </h4>
             <br>
             <!--Text-->
-            <mdb-card-text> I want to assess my GCP project security posture against the CIS Benchmark.
-            </mdb-card-text>
+            <p class="card-text"> I want to assess my GCP project security posture against the CIS Benchmark.
+            </p>
             <br>
             <button routerLink="/gcp-project-security-posture/scan" mdbBtn type="button" color="primary" mdbWavesEffect>Start</button>
-          </mdb-card-body>
-        </mdb-card>
+          </div>
+        </div>
       </div>
       <div class="col-sm">
-        <mdb-card class="animated fadeIn finite">
-          <mdb-card-body>
+        <div class="card animated fadeIn finite">
+          <div class="card-body">
             <br>
             <p>
-              <mdb-icon fas icon="table" size="3x" class="ml-2" aria-hidden="true"></mdb-icon>
+              <span class="fas fa-table fa-3x ml-2" aria-hidden="true"></span>
             </p>
             <br>
             <!--Title-->
-            <mdb-card-title>
-              <h4>Get latest results</h4>
-            </mdb-card-title>
+              <h4 class="card-title">Get latest results</h4>
             <br>
             <!--Text-->
-            <mdb-card-text> I scanned my GCP project and I want to get latest results of this GCP project scan. 
-            </mdb-card-text>
+            <p class="card-text"> I scanned my GCP project and I want to get latest results of this GCP project scan. 
+            </p>
             <br>
             <button routerLink="/gcp-project-security-posture/latest" mdbBtn type="button" color="primary" mdbWavesEffect>Start</button>
-          </mdb-card-body>
-        </mdb-card>
+          </div>
+        </div>
       </div>
     </div>
   </div>

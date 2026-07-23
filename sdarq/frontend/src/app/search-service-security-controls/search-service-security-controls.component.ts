@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import formJson from './form.json';
 import { GetServiceSecurityControlsService } from '../services/get-service-security-controls/get-service-security-controls.service';
-import { FasDirective } from 'angular-bootstrap-md';
 
 
 @Component({
