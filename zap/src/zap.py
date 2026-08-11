@@ -367,7 +367,12 @@ def get_hail_token():
                                 },
                             ),
                             timeout=60)
-    return resp.json()['access_token']
+    if (resp.json()['access_token']):
+        access_token = resp.json()['access_token']
+        logging.info("Hail token acquired")
+    else:
+        raise RuntimeError("Failed to acquire token for hail.")
+    return access_token
 
 def zap_set_hail_token( zap, target_url):
     """
@@ -386,6 +391,7 @@ def zap_set_hail_token( zap, target_url):
                     )
     res = zap.urlopen(target_url)
     if res.split(':')[0] not in ("401","302"):
+        logging.info("Authenticated to Hail")
         return token
     raise RuntimeError("Failed to set token for hail.")
 
