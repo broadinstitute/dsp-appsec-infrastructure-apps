@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { EditSecurityControlsService } from '../services/edit-service-security-controls/edit-security-controls.service';
 import { GetServiceSecurityControlsService } from '../services/get-service-security-controls/get-service-security-controls.service';
-import { Clipboard } from '@angular/cdk/clipboard';
 import formJson from './form.json';
 
 
@@ -24,7 +23,6 @@ export class EditSecurityControlsFormComponent implements OnInit {
 
   constructor(private getSecurityControls: GetServiceSecurityControlsService,
               private editSecurityControls: EditSecurityControlsService,
-              private clipboard: Clipboard,
               private ngZone: NgZone,
               private ref: ChangeDetectorRef) {
                 // This is intentional
