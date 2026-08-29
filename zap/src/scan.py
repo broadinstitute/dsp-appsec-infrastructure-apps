@@ -3,10 +3,10 @@
 Runs ZAP scan, uploads results to Code Dx and GCS, and alerts Slack.
 """
 
+import csv
 import logging
 import os
 import re
-import csv
 from datetime import datetime, timedelta
 from enum import Enum
 from os import getenv
@@ -350,7 +350,12 @@ def slack_alert_without_report(  # pylint: disable=too-many-arguments
         logging.info("Alert sent to Slack channel for DefectDojo upload report")
 
 # match a hash after a hyphen or dot, and only match 8 or 9 characters of hex
-URI_HASH_REGEX = re.compile(r"[-\.][a-zA-Z0-9]{8,9}(?![a-fA-F0-9])")
+URI_HASH_REGEX1 = re.compile(r"[-\.][a-zA-Z0-9]{8,9}(?![a-fA-F0-9])")
+REPLACEMENT1 = ""
+# remote a hash e.g. /assets/index-4au49BA-.js -> /assets/index.js
+URI_HASH_REGEX2 = re.compile(r"index-\w{7}-\.js")  
+REPLACEMENT2 = "index.js"
+
 
 def clean_uri_path(xml_report):
     """
@@ -358,12 +363,16 @@ def clean_uri_path(xml_report):
     """
     tree = ET.parse(xml_report)
     root = tree.getroot()
-    #There's a hash in bundled files that is causing flaws to not match
+    # There's a hash in bundled files that is causing flaws to not match
     # this should remove the hash.
-    for uri in root.iter('uri'):
-        r=urlparse(uri.text)
-        r=r._replace(path=URI_HASH_REGEX.sub('', r.path))
-        uri.text = urlunparse(r)
+    for uri in root.iter("uri"):
+        r = urlparse(uri.text)
+        path_old = r.path
+        r = r._replace(path=URI_HASH_REGEX1.sub(REPLACEMENT1, r.path))
+        r = r._replace(path=URI_HASH_REGEX2.sub(REPLACEMENT2, r.path))
+        if r.path != path_old:
+            logging.info("URI %s -> %s", path_old, r.path)
+            uri.text = urlunparse(r)
     tree.write(xml_report)
 
 def get_codedx_findings_json(cdx,codedx_project):
