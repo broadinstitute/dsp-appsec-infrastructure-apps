@@ -3,7 +3,7 @@ on:
   # This workflow fails if run too frequently, due to rate limiting.
   #pull_request:
   schedule:
-  - cron: '0 14 * * 1' # each Monday at 9am EST
+    - cron: "0 14 * * 1" # each Monday at 9am EST
   workflow_dispatch:
 
 jobs:
@@ -15,29 +15,42 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - dir: batch
-        - dir: bastion
-        - dir: cis
-        - dir: sdarq/frontend
-        - dockerfile: sdarq/backend/Dockerfile
-        - dir: zap
+          - dir: batch
+          - dir: bastion
+          - dir: cis
+          - dir: sdarq/frontend
+          - dockerfile: sdarq/backend/Dockerfile
+          - dir: security-controls
+          - dir: zap
     env:
       SARIF_PATH: ${{ matrix.dir }}/trivy-results.sarif
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - uses: broadinstitute/dsp-appsec-trivy-action@v1
-      with:
-        context: ${{ matrix.dir || '.' }}
-        dockerfile: ${{ matrix.dockerfile || 'Dockerfile' }}
-        severities: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
-        # sarif: ${{ !github.base_ref && env.SARIF_PATH || '' }}
+      - uses: broadinstitute/dsp-appsec-trivy-action@v1
+        with:
+          context: ${{ matrix.dir || '.' }}
+          dockerfile: ${{ matrix.dockerfile || 'Dockerfile' }}
+          severities: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+          sarif: ${{ !github.base_ref && env.SARIF_PATH || '' }}
 
-    # NOTE: this functionality is limited to public repos only;
-    # TODO: uncomment the Cron schedule and Sarif config when made public
-    # - name: Upload Trivy scan results to GitHub Security tab
-    #   uses: github/codeql-action/upload-sarif@v1
-    #   if: ${{ !github.base_ref }} # omit upload on PRs
-    #   with:
-    #     sarif_file: ${{ env.SARIF_PATH }}
+      - name: Check if SARIF file exists
+        id: sarif_check
+        run: |
+          if [ -f "${{ env.SARIF_PATH }}" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2.21.3
+        if: ${{ steps.sarif_check.outputs.exists == 'true' && !github.base_ref }}
+        with:
+          sarif_file: ${{ env.SARIF_PATH }}
+
+      - name: Log SARIF upload skipped
+        if: ${{ steps.sarif_check.outputs.exists != 'true' || github.base_ref }}
+        run: |
+          echo "SARIF upload skipped: either SARIF file missing or this is a PR."
